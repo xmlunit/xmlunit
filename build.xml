@@ -40,8 +40,8 @@ POSSIBILITY OF SUCH DAMAGE.
   <property name="xmlunit.version" value="1.3alpha"/>
 
   <!-- some locations -->
-  <property name="src.dir" value="src"/>
-  <property name="test.dir" value="tests"/>
+  <property name="src.dir" value="src/main"/>
+  <property name="test.dir" value="src/tests"/>
   <property name="build.dir" location="build"/>
   <property name="lib.dir" value="${build.dir}/lib"/>
   <property name="out.dir" value="${build.dir}/classes"/>
@@ -104,7 +104,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
   <target name="compile" depends="-init"
     description="compiles sources and tests">
-    <javac srcdir="${src.dir}/java" destdir="${out.dir}"
+    <javac srcdir="${src.dir}/legacy-java" destdir="${out.dir}"
       debug="${javac.debug}" target="${javac.target}" source="${javac.source}">
       <classpath>
         <pathelement location="${xmlxsl.lib}"/>
@@ -114,7 +114,7 @@ POSSIBILITY OF SUCH DAMAGE.
       <exclude name="**/jaxp13/**" unless="jaxp13+"/>
       <exclude name="**/*XPathRegexAssert.java" unless="regexp.present"/>
     </javac>
-    <javac srcdir="${test.dir}/java" destdir="${test.out.dir}"
+    <javac srcdir="${test.dir}/legacy-java" destdir="${test.out.dir}"
       debug="${javac.debug}" target="${javac.target}" source="${javac.source}">
       <classpath>
         <pathelement location="${out.dir}"/>
@@ -150,7 +150,7 @@ POSSIBILITY OF SUCH DAMAGE.
       </classpath>
       <formatter type="xml"/>
       <batchtest todir="${test.report.dir}">
-        <fileset dir="${test.dir}/java">
+        <fileset dir="${test.dir}/legacy-java">
           <include name="**/test_*.java"/>
           <exclude name="**/jaxp13/**" unless="jaxp13+.impl"/>
         </fileset>
@@ -175,12 +175,12 @@ POSSIBILITY OF SUCH DAMAGE.
     description="creates the API documentation">
     <delete includeEmptyDirs="true" dir="${docs.dir}/api"/>
     <javadoc destdir="${docs.dir}/api"
-      overview="${src.dir}/java/overview.html"
+      overview="${src.dir}/legacy-java/overview.html"
       windowtitle="XMLUnit Documentation"
       footer="&lt;p&gt;&lt;a href=&quot;http://xmlunit.sourceforge.net/&quot;&gt;XMLUnit&lt;/a&gt; is hosted by sourceforge.net&lt;/p&gt;">
       <group title="XMLUnit v${xmlunit.version}"
         packages="org.custommonkey.xmlunit*"/>
-      <fileset dir="${src.dir}/java">
+      <fileset dir="${src.dir}/legacy-java">
         <include name="org/custommonkey/**/*.java"/>
       </fileset>
       <classpath>
