@@ -1,0 +1,84 @@
+<project>
+  <!-- allow overrides -->
+  <property file="docbook.properties"/>
+
+  <!-- location of Docbook Stylesheets and dblatex -->
+  <property name="db5.xsl" location="../../docbook/docbook5-xsl-1.72.0"/>
+  <property name="dblatex" value="/usr/bin/dblatex"/>
+
+  <property name="html.dir" location="${userguide.docs.dir}/html"/>
+  <property name="user.guide" value="XMLUnit-Java"/>
+  <property name="src.userguide.dir" value="${src.dir}/user-guide"/>
+
+  <target name="create-users-guide"
+    depends="users-guide-html,users-guide-pdf"
+    description="creates PDF and HTML version of User's Guide"/>
+
+  <target name="-html-needs-refresh?">
+    <uptodate property="HTML is up-to-date"
+      srcfile="${src.userguide.dir}/${user.guide}.xml"
+      targetfile="${html.dir}/index.html"/>
+  </target>
+
+  <target name="users-guide-html" depends="-html-needs-refresh?"
+    unless="HTML is up-to-date"
+    description="Creates HTML version of the User's Guide">
+    <delete dir="${html.dir}" quiet="true"/>
+    <mkdir dir="${html.dir}"/>
+    <xslt
+      basedir="${src.userguide.dir}"
+      destdir="${html.dir}"
+      style="${db5.xsl}/html/chunk.xsl">
+      <include name="${user.guide}.xml"/>
+
+      <param name="section.autolabel" expression="1"/>
+      <param name="section.label.includes.component.label" expression="1"/>
+    </xslt>
+    <copy file="${src.dir}/site/xmlunit.png" toDir="${html.dir}"/>
+    <delete file="${html.dir}/${user.guide}.html" quiet="true"/>
+  </target>
+
+  <target name="-check-os">
+    <condition property="isWindows">
+      <os family="windows"/>
+    </condition>
+  </target>
+
+  <target name="-define-dblatex-unix" unless="isWindows"
+    depends="-check-os">
+    <macrodef name="dblatex">
+      <attribute name="sourcefile"/>
+      <sequential>
+        <apply executable="${dblatex}">
+          <fileset file="@{sourcefile}"/>
+          <globmapper from="*.xml" to="*.pdf"/>
+        </apply>
+      </sequential>
+    </macrodef>
+  </target>
+
+  <target name="-define-dblatex-cygwin" if="isWindows"
+    depends="-check-os">
+    <macrodef name="dblatex">
+      <attribute name="sourcefile"/>
+      <sequential>
+        <apply executable="bash.exe" addsourcefile="false">
+          <fileset file="@{sourcefile}"/>
+          <globmapper from="*.xml" to="*.pdf"/>
+          <arg value="-c"/>
+          <arg value="${dblatex} @{sourcefile}"/>
+        </apply>
+      </sequential>
+    </macrodef>
+  </target>
+
+  <target name="-define-dblatex"
+    depends="-define-dblatex-unix,-define-dblatex-cygwin"/>
+
+  <target name="users-guide-pdf" depends="-define-dblatex"
+    description="Creates the PDF version of the User's Guide">
+    <dblatex sourcefile="${src.userguide.dir}/${user.guide}.xml"/>
+    <move file="${src.userguide.dir}/${user.guide}.pdf"
+      todir="${userguide.docs.dir}"/>
+  </target>
+</project>

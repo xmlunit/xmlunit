@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Book xmlns:xsd="http://www.w3.org/2000/10/XMLSchema" xmlns="http://www.publishing.org">
+    <Title>Chicken Soup for the Soul</Title>
+    <Author>Jack Canfield</Author>
+    <Author>Mark Victor Hansen</Author>
+    <Date>1993</Date>
+    <ISBN>1-55874-262-X</ISBN>
+    <goat>Billy</goat>
+    <Publisher>Health Communications, Inc.</Publisher>
+</Book>

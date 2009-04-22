@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>&lt;XmlUnit/&gt;</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <meta name="keywords"
+ content="unit testing, test driven development, xml, xmlunit, junit, nunit">
+  <style type="text/css">
+ body{font-family: Helvetica, Arial, sans-serif}
+ code{font-style: italic}
+  </style>
+</head>
+<body>
+<table width="100%" height="100%" border="0">
+  <tbody>
+    <tr>
+      <td colspan="2"><img align="left" src="xmlunit.png"
+ alt="&lt;xml-unit/&gt;" width="331" height="100"> <a href="http://sourceforge.net/projects/xmlunit"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=23187&type=13" width="120" height="30" border="0" alt="Get XML Unit at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a><br>
+      <h1>XMLUnit - JUnit and NUnit testing for XML</h1>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top" colspan="2">
+      <p>For those of you who've got into it you'll know that test
+driven development is great. It gives you the confidence to change code
+safe in the knowledge that if something breaks you'll know about it.
+Except for those bits you don't know how to test. Until now XML has
+been one of them. Oh sure you can use <code><b>"&lt;stuff&gt;&lt;/stuff&gt;"</b>.equals(<b>"&lt;stuff&gt;&lt;/stuff&gt;"</b>);</code>
+but is that really gonna work when some joker decides to output a <code><b>&lt;stuff/&gt;</b></code>?
+-- damned right it's not ;-)</p>
+      <p>XML can be used for just about anything so deciding if two
+documents are equal to each other isn't as easy as a character for
+character match. Sometimes</p>
+      <table bgcolor="black">
+        <tbody>
+          <tr>
+            <td bgcolor="white">
+            <pre>&lt;stuff-doc&gt;<br>  &lt;stuff&gt;<br>    Stuff Stuff Stuff<br>  &lt;/stuff&gt;<br>  &lt;more-stuff&gt;<br>    Some More Stuff<br>  &lt;/more-stuff&gt;<br>&lt;/stuff-doc&gt; </pre>
+            </td>
+            <td bgcolor="white">equals</td>
+            <td bgcolor="white">
+            <pre>&lt;stuff-doc&gt;<br>  &lt;more-stuff&gt;<br>    Some More Stuff&lt;/more-stuff&gt;<br>  &lt;stuff&gt;Stuff Stuff Stuff&lt;/stuff&gt;<br>&lt;/stuff-doc&gt; </pre>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p>and sometimes it doesn't... With XMLUnit you get the control,
+and you get to decide.</p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+      <h2>XMLUnit for Java</h2>
+      </td>
+      <td width="240"> <a href="http://www.junit.org/"><img
+ src="http://www.junit.org/images/junitlogo.gif" alt="JUnit.org"
+ border="0"></a> </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+      <p>The current stable release is <a
+      href="http://sourceforge.net/project/showfiles.php?group_id=23187&package_id=15921&release_id=605991">XMLUnit
+      1.2</a>, June 2008.</p>
+      <p>XMLUnit for Java provides two JUnit extension classes, <code>XMLAssert</code>
+and <code>XMLTestCase</code>,
+and a set of supporting classes (e.g. <code>Diff</code>, <code>DetailedDiff</code>,<code>Transform</code>,<code>SimpleXpathEngine</code>,<code>Validator</code>,<code>NodeTest</code>)
+that allow assertions to be made about:</p>
+      <ul>
+        <li>The differences between two pieces of XML</li>
+        <li>The outcome of transforming a piece of XML using XSLT</li>
+        <li>The evaluation of an XPath expression on a piece of XML</li>
+        <li>The validity of a piece of XML</li>
+        <li>Individual nodes in a piece of XML that are exposed by DOM
+Traversal</li>
+      </ul>
+      <p>XMLUnit for Java can also treat HTML content (even
+badly-formed HTML) as valid XML to allow these assertions to be made
+about the content of web pages too.</p>
+      <table border="0" cellspacing="5" cellpadding="5">
+        <tbody>
+          <tr>
+            <td>Read the User's Guide (<a
+            href="userguide/XMLUnit-Java.pdf">PDF</a> or <a
+            href="userguide/html/index.html">HTML</a>)</td>
+            <td><a href="example.html">See some example code</a></td>
+            <td><a href="api/index.html">Browse the Javadocs</a></td>
+            <td><a
+ href="http://xmlunit.svn.sourceforge.net/viewvc/xmlunit/trunk/xmlunit/">Visit
+the Subversion repository</a> </td>
+          </tr>
+        </tbody>
+      </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+      <h2>XMLUnit for .Net</h2>
+      </td>
+      <td width="240"> <a
+ href="http://nunit.org/"><img src="http://nunit.org/img/logo.gif"
+ alt="NUnit.org" border="0"></a> </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+      <p>The current release is <a
+ href="https://sourceforge.net/project/showfiles.php?group_id=23187&package_id=91308">XmlUnit
+.Net 0.3.1</a>, February 2008</p>
+      <p>XMLUnit for .Net provides NUnit extension classes written in
+C#, e.g. <code>XmlAssertion</code> and <code>XmlDiff</code>, that allow
+assertions to be made about the differences between two pieces of XML,
+the validity of a piece of XML, the evaluation of an XPath expression
+on a piece of XML, and the result of an XSL Transform.<br>
+      </p>
+      <p>Please be aware that the .Net code base is not as advanced as its Java
+counterpart, in particular there is currently no explicit support for namespaces.</p>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+      <h2>News</h2>
+      <p> RSS feeds are available for <a
+ href="http://sourceforge.net/export/rss2_projnews.php?group_id=23187&amp;rss_fulltext=1&amp;go"><img
+ src="https://images.sourceforge.net/images/xml.png" border="0"
+ alt="RSS feed">Project news releases</a> and <a
+ href="http://sourceforge.net/export/rss2_projfiles.php?group_id=23187&amp;go"><img
+ src="https://images.sourceforge.net/images/xml.png" border="0"
+ alt="RSS feed">Project file releases</a> .</p>
+      <p> An archive of the project news is available <a
+ href="http://sourceforge.net/news/?group_id=23187">here</a>. </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="bottom" align="right" colspan="2">
+      <p style="font-size: smaller;">Brought to you by <a
+ href="http://coachspot.blogspot.com/">Tim Bacon</a> and <a
+ href="http://www.custommonkey.org/">Jeff Martin</a></p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

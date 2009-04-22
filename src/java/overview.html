@@ -1,0 +1,109 @@
+<html>
+<head><title>XMLUnit</title></head>
+<body>
+XMLUnit provides extensions to the <a href="http://www.junit.org" target="_none">
+JUnit</a> framework to allow assertions to be made about XML content.
+<h3>Using XMLUnit</h3>
+<ol>
+<li>Create a subclass of {@link org.custommonkey.xmlunit.XMLTestCase XMLTestCase}
+something like this:
+<pre>
+public class TestSomething extends XMLTestcase {
+    // standard JUnit style constructor
+    public TestSomething(String name) {
+        super(name);
+    }
+    // standard JUnit style method
+    public static TestSuite suite() {
+        return new TestSuite(TestSomething.class);
+    }
+}
+</pre>
+</li>
+<li>Set the global JAXP settings in {@link org.custommonkey.xmlunit.XMLUnit XMLUnit}
+so that your chosen parser and transformer are used for the tests.
+<br /><i>Note:</i>You can skip this bit if you use the default JAXP settings
+or you have an <a href="http://jakarta.apache.org/ant">Ant task</a> that uses
+<i>-D</i> JVM options to specify the JAXP settings.
+<pre>
+    // set the JAXP factories to use the Xerces parser
+    // - declare to throw Exception as if this fails then all the tests will
+    // fail, and JUnit copes with these Exceptions for us
+    public void setUp() throws Exception {
+        XMLUnit.setControlParser(
+            "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+        // this next line is strictly not required - if no test parser is
+        // explicitly specified then the same factory class will be used for
+        // both test and control
+        XMLUnit.setTestParser(
+            "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+
+        XMLUnit.setSAXParserFactory(
+            "org.apache.xerces.jaxp.SAXParserFactoryImpl");
+        XMLUnit.setTransformerFactory(
+            "org.apache.xalan.processor.TransformerFactoryImpl");
+    }
+</pre>
+</li>
+<li>Add test methods to make your assertions: the
+{@link org.custommonkey.xmlunit.XMLTestCase XMLTestCase} javadoc lists the
+available assertion methods and their usage, but here are some examples...
+<pre>
+    public void testObjectAsXML() throws Exception {
+        String expectedXML = "....";
+        String objectAsXML = null;
+        //...set up some object here and serialize its state into
+        //our test String...
+        assertXMLEqual(expectedXML, objectAsXML);
+    }
+
+    public void testTransformToFormatB() throws Exception {
+        String expectedFormatB = "....";
+        String formatA = "....";
+        String transformXSLT = "....";
+        Transform formatAToFormatB = new Transform(formatA, transformXSLT);
+        assertXMLEqual(new Diff(expectedFormatB, formatAToFormatB), true);
+    }
+
+    public void testIsValidAfterTransform() throws Exception {
+        String incomingMessage = "....";
+        String toSourceSystemXSLT = "....";
+        Transform transform = new Transform(incomingMessage, toSourceSystemXSLT);
+        assertXMLValid(transform.getResultString());
+    }
+
+    public void testXpaths() throws Exception {
+        String ukCustomerContactPhoneNos = "//customer[@country='UK']/contact/phone";
+        String customerExtract1 = "....";
+        String customerExtract2 = "....";
+        assertXpathsNotEqual(ukCustomerContactPhoneNos, customerExtract1,
+            ukCustomerContactPhoneNos, customerExtract2);
+    }
+
+    public void testXpathValues() throws Exception {
+        String firstListItem = "/html/body/div[@id='myList']/h1/ol/li[1]";
+        String secondListItem = "/html/body/div[@id='myList']/h1/ol/li[2]";
+        String myHtmlPage = "....";
+        assertXpathValuesNotEqual(firstListItem, secondListItem, myHtmlPage);
+    }
+
+    public void testSpecificXpath() throws Exception {
+        String todaysTop10 = "count(//single[@topTen='true'])";
+        String playlist = "....";
+        assertXpathEvaluatesTo("10", todaysTop10, playlist);
+
+    }
+</pre>
+</li>
+</ol>
+
+<h3>A little bit of history</h3>
+<p>XMLUnit is the result of the efforts of
+<a href="mailto:timBacon@primeEight.co.uk">Tim Bacon</a> and
+<a href="mailto:jeff@custommonkey.org">Jeff Martin</a>. We needed a tool to
+test the serialization and de-serialiation of objects into XML for an
+application that sent and received XML messages over HTTP, and this project
+grew out of that. We hope you find it useful, and welcome any feedback you can
+give us.</p>
+</body>
+</html>

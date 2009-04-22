@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<element name="Book" ns="http://www.publishing.org"
+         xmlns="http://relaxng.org/ns/structure/1.0">
+  <element name="Title"><text/></element>
+  <oneOrMore>
+    <element name="Author"><text/></element>
+  </oneOrMore>
+  <element name="Date"><text/></element>
+  <element name="ISBN"><text/></element>
+  <element name="Publisher"><text/></element>
+</element>

@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<DaoEreigDossier and_beschr= "" op_steu_art= "1" erdo_nr= "5004299" ermd_lfnr= "1" fall_ztlg_dat= "2002-07-08" mutn_zpkt_cls= "2002-07-08-12.07.36.364145" >
+<han_weisg_liste length= "0"></han_weisg_liste>
+<autom_termin_liste length= "4"><NvpListe length= "5"><DaoNvp attr_name= "OBJ_ID" attr_value_txt= "UUID5e891b:eee984ee59:-7aab" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "ATTR_WERT" attr_value_txt= "1" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ID" attr_value_txt= "2002-07-08-12.06.58.208799" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ART_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "ATTR_NAME" attr_value_txt= "teleclaimsFallJN" attr_value_num= "0" >
+</DaoNvp>
+</NvpListe>
+<NvpListe length= "4"><DaoNvp attr_name= "OBJ_ID" attr_value_txt= "UUID5e891b:eee984ee59:-7ac8" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ID" attr_value_txt= "2002-07-08-12.07.15.551168" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ART_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "ATTR_NAME" attr_value_txt= "VonDeckungspruefunggeneriert" attr_value_num= "0" >
+</DaoNvp>
+</NvpListe>
+<NvpListe length= "5"><DaoNvp attr_name= "OBJ_ID" attr_value_txt= "UUID5e891b:eee984ee59:-7ade" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "ATTR_WERT" attr_value_txt= "2" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ID" attr_value_txt= "2002-07-08-12.07.07.403665" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ART_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "ATTR_NAME" attr_value_txt= "kontaktMassnahmen" attr_value_num= "0" >
+</DaoNvp>
+</NvpListe>
+<NvpListe length= "5"><DaoNvp attr_name= "OBJ_ID" attr_value_txt= "UUID5e891b:eee984ee59:-7ade" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "ATTR_WERT" attr_value_txt= "1" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ID" attr_value_txt= "2002-07-08-12.06.48.997697" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ART_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "ATTR_NAME" attr_value_txt= "unfallprotokollJN" attr_value_num= "0" >
+</DaoNvp>
+</NvpListe>
+</autom_termin_liste>
+<ereig_mldg_liste length= "1"><DaoEreigMldg erhg_lbeschr= "dumm gegangen" kntkt_ma_beschr= "massnahme überflüssig" kntkt_ihalt_beschr= "inhalt des kontaktes" schufra_bgrdg= "dämlicher Idiot" sc_urs_beschr= "" rettg_vsuch_beschr= "" wind_gschw_grd= "" sc_urs_beschr_kbsc= "" aufgbr_bdiengpers= "" auftr_beschr= "" pstund_bgrdg= "" rng_erwartt_beschr= "" sc_dat_von= "2002-07-01" sc_dat_bis= "0001-01-01" poliz_rapp_dat= "2002-07-05" sc_zeit_von= "00.00.00" sc_zeit_bis= "00.00.00" erstg_zpkt= "2002-07-08-11.59.00.000043" >
+<so_ma_liste length= "0"></so_ma_liste>
+<mldg_zus_mfk_liste length= "1"><DaoMldgZusMfk bvm_vdacht_beschr= "" deckg_eshd_bgrdg= "deckung" haftg_eshd_bgrdg= "" regr_eshd_bgrdg= "regress" meld_dat_wildh= "0001-01-01" gueab_pol= "2001-09-25" abl_dat_pol= "2004-12-31" anulg_dat= "0001-01-01" >
+<deckg_pruefg_liste length= "3"><NvpListe length= "5"><DaoNvp attr_name= "KF_TERMIN_GESPERRT" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_TERMIN_AUSGLST" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_DECKG_PRUEF" attr_value_txt= "UUID5e891b:eee984ee59:-7ab8" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ART_CDCLS" attr_value_txt= "" attr_value_num= "145" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_TERMIN_SETZ" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+</NvpListe>
+<NvpListe length= "5"><DaoNvp attr_name= "KF_TERMIN_GESPERRT" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_TERMIN_AUSGLST" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_DECKG_PRUEF" attr_value_txt= "UUID5e891b:eee984ee59:-7ac7" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ART_CDCLS" attr_value_txt= "" attr_value_num= "200" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_TERMIN_SETZ" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+</NvpListe>
+<NvpListe length= "5"><DaoNvp attr_name= "KF_TERMIN_GESPERRT" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_TERMIN_AUSGLST" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_DECKG_PRUEF" attr_value_txt= "UUID5e891b:eee984ee59:-7ac5" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ART_CDCLS" attr_value_txt= "" attr_value_num= "23" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_TERMIN_SETZ" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+</NvpListe>
+</deckg_pruefg_liste>
+<part_rol_liste length= "2"><DaoPartRol part_rol_cdcls= "200" adr_nr= "27635" part_id= "-1" >
+</DaoPartRol>
+<DaoPartRol part_rol_cdcls= "300" adr_nr= "27635" part_id= "-1" >
+</DaoPartRol>
+</part_rol_liste>
+<nvp_liste length= "15"><DaoNvp attr_name= "DECKG_ESHD_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_FREIW_LSTG" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "SC_ART_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_BVM_VDACHT_MANU" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "V_BR_CDU_SC" attr_value_txt= "" attr_value_num= "99020" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_MZ_MF_KASKO" attr_value_txt= "UUID5e891b:eee984ee59:-7ace" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "ANGB_ERGZG" attr_value_txt= "GE 516065/PW" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "REGR_ESHD_CDCLS" attr_value_txt= "" attr_value_num= "2" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_VTRG_ZUST_PROVI" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_DECKG_ESHD" attr_value_txt= "UUID5e891b:eee984ee59:-7ab3" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_REGR_ESHD" attr_value_txt= "UUID5e891b:eee984ee59:-7ab2" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "POL_NR" attr_value_txt= "" attr_value_num= "16516065" >
+</DaoNvp>
+<DaoNvp attr_name= "VTRG_BR_CDU" attr_value_txt= "" attr_value_num= "99000" >
+</DaoNvp>
+<DaoNvp attr_name= "VTRG_STAT_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_BVM_VDACHT" attr_value_txt= "UUID5e891b:eee984ee59:-7ab1" attr_value_num= "0" >
+</DaoNvp>
+</nvp_liste>
+</DaoMldgZusMfk>
+</mldg_zus_mfk_liste>
+<mldg_zus_mfh_liste length= "1"><DaoMldgZusMfh bvm_vdacht_beschr= "" deckg_eshd_bgrdg= "deckung 2" haftg_eshd_bgrdg= "haftung 2" regr_eshd_bgrdg= "regress 2" gueab_pol= "2001-09-25" abl_dat_pol= "2004-12-31" anulg_dat= "0001-01-01" >
+<deckg_pruefg_liste length= "3"><NvpListe length= "5"><DaoNvp attr_name= "KF_TERMIN_GESPERRT" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_TERMIN_AUSGLST" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_DECKG_PRUEF" attr_value_txt= "UUID5e891b:eee984ee59:-7ab9" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ART_CDCLS" attr_value_txt= "" attr_value_num= "145" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_TERMIN_SETZ" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+</NvpListe>
+<NvpListe length= "5"><DaoNvp attr_name= "KF_TERMIN_GESPERRT" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_TERMIN_AUSGLST" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_DECKG_PRUEF" attr_value_txt= "UUID5e891b:eee984ee59:-7ac8" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ART_CDCLS" attr_value_txt= "" attr_value_num= "200" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_TERMIN_SETZ" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+</NvpListe>
+<NvpListe length= "5"><DaoNvp attr_name= "KF_TERMIN_GESPERRT" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_TERMIN_AUSGLST" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_DECKG_PRUEF" attr_value_txt= "UUID5e891b:eee984ee59:-7ac6" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TERMIN_ART_CDCLS" attr_value_txt= "" attr_value_num= "23" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_TERMIN_SETZ" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+</NvpListe>
+</deckg_pruefg_liste>
+<part_rol_liste length= "2"><DaoPartRol part_rol_cdcls= "200" adr_nr= "30584" part_id= "-1" >
+</DaoPartRol>
+<DaoPartRol part_rol_cdcls= "300" adr_nr= "27635" part_id= "-1" >
+</DaoPartRol>
+</part_rol_liste>
+<nvp_liste length= "31"><DaoNvp attr_name= "BVI_ABWKLG" attr_value_txt= "" attr_value_num= "33" >
+</DaoNvp>
+<DaoNvp attr_name= "POL_NR" attr_value_txt= "" attr_value_num= "16516065" >
+</DaoNvp>
+<DaoNvp attr_name= "ANGB_ERGZG" attr_value_txt= "GE 516065/PW" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "VTRG_STAT_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_VTRG_ZUST_PROVI" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_FREIW_LSTG" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "DECKG_ESHD_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_HAFTG_ESHD" attr_value_txt= "UUID5e891b:eee984ee59:-7ab4" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "BVI_SC_EREIG" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "BVI_FZ_VN" attr_value_txt= "" attr_value_num= "8" >
+</DaoNvp>
+<DaoNvp attr_name= "VTRG_BR_CDU" attr_value_txt= "" attr_value_num= "99000" >
+</DaoNvp>
+<DaoNvp attr_name= "HAFTG_ESHD_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "BVI_DATENLAGE" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_REGR_ESHD" attr_value_txt= "UUID5e891b:eee984ee59:-7ab6" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "REGR_ESHD_CDCLS" attr_value_txt= "" attr_value_num= "2" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_BVM_VDACHT_MANU" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "BVI_PERS_VN" attr_value_txt= "" attr_value_num= "7" >
+</DaoNvp>
+<DaoNvp attr_name= "BVI_PRUEFG" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "BVI_PERS_ANSPRSTR" attr_value_txt= "" attr_value_num= "5" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_MZ_MF_HAFT" attr_value_txt= "UUID5e891b:eee984ee59:-7acf" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "BVI_LENKR_ANSPRSTR" attr_value_txt= "" attr_value_num= "17" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_DECKG_ESHD" attr_value_txt= "UUID5e891b:eee984ee59:-7ab7" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "BVI_KOMP" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "V_BR_CDU_SC" attr_value_txt= "" attr_value_num= "99010" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_BVM_VDACHT" attr_value_txt= "UUID5e891b:eee984ee59:-7ab5" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "BVI_SC" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "BVI_VTRG_VN" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_BVM_RESULT" attr_value_txt= "UUID5e891b:eee984ee59:-7aac" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "BVI_LENKR_VN" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "BVI_FZ_ANSPRSTR" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_BETRUG_VDACHT" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+</nvp_liste>
+</DaoMldgZusMfh>
+</mldg_zus_mfh_liste>
+<mldg_zus_mfu_liste length= "0"></mldg_zus_mfu_liste>
+<mldg_zus_hausrat_liste length= "0"></mldg_zus_hausrat_liste>
+<mldg_zus_haph_liste length= "0"></mldg_zus_haph_liste>
+<mldg_zus_allg_haft_liste length= "0"></mldg_zus_allg_haft_liste>
+<mldg_zus_Ueb_Br_liste length= "0"></mldg_zus_Ueb_Br_liste>
+<part_rol_glob_liste length= "6"><DaoPartRolGlob zus_beschr_fvr= "" vursg_bgruendg= "" austlg_dat_fueaw= "0001-01-01" >
+<nvp_liste length= "3"><DaoNvp attr_name= "OBJ_ID_PART_ROL" attr_value_txt= "UUID371566:eee983d86f:-5d88" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "PART_ROL_CDCLS" attr_value_txt= "" attr_value_num= "300" >
+</DaoNvp>
+<DaoNvp attr_name= "ADR_NR" attr_value_txt= "" attr_value_num= "27635" >
+</DaoNvp>
+</nvp_liste>
+</DaoPartRolGlob>
+<DaoPartRolGlob zus_beschr_fvr= "" vursg_bgruendg= "" austlg_dat_fueaw= "0001-01-01" >
+<nvp_liste length= "3"><DaoNvp attr_name= "OBJ_ID_PART_ROL" attr_value_txt= "UUID5e891b:eee984ee59:-7adf" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "PART_ROL_CDCLS" attr_value_txt= "" attr_value_num= "100" >
+</DaoNvp>
+<DaoNvp attr_name= "ADR_NR" attr_value_txt= "" attr_value_num= "2780" >
+</DaoNvp>
+</nvp_liste>
+</DaoPartRolGlob>
+<DaoPartRolGlob zus_beschr_fvr= "" vursg_bgruendg= "" austlg_dat_fueaw= "0001-01-01" >
+<nvp_liste length= "3"><DaoNvp attr_name= "OBJ_ID_PART_ROL" attr_value_txt= "UUID5e891b:eee984ee59:-7acd" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "PART_ROL_CDCLS" attr_value_txt= "" attr_value_num= "200" >
+</DaoNvp>
+<DaoNvp attr_name= "ADR_NR" attr_value_txt= "" attr_value_num= "27635" >
+</DaoNvp>
+</nvp_liste>
+</DaoPartRolGlob>
+<DaoPartRolGlob zus_beschr_fvr= "" vursg_bgruendg= "" austlg_dat_fueaw= "0001-01-01" >
+<nvp_liste length= "3"><DaoNvp attr_name= "OBJ_ID_PART_ROL" attr_value_txt= "UUID5e891b:eee984ee59:-7ad7" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "PART_ROL_CDCLS" attr_value_txt= "" attr_value_num= "200" >
+</DaoNvp>
+<DaoNvp attr_name= "ADR_NR" attr_value_txt= "" attr_value_num= "30584" >
+</DaoNvp>
+</nvp_liste>
+</DaoPartRolGlob>
+<DaoPartRolGlob zus_beschr_fvr= "" vursg_bgruendg= "" austlg_dat_fueaw= "0001-01-01" >
+<nvp_liste length= "4"><DaoNvp attr_name= "PERS_AWAHL_CDCLS" attr_value_txt= "" attr_value_num= "3" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_PART_ROL" attr_value_txt= "UUID5e891b:eee984ee59:-7ad5" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "PART_ROL_CDCLS" attr_value_txt= "" attr_value_num= "150" >
+</DaoNvp>
+<DaoNvp attr_name= "ADR_NR" attr_value_txt= "" attr_value_num= "2357" >
+</DaoNvp>
+</nvp_liste>
+</DaoPartRolGlob>
+<DaoPartRolGlob zus_beschr_fvr= "" vursg_bgruendg= "" austlg_dat_fueaw= "1980-01-01" >
+<nvp_liste length= "10"><DaoNvp attr_name= "KF_LENKR_VOLLM" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_VMIETG_GGBN" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_LENKR_IDNST_VN" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "PERS_AWAHL_CDCLS" attr_value_txt= "" attr_value_num= "3" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_VWANDT_MIT_VN" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "ADR_NR" attr_value_txt= "" attr_value_num= "2357" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_LFUEAW_VORHD" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_PART_ROL" attr_value_txt= "UUID5e891b:eee984ee59:-7ad4" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "LAND_CDI_FUEAW" attr_value_txt= "TAD" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "PART_ROL_CDCLS" attr_value_txt= "" attr_value_num= "301" >
+</DaoNvp>
+</nvp_liste>
+</DaoPartRolGlob>
+</part_rol_glob_liste>
+<sco_gbd_liste length= "0"></sco_gbd_liste>
+<sco_pers_liste length= "0"></sco_pers_liste>
+<sco_fz_liste length= "1"><DaoScoFz zus_beschr_fvr= "" bschaedg_ergzg= "" sc_btrg_schaetz= "0.0" exp_weitltg_dat= "0001-01-01" reptr_mldg_dat= "0001-01-01" bsichtg_dat= "0001-01-01" beg_dat_reptr= "0001-01-01" bsichtg_zeit= "00.00.00" >
+<pvd_vmitlg_liste length= "0"></pvd_vmitlg_liste>
+<part_rol_liste length= "1"><DaoPartRol part_rol_cdcls= "200" adr_nr= "27635" part_id= "-1" >
+</DaoPartRol>
+</part_rol_liste>
+<sca_fz_liste length= "0"></sca_fz_liste>
+<nvp_liste length= "24"><DaoNvp attr_name= "INVSE" attr_value_txt= "2001" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "ANZ_AIRBAG" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KSCHILD_NR" attr_value_txt= "GE 516065" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_SCHEIBEN_GRAVUR" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "STAMM_NR" attr_value_txt= "   165160654" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KMST" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "FZ_MARKE_TYP_CDTPR" attr_value_txt= "" attr_value_num= "1020624" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_SO_FZ" attr_value_txt= "UUID371566:eee983d86f:-592b" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "ANZ_SPLATZ" attr_value_txt= "" attr_value_num= "5" >
+</DaoNvp>
+<DaoNvp attr_name= "LEERGEWICHT" attr_value_txt= "" attr_value_num= "1570" >
+</DaoNvp>
+<DaoNvp attr_name= "WAEH_CDI_SCHAETZ" attr_value_txt= "CHF" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_ABS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_WV_VERS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "HUBRAUM" attr_value_txt= "" attr_value_num= "2290" >
+</DaoNvp>
+<DaoNvp attr_name= "FZ_MARKE_TYP_BEZ" attr_value_txt= "Saab 9-5 2.3T Aero" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_LEASING" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KMST_AKTL" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_DIEBS_SICHG" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "FZ_ART_CDTPR" attr_value_txt= "" attr_value_num= "2" >
+</DaoNvp>
+<DaoNvp attr_name= "FZ_WERT" attr_value_txt= "" attr_value_num= "59900" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_BSCHAED_FZ" attr_value_txt= "UUID5e891b:eee984ee59:-7acc" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "FZ_ZBHR_WEIT" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "FZ_TYP_CDCLS" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "FZ_KATLG_PREIS" attr_value_txt= "" attr_value_num= "59900" >
+</DaoNvp>
+</nvp_liste>
+</DaoScoFz>
+</sco_fz_liste>
+<sco_fh_liste length= "0"></sco_fh_liste>
+<nvp_liste length= "40"><DaoNvp attr_name= "VSIGN_VN_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "LAND_CDI" attr_value_txt= "CH" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_SC_DAT_ZRAUM" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "STR" attr_value_txt= "Gossauerstrasse 111" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_MZ_VKEHR" attr_value_txt= "UUID5e891b:eee984ee59:-7abf" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_SC_ZEIT_ZRAUM" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_SVERHT_DUNKEL" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "ORT" attr_value_txt= "St. Gallen-Winkeln" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_PERS_VLTZG" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_SVERHT_REGEN" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_STR_ART_HSTR" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "GSCHW_GP" attr_value_txt= "66" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "VLTZG_GRAD_CDCLS" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "TEL_POLIZ_POSTEN" attr_value_txt= "000111222" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_ERMD" attr_value_txt= "UUID5e891b:eee984ee59:-7ade" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "GSCHW_VN" attr_value_txt= "55" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "ERHG_TYP_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_STR_ART_WSTR" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_UNF_PROT_VORHD" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "STR_VLAUF_GP_CDCLS" attr_value_txt= "" attr_value_num= "2" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_POLIZ_RAPP" attr_value_txt= "UUID5e891b:eee984ee59:-7abe" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_STR_ART_AUSORT" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_SC_DAT_UGN" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_STR_ART_AUTOB" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_VURSR_UBKNT" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_POLIZ_RAPP_VORH" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_SC_ZEIT_UGN" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "STR_VLAUF_VN_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_STR_ART_NSTR" attr_value_txt= "" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "NAME_POLIZ_BEAMT" attr_value_txt= "P. Schmierler" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "ERHG_KBESCHR_CDCLS" attr_value_txt= "" attr_value_num= "5" >
+</DaoNvp>
+<DaoNvp attr_name= "ERMD_TYP_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "VSIGN_GP_CDCLS" attr_value_txt= "" attr_value_num= "2" >
+</DaoNvp>
+<DaoNvp attr_name= "STR_ZUST_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "POLIZ_POSTEN_BEZ" attr_value_txt= "Kapo Autobahn" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_H3_ANSPR_GGBN" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "SCHUFRA_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "KF_SVERHT_NEBEL" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "PLZ" attr_value_txt= "9000" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "KZ_STR_ART_INORT" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+</nvp_liste>
+</DaoEreigMldg>
+</ereig_mldg_liste>
+<kntkt_liste length= "0"></kntkt_liste>
+<nvp_liste length= "5"><DaoNvp attr_name= "KF_TC_FALL" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "ERDO_STAT_CDCLS" attr_value_txt= "" attr_value_num= "1" >
+</DaoNvp>
+<DaoNvp attr_name= "DIR_ZTLG_CDCLS" attr_value_txt= "" attr_value_num= "100" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_ERDO" attr_value_txt= "UUID5e891b:eee984ee59:-7ad1" attr_value_num= "0" >
+</DaoNvp>
+<DaoNvp attr_name= "OBJ_ID_FALL_ZTLG" attr_value_txt= "UUID5e891b:eee984ee59:-7aab" attr_value_num= "0" >
+</DaoNvp>
+</nvp_liste>
+</DaoEreigDossier>

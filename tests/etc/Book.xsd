@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        	targetNamespace="http://www.publishing.org"
+			xmlns="http://www.publishing.org"
+			version="1.0"
+        	elementFormDefault="qualified">
+	
+	<xsd:element name="Book" type="BookType"/>
+
+    <xsd:complexType name="BookType">
+        <xsd:sequence>
+            <xsd:element name="Title" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="Author" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+            <xsd:element name="Date" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="ISBN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="Publisher" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>
+

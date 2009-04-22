@@ -1,0 +1,11 @@
+<?xml version="1.0"?> 
+<openSource xmlns="http://xmlunit.sourceforge.net/tests" 
+  xmlns:junit="http://www.junit.org"
+  xmlns:eclipse="http://www.eclipse.org" 
+  xmlns:jakarta="http://jakarta.apache.org">
+    <tool junit:version="3.8.1">jUnit</tool>
+    <tool eclipse:version="2.1">eclipse</tool>
+    <tool jakarta:version="1.5.1">ant</tool>
+    <tool jakarta:version="2.4">xalan</tool>
+    <tool jakarta:version="2.0.1">xerces</tool>
+</openSource>

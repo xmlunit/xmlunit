@@ -1,0 +1,3553 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1b1//EN" "http://docbook.org/xml/simple/1.1b1/sdocbook.dtd">
+
+<article>
+  <title>XMLUnit Java User's Guide
+    <inlinemediaobject><imageobject>
+        <imagedata fileref="xmlunit.png" width="331" depth="100"
+          valign="middle" format="PNG"/>
+      </imageobject></inlinemediaobject>
+  </title>
+  <articleinfo>
+    <authorgroup>
+      <author>
+        <firstname>Tim</firstname>
+        <surname>Bacon</surname>
+      </author>
+      <author>
+        <firstname>Stefan</firstname>
+        <surname>Bodewig</surname>
+      </author>
+    </authorgroup>
+    <revhistory>
+      <revision>
+        <revnumber>1.0</revnumber>
+        <date>January 2003</date>
+        <author>
+          <firstname>Tim</firstname>
+          <surname>Bacon</surname>
+        </author>
+        <revremark>Documentation for XMLUnit Java 1.0</revremark>
+      </revision>
+      <revision>
+        <revnumber>1.1</revnumber>
+        <date>April 2007</date>
+        <revremark>Documentation for XMLUnit Java 1.1</revremark>
+      </revision>
+      <revision>
+        <revnumber>1.2</revnumber>
+        <date>June 2008</date>
+        <revremark>Documentation for XMLUnit Java 1.2</revremark>
+      </revision>
+    </revhistory>
+  </articleinfo>
+
+  <section id="A Tour of XMLUnit"><title>A Tour of XMLUnit</title>
+
+    <para>This first section contains a tour through XMLUnit's
+    features, the next sections will cover them in more detail.</para>
+
+    <para>Note that it has a strong focus on using the
+    <literal>XMLTestCase</literal> class which is one option to use
+    XMLUnit, but not the only one.  XMLUnit's features can be fully
+    used without any dependency on JUnit at all.</para>
+
+    <section id="What is XMLUnit?"><title>What is XMLUnit?</title>
+
+      <para>XMLUnit enables JUnit-style assertions to be made about
+      the content and structure of XML<footnote id="more on
+      JUnit"><para>For more information on JUnit see <ulink
+      url="http://www.junit.org">http://www.junit.org</ulink></para></footnote>. It
+      is an open source project hosted at <ulink
+      url="http://xmlunit.sourceforge.net/">http://xmlunit.sourceforge.net/</ulink>
+      that grew out of a need to test a system that generated and
+      received custom XML messages. The problem that we faced was how
+      to verify that the system generated the correct message from a
+      known set of inputs. Obviously we could use a DTD or a schema to
+      validate the message output, but this approach wouldn't allow us
+      to distinguish between valid XML with correct content (e.g.
+      element <literal><![CDATA[<foo>bar</foo>]]></literal>) and valid
+      XML with incorrect content (e.g.  element
+      <literal><![CDATA[<foo>baz</foo>]]></literal>). What we really
+      wanted was an <literal>assertXMLEqual()</literal> method, so we
+      could compare the message that we expected the system to
+      generate and the message that the system actually generated. And
+      that was the beginning of XMLUnit.</para>
+    </section>
+    <section id="Quick Tour"><title>Quick tour</title>
+
+      <para>XMLUnit provides a single JUnit extension class,
+      <literal>XMLTestCase</literal>, and a set of supporting classes
+      that allow assertions to be made about:</para>
+
+      <itemizedlist>
+        <listitem>The differences between two pieces of XML (via
+        <literal>Diff</literal> and <literal>DetailedDiff</literal>
+        classes)</listitem>
+
+        <listitem>The validity of a piece of XML (via
+        <literal>Validator</literal> class)</listitem>
+
+        <listitem> The outcome of transforming a piece of XML using
+        XSLT (via <literal>Transform</literal> class)</listitem>
+
+        <listitem>The evaluation of an XPath expression on a piece of
+        XML (via classes implementing the
+        <literal>XpathEngine</literal> interface)</listitem>
+
+        <listitem>Individual nodes in a piece of XML that are exposed
+        by DOM Traversal (via <literal>NodeTest</literal>
+        class)</listitem>
+      </itemizedlist>
+
+      <para>XMLUnit can also treat HTML content, even badly-formed
+      HTML, as valid XML to allow these assertions to be made about
+      web pages (via the <literal>HTMLDocumentBuilder</literal>
+      class).</para>
+    </section>
+
+    <section id="Glossary"><title>Glossary</title>
+
+      <para>As with many projects some words in XMLUnit have
+      particular meanings so here is a quick overview. A
+      <emphasis>piece</emphasis> of XML is a DOM Document, a String
+      containing marked-up content, or a Source or Reader that allows
+      access to marked-up content within some resource. XMLUnit
+      compares the expected <emphasis>control</emphasis> XML to some
+      actual <emphasis>test</emphasis> XML. The comparison can reveal
+      that two pieces of XML are <emphasis>identical</emphasis>,
+      <emphasis>similar</emphasis> or
+      <emphasis>different</emphasis>. The unit of measurement used by
+      the comparison is a <emphasis>difference</emphasis>, and
+      differences can be either <emphasis>recoverable</emphasis> or
+      <emphasis>unrecoverable</emphasis>. Two pieces of XML are
+      <emphasis>identical</emphasis> if there are <emphasis>no
+      differences</emphasis> between them,
+      <emphasis>similar</emphasis> if there are <emphasis>only
+      recoverable differences</emphasis> between them, and
+      <emphasis>different</emphasis> if there are <emphasis>any
+      unrecoverable differences</emphasis> between them.</para>
+    </section>
+
+    <section id="Configuring XMLUnit"><title>Configuring XMLUnit</title>
+
+      <para>There are many Java XML parsers available, and XMLUnit
+      should work with any JAXP compliant parser library, such as
+      Xerces-J <footnote id="xerces-link"><para><ulink
+      url="http://xerces.apache.org/">http://xerces.apache.org/</ulink></para></footnote>
+      from the Apache Software Foundation. To use the XSLT and XPath
+      features of XMLUnit a Trax (the XSLT portion of JAXP) compliant
+      transformation engine is required, such as Xalan-J<footnote
+      id="xalan-link"><para><ulink
+      url="http://xalan.apache.org/">http://xalan.apache.org/</ulink></para></footnote>,
+      from the Apache Software Foundation.  To configure XMLUnit to
+      use a specific parser and transformation engine set three System
+      properties before any tests are run, e.g.</para>
+
+      <example><title>Configuring JAXP via System Properties</title>
+        <programlisting language="Java"><![CDATA[
+System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
+    "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+System.setProperty("javax.xml.parsers.SAXParserFactory",
+    "org.apache.xerces.jaxp.SAXParserFactoryImpl");
+System.setProperty("javax.xml.transform.TransformerFactory",
+    "org.apache.xalan.processor.TransformerFactoryImpl");
+]]></programlisting>
+      </example>
+
+      <para>You may want to read <xref linkend="JAXP"/> for more
+      details - in particular if you are using Java 1.4 or
+      later.</para>
+
+      <para>Alternatively there are static methods on the XMLUnit
+      class that can be called directly. The advantage of this
+      approach is that you can specify a different parser class for
+      control and test XML and change the current parser class at any
+      time in your tests, should you need to make assertions about the
+      compatibility of different parsers.</para>
+
+      <example><title>Configuring JAXP via XMLUnit class</title>
+        <programlisting language="Java"><![CDATA[
+XMLUnit.setControlParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+XMLUnit.setTestParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+XMLUnit.setSAXParserFactory("org.apache.xerces.jaxp.SAXParserFactoryImpl");
+XMLUnit.setTransformerFactory("org.apache.xalan.processor.TransformerFactoryImpl");
+]]></programlisting>
+      </example>
+
+    </section>
+
+    <section id="Writing XML comparison tests">
+      <title>Writing XML comparison tests</title>
+
+      <para>Let's say we have two pieces of XML that we wish to
+      compare and assert that they are equal. We could write a simple
+      test class like this:</para>
+
+      <example><title>A simple comparison test</title>
+        <programlisting language="Java"><![CDATA[
+public class MyXMLTestCase extends XMLTestCase {
+    public MyXMLTestCase(String name) {
+        super(name);
+    }
+
+    public void testForEquality() throws Exception {
+        String myControlXML = "<msg><uuid>0x00435A8C</uuid></msg>";
+        String myTestXML = "<msg><localId>2376</localId></msg>";
+        assertXMLEqual("Comparing test xml to control xml",
+                       myControlXML, myTestXML);
+    }
+}]]></programlisting></example>
+
+      <para>The <literal>assertXMLEqual</literal> test will pass if
+      the control and test XML are either similar or
+      identical. Obviously in this case the pieces of XML are
+      different and the test will fail. The failure message indicates
+      both what the difference is and the XPath locations of the nodes
+      that were being compared:</para>
+
+      <programlisting><![CDATA[
+Comparing test xml to control xml
+[different] Expected element tag name 'uuid' but was 'localId' - comparing <uuid...> at /msg[1]/uuid[1] to <localId...> at /msg[1]/localId[1]
+]]></programlisting>
+
+      <para>When comparing pieces of XML, the
+      <literal>XMLTestCase</literal> actually creates an instance of
+      the <literal>Diff</literal> class. The <literal>Diff</literal>
+      class stores the result of an XML comparison and makes it
+      available through the methods <literal>similar()</literal> and
+      <literal>identical()</literal>. The
+      <literal>assertXMLEqual()</literal> method tests the value of
+      <literal>Diff.similar()</literal> and the
+      <literal>assertXMLIdentical()</literal> method tests the value
+      of <literal>Diff.identical()</literal>.</para>
+
+      <para>It is easy to create a <literal>Diff</literal> instance
+      directly without using the <literal>XMLTestCase</literal> class
+      as below:</para>
+
+      <example><title>Creating a <literal>Diff</literal>
+      instance</title>
+        <programlisting language="Java"><![CDATA[
+public void testXMLIdentical()throws Exception {
+    String myControlXML =
+        "<struct><int>3</int><boolean>false</boolean></struct>";
+    String myTestXML =
+        "<struct><boolean>false</boolean><int>3</int></struct>";
+    Diff myDiff = new Diff(myControlXML, myTestXML);
+    assertTrue("XML similar " + myDiff.toString(),
+               myDiff.similar());
+    assertTrue("XML identical " + myDiff.toString(),
+               myDiff.identical());
+}]]></programlisting></example>
+
+      <para>This test fails as two pieces of XML are similar but not
+      identical if their nodes occur in a different sequence. The
+      failure message reported by JUnit from the call to
+      <literal>myDiff.toString()</literal> looks like this:</para>
+
+      <programlisting><![CDATA[
+[not identical] Expected sequence of child nodes '0' but was '1' - comparing <int...> at /struct[1]/int[1] to <int...> at /struct[1]/int[1]
+]]></programlisting>
+
+      <para>For efficiency reasons a <literal>Diff</literal> stops the
+      comparison process as soon as the first difference is found. To
+      get all the differences between two pieces of XML an instance of
+      the <literal>DetailedDiff</literal> class, a subclass of
+      <literal>Diff</literal>, is required. Note that a
+      <literal>DetailedDiff</literal> is constructed using an existing
+      <literal>Diff</literal> instance.</para>
+
+      <para>Consider this test that uses a DetailedDiff:</para>
+
+      <example><title>Using <literal>DetailedDiff</literal></title>
+        <programlisting language="Java"><![CDATA[
+public void testAllDifferences() throws Exception {
+    String myControlXML = "<news><item id=\"1\">War</item>"
+        + "<item id=\"2\">Plague</item>"
+        + "<item id=\"3\">Famine</item></news>";
+    String myTestXML = "<news><item id=\"1\">Peace</item>"
+        + "<item id=\"2\">Health</item>"
+        + "<item id=\"3\">Plenty</item></news>";
+    DetailedDiff myDiff = new DetailedDiff(new Diff(myControlXML, myTestXML));
+    List allDifferences = myDiff.getAllDifferences();
+    assertEquals(myDiff.toString(), 2, allDifferences.size());
+}]]></programlisting></example>
+
+      <para>This test fails with the message below as each of the 3
+      news items differs between the control and test XML:</para>
+
+      <programlisting><![CDATA[
+[different] Expected text value 'War' but was 'Peace' - comparing <item...>War</item> at /news[1]/item[1]/text()[1] to <item...>Peace</item> at /news[1]/item[1]/text()[1]
+[different] Expected text value 'Plague' but was 'Health' - comparing <item...>Plague</item> at /news[1]/item[2]/text()[1] to <item...>Health</item> at /news[1]/item[2]/text()[1]
+[different] Expected text value 'Famine' but was 'Plenty' - comparing <item...>Famine</item> at /news[1]/item[3]/text()[1] to <item...>Plenty</item> at /news[1]/item[3]/text()[1]
+expected <2> but was <3>
+]]></programlisting>
+
+      <para>The List returned from the
+      <literal>getAllDifferences()</literal> method contains
+      <literal>Difference</literal> instances. These instances
+      describe both the type<footnote id="DifferenceConstants"><para>A
+      full set of prototype <literal>Difference</literal> instances -
+      one for each type of difference - is defined using final static
+      fields in the <literal>DifferenceConstants</literal>
+      class.</para></footnote> of difference found between a control
+      node and test node and the <literal>NodeDetail</literal> of
+      those nodes (including the XPath location of each
+      node). <literal>Difference</literal> instances are passed at
+      runtime in notification events to a registered
+      <literal>DifferenceListener</literal>, an interface whose
+      default implementation is provided by the
+      <literal>Diff</literal> class.</para>
+
+      <para>However it is possible to override this default behaviour
+      by implementing the interface in your own class.  The
+      <literal>IgnoreTextAndAttributeValuesDifferenceListener</literal>
+      class is an example of how to implement a custom
+      <literal>DifferenceListener</literal>. It allows an XML
+      comparison to be made that ignores differences in the values of
+      text and attribute nodes, for example when comparing a skeleton
+      or outline piece of XML to some generated XML.</para>
+
+      <para>The following test illustrates the use of a custom
+      <literal>DifferenceListener</literal>:</para>
+
+      <example><title>Using a custom
+          <literal>DifferenceListener</literal></title>
+        <programlisting language="Java"><![CDATA[
+public void testCompareToSkeletonXML() throws Exception {
+    String myControlXML = "<location><street-address>22 any street</street-address><postcode>XY00 99Z</postcode></location>";
+    String myTestXML = "<location><street-address>20 east cheap</street-address><postcode>EC3M 1EB</postcode></location>";
+    DifferenceListener myDifferenceListener = new IgnoreTextAndAttributeValuesDifferenceListener();
+    Diff myDiff = new Diff(myControlXML, myTestXML);
+    myDiff.overrideDifferenceListener(myDifferenceListener);
+    assertTrue("test XML matches control skeleton XML",
+               myDiff.similar());
+}]]></programlisting></example>
+
+      <para>The <literal>DifferenceEngine</literal> class generates
+      the events that are passed to a
+      <literal>DifferenceListener</literal> implementation as two
+      pieces of XML are compared. Using recursion it navigates through
+      the nodes in the control XML DOM, and determines which node in
+      the test XML DOM qualifies for comparison to the current control
+      node. The qualifying test node will match the control node's
+      node type, as well as the node name and namespace (if defined
+      for the control node).</para>
+
+      <para>However when the control node is an
+      <literal>Element</literal>, it is less straightforward to
+      determine which test <literal>Element</literal> qualifies for
+      comparison as the parent node may contain repeated child
+      <literal>Element</literal>s with the same name and namespace. So
+      for <literal>Element</literal> nodes, an instance of the
+      <literal>ElementQualifier</literal> interface is used determine
+      whether a given test <literal>Element</literal> node qualifies
+      for comparison with a control <literal>Element</literal>
+      node. This separates the decision about whether two
+      <literal>Elements</literal> should be compared from the decision
+      about whether those two <literal>Elements</literal> are
+      considered similar. By default an
+      <literal>ElementNameQualifier</literal> class is used that
+      compares the nth child <literal><![CDATA[<abc>]]></literal> test
+      element to the nth child <literal><![CDATA[<abc>]]></literal>
+      control element, i.e. the sequence of the child elements in the
+      test XML is important. However this default behaviour can be
+      overridden using an
+      <literal>ElementNameAndTextQualifier</literal> or
+      <literal>ElementNameAndAttributesQualifier</literal>.</para>
+
+      <para>The test below demonstrates the use of a custom
+      <literal>ElementQualifier</literal>:</para>
+
+      <example><title>Using a custom
+          <literal>ElementQualifier</literal></title>
+        <programlisting language="Java"><![CDATA[
+public void testRepeatedChildElements() throws Exception {
+    String myControlXML = "<suite>"
+        + "<test status=\"pass\">FirstTestCase</test>"
+        + "<test status=\"pass\">SecondTestCase</test></suite>";
+    String myTestXML = "<suite>"
+        + "<test status=\"pass\">SecondTestCase</test>"
+        + "<test status=\"pass\">FirstTestCase</test></suite>";
+    assertXMLNotEqual("Repeated child elements in different sequence order are not equal by default",
+                      myControlXML, myTestXML);
+    Diff myDiff = new Diff(myControlXML, myTestXML);
+    myDiff.overrideElementQualifier(new ElementNameAndTextQualifier());
+    assertXMLEqual("But they are equal when an ElementQualifier controls which test element is compared with each control element",
+                    myDiff, true);
+}]]></programlisting></example>
+
+    </section>
+
+    <section id="Comparing XML Transformations">
+      <title>Comparing XML Transformations</title>
+
+      <para>XMLUnit can test XSLT transformations at a high level using
+      the <literal>Transform</literal> class that wraps an
+      <literal>javax.xml.transform.Transformer</literal>
+      instance. Knowing the input XML, input stylesheet and expected
+      output XML we can assert that the output of the transformation
+      matches the expected output as follows:</para>
+
+      <example><title>Testing the Result of a Transformation</title>
+        <programlisting language="Java"><![CDATA[
+public void testXSLTransformation() throws Exception {
+    String myInputXML = "...";
+    File myStylesheetFile = new File("...");
+    Transform myTransform = new Transform(myInputXML, myStylesheetFile);
+    String myExpectedOutputXML = "...";
+    Diff myDiff = new Diff(myExpectedOutputXML, myTransform);
+    assertTrue("XSL transformation worked as expected", myDiff.similar());
+}]]></programlisting></example>
+
+      <para>The <literal>getResultString()</literal> and
+      <literal>getResultDocument()</literal> methods of the
+      <literal>Transform</literal> class can be used to access the
+      result of the XSLT transformation programmatically if required,
+      for example as below:</para>
+
+      <example><title>Using <literal>Transform</literal>
+          programmatically</title>
+        <programlisting language="Java"><![CDATA[
+public void testAnotherXSLTransformation() throws Exception {
+    File myInputXMLFile = new File("...");
+    File myStylesheetFile = new File("...");
+    Transform myTransform = new Transform(
+        new StreamSource(myInputXMLFile),
+        new StreamSource(myStylesheetFile));
+    Document myExpectedOutputXML =
+       XMLUnit.buildDocument(XMLUnit.getControlParser(),
+                             new FileReader("..."));
+    Diff myDiff = new Diff(myExpectedOutputXML,
+    myTransform.getResultDocument());
+    assertTrue("XSL transformation worked as expected", myDiff.similar());
+}]]></programlisting></example>
+
+    </section>
+
+    <section id="Validation Tests"><title>Validation Tests</title>
+
+      <para>XML parsers that validate a piece of XML against a DTD are
+      common, however they rely on a DTD reference being present in
+      the XML, and they can only validate against a single DTD. When
+      writing a system that exchanges XML messages with third parties
+      there are times when you would like to validate the XML against
+      a DTD that is not available to the recipient of the message and
+      so cannot be referenced in the message itself. XMLUnit provides
+      a <literal>Validator</literal> class for this purpose.</para>
+
+      <example><title>Validating Against a DTD</title>
+        <programlisting language="Java"><![CDATA[
+public void testValidation() throws Exception {
+    XMLUnit.getTestDocumentBuilderFactory().setValidating(true);
+    // As the document is parsed it is validated against its referenced DTD
+    Document myTestDocument = XMLUnit.buildTestDocument("...");
+    String mySystemId = "...";
+    String myDTDUrl = new File("...").toURL().toExternalForm();
+    Validator myValidator = new Validator(myTestDocument, mySystemId,
+                                          myDTDUrl);
+    assertTrue("test document validates against unreferenced DTD",
+               myValidator.isValid());
+}]]></programlisting></example>
+
+      <para>Starting with XMLUnit 1.1, the
+      <literal>Validator</literal> class can also validate against one
+      or more XML Schema definitions.  See <xref
+      linkend="XML Schema Validation"/> for details.</para>
+
+      <para>XMLUnit 1.2 introduces a new <literal>Validator</literal>
+        class that relies on JAXP
+        1.3's <literal>javax.xml.validation</literal> package.  This
+        Validator can validate against W3C XML Schema, but may support
+        different Schema languages like RELAX NG if your JAXP
+        implementation supports it.  See
+        <xref linkend="JAXP 1.3 Validation"/> for details.</para>
+
+    </section>
+
+    <section id="Xpath Tests"><title>XPath Tests</title>
+
+      <para>One of the strengths of XML is the ability to
+      programmatically extract specific parts of a document using
+      XPath expressions. The <literal>XMLTestCase</literal> class
+      offers a number of XPath related assertion methods, as
+      demonstrated in this test:</para>
+
+      <example><title>Using XPath Tests</title>
+        <programlisting language="Java"><![CDATA[
+public void testXPaths() throws Exception {
+    String mySolarSystemXML = "<solar-system>"
+        + "<planet name='Earth' position='3' supportsLife='yes'/>"
+        + "<planet name='Venus' position='4'/></solar-system>";
+    assertXpathExists("//planet[@name='Earth']", mySolarSystemXML);
+    assertXpathNotExists("//star[@name='alpha centauri']",
+                         mySolarSystemXML);
+    assertXpathsEqual("//planet[@name='Earth']",
+                      "//planet[@position='3']", mySolarSystemXML);
+    assertXpathsNotEqual("//planet[@name='Venus']",
+                         "//planet[@supportsLife='yes']",
+                         mySolarSystemXML);
+}]]></programlisting></example>
+
+      <para>When an XPath expression is evaluated against a piece of
+      XML a <literal>NodeList</literal> is created that contains the
+      matching <literal>Node</literal>s. The methods in the previous
+      test <literal>assertXpathExists</literal>,
+      <literal>assertXpathNotExists</literal>,
+      <literal>assertXpathsEqual</literal>, and
+      <literal>assertXpathsNotEqual</literal> use these
+      <literal>NodeList</literal>s. However, the contents of a
+      <literal>NodeList</literal> can be flattened (or
+      <literal>String</literal>-ified) to a single value, and XMLUnit
+      also allows assertions to be made about this single value, as in
+      this test<footnote id="XpathEngine note"><para>Each of the
+      <literal>assertXpath...()</literal> methods uses an
+      implementation of the <literal>XpathEngine</literal> interface
+      to evaluate an XPath expression.</para></footnote>:</para>
+
+      <example><title>Testing XPath Values</title>
+        <programlisting language="Java"><![CDATA[
+public void testXPathValues() throws Exception {
+    String myJavaFlavours = "<java-flavours>"
+        + "<jvm current='some platforms'>1.1.x</jvm>"
+        + "<jvm current='no'>1.2.x</jvm>"
+        + "<jvm current='yes'>1.3.x</jvm>"
+        + "<jvm current='yes' latest='yes'>1.4.x</jvm></javaflavours>";
+    assertXpathEvaluatesTo("2", "count(//jvm[@current='yes'])",
+                           myJavaFlavours);
+    assertXpathValuesEqual("//jvm[4]/@latest", "//jvm[4]/@current",
+                           myJavaFlavours);
+    assertXpathValuesNotEqual("//jvm[2]/@current",
+                              "//jvm[3]/@current", myJavaFlavours);
+}]]></programlisting></example>
+
+      <para>XPaths are especially useful where a document is made up
+      largely of known, unchanging content with only a small amount of
+      changing content created by the system. One of the main areas
+      where constant "boilerplate" markup is combined with system
+      generated markup is of course in web applications. The power of
+      XPath expressions can make testing web page output quite
+      trivial, and XMLUnit supplies a means of converting even very
+      badly formed HTML into XML to aid this approach to
+      testing.</para>
+
+      <para>The <literal>HTMLDocumentBuilder</literal> class uses the
+      Swing HTML parser to convert marked-up content to Sax
+      events. The <literal>TolerantSaxDocumentBuilder</literal> class
+      handles the Sax events to build up a DOM document in a tolerant
+      fashion i.e. without mandating that opened elements are
+      closed. (In a purely XML world this class would have no purpose
+      as there are plenty of Sax event handlers that can build DOM
+      documents from well formed content). The test below illustrates
+      how the use of these classes:</para>
+
+      <example><title>Working with non well-formed HTML</title>
+        <programlisting language="Java"><![CDATA[
+public void testXpathsInHTML() throws Exception {
+    String someBadlyFormedHTML = "<html><title>Ugh</title>"
+        + "<body><h1>Heading<ul>"
+        + "<li id='1'>Item One<li id='2'>Item Two";
+    TolerantSaxDocumentBuilder tolerantSaxDocumentBuilder =
+        new TolerantSaxDocumentBuilder(XMLUnit.getTestParser());
+    HTMLDocumentBuilder htmlDocumentBuilder =
+        new HTMLDocumentBuilder(tolerantSaxDocumentBuilder);
+    Document wellFormedDocument =
+        htmlDocumentBuilder.parse(someBadlyFormedHTML);
+    assertXpathEvaluatesTo("Item One", "/html/body//li[@id='1']",
+                           wellFormedDocument);
+}]]></programlisting></example>
+
+      <para>One of the key points about using XPaths with HTML content
+      is that extracting values in tests requires the values to be
+      identifiable. (This is just another way of saying that testing
+      HTML is easier when it is written to be testable.) In the
+      previous example id attributes were used to identify the list
+      item values that needed to be testable, however class attributes
+      or span and div tags can also be used to identify specific
+      content for testing.</para>
+
+    </section>
+
+    <section id="Testing by Tree Walking">
+      <title>Testing by Tree Walking</title>
+
+      <para>The DOM specification allows a <literal>Document</literal>
+      to optionally implement the <literal>DocumentTraversal</literal>
+      interface. This interface allows an application to iterate over
+      the <literal>Node</literal>s contained in a
+      <literal>Document</literal>, or to "walk the DOM tree". The
+      XMLUnit <literal>NodeTest</literal> class and
+      <literal>NodeTester</literal> interface make use of
+      <literal>DocumentTraversal</literal> to expose individual
+      <literal>Node</literal>s in tests: the former handles the
+      mechanics of iteration, and the latter allows custom test
+      strategies to be implemented. A sample test strategy is supplied
+      by the <literal>CountingNodeTester</literal> class that counts
+      the nodes presented to it and compares the actual count to an
+      expected count. The test below illustrates its use:</para>
+
+      <example><title>Using <literal>CountingNodeTester</literal></title>
+        <programlisting language="Java"><![CDATA[
+public void testCountingNodeTester() throws Exception {
+    String testXML = "<fibonacci><val>1</val><val>2</val><val>3</val>"
+        + "<val>5</val><val>9</val></fibonacci>";
+    CountingNodeTester countingNodeTester = new CountingNodeTester(4);
+    assertNodeTestPasses(testXML, countingNodeTester, Node.TEXT_NODE);
+}]]></programlisting></example>
+
+      <para>This test fails as there are 5 text nodes, and JUnit
+      supplies the following message:</para>
+
+      <programlisting>
+Expected node test to pass, but it failed! Counted 5 node(s) but
+expected 4
+      </programlisting>
+
+      <para>Note that if your DOM implementation does not support the
+      <literal>DocumentTraversal</literal> interface then XMLUnit will
+      throw an <literal>IllegalArgumentException</literal> informing
+      you that you cannot use the <literal>NodeTest</literal> or
+      <literal>NodeTester</literal> classes. Unfortunately even if
+      your DOM implementation does support
+      <literal>DocumentTraversal</literal>, attributes are not exposed
+      by iteration: however they can be examined from the
+      <literal>Element</literal> node that contains them.</para>
+
+      <para>While the previous test could have been easily performed
+      using XPath, there are times when <literal>Node</literal>
+      iteration is more powerful. In general, this is true when there
+      are programmatic relationships between nodes that can be more
+      easily tested iteratively. The following test uses a custom
+      <literal>NodeTester</literal> class to illustrate the
+      potential:</para>
+
+      <example><title>Using a Custom <literal>NodeTester</literal></title>
+        <programlisting language="Java"><![CDATA[
+public void testCustomNodeTester() throws Exception {
+    String testXML = "<fibonacci><val>1</val><val>2</val><val>3</val>"
+        + "<val>5</val><val>9</val></fibonacci>";
+    NodeTest nodeTest = new NodeTest(testXML);
+    assertNodeTestPasses(nodeTest, new FibonacciNodeTester(),
+                         new short[] {Node.TEXT_NODE,
+                                      Node.ELEMENT_NODE},
+                         true);
+}
+
+private class FibonacciNodeTester extends AbstractNodeTester {
+    private int nextVal = 1, lastVal = 1, priorVal = 0;
+
+    public void testText(Text text) throws NodeTestException {
+        int val = Integer.parseInt(text.getData());
+        if (nextVal != val) {
+            throw new NodeTestException("Incorrect value", text);
+        }
+        nextVal = val + lastVal;
+        priorVal = lastVal;
+        lastVal = val;
+    }
+
+    public void testElement(Element element) throws NodeTestException {
+        String name = element.getLocalName();
+        if ("fibonacci".equals(name) || "val".equals(name)) {
+            return;
+        }
+        throw new NodeTestException("Unexpected element", element);
+    }
+
+    public void noMoreNodes(NodeTest nodeTest) throws NodeTestException {
+    }
+}]]></programlisting></example>
+
+      <para>The test fails because the XML contains the wrong value
+      for the last number in the sequence:</para>
+
+      <programlisting>
+Expected node test to pass, but it failed! Incorrect value [#text: 9]
+      </programlisting>
+
+    </section>
+  </section>
+
+  <section id="Using XMLUnit">
+    <title>Using XMLUnit</title>
+
+    <section id="Requirements">
+      <title>Requirements</title>
+
+      <para>XMLUnit requires a JAXP compliant XML parser virtually
+      everywhere.  Several features of XMLUnit also require a JAXP
+      compliant XSLT transformer.  If it is available, a JAXP
+      compliant XPath engine will be used for XPath tests.</para>
+
+      <para>To build XMLUnit at least JAXP 1.2 is required, this is
+      the version provided by the Java class library in JDK 1.4.  The
+      JAXP 1.3 (i.e. Java5 and above) XPath engine can only be built
+      when JAXP 1.3 is available.</para>
+
+      <para>As long as you don't require support for XML Namespaces or
+      XML Schema, any JAXP 1.1 compliant implementations should work
+      at runtime.  For namespace and schema support you will need a
+      parser that complies to JAXP 1.2 and supports the required
+      feature.  The XML parser shipping with JDK 1.4 (a version of
+      Apache Crimson) for example is compliant to JAXP 1.2 but doesn't
+      support Schema validation.</para>
+
+      <para>XMLUnit is supposed to build and run on any Java version
+      after 1.3 (at least no new hard JDK 1.4 dependencies have been
+      added in XMLUnit 1.1), but it has only been tested on JDK 1.4.2
+      and above.</para>
+
+      <para>To build XMLUnit JUnit 3.x (only tested with JUnit 3.8.x)
+      is required.  It is not required at runtime unless you intend to
+      use the <literal>XMLTestCase</literal> or
+      <literal>XMLAssert</literal> classes.</para>
+    </section>
+
+    <section id="Basic Usage">
+      <title>Basic Usage</title>
+
+      <para>XMLUnit consists of a few classes all living in the
+      <literal>org.custommonkey.xmlunit</literal> package.  You can
+      use these classes directly from your code, no matter whether you
+      are writing a unit test or want to use XMLUnit's features for
+      any other purpose.</para>
+
+      <para>This section provides a few hints of where to start if you
+      want to use a certain feature of XMLUnit, more details can be
+      found in the more specific sections later in this
+      document.</para>
+
+      <section id="Basic: Comparing Pieces of XML">
+        <title>Comparing Pieces of XML</title>
+
+        <para>Heart and soul of XMLUnit's comparison engine is
+        <literal>DifferenceEngine</literal> but most of the time you
+        will use it indirectly via the <literal>Diff</literal>
+        class.</para>
+
+        <para>You can influence the engine by providing (custom)
+        implementations for various interfaces and by setting a couple
+        of options on the <literal>XMLUnit</literal> class.</para>
+
+        <para>More information is available in <xref
+        linkend="Comparing Pieces of XML"/>.</para>
+
+      </section>
+
+      <section id="Basic: Validating"><title>Validating</title>
+
+        <para>All validation happens in the
+        <literal>Validator</literal> class.  The default is to
+        validate against a DTD, but XML Schema validation can be
+        enabled by an option (see
+        <literal>Validator.useXMLSchema</literal>).</para>
+
+        <para>Several options of the <literal>XMLUnit</literal> class
+        affect validation.</para>
+
+        <para>More information is available in <xref
+        linkend="Validating XML Documents"/>.</para>
+
+      </section>
+
+      <section id="XSLT Transformations"><title>XSLT Transformations</title>
+
+        <para>The <literal>Transform</literal> class provides an easy
+        to use layer on top of JAXP's transformations.  An instance of
+        this class is initialized with the source document and a
+        stylesheet and the result of the transformation can be
+        retrieved as a <literal>String</literal> or DOM
+        <literal>Document</literal>.</para>
+
+        <para>The output of <literal>Transform</literal> can be used
+        as input to comparisons, validations, XPath tests and so on.
+        There is no detailed sections on transformations since they
+        are really only a different way to create input for the rest
+        of XMLUnit's machinery.  Examples can be found in <xref
+        linkend="Comparing XML Transformations"/>.</para>
+
+        <para>It is possible to provide a custom
+        <literal>javax.xml.transform.URIResolver</literal> via the
+        <literal>XMLUnit.setURIResolver</literal> method.</para>
+
+        <para>You can access the underlying XSLT transformer via
+        <literal>XMLUnit.getTransformerFactory</literal>.</para>
+      </section>
+
+      <section id="XPath Engine">
+        <title>XPath Engine</title>
+
+        <para>The central piece of XMLUnit's XPath support is the
+        <literal>XpathEngine</literal> interface.  Currently two
+        implementations of the interface exist,
+        <literal>SimpleXpathEngine</literal> and
+        <literal>org.custommonkey.xmlunit.jaxp13.Jaxp13XpathEngine</literal>.</para>
+
+        <para><literal>SimpleXpathEngine</literal> is a very basic
+        implementation that uses your XSLT transformer under the
+        covers.  This also means it will expose you to the bugs found
+        in your transformer like the transformer claiming a stylesheet
+        couldn't be compiled for very basic XPath expressions.  This
+        has been reported to be the case for JDK 1.5.</para>
+
+        <para><literal>org.custommonkey.xmlunit.jaxp13.Jaxp13XpathEngine</literal>
+        uses JAXP 1.3's <literal>javax.xml.xpath</literal> package and
+        seems to work more reliable, stable and performant than
+        <literal>SimpleXpathEngine</literal>.</para>
+
+        <para>You use the <literal>XMLUnit.newXpathEngine</literal>
+        method to obtain an instance of the
+        <literal>XpathEngine</literal>.  As of XMLUnit 1.1 this will
+        try to use JAXP 1.3 if it is available and fall back to
+        <literal>SimpleXpathEngine</literal>.</para>
+
+        <para>Instances of <literal>XpathEngine</literal> can return
+        the results of XPath queries either as DOM
+        <literal>NodeList</literal> or plain
+        <literal>String</literal>s.</para>
+
+        <para>More information is available in <xref
+        linkend="XPath Tests"/>.</para>
+      </section>
+
+      <section id="Basic: DOM Tree Walking">
+        <title>DOM Tree Walking</title>
+
+        <para>To test pieces of XML by traversing the DOM tree you use
+        the <literal>NodeTester</literal> class.  Each DOM
+        <literal>Node</literal> will be passed to a
+        <literal>NodeTester</literal> implementation you provide.  The
+        <literal>AbstractNodeTester</literal> class is provided as a
+        NullObject Pattern base class for implementations of your
+        own.</para>
+
+        <para>More information is available in <xref
+        linkend="DOM Tree Walking"/>.</para>
+      </section>
+    </section>
+
+    <section id="Using XMLUnit With JUnit 3.x">
+      <title>Using XMLUnit With JUnit 3.x</title>
+
+      <para>Initially XMLUnit was tightly coupled to JUnit and the
+      recommended approach was to write unit tests by inheriting from
+      the <literal>XMLTestCase</literal> class.
+      <literal>XMLTestCase</literal> provides a pretty long list of
+      <literal>assert...</literal> methods that may simplify your
+      interaction with XMLUnit's internals in many common
+      cases.</para>
+
+      <para>The <literal>XMLAssert</literal> class provides the same
+      set of <literal>assert...</literal>s as static methods.  Use
+      <literal>XMLAssert</literal> instead of
+      <literal>XMLTestCase</literal> for your unit tests if you can't
+      or don't want to inherit from
+      <literal>XMLTestCase</literal>.</para>
+
+      <para>All power of XMLUnit is available whether you use
+      <literal>XMLTestCase</literal> and/or
+      <literal>XMLAssert</literal> or the underlying API directly.  If
+      you are using JUnit 3.x then using the specific classes may prove
+      to be more convenient.</para>
+
+    </section>
+
+    <section id="Common Configuration Options">
+      <title>Common Configuration Options</title>
+
+      <section id="JAXP">
+        <title>JAXP</title>
+
+        <para>If you are using a JDK 1.4 or later, your Java class
+        library already contains the required XML parsers and XSLT
+        transformers.  Still you may want to use a different
+        parser/transformer than the one of your JDK - in particular
+        since the versions shipping with some JDKs are known to
+        contain serious bugs.</para>
+
+        <para>As described in <xref linkend="Configuring XMLUnit"/>
+        there are two main approaches to choose the XML parser of XSLT
+        transformer: System properties and setters in the
+        <literal>XMLUnit</literal> class.</para>
+
+        <para>If you use system properties you have the advantage that
+        your choice affects the whole JAXP system, whether it is used
+        inside of XMLUnit or not.  If you are using JDK 1.4 or later
+        you may also want to review the <ulink
+        url="http://java.sun.com/j2se/1.4.2/docs/guide/standards/">Endorsed
+        Standards Override Mechanism</ulink> to use a different
+        parser/transformer than the one shipping with your JDK.</para>
+
+        <para>The second option - using the <literal>XMLUnit</literal>
+        class - allows you to use different parsers for control and
+        test documents, it even allows you to use different parsers
+        for different test cases, if you really want to stretch it
+        that far.  It may also work for JDK 1.4 and above, even if you
+        don't override the endorsed standards libraries.</para>
+
+        <para>You can access the underlying JAXP parser by
+        <literal>XMLUnit.newControlParser</literal>,
+        <literal>XMLUnit.newTestParser</literal>,
+        <literal>XMLUnit.getControlDocumentBuilderFactory</literal>,
+        <literal>XMLUnit.getTestDocumentBuilderFactory</literal> and
+        <literal>XMLUnit.getSAXParserFactory</literal> (used by
+        <literal>Validator</literal>).  Note that all these methods
+        return factories or parsers that are namespace aware.</para>
+
+        <para>The various <literal>build...</literal> methods in
+        <literal>XMLUnit</literal> provide convenience layers for
+        building DOM <literal>Document</literal>s using the configured
+        parsers.</para>
+
+        <para>You can also set the class name for the
+        <literal>XPathFactory</literal> to use when using JAXP 1.3 by
+        passing the class name to
+        <literal>XMLUnit.setXPathFactory</literal>.</para>
+
+      </section>
+
+      <section id="EntityResolver">
+        <title><literal>EntityResolver</literal></title>
+
+        <para>You can provide a custom
+        <literal>org.xml.sax.EntityResolver</literal> for the control
+        and test parsers via
+        <literal>XMLUnit.setControlEntityResolver</literal> and
+        <literal>XMLUnit.setTestEntityResolver</literal>.
+        <literal>Validator</literal> uses the resolver set via
+        <literal>setControlEntityResolver</literal> as well.</para>
+      </section>
+
+      <section id="Basic: Element Content Whitespace">
+        <title>Element Content Whitespace</title>
+
+        <para>Element content whitespace - also known as ignorable
+        whitespace - is whitespace contained in elements whose content
+        model doesn't allow text content.  I.e. the newline and space
+        characters between <literal><![CDATA[<foo>]]></literal> and
+        <literal><![CDATA[<bar>]]></literal> in the following example
+        could belong into this category.</para>
+
+        <programlisting language="XML"><![CDATA[
+<foo>
+  <bar/></foo>
+]]></programlisting>
+
+        <para>Using <literal>XMLUnit.setIgnoreWhitespace</literal> it
+        is possible to make the test and control parser ignore this
+        kind of whitespace.</para>
+
+        <para>Note that setting this property to
+        <literal>true</literal> usually doesn't have any effect since
+        it only works on validating parsers and XMLUnit doesn't enable
+        validation by default.  It does have an effect when comparing
+        pieces of XML, though, since the same flag is used for a
+        different purpose as well in that case.  See <xref
+        linkend="Whitespace Handling"/> for more details.</para>
+
+      </section>
+
+      <section id="XSLT Stylesheet Version">
+        <title>XSLT Stylesheet Version</title>
+
+        <para>Some features of XMLUnit use XSLT stylesheets under the
+        covers, in particular XSLT will be used to strip element
+        content whitespace or comments as well as by
+        <literal>SimpleXpathEngine</literal>.  These stylesheets only
+        require a XSLT transformer that supports XSLT 1.0 and will say
+        so in the <literal>stylesheet</literal> element.</para>
+
+        <para>If your XSLT transformer supports XSLT 2.0 or newer it
+        may<footnote><para>The W3C recommendation says it
+        SHOULD.</para></footnote> issue a warning for these stylesheets
+        which can be annoying.  You can use
+        <literal>XMLUnit.setXSLTVersion</literal> to make XMLUnit
+        change the version attribute to a different value.  Note that
+        XMLUnit hasn't been tested with a value other than
+        <literal>"1.0"</literal>.</para>
+      </section>
+    </section>
+
+    <section id="Providing Input to XMLUnit">
+      <title>Providing Input to XMLUnit</title>
+
+      <para>Most methods in XMLUnit that expect a piece of XML as
+      input provide several overloads that obtain their input from
+      different sources.  The most common options are:</para>
+
+      <itemizedlist>
+
+        <listitem>A DOM <literal>Document</literal>.
+
+          <para>Here you have all control over the document's
+          creation.  Such a <literal>Document</literal> could as well
+          be the result of an XSLT transformation via the
+          <literal>Transform</literal> class.</para>
+        </listitem>
+
+        <listitem>A SAX <literal>InputSource</literal>.
+
+          <para>This is the most generic way since
+          <literal>InputSource</literal> allows you to read from
+          arbitrary <literal>InputStream</literal>s or
+          <literal>Reader</literal>s.  Use an
+          <literal>InputStream</literal> wrapped by an
+          <literal>InputSource</literal> if you want the XML parser to
+          pick up the proper encoding from the XML declaration.</para>
+        </listitem>
+
+        <listitem>A <literal>String</literal>.
+
+          <para>Here a DOM <literal>Document</literal> is built from
+          the input <literal>String</literal> using the JAXP parser
+          specified for control or test documents - depending on
+          whether the input is a control or test piece of XML.</para>
+
+          <para>Note that using a <literal>String</literal> assumes
+          that your XML has already been converted from its XML
+          encoding to a Java <literal>String</literal> upfront.</para>
+        </listitem>
+
+        <listitem>A <literal>Reader</literal>.
+
+          <para>Here a DOM <literal>Document</literal> is built from
+          the input <literal>Reader</literal> using the JAXP parser
+          specified for control or test documents - depending on
+          whether the input is a control or test piece of XML.</para>
+          
+          <para>Note that using a <literal>Reader</literal> is a
+          bad choice if your XML encoding is different from your
+          platform's default encoding since Java's IO system won't
+          read your XML declaration.  It is a good practice to use one
+          of the other overloads rather than the
+          <literal>Reader</literal> version to ensure encoding has
+          been dealt with properly.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+  </section>
+
+  <section id="Comparing Pieces of XML">
+    <title>Comparing Pieces of XML</title>
+
+    <section id="The Difference Engine">
+      <title>The Difference Engine</title>
+
+      <para>At the center of XMLUnit's support for comparisons is the
+      <literal>DifferenceEngine</literal> class.  In practice you
+      rarely deal with it directly but rather use it via instances of
+      <literal>Diff</literal> or <literal>DetailedDiff</literal>
+      classes (see <xref linkend="Diff"/>).</para>
+
+      <para>The <literal>DifferenceEngine</literal> walks two trees of
+      DOM <literal>Node</literal>s, the control and the test tree, and
+      compares the nodes.  Whenever it detects a difference, it sends
+      a message to a configured <literal>DifferenceListener</literal>
+      (see <xref linkend="DifferenceListener"/>) and asks a
+      <literal>ComparisonController</literal> (see <xref
+      linkend="ComparisonController"/>) whether the current comparison
+      should be halted.</para>
+
+      <para>In some cases the order of elements in two pieces of XML
+      may not be significant.  If this is true, the
+      <literal>DifferenceEngine</literal> needs help to determine
+      which <literal>Element</literal>s to compare.  This is the job
+      of an <literal>ElementQualifier</literal> (see <xref
+      linkend="ElementQualifier"/>).</para>
+
+      <para>The types of differences
+      <literal>DifferenceEngine</literal> can detect are enumerated in
+      the <literal>DifferenceConstants</literal> interface and
+      represented by instances of the <literal>Difference</literal>
+      class.</para>
+
+      <para>A <literal>Difference</literal> can be recoverable;
+      recoverable <literal>Difference</literal>s make the
+      <literal>Diff</literal> class consider two pieces of XML similar
+      while non-recoverable <literal>Difference</literal>s render the
+      two pieces different.</para>
+
+      <para>The types of <literal>Difference</literal>s that are
+      currently detected are listed in <xref linkend="docleveldiff"/>
+      to <xref linkend="otherdiff"/> (the first two columns refer to
+      the <literal>DifferenceConstants</literal> class).</para>
+
+      <table frame="all" rules="all" pgwide="1" id="docleveldiff">
+        <title>Document level <literal>Difference</literal>s detected by
+        <literal>DifferenceEngine</literal></title>
+        <tgroup cols="4">
+          <colspec colname="id" align="center"/>
+          <colspec colname="constant" align="center"/>
+          <colspec colname="recoverable" align="center"/>
+          <colspec colname="description" align="left"/>
+
+          <thead>
+            <row>
+              <entry><literal>ID</literal></entry>
+              <entry><literal>Constant</literal></entry>
+              <entry><literal>recoverable</literal></entry>
+              <entry align="center">Description</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry><literal>HAS_DOCTYPE_DECLARATION_ID</literal></entry>
+              <entry><literal>HAS_DOCTYPE_DECLARATION</literal></entry>
+              <entry><literal>true</literal></entry>
+              <entry>One piece of XML has a DOCTYPE declaration while
+                the other one has not.</entry>
+            </row>
+            <row>
+              <entry><literal>DOCTYPE_NAME_ID</literal></entry>
+              <entry><literal>DOCTYPE_NAME</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>Both pieces of XML contain a DOCTYPE declaration
+                but the declarations specify different names for the
+                root element.</entry>
+            </row>
+            <row>
+              <entry><literal>DOCTYPE_PUBLIC_ID_ID</literal></entry>
+              <entry><literal>DOCTYPE_PUBLIC_ID</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>Both pieces of XML contain a DOCTYPE declaration
+                but the declarations specify different PUBLIC
+                identifiers.</entry>
+            </row>
+            <row>
+              <entry><literal>DOCTYPE_SYSTEM_ID_ID</literal></entry>
+              <entry><literal>DOCTYPE_SYSTEM_ID</literal></entry>
+              <entry><literal>true</literal></entry>
+              <entry>Both pieces of XML contain a DOCTYPE declaration
+                but the declarations specify different SYSTEM
+                identifiers.</entry>
+            </row>
+            <row>
+              <entry><literal>NODE_TYPE_ID</literal></entry>
+              <entry><literal>NODE_TYPE</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>The test piece of XML contains a different type
+              of node than was expected.  This type of difference will
+              also occur if either the root control or test
+              <literal>Node</literal> is <literal>null</literal> while
+              the other is not.</entry>
+            </row>
+            <row>
+              <entry><literal>NAMESPACE_PREFIX_ID</literal></entry>
+              <entry><literal>NAMESPACE_PREFIX</literal></entry>
+              <entry><literal>true</literal></entry>
+              <entry>Two nodes use different prefixes for the same
+                XML Namespace URI in the two pieces of XML.</entry>
+            </row>
+            <row>
+              <entry><literal>NAMESPACE_URI_ID</literal></entry>
+              <entry><literal>NAMESPACE_URI</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>Two nodes in the two pieces of XML share the same
+              local name but use different XML Namespace URIs.</entry>
+            </row>
+            <row>
+              <entry><literal>SCHEMA_LOCATION_ID</literal></entry>
+              <entry><literal>SCHEMA_LOCATION</literal></entry>
+              <entry><literal>true</literal></entry>
+              <entry>Two nodes have different values for the
+              <literal>schemaLocation</literal> attribute of the
+              XMLSchema-Instance namespace.  The attribute could be
+              present on only one of the two nodes.</entry>
+            </row>
+            <row>
+              <entry><literal>NO_NAMESPACE_SCHEMA_LOCATION_ID</literal></entry>
+              <entry><literal>NO_NAMESPACE_SCHEMA_LOCATION</literal></entry>
+              <entry><literal>true</literal></entry>
+              <entry>Two nodes have different values for the
+              <literal>noNamespaceSchemaLocation</literal> attribute
+              of the XMLSchema-Instance namespace.  The attribute
+              could be present on only one of the two nodes.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <table frame="all" rules="all" pgwide="1" id="elementleveldiff">
+        <title>Element level <literal>Difference</literal>s detected by
+        <literal>DifferenceEngine</literal></title>
+        <tgroup cols="4">
+          <colspec colname="id" align="center"/>
+          <colspec colname="constant" align="center"/>
+          <colspec colname="recoverable" align="center"/>
+          <colspec colname="description" align="left"/>
+
+          <thead>
+            <row>
+              <entry><literal>ID</literal></entry>
+              <entry><literal>Constant</literal></entry>
+              <entry><literal>recoverable</literal></entry>
+              <entry align="center">Description</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry><literal>ELEMENT_TAG_NAME_ID</literal></entry>
+              <entry><literal>ELEMENT_TAG_NAME</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>The two pieces of XML contain elements with
+                different tag names.</entry>
+            </row>
+            <row>
+              <entry><literal>ELEMENT_NUM_ATTRIBUTES_ID</literal></entry>
+              <entry><literal>ELEMENT_NUM_ATTRIBUTES</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>The two pieces of XML contain a common element,
+                but the number of attributes on the element is
+                different.</entry>
+            </row>
+            <row>
+              <entry><literal>HAS_CHILD_NODES_ID</literal></entry>
+              <entry><literal>HAS_CHILD_NODES</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>An element in one piece of XML has child nodes
+                while the corresponding one in the other has not.</entry>
+            </row>
+            <row>
+              <entry><literal>CHILD_NODELIST_LENGTH_ID</literal></entry>
+              <entry><literal>CHILD_NODELIST_LENGTH</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>Two elements in the two pieces of XML differ by
+                their number of child nodes.</entry>
+            </row>
+            <row>
+              <entry><literal>CHILD_NODELIST_SEQUENCE_ID</literal></entry>
+              <entry><literal>CHILD_NODELIST_SEQUENCE</literal></entry>
+              <entry><literal>true</literal></entry>
+              <entry>Two elements in the two pieces of XML contain the
+                same child nodes but in a different order.</entry>
+            </row>
+            <row>
+              <entry><literal>CHILD_NODE_NOT_FOUND_ID</literal></entry>
+              <entry><literal>CHILD_NODE_NOT_FOUND</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>A child node in one piece of XML couldn't be
+                matched against any other node of the other piece.</entry>
+            </row>
+            <row>
+              <entry><literal>ATTR_SEQUENCE_ID</literal></entry>
+              <entry><literal>ATTR_SEQUENCE</literal></entry>
+              <entry><literal>true</literal></entry>
+              <entry>The attributes on an element appear in different
+              order<footnote><para>Note that the order of attributes
+              is not significant in XML, different parsers may return
+              attributes in a different order even if parsing the same
+              XML document.  There is an option to turn this check off
+              - see <xref linkend="Comparing: Configuration"/> - but it is on
+              by default for backwards compatibility
+              reasons</para></footnote> in the two pieces of
+              XML.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <table frame="all" rules="all" pgwide="1" id="attributeleveldiff">
+        <title>Attribute level <literal>Difference</literal>s detected by
+        <literal>DifferenceEngine</literal></title>
+
+        <tgroup cols="4">
+          <colspec colname="id" align="center"/>
+          <colspec colname="constant" align="center"/>
+          <colspec colname="recoverable" align="center"/>
+          <colspec colname="description" align="left"/>
+
+          <thead>
+            <row>
+              <entry><literal>ID</literal></entry>
+              <entry><literal>Constant</literal></entry>
+              <entry><literal>recoverable</literal></entry>
+              <entry align="center">Description</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry><literal>ATTR_VALUE_EXPLICITLY_SPECIFIED_ID</literal></entry>
+              <entry><literal>ATTR_VALUE_EXPLICITLY_SPECIFIED</literal></entry>
+              <entry><literal>true</literal></entry>
+              <entry>An attribute that has a default value according
+              to the content model of the element in question has been
+              specified explicitly in one piece of XML but not in the
+              other.<footnote><para>In order for this difference to be
+              detected the parser must have been in validating mode
+              when the piece of XML was parsed and the DTD or XML
+              Schema must have been available.</para></footnote></entry>
+
+            </row>
+            <row>
+              <entry><literal>ATTR_NAME_NOT_FOUND_ID</literal></entry>
+              <entry><literal>ATTR_NAME_NOT_FOUND</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>One piece of XML contains an attribute on an
+                element that is missing in the other.</entry>
+            </row>
+            <row>
+              <entry><literal>ATTR_VALUE_ID</literal></entry>
+              <entry><literal>ATTR_VALUE</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>The value of an element's attribute is different
+                in the two pieces of XML.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <table frame="all" rules="all" pgwide="1" id="otherdiff">
+        <title>Other <literal>Difference</literal>s detected by
+        <literal>DifferenceEngine</literal></title>
+
+        <tgroup cols="4">
+          <colspec colname="id" align="center"/>
+          <colspec colname="constant" align="center"/>
+          <colspec colname="recoverable" align="center"/>
+          <colspec colname="description" align="left"/>
+
+          <thead>
+            <row>
+              <entry><literal>ID</literal></entry>
+              <entry><literal>Constant</literal></entry>
+              <entry><literal>recoverable</literal></entry>
+              <entry align="center">Description</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry><literal>COMMENT_VALUE_ID</literal></entry>
+              <entry><literal>COMMENT_VALUE</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>The content of two comments is different in the
+                two pieces of XML.</entry>
+            </row>
+            <row>
+              <entry><literal>PROCESSING_INSTRUCTION_TARGET_ID</literal></entry>
+              <entry><literal>PROCESSING_INSTRUCTION_TARGET</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>The target of two processing instructions is
+                different in the two pieces of XML.</entry>
+            </row>
+            <row>
+              <entry><literal>PROCESSING_INSTRUCTION_DATA_ID</literal></entry>
+              <entry><literal>PROCESSING_INSTRUCTION_DATA</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>The data of two processing instructions is
+                different in the two pieces of XML.</entry>
+            </row>
+
+            <row>
+              <entry><literal>CDATA_VALUE_ID</literal></entry>
+              <entry><literal>CDATA_VALUE</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>The content of two CDATA sections is different in
+                the two pieces of XML.</entry>
+            </row>
+            <row>
+              <entry><literal>TEXT_VALUE_ID</literal></entry>
+              <entry><literal>TEXT_VALUE</literal></entry>
+              <entry><literal>false</literal></entry>
+              <entry>The value of two texts is different in the two
+                pieces of XML.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <para>Note that some of the differences listed may be ignored by
+      the <literal>DifferenceEngine</literal> if certain configuration
+      options have been specified.  See <xref
+      linkend="Comparing: Configuration"/> for details.</para>
+
+      <para><literal>DifferenceEngine</literal> passes differences
+      found around as instances of the <literal>Difference</literal>
+      class.  In addition to the type of of difference this class also
+      holds information on the nodes that have been found to be
+      different.  The nodes are described by
+      <literal>NodeDetail</literal> instances that encapsulate the DOM
+      <literal>Node</literal> instance as well as the XPath expression
+      that locates the <literal>Node</literal> inside the given piece
+      of XML.  <literal>NodeDetail</literal> also contains a "value"
+      that provides more information on the actual values that have
+      been found to be different, the concrete interpretation depends
+      on the type of difference as can be seen in <xref
+      linkend="diffvalue"/>.</para>
+
+      <table frame="all" rules="all" pgwide="0" id="diffvalue">
+        <title>Contents of <literal>NodeDetail.getValue()</literal>
+        for <literal>Difference</literal>s</title>
+
+        <tgroup cols="2">
+          <colspec colname="id" align="center"/>
+          <colspec colname="value" align="left"/>
+
+          <thead>
+            <row>
+              <entry><literal>Difference.getId()</literal></entry>
+              <entry align="center"><literal>NodeDetail.getValue()</literal></entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry><literal>HAS_DOCTYPE_DECLARATION_ID</literal></entry>
+              <entry><literal>"not null"</literal> if the document has
+              a DOCTYPE declaration, <literal>"null"</literal>
+              otherwise.</entry>
+            </row>
+            <row>
+              <entry><literal>DOCTYPE_NAME_ID</literal></entry>
+              <entry>The name of the root element.</entry>
+            </row>
+            <row>
+              <entry><literal>DOCTYPE_PUBLIC_ID</literal></entry>
+              <entry>The PUBLIC identifier.</entry>
+            </row>
+            <row>
+              <entry><literal>DOCTYPE_SYSTEM_ID</literal></entry>
+              <entry>The SYSTEM identifier.</entry>
+            </row>
+            <row>
+              <entry><literal>NODE_TYPE_ID</literal></entry>
+              <entry>If one node was absent: <literal>"not
+              null"</literal> if the node exists,
+              <literal>"null"</literal> otherwise.  If the node types
+              differ the value will be a string-ified version of
+              <literal>org.w3c.dom.Node.getNodeType()</literal>.</entry>
+            </row>
+            <row>
+              <entry><literal>NAMESPACE_PREFIX_ID</literal></entry>
+              <entry>The Namespace prefix.</entry>
+            </row>
+            <row>
+              <entry><literal>NAMESPACE_URI_ID</literal></entry>
+              <entry>The Namespace URI.</entry>
+            </row>
+            <row>
+              <entry><literal>SCHEMA_LOCATION_ID</literal></entry>
+              <entry>The attribute's value or "[attribute absent]" if
+              it has not been specified.</entry>
+            </row>
+            <row>
+              <entry><literal>NO_NAMESPACE_SCHEMA_LOCATION_ID</literal></entry>
+              <entry>The attribute's value or "[attribute absent]" if
+              it has not been specified.</entry>
+            </row>
+            <row>
+              <entry><literal>ELEMENT_TAG_NAME_ID</literal></entry>
+              <entry>The tag name with any Namespace information
+              stripped.</entry>
+            </row>
+            <row>
+              <entry><literal>ELEMENT_NUM_ATTRIBUTES_ID</literal></entry>
+              <entry>The number of attributes present turned into a
+              <literal>String</literal>.</entry>
+            </row>
+            <row>
+              <entry><literal>HAS_CHILD_NODES_ID</literal></entry>
+              <entry><literal>"true"</literal> if the element has
+              child nodes, <literal>"false"</literal>
+              otherwise.</entry>
+            </row>
+            <row>
+              <entry><literal>CHILD_NODELIST_LENGTH_ID</literal></entry>
+              <entry>The number of child nodes present turned into a
+              <literal>String</literal>.</entry>
+            </row>
+            <row>
+              <entry><literal>CHILD_NODELIST_SEQUENCE_ID</literal></entry>
+              <entry>The sequence number of this child node turned into a
+              <literal>String</literal>.</entry>
+            </row>
+            <row>
+              <entry><literal>CHILD_NODE_NOT_FOUND_ID</literal></entry>
+              <entry>The name of the unmatched node or
+              <literal>null</literal>.</entry>
+            </row>
+            <row>
+              <entry><literal>ATTR_SEQUENCE_ID</literal></entry>
+              <entry>The attribute's name.</entry>
+            </row>
+            <row>
+              <entry><literal>ATTR_VALUE_EXPLICITLY_SPECIFIED_ID</literal></entry>
+              <entry><literal>"true"</literal> if the attribute has
+              been specified, <literal>"false"</literal>
+              otherwise.</entry>
+            </row>
+            <row>
+              <entry><literal>ATTR_NAME_NOT_FOUND_ID</literal></entry>
+              <entry>The attribute's name or <literal>null</literal>.</entry>
+            </row>
+            <row>
+              <entry><literal>ATTR_VALUE_ID</literal></entry>
+              <entry>The attribute's value.</entry>
+            </row>
+            <row>
+              <entry><literal>COMMENT_VALUE_ID</literal></entry>
+              <entry>The actual comment.</entry>
+            </row>
+            <row>
+              <entry><literal>PROCESSING_INSTRUCTION_TARGET_ID</literal></entry>
+              <entry>The processing instruction's target.</entry>
+            </row>
+            <row>
+              <entry><literal>PROCESSING_INSTRUCTION_DATA_ID</literal></entry>
+              <entry>The processing instruction's data.</entry>
+            </row>
+
+            <row>
+              <entry><literal>CDATA_VALUE_ID</literal></entry>
+              <entry>The content of the CDATA section.</entry>
+            </row>
+            <row>
+              <entry><literal>TEXT_VALUE_ID</literal></entry>
+              <entry>The actual text.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <para>As said in the first paragraph you won't deal with
+      <literal>DifferenceEngine</literal> directly in most cases.  In
+      cases where <literal>Diff</literal> or
+      <literal>DetailedDiff</literal> don't provide what you need
+      you'd create an instance of <literal>DifferenceEngine</literal>
+      passing a <literal>ComparisonController</literal> in the
+      constructor and invoke <literal>compare</literal> with your DOM
+      trees to compare as well as a
+      <literal>DifferenceListener</literal> and
+      <literal>ElementQualifier</literal>.  The listener will be
+      called on any differences while the <literal>control</literal>
+      method is executing.</para>
+
+      <example>
+        <title>Using <literal>DifferenceEngine</literal>
+          Directly</title>
+        <programlisting language="Java"><![CDATA[
+class MyDifferenceListener implements DifferenceListener {
+    private boolean calledFlag = false;
+    public boolean called() { return calledFlag; }
+
+    public int differenceFound(Difference difference) {
+        calledFlag = true;
+        return RETURN_ACCEPT_DIFFERENCE;
+    }
+
+    public void skippedComparison(Node control, Node test) {
+    }
+}
+
+DifferenceEngine engine = new DifferenceEngine(myComparisonController);
+MyDifferenceListener listener = new MyDifferenceListener();
+engine.compare(controlNode, testNode, listener,
+               myElementQualifier);
+System.err.println("There have been "
+                   + (listener.called() ? "" : "no ")
+                   + "differences.");
+]]></programlisting></example>
+    </section>
+
+    <section id="ComparisonController">
+      <title><literal>ComparisonController</literal></title>
+
+      <para>The <literal>ComparisonController</literal>'s job is to
+      decide whether a comparison should be halted after a difference
+      has been found.  Its interface is:</para>
+
+      <programlisting language="Java"><![CDATA[
+    /**
+     * Determine whether a Difference that the listener has been notified of
+     *  should halt further XML comparison. Default behaviour for a Diff
+     *  instance is to halt if the Difference is not recoverable.
+     * @see Difference#isRecoverable
+     * @param afterDifference the last Difference passed to <code>differenceFound</code>
+     * @return true to halt further comparison, false otherwise
+     */
+    boolean haltComparison(Difference afterDifference);
+]]></programlisting>
+
+      <para>Whenever a difference has been detected by the
+      <literal>DifferenceEngine</literal> the
+      <literal>haltComparison</literal> method will be called
+      immediately after the <literal>DifferenceListener</literal> has
+      been informed of the difference.  This is true no matter what
+      type of <literal>Difference</literal> has been found or which
+      value the <literal>DifferenceListener</literal> has
+      returned.</para>
+
+      <para>The only implementations of
+      <literal>ComparisonController</literal> that ship with XMLUnit
+      are <literal>Diff</literal> and <literal>DetailedDiff</literal>,
+      see <xref linkend="Diff"/> for details about them.</para>
+
+      <para>A <literal>ComparisonController</literal> that halted the
+      comparison on any non-recoverable difference could be
+      implemented as:</para>
+
+      <example>
+        <title>A Simple
+          <literal>ComparisonController</literal></title>
+        <programlisting language="Java"><![CDATA[
+public class HaltOnNonRecoverable implements ComparisonController {
+    public boolean haltComparison(Difference afterDifference) {
+        return !afterDifference.isRecoverable();
+    }
+}
+]]></programlisting></example>
+    </section>
+
+    <section id="DifferenceListener">
+      <title><literal>DifferenceListener</literal></title>
+
+      <para><literal>DifferenceListener</literal> contains two
+      callback methods that are invoked by the
+      <literal>DifferenceEngine</literal> when differences are
+      detected:</para>
+
+      <programlisting language="Java"><![CDATA[
+    /**
+     * Receive notification that 2 nodes are different.
+     * @param difference a Difference instance as defined in {@link
+     * DifferenceConstants DifferenceConstants} describing the cause
+     * of the difference and containing the detail of the nodes that
+     * differ
+     * @return int one of the RETURN_... constants describing how this
+     * difference was interpreted
+     */
+    int differenceFound(Difference difference);
+
+    /**
+     * Receive notification that a comparison between 2 nodes has been skipped
+     *  because the node types are not comparable by the DifferenceEngine
+     * @param control the control node being compared
+     * @param test the test node being compared
+     * @see DifferenceEngine
+     */
+    void skippedComparison(Node control, Node test);
+]]></programlisting>
+
+      <para><literal>differenceFound</literal> is invoked by
+      <literal>DifferenceEngine</literal> as soon as a difference has
+      been detected.  The return value of that method is completely
+      ignored by <literal>DifferenceEngine</literal>, it becomes
+      important when used together with <literal>Diff</literal>,
+      though (see <xref linkend="Diff"/>).  The return value should be
+      one of the four constants defined in the the
+      <literal>DifferenceListener</literal> interface:</para>
+
+      <programlisting language="Java"><![CDATA[
+    /** 
+     * Standard return value for the <code>differenceFound</code> method.
+     * Indicates that the <code>Difference</code> is interpreted as defined 
+     * in {@link DifferenceConstants DifferenceConstants}.
+     */
+    int RETURN_ACCEPT_DIFFERENCE;
+    /** 
+     * Override return value for the <code>differenceFound</code> method.
+     * Indicates that the nodes identified as being different should be 
+     * interpreted as being identical.
+     */
+    int RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
+    /** 
+     * Override return value for the <code>differenceFound</code> method.
+     * Indicates that the nodes identified as being different should be 
+     * interpreted as being similar.
+     */
+    int RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
+    /** 
+     * Override return value for the <code>differenceFound</code> method.
+     * Indicates that the nodes identified as being similar should be 
+     * interpreted as being different.
+     */
+    int RETURN_UPGRADE_DIFFERENCE_NODES_DIFFERENT = 3;
+]]></programlisting>
+
+      <para>The <literal>skippedComparison</literal> method is
+      invoked if the <literal>DifferenceEngine</literal> encounters
+      two <literal>Node</literal>s it cannot compare.  Before invoking
+      <literal>skippedComparison</literal>
+      <literal>DifferenceEngine</literal> will have invoked
+      <literal>differenceFound</literal> with a
+      <literal>Difference</literal> of type
+      <literal>NODE_TYPE</literal>.</para>
+
+      <para>A custom <literal>DifferenceListener</literal> that
+      ignored any DOCTYPE related differences could be written
+      as:</para>
+
+      <example>
+        <title>A <literal>DifferenceListener</literal> that Ignores
+          DOCTYPE Differences</title>
+        <programlisting language="Java"><![CDATA[
+public class IgnoreDoctype implements DifferenceListener {
+    private static final int[] IGNORE = new int[] {
+        DifferenceConstants.HAS_DOCTYPE_DECLARATION_ID,
+        DifferenceConstants.DOCTYPE_NAME_ID,
+        DifferenceConstants.DOCTYPE_PUBLIC_ID_ID,
+        DifferenceConstants.DOCTYPE_SYSTEM_ID_ID
+    };
+
+    static {
+        Arrays.sort(IGNORE);
+    }
+
+    public int differenceFound(Difference difference) {
+        return Arrays.binarySearch(IGNORE, difference.getId()) >= 0
+            ? RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL
+            : RETURN_ACCEPT_DIFFERENCE;
+    }
+    
+    public void skippedComparison(Node control, Node test) {
+    }
+}
+]]></programlisting></example>
+
+      <para>Apart from <literal>Diff</literal> and
+      <literal>DetailedDiff</literal> XMLUnit ships with an additional
+      implementation of <literal>DifferenceListener</literal>.</para>
+
+      <section id="IgnoreTextAndAttributeValuesDifferenceListener">
+        <title><literal>IgnoreTextAndAttributeValuesDifferenceListener</literal></title>
+
+        <para><literal>IgnoreTextAndAttributeValuesDifferenceListener</literal>
+        doesn't do anything in <literal>skippedComparison</literal>.
+        It "downgrades" <literal>Difference</literal>s of type
+        <literal>ATTR_VALUE</literal>,
+        <literal>ATTR_VALUE_EXPLICITLY_SPECIFIED</literal> and
+        <literal>TEXT_VALUE</literal> to recoverable
+        differences.</para>
+
+        <para>This means if instances of
+        <literal>IgnoreTextAndAttributeValuesDifferenceListener</literal>
+        are used together with <literal>Diff</literal> then two pieces
+        of XML will be considered similar if they have the same basic
+        structure.  They are not considered identical, though.</para>
+
+        <para>Note that the list of ignored differences doesn't cover
+        all textual differences.  You should configure XMLUnit to
+        ignore comments and whitespace and to consider CDATA sections
+        and text nodes to be the same (see <xref
+        linkend="Comparing: Configuration"/>) in order to cover
+        <literal>COMMENT_VALUE</literal> and
+        <literal>CDATA_VALUE</literal> as well.</para>
+
+      </section>
+    </section>
+
+    <section id="ElementQualifier">
+      <title><literal>ElementQualifier</literal></title>
+
+      <para>When <literal>DifferenceEngine</literal> encounters a list
+      of DOM <literal>Element</literal>s as children of another
+      <literal>Element</literal> it will ask the configured
+      <literal>ElementQualifier</literal> which
+      <literal>Element</literal> of the control piece of XML should be
+      compared to which of the test piece.  Its contract is:</para>
+
+      <programlisting language="Java"><![CDATA[
+    /**
+     * Determine whether two elements are comparable
+     * @param control an Element from the control XML NodeList
+     * @param test an Element from the test XML NodeList
+     * @return true if the elements are comparable, false otherwise
+     */
+    boolean qualifyForComparison(Element control, Element test); 
+]]></programlisting>
+
+      <para>For any given <literal>Element</literal> in the control
+      piece of XML <literal>DifferenceEngine</literal> will cycle
+      through the corresponding list of <literal>Element</literal>s in
+      the test piece of XML until
+      <literal>qualifyForComparison</literal> has returned
+      <literal>true</literal> or the test document is
+      exhausted.</para>
+
+      <para>When using <literal>DifferenceEngine</literal> or
+      <literal>Diff</literal> it is completely legal to set the
+      <literal>ElementQualifier</literal> to <literal>null</literal>.
+      In this case any kind of <literal>Node</literal> is compared to
+      the test <literal>Node</literal> that appears at the same
+      position in the sequence.</para>
+
+      <example id="eq-nodelist-example">
+        <title>Example Nodes for <literal>ElementQualifier</literal>
+          (the comments are not part of the example)</title>
+        <programlisting language="XML"><![CDATA[
+<!-- control piece of XML -->
+<parent>
+  <child1/>                        <!-- control node 1 -->
+  <child2/>                        <!-- control node 2 -->
+  <child2 foo="bar">xyzzy</child2> <!-- control node 3 -->
+  <child2 foo="baz"/>              <!-- control node 4 -->
+</parent>
+
+<!-- test piece of XML -->
+<parent>
+  <child2 foo="baz"/>              <!-- test node 1 -->
+  <child1/>                        <!-- test node 2 -->
+  <child2>xyzzy</child2>           <!-- test node 3 -->
+  <child2 foo="bar"/>              <!-- test node 4 -->
+</parent>
+]]></programlisting></example>
+
+      <para>Taking <xref linkend="eq-nodelist-example"/> without any
+      <literal>ElementQualifier</literal>
+      <literal>DifferenceEngine</literal> will compare control node
+      <literal>n</literal> to test node <literal>n</literal> for
+      <literal>n</literal> between 1 and 4.  In many cases this is
+      exactly what is desired, but sometimes
+      <literal><![CDATA[<a><b/><c/></a>]]></literal> should be similar
+      to <literal><![CDATA[<a><c/><b/></a>]]></literal> because the
+      order of elements doesn't matter - this is when you'd use a
+      different <literal>ElementQualifier</literal>.  XMLUnit ships
+      with several implementations.</para>
+
+      <section id="ElementNameQualifier">
+        <title><literal>ElementNameQualifier</literal></title>
+
+        <para>Only <literal>Element</literal>s with the same name -
+        and Namespace URI if present - qualify.</para>
+
+        <para>In <xref linkend="eq-nodelist-example"/> this means
+        control node 1 will be compared to test node 2.  Then control
+        node 2 will be compared to test node 3 because
+        <literal>DifferenceEngine</literal> will start to search for
+        the matching test <literal>Element</literal> at the second
+        test node, the same sequence number the control node is at.
+        Control node 3 is compared to test node 3 as well and control
+        node 4 to test node 4.</para>
+      </section>
+
+      <section id="ElementNameAndAttributeQualifier">
+        <title><literal>ElementNameAndAttributeQualifier</literal></title>
+
+        <para>Only <literal>Element</literal>s with the same name -
+        and Namespace URI if present - as well as the same values for
+        all attributes given in
+        <literal>ElementNameAndAttributeQualifier</literal>'s
+        constructor qualify.</para>
+
+        <para>Let's say <literal>"foo"</literal> has been passed to
+        <literal>ElementNameAndAttributeQualifier</literal>'s
+        constructor when looking at <xref
+        linkend="eq-nodelist-example"/>.  This again means control
+        node 1 will be compared to test node 2 since they do have the
+        same name and no value at all for attribute
+        <literal>"foo"</literal>.  Then control node 2 will be
+        compared to test node 3 - again, no value for
+        <literal>"foo"</literal>.  Control node 3 is compared to test
+        node 4 as they have the same value <literal>"bar"</literal>.
+        Finally control node 4 is compared to test node 1; here
+        <literal>DifferenceEngine</literal> searches from the
+        beginning of the test node list after test node 4 didn't
+        match.</para>
+
+        <para>There are three constructors in
+        <literal>ElementNameAndAttributeQualifier</literal>.  The
+        no-arg constructor creates an instance that compares all
+        attributes while the others will compare a single attribute or
+        a given subset of all attributes.</para>
+      </section>
+
+      <section id="ElementNameAndTextQualifier">
+        <title><literal>ElementNameAndTextQualifier</literal></title>
+
+        <para>Only <literal>Element</literal>s with the same name -
+        and Namespace URI if present - as well as the same text
+        content nested into them qualify.</para>
+
+        <para>In <xref linkend="eq-nodelist-example"/> this means
+        control node 1 will be compared to test node 2 since they both
+        don't have any nested text at all.  Then control node 2 will
+        be compared to test node 4.  Control node 3 is compared to
+        test node 3 since they have the same nested text and control
+        node 4 to test node 4.</para>
+      </section>
+
+      <section id="RecursiveElementNameAndTextQualifier">
+        <title><literal>org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier</literal></title>
+
+        <para>All <literal>ElementQualifier</literal>s seen so far
+        only looked at the <literal>Element</literal>s themselves and
+        not at the structure nested into them at a deeper level.  A
+        frequent user question has been which
+        <literal>ElementQualifier</literal> should be used if the
+        pieces of XML in <xref linkend="htmltable"/> should be
+        considered similar.</para>
+
+        <example id="htmltable">
+          <title>Example for
+          <literal>RecursiveElementNameAndTextQualifier</literal>
+          (the comments are not part of the example)</title>
+          <programlisting language="HTML"><![CDATA[
+<!-- control -->
+<table>
+  <tr>            <!-- control row 1 -->
+    <td>foo</td>
+  </tr>
+  <tr>            <!-- control row 2 -->
+    <td>bar</td>
+  </tr>
+</table>
+
+<!-- test -->
+<table>
+  <tr>            <!-- test row 1 -->
+    <td>bar</td>
+  </tr>
+  <tr>            <!-- test row 2 -->
+    <td>foo</td>
+  </tr>
+</table>
+]]></programlisting></example>
+
+        <para>At first glance
+        <literal>ElementNameAndTextQualifier</literal> should work but
+        it doesn't.  When <literal>DifferenceEngine</literal>
+        processed the children of <literal>table</literal> it would
+        compare control row 1 to test row 1 since both
+        <literal>tr</literal> elements have the same name and both
+        have no textual content at all.</para>
+
+        <para>What is needed in this case is an
+        <literal>ElementQualifier</literal> that looks at the element's
+        name, as well as the name of the first child element and the
+        text nested into that first child element.  This is what
+        <literal>RecursiveElementNameAndTextQualifier</literal>
+        does.</para>
+
+        <para><literal>RecursiveElementNameAndTextQualifier</literal>
+        ignores whitespace between the elements leading up to the
+        nested text.</para>
+      </section>
+
+      <section id="MultiLevelElementNameAndTextQualifier">
+        <title><literal>org.custommonkey.xmlunit.examples.MultiLevelElementNameAndTextQualifier</literal></title>
+
+        <para>
+          <literal>MultiLevelElementNameAndTextQualifier</literal> has
+          in a way been the predecessor
+          of <xref linkend="RecursiveElementNameAndTextQualifier"><literal>RecursiveElementNameAndTextQualifier</literal></xref>.
+          It also matches element names and those of nested child
+          elements until it finds matches, but
+          unlike <literal>RecursiveElementNameAndTextQualifier</literal>,
+          you must
+          tell <literal>MultiLevelElementNameAndTextQualifier</literal>
+          at which nesting level it should expect the nested text.
+        </para>
+
+        <para>
+          <literal>MultiLevelElementNameAndTextQualifier</literal>'s
+          constructor expects a single argument which is the nesting
+          level of the expected text.  If you use an argument of 1,
+          <literal>MultiLevelElementNameAndTextQualifier</literal> is
+          identical to <literal>ElementNameAndTextQualifier</literal>.
+          In <xref linkend="htmltable"/> a value of 2 would be
+          needed.</para>
+
+        <para>By default
+          <literal>MultiLevelElementNameAndTextQualifier</literal>
+          will not ignore whitespace between the elements leading up
+          to the nested text.  If your piece of XML contains this sort
+          of whitespace (like <xref linkend="htmltable"/> which
+          contains a newline and several space characters between
+          <literal>&lt;tr&gt;</literal> and
+          <literal>&lt;td&gt;</literal>) you can either instruct
+          XMLUnit to ignore whitespace completely (see
+          <xref linkend="Whitespace Handling"/>) or use the two-arg
+          constructor of
+          <literal>MultiLevelElementNameAndTextQualifier</literal>
+          introduced with XMLUnit 1.2 and set the
+          <literal>ignoreEmptyTexts</literal> argument to
+          true.</para>
+
+        <para>In
+          general <literal>RecursiveElementNameAndTextQualifier</literal>
+          requires less knowledge upfront and its whitespace-handling
+          is more intuitive.</para>
+      </section>
+
+    </section>
+
+    <section id="Diff">
+      <title><literal>Diff</literal> and
+      <literal>DetailedDiff</literal></title>
+
+      <para><literal>Diff</literal> and
+      <literal>DetailedDiff</literal> provide simplified access to
+      <literal>DifferenceEngine</literal> by implementing the
+      <literal>ComparisonController</literal> and
+      <literal>DifferenceListener</literal> interfaces themselves.
+      They cover the two most common use cases for comparing two
+      pieces of XML: checking whether the pieces are different (this
+      is what <literal>Diff</literal> does) and finding all
+      differences between them (this is what
+      <literal>DetailedDiff</literal> does).</para>
+
+      <para><literal>DetailedDiff</literal> is a subclass of
+      <literal>Diff</literal> and can only be constructed by creating
+      a <literal>Diff</literal> instance first.</para>
+
+      <para>The major difference between them is their implementation
+      of the <literal>ComparisonController</literal> interface:
+      <literal>DetailedDiff</literal> will never stop the comparison
+      since it wants to collect all differences.
+      <literal>Diff</literal> in turn will halt the comparison as soon
+      as the first <literal>Difference</literal> is found that is not
+      recoverable.  In addition <literal>DetailedDiff</literal>
+      collects all <literal>Difference</literal>s in a list and
+      provides access to it.</para>
+
+      <para>By default <literal>Diff</literal> will consider two
+      pieces of XML as identical if no differences have been found at
+      all, similar if all differences that have been found have been
+      recoverable (see <xref linkend="docleveldiff"/> to <xref
+      linkend="otherdiff"/>) and different as soon as any
+      non-recoverable difference has been found.</para>
+
+      <para>It is possible to specify a
+      <literal>DifferenceListener</literal> to <literal>Diff</literal>
+      using the <literal>overrideDifferenceListener</literal> method.
+      In this case each <literal>Difference</literal> will be
+      evaluated by the passed in
+      <literal>DifferenceListener</literal>.  By returning
+      <literal>RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL</literal> the
+      custom listener can make <literal>Diff</literal> ignore the
+      difference completely.  Likewise any
+      <literal>Difference</literal> for which the custom listener
+      returns
+      <literal>RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR</literal> will
+      be treated as if the <literal>Difference</literal> was
+      recoverable.</para>
+
+      <para>There are several overloads of the <literal>Diff</literal>
+      constructor that allow you to specify your piece of XML in many
+      ways.  There are overloads that accept additional
+      <literal>DifferenceEngine</literal> and
+      <literal>ElementQualifier</literal> arguments.  Passing in a
+      <literal>DifferenceEngine</literal> of your own is the only way
+      to use a <literal>ComparisonController</literal> other than
+      <literal>Diff</literal>.</para>
+
+      <para>Note that <literal>Diff</literal> and
+      <literal>DetailedDiff</literal> use
+      <literal>ElementNameQualifier</literal> as their default
+      <literal>ElementQualifier</literal>.  This is different from
+      <literal>DifferenceEngine</literal> which defaults to no
+      <literal>ElementQualifier</literal> at all.</para>
+
+      <para>To use a custom <literal>ElementQualifier</literal> you
+      can also use the <literal>overrideElementQualifier</literal>
+      method.  Use this with an argument of <literal>null</literal> to
+      unset the default <literal>ElementQualifier</literal> as
+      well.</para>
+
+      <para>To compare two pieces of XML you'd create a
+      <literal>Diff</literal> instance from those two pieces and
+      invoke <literal>identical</literal> to check that there have
+      been no differences at all and <literal>similar</literal> to
+      check that any difference, if any, has been recoverable.  If the
+      pieces are identical they are also similar.  Likewise if they
+      are not similar they can't be identical either.</para>
+
+      <example>
+        <title>Comparing Two Pieces of XML Using
+        <literal>Diff</literal></title>
+        <programlisting language="Java"><![CDATA[
+Diff d = new Diff("<a><b/><c/></a>", "<a><c/><b/></a>");
+assertFalse(d.identical()); // CHILD_NODELIST_SEQUENCE Difference
+assertTrue(d.similar());
+]]></programlisting></example>
+
+      <para>The result of the comparison is cached in
+      <literal>Diff</literal>, repeated invocations of
+      <literal>identical</literal> or <literal>similar</literal> will
+      not reevaluate the pieces of XML.</para>
+
+      <para><literal>DetailedDiff</literal> provides only a single
+      constructor that expects a <literal>Diff</literal> as argument.
+      Don't use <literal>DetailedDiff</literal> if all you need to
+      know is whether two pieces of XML are identical/similar - use
+      <literal>Diff</literal> directly since its short-cut
+      <literal>ComparisonController</literal> implementation will save
+      time in this case.</para>
+
+      <example>
+        <title>Finding All Differences Using
+        <literal>DetailedDiff</literal></title>
+        <programlisting language="Java"><![CDATA[
+Diff d = new Diff("<a><b/><c/></a>", "<a><c/><b/></a>");
+DetailedDiff dd = new DetailedDiff(d);
+dd.overrideElementQualifier(null);
+assertFalse(dd.similar());
+List l = dd.getAllDifferences();
+assertEquals(2, l.size()); // expected <b/> but was <c/> and vice versa
+]]></programlisting></example>
+
+    </section>
+
+    <section id="MatchTracker">
+      <title><literal>MatchTracker</literal></title>
+
+      <para>Sometimes you might be interested in any sort of
+      comparison result and want to get notified of successful matches
+      as well.  Maybe you want to provide feedback on the amount of
+      differences and similarities between two documents, for
+      example.</para>
+
+      <para>The interface <literal>MatchTracker</literal> can be
+      implemented to get notified on each and every successful match,
+      note that there may be a lot more comparisons going on than you
+      might expect and that your callback gets notified a lot.</para>
+
+      <example>
+        <title>The <literal>MatchTracker</literal> interface</title>
+        <programlisting language="Java"><![CDATA[
+package org.custommonkey.xmlunit;
+
+/**
+ * Listener for callbacks from a {@link DifferenceEngine#compare
+ * DifferenceEngine comparison} that is notified on each and every
+ * comparision that resulted in a match.
+ */
+public interface MatchTracker {
+    /**
+     * Receive notification that 2 match.
+     * @param match a Difference instance as defined in {@link
+     * DifferenceConstants DifferenceConstants} describing the test
+     * that matched and containing the detail of the nodes that have
+     * been compared
+     */
+    void matchFound(Difference difference);
+}
+]]></programlisting></example>
+
+      <para>Despite its name the <literal>Difference</literal>
+        instance passed into the <literal>matchFound</literal> method
+        really describes a match and not a difference.  You can expect
+        that the <literal>getValue</literal> method on both the
+        control and the test <literal>NodeDetail</literal> will be
+        equal.</para>
+
+      <para><literal>DifferenceEngine</literal> provides a constructor
+        overload that allows you to pass in
+        a <literal>MatchTracker</literal> instance and also provides
+        a <literal>setMatchTracker</literal>
+        method.  <literal>Diff</literal>
+        and <literal>DetailedDiff</literal>
+        provide <literal>overrideMatchTracker</literal> methods that
+        fill the same purpose.</para>
+
+      <para>Note that your <literal>MatchTracker</literal> won't
+        receive any callbacks once the
+        configured <literal>ComparisonController</literal> has decided
+        that <literal>DifferenceEngine</literal> should halt the
+        comparison.</para>
+
+    </section>
+
+    <section id="Comparing: JUnit 3">
+      <title>JUnit 3.x Convenience Methods</title>
+
+      <para><literal>XMLAssert</literal> and
+      <literal>XMLTestCase</literal> contain quite a few overloads of
+      methods for comparing two pieces of XML.</para>
+
+      <para>The method's names use the word <literal>Equal</literal>
+      to mean the same as <literal>similar</literal> in the
+      <literal>Diff</literal> class (or throughout this guide).  So
+      <literal>assertXMLEqual</literal> will assert that only
+      recoverable differences have been encountered where
+      <literal>assertXMLNotEqual</literal> asserts that some
+      differences have been non-recoverable.
+      <literal>assertXMLIdentical</literal> asserts that there haven't
+      been any differences at all while
+      <literal>assertXMLNotIdentical</literal> asserts that there have
+      been differences (recoverable or not).</para>
+
+      <para>Most of the overloads of <literal>assertXMLEqual</literal>
+      just provide different means to specify the pieces of XML as
+      <literal>String</literal>s, <literal>InputSource</literal>s,
+      <literal>Reader</literal>s<footnote><para>See <xref
+      linkend="Providing Input to XMLUnit"/> for some advice on choosing your input
+      format.</para></footnote> or <literal>Document</literal>s.  For each
+      method there is a version that takes an additional
+      <literal>err</literal> argument which is used to create the
+      message if the assertion fails.</para>
+
+      <para>If you don't need any control over the
+      <literal>ElementQualifier</literal> or
+      <literal>DifferenceListener</literal> used by
+      <literal>Diff</literal> these methods will save some boilerplate
+      code.  If <literal>CONTROL</literal> and <literal>TEST</literal>
+      are pieces of XML represented as one of the supported inputs
+      then</para>
+
+      <programlisting language="Java"><![CDATA[
+Diff d = new Diff(CONTROL, TEST);
+assertTrue("expected pieces to be similar, " + d.toString(),
+           d.similar());
+]]></programlisting>
+
+      <para>and</para>
+
+      <programlisting language="Java"><![CDATA[
+assertXMLEqual("expected pieces to be similar", CONTROL, TEST);
+]]></programlisting>
+
+      <para>are equivalent.</para>
+
+      <para>If you need more control over the <literal>Diff</literal>
+      instance there is a version of <literal>assertXMLEqual</literal>
+      (and <literal>assertXMLIdentical</literal>) that accepts a
+      <literal>Diff</literal> instance as its argument as well as a
+      <literal>boolean</literal> indicating whether you expect the
+      <literal>Diff</literal> to be <literal>similar</literal>
+      (<literal>identical</literal>) or not.</para>
+
+      <para><literal>XMLTestCase</literal> contains a couple of
+      <literal>compareXML</literal> methods that really are only
+      shortcuts to <literal>Diff</literal>'s constructors.</para>
+
+      <para>There is no way to use <literal>DifferenceEngine</literal>
+      or <literal>DetailedDiff</literal> directly via the convenience
+      methods.</para>
+
+    </section>
+
+    <section id="Comparing: Configuration">
+      <title>Configuration Options</title>
+
+      <para>Unless you are using <literal>Document</literal> or
+      <literal>DOMSource</literal> overrides when specifying your
+      pieces of XML, XMLUnit will use the configured XML parsers (see
+      <xref linkend="JAXP"/>) and <literal>EntityResolver</literal>s
+      (see <xref linkend="EntityResolver"/>).  There configuration
+      options to use different settings for the control and test
+      pieces of XML.</para>
+
+      <para>In addition some of the other configuration settings may
+      lead to XMLUnit using the configured XSLT transformer (see <xref
+      linkend="JAXP"/>) under the covers.</para>
+
+      <section id="Whitespace Handling">
+        <title>Whitespace Handling</title>
+
+        <para>Two different configuration options affect how XMLUnit
+        treats whitespace in comparisons:</para>
+
+        <itemizedlist>
+
+          <listitem>Element Content Whitespace (see <xref
+          linkend="Basic: Element Content Whitespace"/>)
+
+            <para>If XMLUnit has been configured to ignore element
+            content whitespace it will trim any text nodes found by
+            the parser.  This means that there won't appear to be any
+            textual content in element <literal>&lt;foo&gt;</literal>
+            for the following example.  If you don't set
+            <literal>XMLUnit.setIgnoreWhitespace</literal> there would
+            be textual content consisting of a new line
+            character.</para>
+
+            <programlisting language="XML"><![CDATA[
+<foo>
+</foo>
+]]></programlisting>
+
+            <para>At the same time the following two
+            <literal>&lt;foo&gt;</literal> elements will be considered
+            identical if the option has been enabled, though.</para>
+
+            <programlisting language="XML"><![CDATA[
+<foo>bar</foo>
+<foo> bar </foo>
+]]></programlisting>
+
+            <para>When this option is set to <literal>true</literal>,
+            <literal>Diff</literal> will use the XSLT transformer
+            under the covers.</para>
+          </listitem>
+
+          <listitem>"Normalizing" Whitespace
+
+            <para>If you set
+            <literal>XMLUnit.setNormalizeWhitespace</literal> to true
+            then XMLUnit will replace any kind of whitespace found in
+            character content with a SPACE character and collapse
+            consecutive whitespace characters to a single SPACE.  It
+            will also trim the resulting character content on both
+            ends.</para>
+
+            <para>The following two <literal>&lt;foo&gt;</literal>
+            elements will be considered identical if the option has
+            been set:</para>
+
+            <programlisting language="XML"><![CDATA[
+<foo>bar baz</foo>
+<foo> bar
+            baz</foo>
+]]></programlisting>
+
+            <para>Note that this is not related to "normalizing" the
+            document as a whole (see <xref
+            linkend="Normalizing Documents"/>).</para>
+
+          </listitem> 
+
+        </itemizedlist>
+      </section>
+
+      <section id="Normalizing Documents">
+        <title>"Normalizing" <literal>Document</literal>s</title>
+
+        <para>"Normalize" in this context corresponds to the
+        <literal>normalize</literal> method in DOM's
+        <literal>Document</literal> class.  It is the process of
+        merging adjacent <literal>Text</literal> nodes and is not
+        related to "normalizing whitespace" as described in the
+        previous section.</para>
+
+        <para>Usually you don't need to care about this option since
+        the XML parser is required to normalize the
+        <literal>Document</literal> when creating it.  The only reason
+        you may want to change the option via
+        <literal>XMLUnit.setNormalize</literal> is that your
+        <literal>Document</literal> instances have not been created by
+        an XML parser but rather been put together in memory using the
+        DOM API directly.</para>
+      </section>
+
+      <section id="Ignoring Comments">
+        <title>Ignoring Comments</title>
+
+        <para>Using <literal>XMLUnit.setIgnoreComments</literal> you
+        can make XMLUnit's difference engine ignore comments
+        completely.</para>
+
+        <para>When this option is set to <literal>true</literal>,
+        <literal>Diff</literal> will use the XSLT transformer under
+        the covers.</para>
+      </section>
+
+      <section id="Treating CDATA Sections and Text Nodes Alike">
+        <title>Treating CDATA Sections and Text Nodes Alike</title>
+
+        <para>It is not always necessary to know whether a text has
+        been put into a CDATA section or not.  Using
+        <literal>XMLUnit.setIgnoreDiffBetweenTextAndCDATA</literal>
+        you can make XMLUnit consider the following two pieces of XML
+        identical:</para>
+
+        <programlisting language="XML"><![CDATA[
+<foo>&lt;bar&gt;</foo>
+]]></programlisting>
+        <programlisting language="XML">
+&lt;foo>&lt;![CDATA[&lt;bar&gt;]]&gt;&lt;/foo>
+</programlisting>
+      </section>
+
+      <section id="Entity Reference Expansion">
+        <title>Entity Reference Expansion</title>
+
+        <para>Normally the XML parser will expand character references
+        to their Unicode equivalents but for more complex entity
+        definitions the parser may expand them or not.
+        Using <literal>XMLUnit.setExpandEntityReferences</literal> you
+        can control the parser's setting.</para>
+      </section>
+    </section>
+
+  </section>
+
+  <section id="Validating XML Documents">
+    <title>Validating XML Documents</title>
+
+    <section id="The Validator Class">
+      <title>The <literal>Validator</literal> Class</title>
+
+      <para>The <literal>Validator</literal> class encapsulates
+      XMLUnit's validation support.  It will use the
+      <literal>SAXParser</literal> configured in XMLUnit (see <xref
+      linkend="JAXP"/>).</para>
+
+      <para>The piece of XML to validate is specified in the
+      constructor.  The constructors using more than a single argument
+      are only relevant if you want to validate against a DTD and need
+      to provide the location of the DTD itself - for details see the
+      next section.</para>
+
+      <para>By default, <literal>Validator</literal> will validate
+      against a DTD, but it is possible to validate against a (or
+      multiple) Schema(s) as well.  Schema validation requires an XML
+      parser that supports it, of course.</para>
+
+      <section id="DTD Validation">
+        <title>DTD Validation</title>
+      </section>
+
+      <para>Validating against a DTD is straight forward if the piece
+      of XML contains a <literal>DOCTYPE</literal> declaration with a
+      <literal>SYSTEM</literal> identifier that can be resolved at
+      validation time.  Simply create a <literal>Validator</literal>
+      object using one of the single argument constructors.</para>
+
+      <example>
+        <title>Validating Against the DTD Defined in
+          <literal>DOCTYPE</literal></title>
+        <programlisting language="Java"><![CDATA[
+InputSource is = new InputSource(new FileInputStream(myXmlDocument));
+Validator v = new Validator(is);
+boolean isValid = v.isValid();
+]]></programlisting></example>
+
+      <para>If the piece of XML doesn't contain any
+      <literal>DOCTYPE</literal> declaration at all or it contains a
+      <literal>DOCTYPE</literal> but you want to validate against a
+      different DTD, you'd use one of the three argument versions of
+      <literal>Validator</literal>'s constructors.  In this case the
+      <literal>publicId</literal> argument becomes the
+      <literal>PUBLIC</literal> and <literal>systemId</literal> the
+      <literal>SYSTEM</literal> identifier of the
+      <literal>DOCTYPE</literal> that is implicitly added to the piece
+      of XML.  Any existing <literal>DOCTYPE</literal> will be
+      removed.  The <literal>systemId</literal> should be a URL that
+      can be resolved by your parser.</para>
+
+      <example>
+        <title>Validating a Piece of XML that doesn't Contain a
+        <literal>DOCTYPE</literal></title>
+        <programlisting language="Java"><![CDATA[
+InputSource is = new InputSource(new FileInputStream(myXmlDocument));
+Validator v = new Validator(is,
+                            (new File(myDTD)).toURI().toURL().toString(),
+                            myPublicId);
+boolean isValid = v.isValid();
+]]></programlisting></example>
+
+      <para>If the piece of XML already has the correct
+      <literal>DOCTYPE</literal> declaration but the declaration
+      either doesn't specify a <literal>SYSTEM</literal> identifier at
+      all or you want the <literal>SYSTEM</literal> identifier to
+      resolve to a different location you have two options:</para>
+
+      <itemizedlist>
+        <listitem>Use one of the two argument constructors and specify
+          the alternative URL as
+          <literal>systemId</literal>.
+
+      <example>
+        <title>Validating Against a Local DTD</title>
+        <programlisting language="Java"><![CDATA[
+InputSource is = new InputSource(new FileInputStream(myXmlDocument));
+Validator v = new Validator(is,
+                            (new File(myDTD)).toURI().toURL().toString());
+boolean isValid = v.isValid();
+]]></programlisting></example>
+        </listitem>
+
+        <listitem>Use a custom <literal>EntityResolver</literal> via
+          <literal>XMLUnit.setControlEntityResolver</literal> together
+          with one of the single argument constructor overloads of
+          Validator.
+
+          <para>This approach would allow you to use an OASIS
+          catalog<footnote><para><ulink
+          url="http://www.oasis-open.org/committees/download.php/14809/xml-catalogs.html">http://www.oasis-open.org/committees/download.php/14809/xml-catalogs.html</ulink></para></footnote>
+          in conjunction with the Apache XML Resolver
+          library<footnote><para><ulink
+          url="http://xml.apache.org/commons/components/resolver/index.html">http://xml.apache.org/commons/components/resolver/index.html</ulink></para></footnote>
+          to resolve the DTD location as well as the location of any
+          other entity in your piece of XML, for example.</para>
+
+      <example>
+        <title>Validating Against a DTD Using Apache's XML Resolver and
+        an XML Catalog</title>
+        <programlisting language="Java"><![CDATA[
+InputSource is = new InputSource(new FileInputStream(myXmlDocument));
+XMLUnit.setControlEntityResolver(new CatalogResolver());
+Validator v = new Validator(is);
+boolean isValid = v.isValid();
+]]></programlisting>
+
+        <programlisting><![CDATA[
+#CatalogManager.properties
+
+verbosity=1
+relative-catalogs=yes
+catalogs=/some/path/to/catalog
+prefer=public
+static-catalog=yes
+catalog-class-name=org.apache.xml.resolver.Resolver
+]]></programlisting>
+
+        <programlisting language="XML"><![CDATA[
+<!-- catalog file -->
+
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  <public publicId="-//Some//DTD V 1.1//EN"
+          uri="mydtd.dtd"/>
+</catalog>
+]]></programlisting>
+
+</example>
+
+        </listitem>
+      </itemizedlist>
+
+      <section id="XML Schema Validation">
+        <title>XML Schema Validation</title>
+      </section>
+
+      <para>In order to validate against the XML Schema language
+      Schema validation has to be enabled via the
+      <literal>useXMLSchema</literal> method of
+      <literal>Validator</literal>.</para>
+
+      <para>By default the parser will try to resolve the location of
+      Schema definition files via a <literal>schemaLocation</literal>
+      attribute if it is present in the piece of XML or it will try to
+      open the Schema's URI as an URL and read from it.</para>
+
+      <para>The <literal>setJAXP12SchemaSource</literal> method of
+      <literal>Validator</literal> allows you to override this
+      behavior as long as the parser supports the
+      <literal>http://java.sun.com/xml/jaxp/properties/schemaSource</literal>
+      property in the way described in "JAXP 1.2 Approved
+      CHANGES"<footnote><para><ulink
+      url="http://java.sun.com/webservices/jaxp/change-requests-11.html">http://java.sun.com/webservices/jaxp/change-requests-11.html</ulink></para></footnote>.</para>
+
+      <para><literal>setJAXP12SchemaSource</literal>'s argument can be
+      one of</para>
+
+      <itemizedlist>
+        <listitem>A <literal>String</literal> which contains an
+          URI.</listitem>
+        <listitem>An <literal>InputStream</literal> the Schema can be
+          read from.</listitem>
+        <listitem>An <literal>InputSource</literal> the Schema can be
+          read from.</listitem>
+        <listitem>A <literal>File</literal> the Schema can be
+          read from.</listitem>
+        <listitem>An array containing any of the above.</listitem>
+      </itemizedlist>
+
+      <para>If the property has been set using a
+      <literal>String</literal>, the <literal>Validator</literal>
+      class will provide its <literal>systemId</literal> as specified
+      in the constructor when asked to resolve it.  You must only use
+      the single argument constructors if you want to avoid this
+      behavior.  If no <literal>systemId</literal> has been specified,
+      the configured <literal>EntityResolver</literal> may still be
+      used.</para>
+
+      <example id="schema-jaxp12">
+        <title>Validating Against a Local XML Schema</title>
+        <programlisting language="Java"><![CDATA[
+InputSource is = new InputSource(new FileInputStream(myXmlDocument));
+Validator v = new Validator(is);
+v.useXMLSchema(true);
+v.setJAXP12SchemaSource(new File(myXmlSchemaFile));
+boolean isValid = v.isValid();
+]]></programlisting></example>
+
+    </section>
+
+    <section id="Validation: JUnit 3">
+      <title>JUnit 3.x Convenience Methods</title>
+
+      <para>Both <literal>XMLAssert</literal> and
+      <literal>XMLTestCase</literal> provide an
+      <literal>assertXMLValid(Validator)</literal> method that will
+      fail if <literal>Validator</literal>'s
+      <literal>isValid</literal> method returns
+      <literal>false</literal>.</para>
+
+      <para>In addition several overloads of the
+      <literal>assertXMLValid</literal> method are provided that
+      directly correspond to similar overloads of
+      <literal>Validator</literal>'s constructor.  These overloads
+      don't support XML Schema validation at all.</para>
+
+      <para><literal>Validator</literal> itself provides an
+      <literal>assertIsValid</literal> method that will throw an
+      <literal>AssertionFailedError</literal> if validation
+      fails.</para>
+
+      <para>Neither method provides any control over the message of
+      the <literal>AssertionFailedError</literal> in case of a
+      failure.</para>
+    </section>
+
+    <section id="Validation: Configuration">
+      <title>Configuration Options</title>
+
+      <itemizedlist>
+        <listitem><literal>Validator</literal> uses a SAX parser
+        created by the configured SAX parser factory (see <xref
+        linkend="JAXP"/>).</listitem>
+
+        <listitem>It will use the "control"
+        <literal>EntityResolver</literal> if one has been specified
+        (see <xref linkend="EntityResolver"/>).</listitem>
+
+        <listitem>The location of a DTD can be specified via
+        <literal>Validator</literal>'s <literal>systemId</literal>
+        constructor argument or a custom EntityResolver (see <xref
+        linkend="DTD Validation"/>).</listitem>
+
+        <listitem>XML Schema validation is enabled via
+        <literal>Validator.useXMLSchema(true)</literal>.</listitem>
+
+        <listitem>The location(s) of XML Schema document(s) can be
+        specified via
+        <literal>Validator.setJAXP12SchemaSource</literal> (see <xref
+        linkend="XML Schema Validation"/>).</listitem>
+      </itemizedlist>
+    </section>
+
+    <section id="JAXP 1.3 Validation">
+      <title>JAXP 1.3 Validation</title>
+
+      <para>JAXP 1.3 - shipping with Java5 or better and available as
+      a separate product for earlier Java VMs - introduces a new
+      package <ulink url="https://jaxp-sources.dev.java.net/nonav/docs/api/"><literal>javax.xml.validation</literal></ulink>
+      designed for validations of snippets of XML against different
+      schema languages.  Any compliant implementation must support the
+      W3C XML Schema language, but other languages
+      like <ulink url="http://www.relaxng.org/">RELAX NG</ulink> or
+      <ulink url="http://www.schematron.com/">Schematron</ulink> may
+      be supported as well.</para>
+
+      <para>The
+      class <literal>org.custommonkey.xmlunit.jaxp13.Validator</literal>
+      can be used to validate a piece of XML against a schema
+      definition but also to validate the schema definition itself.
+      By default <literal>Validator</literal> will assume your
+      definition uses the W3C XML Schema language, but it provides a
+      constructor that can be used to specify a different language via
+      an URL supported by the <literal>SchemaFactory</literal> class.
+      Alternatively you can specify the schema factory itself.</para>
+
+      <para>The schema definition itself can be given via
+      <literal>Source</literal> elements, just like the pieces of XML
+      to validate are specified as <literal>Source</literal> as
+      well.</para>
+
+      <para>The following example
+      uses <literal>org.custommonkey.xmlunit.jaxp13.Validator</literal>
+      to perform the same type of validation shown in
+      <xref linkend="schema-jaxp12"/>.</para>
+
+      <example id="schema-jaxp13">
+        <title>Validating Against a Local XML Schema</title>
+        <programlisting language="Java"><![CDATA[
+Validator v = new Validator();
+v.addSchemaSource(new StreamSource(new File(myXmlSchemaFile)));
+StreamSource is = new StreamSource(new File(myXmlDocument));
+boolean isValid = v.isInstanceValid(is);
+]]></programlisting></example>
+
+      <para>Validating a schema definition is shown in the next
+      example.</para>
+
+      <example>
+        <title>Validating an XML Schema Definition</title>
+        <programlisting language="Java"><![CDATA[
+Validator v = new Validator();
+v.addSchemaSource(new StreamSource(new File(myXmlSchemaFile)));
+boolean isValid = v.isSchemaValid();
+]]></programlisting></example>
+
+      <para>There is no explicit JUnit 3 support
+      for <literal>org.custommonkey.xmlunit.jaxp13.Validator</literal>.</para>
+
+    </section>
+
+  </section>
+
+  <section id="XPath Tests">
+    <title>XPath Tests</title>
+
+    <section id="XPath Engines">
+      <title>XPath Engines</title>
+
+      <para>Central to XMLUnit's XPath support is the
+      <literal>XpathEngine</literal> interface which consists of only
+      three methods:</para>
+
+      <programlisting language="Java"><![CDATA[
+    /**
+     * Execute the specified xpath syntax <code>select</code> expression
+     * on the specified document and return the list of nodes (could have
+     * length zero) that match
+     * @param select
+     * @param document
+     * @return list of matching nodes
+     */
+    NodeList getMatchingNodes(String select, Document document)
+        throws XpathException;
+    
+    /**
+     * Evaluate the result of executing the specified XPath syntax
+     * <code>select</code> expression on the specified document
+     * @param select
+     * @param document
+     * @return evaluated result
+     */
+    String evaluate(String select, Document document)
+        throws XpathException;
+
+    /**
+     * Establish a namespace context.
+     */
+    void setNamespaceContext(NamespaceContext ctx);
+]]></programlisting>
+
+
+      <para>The first two methods expect an XPath expression that
+      selects content from the DOM document that is the second
+      argument.  The result of the selection can be either a DOM
+      <literal>NodeList</literal> or a <literal>String</literal>.  The
+      later form tries to flatten the result, the value is said to be
+      "String-ified".</para>
+
+      <para>The third method is part of XMLUnit's support for XML
+      Namespaces in XPath expressions.  See <xref linkend="Using XML Namespaces in XPath Selectors"/>
+      for more details.</para>
+
+      <para>There are two implementations of the interface,
+      <literal>org.custommonkey.xmlunit.SimpleXpathEngine</literal>
+      and
+      <literal>org.custommonkey.xmlunit.jaxp13.Jaxp13XpathEngine</literal>.
+      The first implementation is the only one available in XMLUnit
+      1.0 and uses the <link linked="JAXP">configured</link> JAXP XSLT
+      transformer.  The second is new to XMLUnit 1.1 and only
+      available if JAXP 1.3 or later is supported, which should be the
+      case for Java 5 and later.</para>
+
+      <para><literal>XpathException</literal> is an
+      <literal>Exception</literal> that will be thrown for invalid
+      XPath expressions or other problems with the underlying XPath
+      engine.  It will typically wrap a
+      <literal>javax.xml.xpath.XPathExpressionException</literal> in
+      the <literal>Jaxp13XpathEngine</literal> case or a
+      <literal>javax.xml.transform.TransformerException</literal> when
+      <literal>SimpleXpathEngine</literal> is used.</para>
+
+      <para>The <literal>XMLUnit.newXpathEngine</literal> method will
+      first try to create an instance of
+      <literal>Jaxp13XpathEngine</literal> and fall back to
+      <literal>SimpleXpathEngine</literal> if JAXP 1.3 is not
+      supported.</para>
+
+      <para>One example of using the XPath support is included inside
+      it <literal>org.custommonkey.xmlunit.examples</literal> package.
+      It asserts that the string-ified form of an XPath selection
+      matches a regular expression.  The code needed for this
+      is:</para>
+
+      <example>
+        <title>Matching an XPath Selection Against a Regular
+          Expression</title>
+        <programlisting language="Java"><![CDATA[
+    XpathEngine engine = XMLUnit.newXpathEngine();
+    String value = engine.evaluate(xpath, doc);
+    Assert.assertTrue(message, value.matches(regex));
+]]></programlisting></example>
+
+    </section>
+    
+    <section id="Using XML Namespaces in XPath Selectors">
+      <title>Using XML Namespaces in XPath Selectors</title>
+
+      <para>Starting with XMLUnit 1.1 XML Namespaces are supported for
+      XPath queries.</para>
+
+      <para>The <literal>NamespaceContext</literal> interface provides
+      a mapping from prefix to namespace URI and is used by the XPath
+      engine.  XPath selections then use the mapping's prefixes where
+      needed.  Note that a prefix used in the document under test and
+      a prefix given as part of the
+      <literal>NamespaceContext</literal> are not related at all; the
+      context only applies to the XPath expression, the prefix used in
+      the document is ignored completely.</para>
+
+      <para>Right now XMLUnit provides only a single implementation of
+      the <literal>NamespaceContext</literal> interface:
+      <literal>SimpleNamespaceContext</literal>.  This implementation
+      expects a <literal>java.util.Map</literal> as its constructor
+      argument.  The <literal>Map</literal> must contain
+      (<literal>String</literal>) prefixes as keys and
+      (<literal>String</literal>) namespace URIs as values.</para>
+
+      <para>The empty string is used as prefix for the default
+      namespace of a document.</para>
+
+      <para>The following example is taken from XMLUnit's own tests.
+      It demonstrates that the namespace prefix of the document under
+      test is irrelevant and shows how to set up the namespace
+      context.</para>
+
+      <example>
+        <title>Using Namespaces in XPath Tests</title>
+        <programlisting language="Java"><![CDATA[
+    String testDoc = "<t:test xmlns:t=\"urn:foo\"><t:bar/></t:test>";
+    Document d = XMLUnit.buildControlDocument(testDoc);
+    HashMap m = new HashMap();
+    m.put("foo", "urn:foo");
+
+    NamespaceContext ctx = new SimpleNamespaceContext(m);
+    XpathEngine engine = XMLUnit.newXpathEngine();
+    engine.setNamespaceContext(ctx);
+
+    NodeList l = engine.getMatchingNodes("//foo:bar", d);
+    assertEquals(1, l.getLength());
+    assertEquals(Node.ELEMENT_NODE, l.item(0).getNodeType());
+]]></programlisting></example>
+
+      <para>It is possible to set a global
+      <literal>NamespaceContext</literal>, see <xref
+      linkend="XPath: Configuration"/> for details.</para>
+    </section>
+
+    <section id="XPath: JUnit 3">
+      <title>JUnit 3.x Convenience Methods</title>
+
+      <para><literal>XMLTestCase</literal> and
+      <literal>XMLAssert</literal> provide several overloads for the
+      following common types of assertions:</para>
+
+      <itemizedlist>
+
+        <listitem>Two XPath expression should return the same DOM
+        <literal>NodeList</literal> as result:
+        <literal>assertXpathsEqual</literal>.  There are methods that
+        use two different expressions on the same document and others
+        that compare expressions selecting from two different
+        documents.
+
+          <para>The <literal>NodeList</literal>s are wrapped into a
+          surrogate root XML element and the resulting DOM
+          <literal>Document</literal>s are compared using
+          <literal>Diff.similar()</literal>.</para>
+        </listitem>
+
+        <listitem>The opposite of the above, the expressions should
+        yield different results:
+        <literal>assertXpathsNotEqual</literal>.</listitem>
+
+        <listitem>Two XPath expression should return the same
+        "String-ified" result:
+        <literal>assertXpathValuesEqual</literal>.  There are methods
+        that use two different expressions on the same document and
+        others that compare expressions selecting from two different
+        documents.</listitem>
+
+        <listitem>The opposite of the above, the expressions should
+        yield different results:
+        <literal>assertXpathValuesNotEqual</literal>.</listitem>
+
+        <listitem>The XPath expression should return an expected value
+        when "String-ified":
+        <literal>assertXpathEvaluatesTo</literal>.</listitem>
+
+        <listitem>The <literal>NodeList</literal> selected by an XPath
+        expression is not empty:
+        <literal>assertXpathExists</literal>.</listitem>
+
+        <listitem>The <literal>NodeList</literal> selected by an XPath
+        expression is empty:
+        <literal>assertXpathNotExists</literal>.</listitem>
+      </itemizedlist>
+
+      <para>Neither method provides any control over the message of
+      the <literal>AssertionFailedError</literal> in case of a
+      failure.</para>
+    </section>
+
+    <section id="XPath: Configuration">
+      <title>Configuration Options</title>
+
+      <para>When using <literal>XpathEngine</literal> directly you are
+      responsible for creating the DOM document yourself.  If you use
+      the convenience methods of <literal>XMLTestCase</literal> or
+      <literal>XMLAssert</literal> you have several options to specify
+      the input; XMLUnit will use the control or test parser that has
+      been configured (see <xref linkend="JAXP"/>) to create a DOM
+      document from the given piece of XML in that case - using the
+      configured <literal>EntityResolver</literal>(s) (see <xref
+      linkend="EntityResolver"/>) if any.</para>
+
+      <para>If JAXP 1.3 is not available,
+      <literal>SimpleXpathEngine</literal> will use the configured
+      JAXP XSLT transformer (see <xref linkend="JAXP"/>) under the
+      covers.</para>
+
+      <para>When using JAXP 1.3 you can chose the actual
+      <literal>XPathFactory</literal> implementation using
+      <literal>XMLUnit.setXPathFactory</literal>.</para>
+
+      <para>It is possible to establish a global
+      <literal>NamespaceContext</literal> with the help of the
+      <literal>XMLUnit.setXpathNamespaceContext</literal> method.  Any
+      <literal>XpathEngine</literal> created by
+      <literal>XMLUnit.newXpathEngine</literal> will automatically use
+      the given context.  Note that the JUnit 3 convenience methods
+      use <literal>XMLUnit.newXpathEngine</literal> implicitly and
+      will thus use the configured
+      <literal>NamespaceContext</literal>.</para>
+
+    </section>
+  </section>
+
+  <section id="DOM Tree Walking">
+    <title>DOM Tree Walking</title>
+
+    <para>Sometimes it is easier to test a piece of XML's validity by
+    traversing the whole document node by node and test each node
+    individually.  Maybe there is no control XML to validate against
+    or the expected value of an element's content has to be
+    calculated.  There may be several reasons.</para>
+
+    <para>XMLUnit supports this approach of testing via the
+    <literal>NodeTest</literal> class.  In order to use it, you need a
+    DOM implementation that generates <literal>Document</literal>
+    instances that implement the optional
+    <literal>org.w3c.traversal.DocumentTraversal</literal> interface,
+    which is not part of JAXP's standardized DOM support.</para>
+
+    <section id="DocumentTraversal">
+      <title><literal>DocumentTraversal</literal></title>
+
+      <para>As of the release of XMLUnit 1.1 the
+      <literal>Document</literal> instances created by most parsers
+      implement <literal>DocumentTraversal</literal>, this includes
+      but is not limited to Apache Xerces, the parser shipping with
+      Sun's JDK 5 and later or GNU JAXP.  One notable exception is
+      Apache Crimson, which also means the parser shipping with Sun's
+      JDK 1.4 does not support traversal; you need to specify a
+      different parser when using JDK 1.4 (see <xref
+      linkend="JAXP"/>).</para>
+
+      <para>You can test whether your XML parser supports
+      <literal>DocumentTraversal</literal> by invoking
+      <literal>org.w3c.dom.DOMImplementation</literal>'s
+      <literal>hasFeature</literal> method with the feature
+      <literal>"Traversal"</literal>.</para>
+    </section>
+
+    <section id="NodeTest">
+      <title><literal>NodeTest</literal></title>
+
+      <para>The <literal>NodeTest</literal> is instantiated with a
+      piece of XML to traverse.  It offers two
+      <literal>performTest</literal> methods:</para>
+
+      <programlisting language="Java"><![CDATA[
+    /**
+     * Does this NodeTest pass using the specified NodeTester instance?
+     * @param tester
+     * @param singleNodeType note <code>Node.ATTRIBUTE_NODE</code> is not
+     *  exposed by the DocumentTraversal node iterator unless the root node
+     *  is itself an attribute - so a NodeTester that needs to test attributes
+     *  should obtain those attributes from <code>Node.ELEMENT_NODE</code>
+     *  nodes
+     * @exception NodeTestException if test fails
+     */
+    public void performTest(NodeTester tester, short singleNodeType);
+
+    /**
+     * Does this NodeTest pass using the specified NodeTester instance?
+     * @param tester
+     * @param nodeTypes note <code>Node.ATTRIBUTE_NODE</code> is not
+     *  exposed by the DocumentTraversal node iterator unless the root node
+     *  is itself an attribute - so a NodeTester that needs to test attributes
+     *  should obtain those attributes from <code>Node.ELEMENT_NODE</code>
+     *  nodes instead
+     * @exception NodeTestException if test fails
+     */
+    public void performTest(NodeTester tester, short[] nodeTypes);
+]]></programlisting>
+
+      <para><literal>NodeTester</literal> is the class testing each
+      node and is described in the next section.</para>
+
+      <para>The second argument limits the tests on DOM
+      <literal>Node</literal>s of (a) specific type(s).
+      <literal>Node</literal> types are specified via the
+      <literal>static</literal> fields of the <literal>Node</literal>
+      class.  Any <literal>Node</literal> of a type not specified as
+      the second argument to <literal>performTest</literal> will be
+      ignored.</para>
+
+      <para>Unfortunately XML attributes are not exposed as
+      <literal>Node</literal>s during traversal.  If you need access
+      to attributes you must add <literal>Node.ELEMENT_NODE</literal>
+      to the second argument of <literal>performTest</literal> and
+      access the attributes from their parent
+      <literal>Element</literal>.</para>
+
+      <example id="nodetest-attributes">
+        <title>Accessing Attributes in a
+          <literal>NodeTest</literal></title>
+        <programlisting language="Java"><![CDATA[
+    ...
+    NodeTest nt = new NodeTest(myXML);
+    NodeTester tester = new MyNodeTester();
+    nt.performTest(tester, Node.ELEMENT_NODE);
+    ...
+
+class MyNodeTester implements NodeTester {
+    public void testNode(Node aNode, NodeTest test) {
+        Element anElement = (Element) aNode;
+        Attr attributeToTest = anElement.getAttributeNode(ATTRIBUTE_NAME);
+        ...
+    }
+    ...
+}
+]]></programlisting></example>
+
+      <para>Any entities that appear as part of the
+      <literal>Document</literal> are expanded before the traversal
+      starts.</para>
+
+    </section>
+
+    <section id="NodeTester">
+      <title>NodeTester</title>
+
+      <para>Implementations of the <literal>NodeTester</literal>
+      interface are responsible for the actual test:</para>
+
+      <programlisting language="Java"><![CDATA[
+    /**
+     * Validate a single Node
+     * @param aNode
+     * @param forTest
+     * @exception NodeTestException if the node fails the test
+     */
+    void testNode(Node aNode, NodeTest forTest) throws NodeTestException ;
+
+    /**
+     * Validate that the Nodes passed one-by-one to the <code>testNode</code>
+     * method were all the Nodes expected.
+     * @param forTest
+     * @exception NodeTestException if this instance was expecting more nodes
+     */
+    void noMoreNodes(NodeTest forTest) throws NodeTestException ;
+]]></programlisting>
+
+      <para><literal>NodeTest</literal> invokes
+      <literal>testNode</literal> for each <literal>Node</literal> as
+      soon as it is reached on the traversal.  This means
+      <literal>NodeTester</literal> "sees" the
+      <literal>Node</literal>s in the same order they appear within
+      the tree.</para>
+
+      <para><literal>noMoreNodes</literal> is invoked when the
+      traversal is finished.  It will also be invoked if the tree didn't
+      contain any matched <literal>Node</literal>s at all.</para>
+
+      <para>Implementations of <literal>NodeTester</literal> are
+      expected to throw a <literal>NodeTestException</literal> if the
+      current not doesn't match the test's expectations or more nodes
+      have been expected when <literal>noMoreNodes</literal> is
+      called.</para>
+
+      <para>XMLUnit ships with two implementations of
+      <literal>NodeTest</literal> that are described in the following
+      to sections.</para>
+
+      <section id="AbstractNodeTester">
+        <title><literal>AbstractNodeTester</literal></title>
+
+        <para><literal>AbstractNodeTester</literal> implements
+        <literal>testNode</literal> by testing the passed in
+        <literal>Node</literal> for its type and delegating to one of
+        the more specific <literal>test...</literal> Methods it adds.
+        By default the new <literal>test...</literal> methods all
+        throw a <literal>NodeTestException</literal> because of an
+        unexpected <literal>Node</literal>.</para>
+
+        <para>It further implements <literal>noMoreNodes</literal>
+        with an empty method - i.e. it does nothing.</para>
+
+        <para>If you are only testing for specific types of
+        <literal>Node</literal> it may be more convenient to subclass
+        <literal>AbstractNodeTester</literal>.  For example <xref
+        linkend="nodetest-attributes"/> could be re-written as:</para>
+
+        <example>
+          <title>Accessing Attributes in a
+            <literal>NodeTest</literal> -
+            <literal>AbstractNodeTester</literal> version</title>
+          <programlisting language="Java"><![CDATA[
+    ...
+    NodeTest nt = new NodeTest(myXML);
+    NodeTester tester = new AbstractNodeTester() {
+        public void testElement(Element element) throws NodeTestException {
+            Attr attributeToTest = element.getAttributeNode(ATTRIBUTE_NAME);
+            ...
+        }
+    };
+    nt.performTest(tester, Node.ELEMENT_NODE);
+    ...
+]]></programlisting></example>
+
+        <para>Note that even though
+        <literal>AbstractNodeTester</literal> contains a
+        <literal>testAttribute</literal> method it will never be
+        called by default and you still need to access attributes via
+        their parent elements.</para>
+
+        <para>Note also that the root of the test is the document's
+        root element, so any <literal>Node</literal>s preceding the
+        document's root <literal>Element</literal> won't be visited
+        either.  For this reason the
+        <literal>testDocumentType</literal>,
+        <literal>testEntity</literal> and
+        <literal>testNotation</literal> methods are probably never
+        called either.</para>
+
+        <para>Finally, all entity references have been expanded before
+        the traversal started.  <literal>EntityReference</literal>s
+        will have been replaced by their replacement text if it is
+        available, which means <literal>testEntityReference</literal>
+        will not be called for them either.  Instead the replacement
+        text will show up as (part of) a <literal>Text</literal> node
+        or as <literal>Element</literal> node, depending on the
+        entity's definition.</para>
+      </section>
+
+      <section id="CountingNodeTester">
+        <title><literal>CountingNodeTester</literal></title>
+
+        <para><literal>org.custommonkey.xmlunit.examples.CountingNodeTester</literal>
+        is a simple example <literal>NodeTester</literal> that asserts
+        that a given number of <literal>Node</literal>s have been
+        traversed.  It will throw a
+        <literal>NodeTestException</literal> when
+        <literal>noMoreNodes</literal> is called before the expected
+        number of <literal>Node</literal>s has been visited or the
+        actual number of nodes exceeded the expected count.</para>
+      </section>
+    </section>
+
+    <section id="DOM Tree: JUnit 3">
+      <title>JUnit 3.x Convenience Methods</title>
+
+      <para><literal>XMLAssert</literal> and
+      <literal>XMLTestCase</literal> contain overloads of
+      <literal>assertNodeTestPasses</literal> methods.</para>
+
+      <para>The most general form of it expects you to create a
+      <literal>NodeTest</literal> instance yourself and lets you
+      specify whether you expect the test to fail or to pass.</para>
+
+      <para>The other two overloads create a
+      <literal>NodeTest</literal> instance from either
+      <literal>String</literal> or a SAX
+      <literal>InputSource</literal> and are specialized for the case
+      where you are only interested in a single <literal>Node</literal>
+      type and expect the test to pass.</para>
+
+      <para>Neither method provides any control over the message of
+      the <literal>AssertionFailedError</literal> in case of a
+      failure.</para>
+    </section>
+
+    <section id="DOM Tree: Configuration">
+      <title>Configuration Options</title>
+
+      <para>The only configurable option for
+      <literal>NodeTest</literal> is the XML parser used if the piece
+      of XML is not specified as a <literal>Document</literal> or
+      <literal>DocumentTraversal</literal>.
+      <literal>NodeTest</literal> will use the "control" parser that
+      has been configured - see <xref linkend="JAXP"/> for
+      details.</para>
+
+      <para>It will also use the <literal>EntityResolver</literal>
+      configured for the control parser if one has been set - see
+      <xref linkend="EntityResolver"/>.</para>
+    </section>
+
+  </section>
+
+  <appendix id="changes">
+    <title>Changes</title>
+
+    <section id="Changes 1.1">
+      <title>Changes from XMLUnit 1.0 to 1.1</title>
+
+      <para>XMLUnit 1.1's main focus was to add two features that have
+        been asked for repeatedly:</para>
+
+      <itemizedlist>
+        <listitem>Support for XML Namespaces in XPath
+          processing</listitem>
+
+        <listitem>Support for XML Schema validation.</listitem>
+      </itemizedlist>
+
+      <para>In addition some JAXP features that have been added after
+      the release of XMLUnit 1.0 are now supported - most notably
+      XPath support - and all reported bugs and feature requests have
+      been addressed.</para>
+
+      <section id="Breaking Changes 1.1">
+        <title>Breaking Changes</title>
+
+        <itemizedlist>
+          <listitem>
+            <literal>XMLTestCase</literal> is now abstract.  You
+            probably have never created instances of this class
+            without subclassing it, but if you did, your code will now
+            break.  You will most likely want to look at the
+            <literal>XMLAssert</literal> class.
+          </listitem>
+
+          <listitem>
+            <para>All methods that have been deprecated in XMLUnit 1.0
+            have been removed.</para>
+          </listitem>
+
+          <listitem>
+            <para>All methods that had been declared to throw
+            <literal>TransformerConfigurationException</literal> or
+            <literal>ParserConfigurationException</literal> now no
+            longer declare it.  Exceptions of these types cannot be
+            recovered from anyway, so XMLUnit will now wrap them in a
+            <literal>org.custommonkey.xmlunit.exceptions.ConfigurationException</literal>
+            which is an unchecked exception.</para>
+
+            <para>This change doesn't have a big impact on your tests,
+            but if you tried to catch these exceptions they will now
+            bypass your catch blocks.</para>
+          </listitem>
+
+          <listitem>
+            <para>A new type of <literal>Difference</literal>
+            (<literal>CHILD_NODE_NOT_FOUND_ID</literal>) has been
+            added.  It will be raised for the excess children if the
+            control element has more child nodes than the test element
+            - or vice versa.</para>
+
+            <para>Prior to XMLUnit 1.1 a <literal>Difference</literal>
+            of either <literal>ELEMENT_TAG_NAME_ID</literal> or
+            <literal>NODE_TYPE_ID</literal> would have been raised if
+            the control element had more children.  The excess
+            children were compared to the very first child node of the
+            test element.  Excess children of the test element were
+            not reported at all.</para>
+          </listitem>
+
+          <listitem>
+            <para>The <literal>schemaLocation</literal> and
+            <literal>noNamespaceSchemaLocation</literal> attributes of
+            the XMLSchema-Instance Namespace are now treated in a
+            different way from "normal" attributes.  They will be
+            flagged as new kinds of <literal>Difference</literal> that
+            is recoverable.</para>
+
+            <para>This means that two pieces of XML that were
+            different in XMLUnit 1.0 because they differed in one of
+            the two attributes will be similar in XMLUnit 1.1.</para>
+          </listitem>
+
+          <listitem>
+            <para>When comparing two elements that differ on
+            attributes the comparison is now symmetric.</para>
+
+            <para>In XMLUnit 1.0 if an attribute was present on the
+            test but not the control element this wasn't flagged as a
+            <literal>Difference</literal>; in XMLUnit 1.1 it
+            is.</para>
+
+            <para>In most practical cases this doesn't cause any
+            problems since the two elements either have a different
+            number of attributes or there are attributes in the
+            control element that are missing in the test element - so
+            the pieces of XML have been flagged as different before as
+            well.  If you are using <literal>DetailedDiff</literal>
+            this change may lead to more detected
+            <literal>Difference</literal>s, though.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section id="New Features 1.1">
+        <title>New Features</title>
+
+        <itemizedlist>
+          <listitem>XMLUnit 1.0 shipped with rudimentary support for
+          XML Schema validation (it worked with Apache Xerces-J but no
+          other parsers).  XMLUnit 1.1 supports Schema validation for
+          any JAXP compliant XML parser (that supports Schema itself).
+          You can also tell XMLUnit where to look for the XML Schema
+          definitions.  See <xref linkend="XML Schema Validation"/> for
+          details.</listitem>
+
+          <listitem>XPath support has undergone significant changes,
+          see <xref linkend="XPath Tests"/> for more details.  In particular
+          XMLUnit will now use <literal>javax.xml.xpath</literal> if
+          it is available (which also helps to avoid the buggy XSLTC
+          version that is the default transformer engine in Java 5)
+          and supports XML namespaces.</listitem>
+
+          <listitem>Several new configuration options have been added,
+            see <xref linkend="Comparing: Configuration"/>.
+            <itemizedlist>
+              <listitem>Treat CDATA sections and Texts alike.  <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1262148&amp;group_id=23187&amp;atid=377768">Issue
+              1262148</ulink>.</listitem>
+
+              <listitem>Ignore differences in Text whitespace.  <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=754812&amp;group_id=23187&amp;atid=377771">Issue
+              754812</ulink>.</listitem>
+
+              <listitem>Ignore comments completely.  <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=707255&amp;group_id=23187&amp;atid=377770">Issue
+              707255</ulink>.</listitem>
+
+              <listitem>Ignore the order of attributes.</listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>It is now possible to provide a custom
+          <literal>org.xml.sax.EntityResolver</literal> for control
+          and test parsers.</listitem>
+
+          <listitem>It is now possible to provide a custom
+          <literal>javax.xml.transform.URIResolver</literal> for
+          transformations.</listitem>
+
+          <listitem>New overloads have been added that allow
+          <literal>org.xml.sax.InputSource</literal> to be used as a
+          "piece of XML" in many classes.</listitem>
+
+          <listitem><literal>Validator</literal> will now use the
+          custom <literal>EntityResolver</literal>  <link
+          linkend="EntityResolver">configured</link> for the "control"
+          parser as a fallback.</listitem>
+
+          <listitem>
+            <para>A new package
+              <literal>org.custommonkey.xmlunit.examples</literal> has
+              been added that showcases some of XMLUnit's abilities.
+              It currently contains two classes:</para>
+
+            <orderedlist>
+              <listitem>
+                <literal>MultiLevelElementNameAndTextQualifier</literal>
+                see <xref
+                linkend="MultiLevelElementNameAndTextQualifier"/> for
+                a description.</listitem>
+
+              <listitem><literal>XPathRegexAssert</literal> that
+              provides a JUnit 3.x like
+              <literal>assertXPathMatches</literal> method to verify
+              that the string-ified value of an XPath match matches a
+              given regular expression (requires JDK 1.4 or
+              above).</listitem>
+            </orderedlist>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section id="Bugfixes 1.1">
+        <title>Important Bug Fixes</title>
+
+        <itemizedlist>
+          <listitem><literal>ElementNameAndAttributeQualifier</literal>
+          would throw an <literal>NullPointerException</literal> if
+          the control piece of XML contained attributes that were
+          missing in the test piece of XML.  <ulink
+          url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=952920&amp;group_id=23187&amp;atid=377768">Issue
+          952920</ulink>.</listitem>
+
+          <listitem>
+            <literal>XMLTestCase.assertXMLNotEqual(String, Reader,
+            Reader)</literal> delegated to
+            <literal>assertXMLEqual</literal> instead of
+            <literal>assertXMLNotEqual</literal> internally, negating
+            the assertion's logic.  <ulink
+            url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=956372&amp;group_id=23187&amp;atid=377768">Issue
+            956372</ulink>.</listitem>
+
+          <listitem><literal>XMLTestCase.assertXMLIdentical(Diff,
+          boolean)</literal> delegated to
+          <literal>assertXMLEqual</literal>, weakening the
+          assertion.</listitem>
+
+          <listitem>Under certain circumstances the reported XPath
+          expressions for nodes that showed differences were wrong.
+          XMLUnit could lose the root element or erroneously append an
+          extra attribute name.  Issues <ulink
+          url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1047364&amp;group_id=23187&amp;atid=377768">1047364</ulink>
+          and <ulink url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1027863&amp;group_id=23187&amp;atid=377770">1027863</ulink>.</listitem>
+
+          <listitem>
+            <literal>TolerantSaxParser</literal>'s logic in
+            <literal>characters</literal> was broken and could cause
+            <literal>StringIndexOutOfBoundsException</literal>s.
+            <ulink
+            url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1150234&amp;group_id=23187&amp;atid=377768">Issue 1150234</ulink>.</listitem>
+        </itemizedlist>
+      </section>
+    </section>
+
+    <section id="Changes 1.2">
+      <title>Changes from XMLUnit 1.1 to 1.2</title>
+
+      <section id="Breaking Changes 1.2">
+        <title>Breaking Changes</title>
+
+        <itemizedlist>
+          <listitem>
+            If XMLUnit detects that it cannot match a certain node
+            (i.e. it encounters
+            a <literal>CHILD_NODE_NOT_FOUND</literal>
+            kind of difference) the XPath for the "missing" node will
+            be null.  It used to be some random XPath of a different node.
+          </listitem>
+
+          <listitem>
+            <literal>XMLUnit.setIgnoreDiffBetweenTextAndCDATA</literal>
+            now also
+            sets <literal>DocumentBuilderFactory.setCoalescing</literal>.
+            This has been done so that whitespace differences can be
+            resolved according to the corresponding flags even in the
+            presence of CDATA
+            sections.  <ulink href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1903923&amp;group_id=23187&amp;atid=377768">Issue
+            1903923</ulink>.</listitem>
+
+          <listitem>
+            Two protected methods
+            in <literal>SimpleXPathEngine</literal> (which you
+            shouldn't extend anyway) have added XpathException to
+            their throws list.
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section id="New Features 1.2">
+        <title>New Features</title>
+
+        <itemizedlist>
+          <listitem>The <literal>SAXParserFactory</literal> used
+          by <literal>Validator</literal> can now be configured
+          completely.  <ulink href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1903928&amp;group_id=23187&amp;atid=377771">Issue
+          1903928</ulink>.</listitem>
+
+          <listitem>A new
+          class <literal>org.custommonkey.xmlunit.jaxp13.Validator</literal>
+          can be used to validate schema definitions and schema
+          instances using the <literal>javax.xml.validation</literal>
+          package of JAXP 1.3.  Depending on your JAXP implementation
+          this may allow you to validate documents against schema
+          definitions written in RELAX NG or other schema languages in
+          addition to W3C XML Schema.  See
+          <xref linkend="JAXP 1.3 Validation"/> for details.</listitem>
+
+          <listitem><literal>DifferenceListener</literal> can now
+          "upgrade" recoverable differences to non-recoverable by
+          returning <literal>RETURN_UPGRADE_DIFFERENCE_NODES_DIFFERENT</literal>
+          in the <literal>differenceFound</literal>
+          method.  <ulink url="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1854284&amp;group_id=23187&amp;atid=377771">Issue
+          1854284</ulink>.</listitem>
+
+          <listitem>A new callback
+          interface <literal>MatchTracker</literal> is now notified on
+          successful matches of Nodes.  For more details see
+          <xref linkend="MatchTracker"/>.  <ulink url="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1860491&amp;group_id=23187&amp;atid=377771">Issue
+          1860491</ulink>.</listitem>
+
+          <listitem>It is now possible to have more control over
+          whether the parser expand entity references or not by
+          using <literal>XMLUnit.setExpandEntityReferences</literal>,
+          see <xref linkend="Entity Reference
+          Expansion"/>.  <ulink href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1877458&amp;group_id=23187&amp;atid=377771">Issue
+          1877458</ulink>.</listitem>
+
+          <listitem>New examples have been added:
+            <itemizedlist>
+              <listitem><literal>RecursiveElementNameAndTextQualifier</literal>
+                - a more flexible <literal>ElementQualifier</literal>
+                that fills the same need as
+                <literal>MultiLevelElementNameAndTextQualifier</literal>
+                 See
+                 <xref linkend="RecursiveElementNameAndTextQualifier"/>
+                 for more details.</listitem>
+
+              <listitem><literal>CaseInsensitiveDifferenceListener</literal>
+                a - <literal>DifferenceListener</literal> that ignores
+                case when comparing texts.</listitem>
+
+              <listitem><literal>FloatingPointTolerantDifferenceListener</literal>
+                a - <literal>DifferenceListener</literal> that tries
+                to parse texts as floating point numbers and compares
+                them using a configurable tolerance.</listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section id="Bugfixes 1.2">
+        <title>Important Bug Fixes</title>
+
+        <itemizedlist>
+          <listitem>
+            If XMLUnit couldn't match nodes (i.e. it encountered
+            a <literal>CHILD_NODE_NOT_FOUND</literal> kind of
+            difference), the XPath expressions of the node details
+            have been random.  <ulink
+            url="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1860681&amp;group_id=23187&amp;atid=377768">Issue 1860681</ulink>.
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+
+    <section id="Changes 1.3">
+      <title>Changes from XMLUnit 1.2 to 1.3</title>
+
+      <section id="Breaking Changes 1.2">
+        <title>Breaking Changes</title>
+
+        <itemizedlist>
+        </itemizedlist>
+      </section>
+
+      <section id="New Features 1.2">
+        <title>New Features</title>
+
+        <itemizedlist>
+        </itemizedlist>
+      </section>
+
+      <section id="Bugfixes 1.2">
+        <title>Important Bug Fixes</title>
+
+        <itemizedlist>
+          <listitem>
+            If XMLUnit couldn't match attributes (i.e. it encountered
+            a <literal>ATTR_NAME_NOT_FOUND_ID</literal> kind of
+            difference), the XPath expressions of the node details
+            have been random.  <ulink
+            url="https://sourceforge.net/tracker/index.php?func=detail&aid=2386807&group_id=23187&atid=377768">Issue 2386807</ulink>.
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+
+  </appendix>
+
+</article>

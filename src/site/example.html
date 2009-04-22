@@ -1,0 +1,227 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<TITLE>Example Code - xmlunit.sourceforge.net</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<FONT FACE="Courier" COLOR="#008080">/*
+******************************************************************
+Copyright (c) 2001, Jeff Martin, Tim Bacon
+All rights reserved.
+</FONT><FONT FACE="Courier" >
+</FONT><FONT FACE="Courier" COLOR="#008080">Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+</FONT><FONT FACE="Courier" >
+</FONT><FONT FACE="Courier" COLOR="#008080">    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above
+      copyright notice, this list of conditions and the following
+      disclaimer in the documentation and/or other materials provided
+      with the distribution.
+    * Neither the name of the xmlunit.sourceforge.net nor the names
+      of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written
+      permission.
+</FONT><FONT FACE="Courier" >
+</FONT><FONT FACE="Courier" COLOR="#008080">THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+</FONT><FONT FACE="Courier" >
+</FONT><FONT FACE="Courier" COLOR="#008080">******************************************************************
+*/
+</FONT><FONT FACE="Courier" >
+</FONT><B><FONT FACE="Courier" COLOR="#800080">package</B></FONT><FONT FACE="Courier" > org.custommonkey.xmlunit.examples;
+
+</FONT><B><FONT FACE="Courier" COLOR="#800080">import</B></FONT><FONT FACE="Courier" > java.io.File;
+</FONT><B><FONT FACE="Courier" COLOR="#800080">import</B></FONT><FONT FACE="Courier" > java.io.FileReader;
+</FONT><B><FONT FACE="Courier" COLOR="#800080">import</B></FONT><FONT FACE="Courier" > java.util.List;
+
+</FONT><B><FONT FACE="Courier" COLOR="#800080">import</B></FONT><FONT FACE="Courier" > javax.xml.transform.stream.StreamSource;
+
+</FONT><B><FONT FACE="Courier" COLOR="#800080">import</B></FONT><FONT FACE="Courier" > org.w3c.dom.Document;
+</FONT><B><FONT FACE="Courier" COLOR="#800080">import</B></FONT><FONT FACE="Courier" > org.w3c.dom.Element;
+</FONT><B><FONT FACE="Courier" COLOR="#800080">import</B></FONT><FONT FACE="Courier" > org.w3c.dom.Node;
+</FONT><B><FONT FACE="Courier" COLOR="#800080">import</B></FONT><FONT FACE="Courier" > org.w3c.dom.Text;
+
+</FONT><B><FONT FACE="Courier" COLOR="#800080">import</B></FONT><FONT FACE="Courier" > org.custommonkey.xmlunit.*;
+
+</FONT><FONT FACE="Courier" COLOR="#008080">/**
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">Example</FONT><FONT FACE="Courier" > <a href="index.html">XMLUnit</a> </FONT><FONT FACE="Courier" COLOR="#008080">XMLTestCase</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">code
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">Demonstrates</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">use</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">of:</FONT><FONT FACE="Courier" COLOR="#808080">&lt;br /&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;ul&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;li&gt;</FONT><FONT FACE="Courier" COLOR="#008080">XMLTestCase:</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">assertXMLEqual(),</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">assertXMLNotEqual(),
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">assertXpathExists(),</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">assertXpathNotExists(),</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">assertXpathEvaluatesTo(),
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">assertXpathsEqual(),</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">assertXpathsNotEqual(),</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">assertNodeTestPasses()</FONT><FONT FACE="Courier" COLOR="#808080">&lt;/li&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;li&gt;</FONT><FONT FACE="Courier" COLOR="#008080">Diff:</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">similar(),</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">identical()</FONT><FONT FACE="Courier" COLOR="#808080">&lt;/li&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;li&gt;</FONT><FONT FACE="Courier" COLOR="#008080">DetailedDiff:</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">getAllDifferences()</FONT><FONT FACE="Courier" COLOR="#808080">&lt;/li&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;li&gt;</FONT><FONT FACE="Courier" COLOR="#008080">DifferenceListener:</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">use</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">with</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">Diff</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">class,
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">IgnoreTextAndAttributeValuesDifferenceListener</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">implementation</FONT><FONT FACE="Courier" COLOR="#808080">&lt;/li&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;li&gt;</FONT><FONT FACE="Courier" COLOR="#008080">ElementQualifier:</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">use</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">with</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">Diff</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">class,
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">ElementNameAndTextQualifier</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">implementation</FONT><FONT FACE="Courier" COLOR="#808080">&lt;/li&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;li&gt;</FONT><FONT FACE="Courier" COLOR="#008080">Transform:</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">constructors,</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">getResultDocument(),</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">use</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">with</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">Diff</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">class</FONT><FONT FACE="Courier" COLOR="#808080">&lt;/li&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;li&gt;</FONT><FONT FACE="Courier" COLOR="#008080">Validator:</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">constructor,</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">isValid()</FONT><FONT FACE="Courier" COLOR="#808080">&lt;/li&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;li&gt;</FONT><FONT FACE="Courier" COLOR="#008080">TolerantSaxDocumentBuilder</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">and</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">HTMLDocumentBuilder</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">usage</FONT><FONT FACE="Courier" COLOR="#808080">&lt;/li&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;li&gt;</FONT><FONT FACE="Courier" COLOR="#008080">NodeTest:</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">CountingNodeTester</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">and</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">custom</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">implementations</FONT><FONT FACE="Courier" COLOR="#808080">&lt;/li&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;li&gt;</FONT><FONT FACE="Courier" COLOR="#008080">XMLUnit</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">static</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">methods:</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">buildDocument(),</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">buildControlDocument(),
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">buildTestDocument(),</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">setIgnoreWhitespace()</FONT><FONT FACE="Courier" COLOR="#808080">&lt;/li&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;/ul&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;br /&gt;</FONT><FONT FACE="Courier" COLOR="#008080">Examples</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">and</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">more</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">at</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#808080">&lt;a href="http://xmlunit.sourceforge.net"/&gt;</FONT><FONT FACE="Courier" COLOR="#008080">xmlunit.sourceforge.net</FONT><FONT FACE="Courier" COLOR="#808080">&lt;/a&gt;
+</FONT><FONT FACE="Courier" > </FONT><FONT FACE="Courier" COLOR="#008080">*/
+</FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">class</B></FONT><FONT FACE="Courier" > MyXMLTestCase </FONT><B><FONT FACE="Courier" COLOR="#800080">extends</B></FONT><FONT FACE="Courier" > XMLTestCase {
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > MyXMLTestCase(String name) {
+        </FONT><B><FONT FACE="Courier" COLOR="#800080">super</B></FONT><FONT FACE="Courier" >(name);
+    }
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testForEquality() </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > Exception {
+        String myControlXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;msg&gt;&lt;uuid&gt;0x00435A8C&lt;/uuid&gt;&lt;/msg&gt;"</FONT><FONT FACE="Courier" >;
+        String myTestXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;msg&gt;&lt;localId&gt;2376&lt;/localId&gt;&lt;/msg&gt;"</FONT><FONT FACE="Courier" >;
+        assertXMLEqual(</FONT><FONT FACE="Courier" COLOR="#0000ff">"comparing test xml to control xml"</FONT><FONT FACE="Courier" >, myControlXML, myTestXML);
+
+        assertXMLNotEqual(</FONT><FONT FACE="Courier" COLOR="#0000ff">"test xml not similar to control xml"</FONT><FONT FACE="Courier" >, myControlXML, myTestXML);
+    }
+
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testIdentical() </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > Exception {
+        String myControlXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;struct&gt;&lt;int&gt;3&lt;/int&gt;&lt;boolean&gt;false&lt;/boolean&gt;&lt;/struct&gt;"</FONT><FONT FACE="Courier" >;
+        String myTestXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;struct&gt;&lt;boolean&gt;false&lt;/boolean&gt;&lt;int&gt;3&lt;/int&gt;&lt;/struct&gt;"</FONT><FONT FACE="Courier" >;
+        Diff myDiff = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > Diff(myControlXML, myTestXML);
+        assertTrue(</FONT><FONT FACE="Courier" COLOR="#0000ff">"pieces of XML are similar "</FONT><FONT FACE="Courier" > + myDiff, myDiff.similar());
+        assertTrue(</FONT><FONT FACE="Courier" COLOR="#0000ff">"but are they identical? "</FONT><FONT FACE="Courier" > + myDiff, myDiff.identical());
+    }
+
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testAllDifferences() </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > Exception {
+        String myControlXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;news&gt;&lt;item id=\"1\"&gt;War&lt;/item&gt;"
+</FONT><FONT FACE="Courier" >            + </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;item id=\"2\"&gt;Plague&lt;/item&gt;&lt;item id=\"3\"&gt;Famine&lt;/item&gt;&lt;/news&gt;"</FONT><FONT FACE="Courier" >;
+        String myTestXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;news&gt;&lt;item id=\"1\"&gt;Peace&lt;/item&gt;"
+</FONT><FONT FACE="Courier" >            + </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;item id=\"2\"&gt;Health&lt;/item&gt;&lt;item id=\"3\"&gt;Plenty&lt;/item&gt;&lt;/news&gt;"</FONT><FONT FACE="Courier" >;
+        DetailedDiff myDiff = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > DetailedDiff(compareXML(myControlXML, myTestXML));
+        List allDifferences = myDiff.getAllDifferences();
+        assertEquals(myDiff.toString(), 0, allDifferences.size());
+    }
+
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testCompareToSkeletonXML() </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > Exception {
+        String myControlXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;location&gt;&lt;street-address&gt;22 any street&lt;/street-address&gt;&lt;postcode&gt;XY00 99Z&lt;/postcode&gt;&lt;/location&gt;"</FONT><FONT FACE="Courier" >;
+        String myTestXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;location&gt;&lt;street-address&gt;20 east cheap&lt;/street-address&gt;&lt;postcode&gt;EC3M 1EB&lt;/postcode&gt;&lt;/location&gt;"</FONT><FONT FACE="Courier" >;
+        DifferenceListener myDifferenceListener = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > IgnoreTextAndAttributeValuesDifferenceListener();
+        Diff myDiff = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > Diff(myControlXML, myTestXML);
+        myDiff.overrideDifferenceListener(myDifferenceListener);
+        assertTrue(</FONT><FONT FACE="Courier" COLOR="#0000ff">"test XML matches control skeleton XML "</FONT><FONT FACE="Courier" > + myDiff, myDiff.similar());
+    }
+
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testRepeatedChildElements() </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > Exception {
+        String myControlXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;suite&gt;&lt;test status=\"pass\"&gt;FirstTestCase&lt;/test&gt;&lt;test status=\"pass\"&gt;SecondTestCase&lt;/test&gt;&lt;/suite&gt;"</FONT><FONT FACE="Courier" >;
+        String myTestXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;suite&gt;&lt;test status=\"pass\"&gt;SecondTestCase&lt;/test&gt;&lt;test status=\"pass\"&gt;FirstTestCase&lt;/test&gt;&lt;/suite&gt;"</FONT><FONT FACE="Courier" >;
+
+        assertXMLNotEqual(</FONT><FONT FACE="Courier" COLOR="#0000ff">"Repeated child elements in different sequence order are not equal by default"</FONT><FONT FACE="Courier" >,
+            myControlXML, myTestXML);
+
+        Diff myDiff = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > Diff(myControlXML, myTestXML);
+        myDiff.overrideElementQualifier(</FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > ElementNameAndTextQualifier());
+        assertXMLEqual(</FONT><FONT FACE="Courier" COLOR="#0000ff">"But they are equal when an ElementQualifier controls which test element is compared with each control element"</FONT><FONT FACE="Courier" >,
+            myDiff, </FONT><B><FONT FACE="Courier" COLOR="#800080">true</B></FONT><FONT FACE="Courier" >);
+    }
+
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testXSLTransformation() </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > Exception {
+        String myInputXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"..."</FONT><FONT FACE="Courier" >;
+        File myStylesheetFile = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > File(</FONT><FONT FACE="Courier" COLOR="#0000ff">"..."</FONT><FONT FACE="Courier" >);
+        Transform myTransform = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > Transform(myInputXML, myStylesheetFile);
+        String myExpectedOutputXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"..."</FONT><FONT FACE="Courier" >;
+        Diff myDiff = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > Diff(myExpectedOutputXML, myTransform);
+        assertTrue(</FONT><FONT FACE="Courier" COLOR="#0000ff">"XSL transformation worked as expected "</FONT><FONT FACE="Courier" > + myDiff, myDiff.similar());
+    }
+
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testAnotherXSLTransformation() </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > Exception {
+        File myInputXMLFile = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > File(</FONT><FONT FACE="Courier" COLOR="#0000ff">"..."</FONT><FONT FACE="Courier" >);
+        File myStylesheetFile = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > File(</FONT><FONT FACE="Courier" COLOR="#0000ff">"..."</FONT><FONT FACE="Courier" >);
+        Transform myTransform = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > Transform(</FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > StreamSource(myInputXMLFile), </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > StreamSource(myStylesheetFile));
+        Document myExpectedOutputXML = XMLUnit.buildDocument(XMLUnit.getControlParser(), </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > FileReader(</FONT><FONT FACE="Courier" COLOR="#0000ff">"..."</FONT><FONT FACE="Courier" >));
+        Diff myDiff = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > Diff(myExpectedOutputXML, myTransform.getResultDocument());
+        assertTrue(</FONT><FONT FACE="Courier" COLOR="#0000ff">"XSL transformation worked as expected "</FONT><FONT FACE="Courier" > + myDiff, myDiff.similar());
+    }
+
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testValidation() </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > Exception {
+        XMLUnit.getTestDocumentBuilderFactory().setValidating(</FONT><B><FONT FACE="Courier" COLOR="#800080">true</B></FONT><FONT FACE="Courier" >);
+        </FONT><FONT FACE="Courier" COLOR="#008080">// As the document is parsed it is validated against its referenced DTD
+</FONT><FONT FACE="Courier" >        Document myTestDocument = XMLUnit.buildTestDocument(</FONT><FONT FACE="Courier" COLOR="#0000ff">"..."</FONT><FONT FACE="Courier" >);
+        String mySystemId = </FONT><FONT FACE="Courier" COLOR="#0000ff">"..."</FONT><FONT FACE="Courier" >;
+        String myDTDUrl = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > File(</FONT><FONT FACE="Courier" COLOR="#0000ff">"..."</FONT><FONT FACE="Courier" >).toURL().toExternalForm();
+        Validator myValidator = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > Validator(myTestDocument, mySystemId, myDTDUrl);
+        assertTrue(</FONT><FONT FACE="Courier" COLOR="#0000ff">"test document validates against unreferenced DTD"</FONT><FONT FACE="Courier" >, myValidator.isValid());
+    }
+
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testXPaths() </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > Exception {
+        String mySolarSystemXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;solar-system&gt;&lt;planet name='Earth' position='3' supportsLife='yes'/&gt;"
+</FONT><FONT FACE="Courier" >            + </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;planet name='Venus' position='4'/&gt;&lt;/solar-system&gt;"</FONT><FONT FACE="Courier" >;
+        assertXpathExists(</FONT><FONT FACE="Courier" COLOR="#0000ff">"//planet[@name='Earth']"</FONT><FONT FACE="Courier" >, mySolarSystemXML);
+        assertXpathNotExists(</FONT><FONT FACE="Courier" COLOR="#0000ff">"//star[@name='alpha centauri']"</FONT><FONT FACE="Courier" >, mySolarSystemXML);
+        assertXpathsEqual(</FONT><FONT FACE="Courier" COLOR="#0000ff">"//planet[@name='Earth']"</FONT><FONT FACE="Courier" >, </FONT><FONT FACE="Courier" COLOR="#0000ff">"//planet[@position='3']"</FONT><FONT FACE="Courier" >, mySolarSystemXML);
+        assertXpathsNotEqual(</FONT><FONT FACE="Courier" COLOR="#0000ff">"//planet[@name='Venus']"</FONT><FONT FACE="Courier" >, </FONT><FONT FACE="Courier" COLOR="#0000ff">"//planet[@supportsLife='yes']"</FONT><FONT FACE="Courier" >, mySolarSystemXML);
+    }
+
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testXPathValues() </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > Exception {
+        String myJavaFlavours = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;java-flavours&gt;&lt;jvm current='some platforms'&gt;1.1.x&lt;/jvm&gt;"
+</FONT><FONT FACE="Courier" >            + </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;jvm current='no'&gt;1.2.x&lt;/jvm&gt;&lt;jvm current='yes'&gt;1.3.x&lt;/jvm&gt;"
+</FONT><FONT FACE="Courier" >            + </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;jvm current='yes' latest='yes'&gt;1.4.x&lt;/jvm&gt;&lt;/java-flavours&gt;"</FONT><FONT FACE="Courier" >;
+        assertXpathEvaluatesTo(</FONT><FONT FACE="Courier" COLOR="#0000ff">"1.4.x"</FONT><FONT FACE="Courier" >, </FONT><FONT FACE="Courier" COLOR="#0000ff">"//jvm[@latest='yes']"</FONT><FONT FACE="Courier" >, myJavaFlavours);
+        assertXpathEvaluatesTo(</FONT><FONT FACE="Courier" COLOR="#0000ff">"2"</FONT><FONT FACE="Courier" >, </FONT><FONT FACE="Courier" COLOR="#0000ff">"count(//jvm[@current='yes'])"</FONT><FONT FACE="Courier" >, myJavaFlavours);
+        assertXpathValuesEqual(</FONT><FONT FACE="Courier" COLOR="#0000ff">"//jvm[4]/@latest"</FONT><FONT FACE="Courier" >, </FONT><FONT FACE="Courier" COLOR="#0000ff">"//jvm[4]/@current"</FONT><FONT FACE="Courier" >, myJavaFlavours);
+        assertXpathValuesNotEqual(</FONT><FONT FACE="Courier" COLOR="#0000ff">"//jvm[2]/@current"</FONT><FONT FACE="Courier" >, </FONT><FONT FACE="Courier" COLOR="#0000ff">"//jvm[3]/@current"</FONT><FONT FACE="Courier" >, myJavaFlavours);
+    }
+
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testXpathsInHTML() </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > Exception {
+        String someBadlyFormedHTML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;html&gt;&lt;title&gt;Ugh&lt;/title&gt;&lt;body&gt;&lt;h1&gt;Heading&lt;ul&gt;&lt;li id='1'&gt;Item One&lt;li id='2'&gt;Item Two"</FONT><FONT FACE="Courier" >;
+        TolerantSaxDocumentBuilder tolerantSaxDocumentBuilder = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > TolerantSaxDocumentBuilder(XMLUnit.getTestParser());
+        HTMLDocumentBuilder htmlDocumentBuilder = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > HTMLDocumentBuilder(tolerantSaxDocumentBuilder);
+        Document wellFormedDocument = htmlDocumentBuilder.parse(someBadlyFormedHTML);
+        assertXpathEvaluatesTo(</FONT><FONT FACE="Courier" COLOR="#0000ff">"Item One"</FONT><FONT FACE="Courier" >, </FONT><FONT FACE="Courier" COLOR="#0000ff">"/html/body//li[@id='1']"</FONT><FONT FACE="Courier" >, wellFormedDocument);
+    }
+
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testCountingNodeTester() </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > Exception {
+        String testXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;fibonacci&gt;&lt;val&gt;1&lt;/val&gt;&lt;val&gt;2&lt;/val&gt;&lt;val&gt;3&lt;/val&gt;"
+</FONT><FONT FACE="Courier" >            + </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;val&gt;5&lt;/val&gt;&lt;val&gt;9&lt;/val&gt;&lt;/fibonacci&gt;"</FONT><FONT FACE="Courier" >;
+        CountingNodeTester countingNodeTester = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > CountingNodeTester(4);
+        assertNodeTestPasses(testXML, countingNodeTester, Node.TEXT_NODE);
+    }
+
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testCustomNodeTester() </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > Exception {
+        String testXML = </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;fibonacci&gt;&lt;val&gt;1&lt;/val&gt;&lt;val&gt;2&lt;/val&gt;&lt;val&gt;3&lt;/val&gt;"
+</FONT><FONT FACE="Courier" >            + </FONT><FONT FACE="Courier" COLOR="#0000ff">"&lt;val&gt;5&lt;/val&gt;&lt;val&gt;9&lt;/val&gt;&lt;/fibonacci&gt;"</FONT><FONT FACE="Courier" >;
+        NodeTest nodeTest = </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > NodeTest(testXML);
+        assertNodeTestPasses(nodeTest, </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > FibonacciNodeTester(),
+            </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">short</B></FONT><FONT FACE="Courier" >[] {Node.TEXT_NODE, Node.ELEMENT_NODE}, </FONT><B><FONT FACE="Courier" COLOR="#800080">true</B></FONT><FONT FACE="Courier" >);
+    }
+
+    </FONT><B><FONT FACE="Courier" COLOR="#800080">private</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">class</B></FONT><FONT FACE="Courier" > FibonacciNodeTester </FONT><B><FONT FACE="Courier" COLOR="#800080">extends</B></FONT><FONT FACE="Courier" > AbstractNodeTester {
+        </FONT><B><FONT FACE="Courier" COLOR="#800080">private</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">int</B></FONT><FONT FACE="Courier" > nextVal = 1, lastVal = 1, priorVal = 0;
+        </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testText(Text text) </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > NodeTestException {
+            </FONT><B><FONT FACE="Courier" COLOR="#800080">int</B></FONT><FONT FACE="Courier" > val = Integer.parseInt(text.getData());
+            </FONT><B><FONT FACE="Courier" COLOR="#800080">if</B></FONT><FONT FACE="Courier" > (nextVal != val) {
+                </FONT><B><FONT FACE="Courier" COLOR="#800080">throw</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > NodeTestException(</FONT><FONT FACE="Courier" COLOR="#0000ff">"Incorrect sequence value"</FONT><FONT FACE="Courier" >, text);
+            }
+            nextVal = val + lastVal;
+            priorVal = lastVal;
+            lastVal = val;
+        }
+        </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > testElement(Element element) </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > NodeTestException {
+            String name = element.getLocalName();
+            </FONT><B><FONT FACE="Courier" COLOR="#800080">if</B></FONT><FONT FACE="Courier" > (</FONT><FONT FACE="Courier" COLOR="#0000ff">"fibonacci"</FONT><FONT FACE="Courier" >.equals(name) || </FONT><FONT FACE="Courier" COLOR="#0000ff">"val"</FONT><FONT FACE="Courier" >.equals(name)) {
+                </FONT><B><FONT FACE="Courier" COLOR="#800080">return</B></FONT><FONT FACE="Courier" >;
+            }
+            </FONT><B><FONT FACE="Courier" COLOR="#800080">throw</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">new</B></FONT><FONT FACE="Courier" > NodeTestException(</FONT><FONT FACE="Courier" COLOR="#0000ff">"Unexpected element"</FONT><FONT FACE="Courier" >, element);
+        }
+        </FONT><B><FONT FACE="Courier" COLOR="#800080">public</B></FONT><FONT FACE="Courier" > </FONT><B><FONT FACE="Courier" COLOR="#800080">void</B></FONT><FONT FACE="Courier" > noMoreNodes(NodeTest nodeTest) </FONT><B><FONT FACE="Courier" COLOR="#800080">throws</B></FONT><FONT FACE="Courier" > NodeTestException {
+        }
+    }
+}
+</FONT><FONT ></FONT></BODY>
+</PRE>
+</HTML>

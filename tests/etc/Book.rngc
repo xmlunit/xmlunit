@@ -1,0 +1,9 @@
+namespace b = "http://www.publishing.org"
+
+element b:Book {
+    element b:Title { text },
+    element b:Author { text }+,
+    element b:Date { text },
+    element b:ISBN { text },
+    element b:Publisher { text }
+}

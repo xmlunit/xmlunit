@@ -1,0 +1,292 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) 2001-2008, Jeff Martin, Tim Bacon
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above
+      copyright notice, this list of conditions and the following
+      disclaimer in the documentation and/or other materials provided
+      with the distribution.
+    * Neither the name of the xmlunit.sourceforge.net nor the names
+      of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written
+      permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+-->
+<project name="xmlunit" default="test" basedir=".">
+
+  <!-- allow properties to be overridden in a properties file -->
+  <property file="build.properties"/>
+
+  <!-- Version -->
+  <property name="xmlunit.version" value="1.3alpha"/>
+
+  <!-- some locations -->
+  <property name="src.dir" value="src"/>
+  <property name="test.dir" value="tests"/>
+  <property name="build.dir" location="build"/>
+  <property name="lib.dir" value="${build.dir}/lib"/>
+  <property name="out.dir" value="${build.dir}/classes"/>
+  <property name="test.out.dir" value="${build.dir}/test-classes"/>
+  <property name="userguide.out.dir" value="${build.dir}/ug-classes"/>
+  <property name="test.report.dir" value="${build.dir}/test-report"/>
+  <property name="dist.dir" value="${build.dir}/dist"/>
+  <property name="docs.dir" value="${build.dir}/doc"/>
+  <property name="userguide.docs.dir" value="${docs.dir}/userguide"/>
+
+  <!-- javac properties -->
+  <property name="javac.source" value="1.3"/>
+  <property name="javac.target" value="1.3"/>
+  <property name="javac.debug" value="true"/>
+
+  <!-- junit task properties -->
+  <property name="junit.fork" value="yes"/>
+
+  <!-- some library paths -->
+  <!-- where is JAXP? property name="${xmlxsl.lib}" location="."/ -->
+  <!-- where is JUnit? property name="${junit.lib}" location="."/ -->
+
+  <!-- Docbook related properties, macros and targets -->
+  <import file="docbook.xml"/>
+
+  <target name="-props">
+    <available property="jaxp13+" classname="javax.xml.xpath.XPath"/>
+    <condition property="jaxp13+.impl">
+      <and>
+        <isset property="jaxp13+"/>
+        <available classname="java.net.Proxy"/>
+      </and>
+    </condition>
+    <available property="regexp.present" classname="java.util.regex.Matcher"/>
+  </target>
+
+  <target name="-init" depends="-props">
+    <mkdir dir="${lib.dir}"/>
+    <mkdir dir="${out.dir}"/>
+    <mkdir dir="${test.out.dir}"/>
+    <mkdir dir="${test.report.dir}"/>
+    <mkdir dir="${dist.dir}"/>
+    <mkdir dir="${docs.dir}"/>
+    <mkdir dir="${userguide.docs.dir}"/>
+  </target>
+
+  <target name="clean"
+    description="removes created directories">
+    <delete includeEmptyDirs="true" quiet="true">
+      <fileset dir="${lib.dir}"/>
+      <fileset dir="${out.dir}"/>
+      <fileset dir="${test.out.dir}"/>
+      <fileset dir="${test.report.dir}"/>
+      <fileset dir="${dist.dir}"/>
+      <fileset dir="${docs.dir}"/>
+      <fileset dir="${userguide.docs.dir}"/>
+      <fileset dir="${build.dir}"/>
+    </delete> 
+  </target>
+
+  <target name="compile" depends="-init"
+    description="compiles sources and tests">
+    <javac srcdir="${src.dir}/java" destdir="${out.dir}"
+      debug="${javac.debug}" target="${javac.target}" source="${javac.source}">
+      <classpath>
+        <pathelement location="${xmlxsl.lib}"/>
+        <pathelement location="${junit.lib}"/>
+        <pathelement path="${java.class.path}"/>
+      </classpath>
+      <exclude name="**/jaxp13/**" unless="jaxp13+"/>
+      <exclude name="**/*XPathRegexAssert.java" unless="regexp.present"/>
+    </javac>
+    <javac srcdir="${test.dir}/java" destdir="${test.out.dir}"
+      debug="${javac.debug}" target="${javac.target}" source="${javac.source}">
+      <classpath>
+        <pathelement location="${out.dir}"/>
+        <pathelement location="${xmlxsl.lib}"/>
+        <pathelement location="${junit.lib}"/>
+        <pathelement path="${java.class.path}"/>
+      </classpath>
+      <exclude name="**/jaxp13/**" unless="jaxp13+"/>
+      <exclude name="**/*XPathRegexAssert.java" unless="regexp.present"/>
+    </javac>
+  </target>
+
+  <target name="test" depends="compile"
+    description="runs the tests">
+    <junit printsummary="yes" haltonfailure="no" fork="${junit.fork}"
+      forkMode="perBatch" failureproperty="tests.failed">
+      <sysproperty key="basedir" value="${basedir}"/>
+      <sysproperty key="user.dir" value="${basedir}"/>
+      <!--
+          <sysproperty key="javax.xml.parsers.DocumentBuilderFactory"
+            value="org.apache.xerces.jaxp.DocumentBuilderFactoryImpl"/>
+          <sysproperty key="javax.xml.parsers.SAXParserFactory"
+            value="org.apache.xerces.jaxp.SAXParserFactoryImpl"/>
+          <sysproperty key="javax.xml.transform.TransformerFactory"
+        value="org.apache.xalan.processor.TransformerFactoryImpl"/>
+        -->
+      <classpath>
+        <pathelement location="${out.dir}"/>
+        <pathelement location="${test.out.dir}"/>
+        <pathelement location="${xmlxsl.lib}"/>
+        <pathelement location="${junit.lib}"/>
+        <pathelement path="${java.class.path}"/>
+      </classpath>
+      <formatter type="xml"/>
+      <batchtest todir="${test.report.dir}">
+        <fileset dir="${test.dir}/java">
+          <include name="**/test_*.java"/>
+          <exclude name="**/jaxp13/**" unless="jaxp13+.impl"/>
+        </fileset>
+      </batchtest>
+    </junit>
+
+    <junitreport todir="${test.report.dir}">
+      <fileset dir="${test.report.dir}">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="${test.report.dir}/html"/>
+    </junitreport>
+
+    <fail if="tests.failed">Some tests failed</fail>
+  </target>
+
+  <target name="docs"
+    depends="create-users-guide,javadocs,-site"
+    description="creates the documentation bundle"/>
+
+  <target name="javadocs" depends="-init"
+    description="creates the API documentation">
+    <delete includeEmptyDirs="true" dir="${docs.dir}/api"/>
+    <javadoc destdir="${docs.dir}/api"
+      overview="${src.dir}/java/overview.html"
+      windowtitle="XMLUnit Documentation"
+      footer="&lt;p&gt;&lt;a href=&quot;http://xmlunit.sourceforge.net/&quot;&gt;XMLUnit&lt;/a&gt; is hosted by sourceforge.net&lt;/p&gt;">
+      <group title="XMLUnit v${xmlunit.version}"
+        packages="org.custommonkey.xmlunit*"/>
+      <fileset dir="${src.dir}/java">
+        <include name="org/custommonkey/**/*.java"/>
+      </fileset>
+      <classpath>
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement path="${java.class.path}"/>
+      </classpath>
+    </javadoc>
+  </target>
+
+  <target name="-site" depends="-init">
+    <copy todir="${docs.dir}">
+      <fileset dir="${src.dir}/site">
+        <include name="*.html"/>
+        <include name="*.png"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="jar" depends="compile"
+    description="creates jar, Maven2 POM and Ivy file">
+    <jar jarfile="${lib.dir}/xmlunit-${xmlunit.version}.jar"
+       basedir="${out.dir}"
+    />
+
+    <tstamp> 	 
+      <format property="ivy.publication.datetime" pattern="yyyyMMddHHmmss"/>
+    </tstamp>
+
+    <copy todir="${lib.dir}">
+      <fileset dir="${src.dir}/etc">
+        <include name="xmlunit.pom"/>
+        <include name="xmlunit-ivy.xml"/>
+        <include name="xmlunit-maven-metadata.xml"/>
+      </fileset>
+      <mapper type="glob" from="xmlunit*" to="xmlunit-${xmlunit.version}*"/>
+      <filterset>
+        <filter token="VERSION" value="${xmlunit.version}"/>
+        <filter token="DATE" value="${ivy.publication.datetime}"/>
+        <filter token="DESCRIPTION" value="XMLUnit compares a control XML document to a test document or the result of a transformation, validates documents, and compares the results of XPath expressions."/>
+        <filter token="LICENSE" value="BSD License"/>
+        <filter token="LICENSE_URL" value="http://xmlunit.svn.sourceforge.net/viewvc/*checkout*/xmlunit/trunk/xmlunit/LICENSE.txt"/>
+        <filter token="GROUP" value="xmlunit"/>
+        <filter token="ARTIFACT" value="xmlunit"/>
+        <filter token="TYPE" value="jar"/>
+      </filterset>
+    </copy>
+  </target>
+
+  <target name="Gump" depends="test,jar"/>
+
+  <target name="bindist" depends="jar,test,docs">
+    <zip zipfile="${dist.dir}/xmlunit-${xmlunit.version}-bin.zip">
+      <zipfileset prefix="xmlunit-${xmlunit.version}/lib"
+        dir="${lib.dir}"/>
+      <zipfileset prefix="xmlunit-${xmlunit.version}/docs"
+        dir="${docs.dir}"/>
+      <zipfileset prefix="xmlunit-${xmlunit.version}" dir=".">
+        <include name="KEYS"/>
+        <include name="LICENSE.txt"/>
+        <include name="README.txt"/>
+      </zipfileset>
+    </zip>
+  </target>
+
+  <target name="srcdist" depends="-init,create-users-guide">
+    <zip zipfile="${dist.dir}/xmlunit-${xmlunit.version}-src.zip">
+      <zipfileset prefix="xmlunit-${xmlunit.version}" dir=".">
+        <include name="*.xml"/>
+        <include name="${src.dir}/"/>
+        <include name="${test.dir}/"/>
+        <include name="KEYS"/>
+        <include name="LICENSE.txt"/>
+        <include name="README.txt"/>
+        <exclude name="**/csharp/**"/>
+      </zipfileset>
+      <zipfileset dir="${userguide.docs.dir}"
+        prefix="xmlunit-${xmlunit.version}/userguide"/>
+    </zip>
+  </target>
+
+  <target name="dist"
+    depends="clean,bindist,srcdist,compile-userguide-examples"
+    description="creates the distribution files">
+    <checksum algorithm="md5">
+      <fileset dir="${dist.dir}">
+        <include name="*.zip"/>
+      </fileset>
+    </checksum>
+    <checksum algorithm="sha1">
+      <fileset dir="${dist.dir}">
+        <include name="*.zip"/>
+      </fileset>
+    </checksum>
+  </target>
+
+  <target name="compile-userguide-examples" depends="compile">
+    <mkdir dir="${userguide.out.dir}"/>
+    <javac srcdir="src/user-guide" includes="org/"
+      destdir="${userguide.out.dir}" source="1.3" target="1.2">
+      <classpath>
+        <pathelement location="${junit.lib}"/>
+        <pathelement location="${out.dir}"/>
+      </classpath>
+    </javac>
+    <delete dir="${userguide.out.dir}"/>
+  </target>
+</project>

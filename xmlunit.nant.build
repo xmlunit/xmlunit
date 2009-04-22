@@ -1,0 +1,84 @@
+<project name="xmlunit" description="XmlUnit for .Net" default="compile">
+  <property name="project.version" value="0.4" overwrite="false"/>
+  <property name="base.dir" value="${project::get-base-directory()}"
+    overwrite="false"/>
+  <property name="src.dir" value="${base.dir}/src/csharp" overwrite="false"/>
+  <property name="tests.src.dir" value="${base.dir}/tests/csharp"
+    overwrite="false"/>
+  <property name="bin.dir" value="${base.dir}/bin" overwrite="false"/>
+  <property name="csc.verbose" value="false" overwrite="false"/>
+  <property name="deploy.file" overwrite="false"
+    value="${project::get-name()}-${project.version}.zip"/>
+  
+  <!-- *** You may need to edit these properties for your filesystem *** -->
+  <property name="nunit.v2.assembly" value="nunit.framework.dll"
+    overwrite="false"/>
+  <property name="nunit.v2.bin.dir" overwrite="false"
+    value="c:/apps/SharpDevelop/bin/nunit" />
+  
+  <target name="init" description="prepare for other targets">
+    <mkdir dir="${bin.dir}"/>
+    <copy file="${nunit.v2.bin.dir}/${nunit.v2.assembly}"
+      tofile="${bin.dir}/${nunit.v2.assembly}"/>
+  </target>
+  
+  <target name="clean" description="clean out compiled files">
+    <delete failonerror="false">
+      <fileset basedir="${bin.dir}"> 
+      	<include name="${project::get-name()}.*"/>
+      </fileset>
+    </delete>
+  </target>
+  
+  <target name="compile" description="compile all source files" depends="init">
+    <csc target="library" output="${bin.dir}/${project::get-name()}.dll"
+      debug="true" verbose="${csc.verbose}">
+      <references basedir="${bin.dir}">
+        <include name="${nunit.v2.assembly}"/>
+      </references>
+      <sources basedir="${src.dir}">
+        <include name="*.cs"/>
+      </sources>
+    </csc>
+    
+    <csc target="library"
+      output="${bin.dir}/${project::get-name()}.tests.dll"
+      debug="true" verbose="${csc.verbose}">
+      <references basedir="${bin.dir}">
+        <include name="${project::get-name()}.dll"/>
+        <include name="${nunit.v2.assembly}"/>
+      </references>
+      <sources basedir="${tests.src.dir}">
+        <include name="*.cs"/>
+        <exclude name="AllTests.cs"/>
+      </sources>
+    </csc>
+  </target>
+  
+  <target name="test" description="run all tests" depends="compile">
+    <nunit2>
+      <formatter type="Plain"/>
+      <test assemblyname="${bin.dir}/${project::get-name()}.tests.dll"/>
+    </nunit2>
+  </target>
+  
+  <target name="deploy" description="zip all code for deployment"
+    depends="test">
+    <delete file="${deploy.file}" failonerror="false"/>
+    <zip zipfile="${deploy.file}">
+      <fileset basedir="${base.dir}">
+        <include name="LICENSE.txt"/> 
+        <include name="NUnit.ReadMe"/> 
+        <include name="*.build"/>
+        <include name="**/*.cs"/>
+        <include name="./tests/etc/**/*.*"/>
+        <include name="**/${project::get-name()}*.dll"/>
+        <exclude name="**/AllTests.cs"/>
+      </fileset>
+    </zip>
+  </target>
+  
+  <target name="all" description="execute all tasks in the project"
+    depends="clean,compile,test,deploy"/>
+  
+</project>
