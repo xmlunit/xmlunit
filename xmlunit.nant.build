@@ -14,7 +14,7 @@
   <property name="nunit.v2.assembly" value="nunit.framework.dll"
     overwrite="false"/>
   <property name="nunit.v2.bin.dir" overwrite="false"
-    value="c:/apps/SharpDevelop/bin/nunit" />
+    value="lib" />
   
   <target name="init" description="prepare for other targets">
     <mkdir dir="${bin.dir}"/>
