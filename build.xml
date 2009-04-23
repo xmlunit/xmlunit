@@ -62,7 +62,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
   <!-- some library paths -->
   <!-- where is JAXP? property name="${xmlxsl.lib}" location="."/ -->
-  <!-- where is JUnit? property name="${junit.lib}" location="."/ -->
 
   <!-- Docbook related properties, macros and targets -->
   <import file="docbook.xml"/>
@@ -108,8 +107,8 @@ POSSIBILITY OF SUCH DAMAGE.
       debug="${javac.debug}" target="${javac.target}" source="${javac.source}">
       <classpath>
         <pathelement location="${xmlxsl.lib}"/>
-        <pathelement location="${junit.lib}"/>
         <pathelement path="${java.class.path}"/>
+        <fileset dir="lib" includes="*.jar"/>
       </classpath>
       <exclude name="**/jaxp13/**" unless="jaxp13+"/>
       <exclude name="**/*XPathRegexAssert.java" unless="regexp.present"/>
@@ -119,8 +118,8 @@ POSSIBILITY OF SUCH DAMAGE.
       <classpath>
         <pathelement location="${out.dir}"/>
         <pathelement location="${xmlxsl.lib}"/>
-        <pathelement location="${junit.lib}"/>
         <pathelement path="${java.class.path}"/>
+        <fileset dir="lib" includes="*.jar"/>
       </classpath>
       <exclude name="**/jaxp13/**" unless="jaxp13+"/>
       <exclude name="**/*XPathRegexAssert.java" unless="regexp.present"/>
@@ -145,8 +144,8 @@ POSSIBILITY OF SUCH DAMAGE.
         <pathelement location="${out.dir}"/>
         <pathelement location="${test.out.dir}"/>
         <pathelement location="${xmlxsl.lib}"/>
-        <pathelement location="${junit.lib}"/>
         <pathelement path="${java.class.path}"/>
+        <fileset dir="lib" includes="*.jar"/>
       </classpath>
       <formatter type="xml"/>
       <batchtest todir="${test.report.dir}">
@@ -283,7 +282,6 @@ POSSIBILITY OF SUCH DAMAGE.
     <javac srcdir="src/user-guide" includes="org/"
       destdir="${userguide.out.dir}" source="1.3" target="1.2">
       <classpath>
-        <pathelement location="${junit.lib}"/>
         <pathelement location="${out.dir}"/>
       </classpath>
     </javac>
