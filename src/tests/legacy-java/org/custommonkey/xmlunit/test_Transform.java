@@ -113,7 +113,7 @@ public class test_Transform extends TestCase{
             + test_Constants.XSLT_START
             + test_Constants.XSLT_XML_OUTPUT_NOINDENT
             + "<xsl:template match=\"bug\"><xsl:apply-templates select=\"animal\"/></xsl:template>"
-            + "<xsl:include href=\"" + test_Constants.BASEDIR + "/tests/etc/animal.xsl\"/>"
+            + "<xsl:include href=\"" + test_Constants.BASEDIR + "/src/tests/resources/animal.xsl\"/>"
             + test_Constants.XSLT_END;
         Transform transform = new Transform(input, xslWithInclude);
         transform.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
@@ -155,7 +155,7 @@ public class test_Transform extends TestCase{
     }
 
     public void setUp() throws Exception {
-        animal = new File(test_Constants.BASEDIR + "/tests/etc/animal.xsl");
+        animal = new File(test_Constants.BASEDIR + "/src/tests/resources/animal.xsl");
     }
 
     private static String stripLineFeeds(String s) {

@@ -54,28 +54,28 @@ public class test_Validator extends TestCase {
     public void testGoodSchemaIsValid() throws Exception {
         Validator v = new Validator();
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
-                                                    + "/tests/etc/Book.xsd")));
+                                                    + "/src/tests/resources/Book.xsd")));
         assertTrue(v.isSchemaValid());
     }
 
     public void testGoodSchemaHasNoErrors() throws Exception {
         Validator v = new Validator();
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
-                                                    + "/tests/etc/Book.xsd")));
+                                                    + "/src/tests/resources/Book.xsd")));
         assertEquals(0, v.getSchemaErrors().size());
     }
 
     public void testBrokenSchemaIsInvalid() throws Exception {
         Validator v = new Validator();
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
-                                                    + "/tests/etc/broken.xsd")));
+                                                    + "/src/tests/resources/broken.xsd")));
         assertFalse(v.isSchemaValid());
     }
 
     public void testBrokenSchemaHasErrors() throws Exception {
         Validator v = new Validator();
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
-                                                    + "/tests/etc/broken.xsd")));
+                                                    + "/src/tests/resources/broken.xsd")));
         List l = v.getSchemaErrors();
         for (Iterator i = l.iterator(); i.hasNext(); ) {
             Object ex = i.next();
@@ -90,30 +90,30 @@ public class test_Validator extends TestCase {
     public void testGoodInstanceIsValid() throws Exception {
         Validator v = new Validator();
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
-                                                    + "/tests/etc/Book.xsd")));
+                                                    + "/src/tests/resources/Book.xsd")));
         StreamSource s =
             new StreamSource(new File(test_Constants.BASEDIR
-                                      + "/tests/etc/BookXsdGenerated.xml"));
+                                      + "/src/tests/resources/BookXsdGenerated.xml"));
         assertTrue(v.isInstanceValid(s));
     }
 
     public void testBadInstanceIsInvalid() throws Exception {
         Validator v = new Validator();
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
-                                                    + "/tests/etc/Book.xsd")));
+                                                    + "/src/tests/resources/Book.xsd")));
         StreamSource s =
             new StreamSource(new File(test_Constants.BASEDIR
-                                      + "/tests/etc/invalidBook.xml"));
+                                      + "/src/tests/resources/invalidBook.xml"));
         assertFalse(v.isInstanceValid(s));
     }
 
     public void testBadInstanceHasErrors() throws Exception {
         Validator v = new Validator();
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
-                                                    + "/tests/etc/Book.xsd")));
+                                                    + "/src/tests/resources/Book.xsd")));
         StreamSource s =
             new StreamSource(new File(test_Constants.BASEDIR
-                                      + "/tests/etc/invalidBook.xml"));
+                                      + "/src/tests/resources/invalidBook.xml"));
         List l = v.getInstanceErrors(s);
         for (Iterator i = l.iterator(); i.hasNext(); ) {
             Object ex = i.next();
@@ -128,10 +128,10 @@ public class test_Validator extends TestCase {
     public void testInstanceValidationOfBrokenSchema() {
         Validator v = new Validator();
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
-                                                    + "/tests/etc/broken.xsd")));
+                                                    + "/src/tests/resources/broken.xsd")));
         StreamSource s =
             new StreamSource(new File(test_Constants.BASEDIR
-                                      + "/tests/etc/BookXsdGenerated.xml"));
+                                      + "/src/tests/resources/BookXsdGenerated.xml"));
         try {
             v.isInstanceValid(s);
             fail("expected exception because schema is invalid");
@@ -143,10 +143,10 @@ public class test_Validator extends TestCase {
     public void testInstanceValidationOfMissingFile() {
         Validator v = new Validator();
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
-                                                    + "/tests/etc/Book.xsd")));
+                                                    + "/src/tests/resources/Book.xsd")));
         StreamSource s =
             new StreamSource(new File(test_Constants.BASEDIR
-                                      + "/tests/etc/not there.xml"));
+                                      + "/src/tests/resources/not there.xml"));
         try {
             v.isInstanceValid(s);
             fail("expected exception because instance doesn't exist");
@@ -169,7 +169,7 @@ public class test_Validator extends TestCase {
     public void XtestGoodRelaxNGSchemaIsValid() throws Exception {
         Validator v = new Validator(javax.xml.XMLConstants.RELAXNG_NS_URI);
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
-                                                    + "/tests/etc/Book.rng")));
+                                                    + "/src/tests/resources/Book.rng")));
         assertTrue(v.isSchemaValid());
     }
 
@@ -180,10 +180,10 @@ public class test_Validator extends TestCase {
     public void XtestGoodInstanceIsValidRNG() throws Exception {
         Validator v = new Validator(javax.xml.XMLConstants.RELAXNG_NS_URI);
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
-                                                    + "/tests/etc/Book.rng")));
+                                                    + "/src/tests/resources/Book.rng")));
         StreamSource s =
             new StreamSource(new File(test_Constants.BASEDIR
-                                      + "/tests/etc/BookXsdGeneratedNoSchema.xml"));
+                                      + "/src/tests/resources/BookXsdGeneratedNoSchema.xml"));
         assertTrue(v.isInstanceValid(s));
     }
 
@@ -194,10 +194,10 @@ public class test_Validator extends TestCase {
     public void XtestBadInstanceIsInvalidRNG() throws Exception {
         Validator v = new Validator(javax.xml.XMLConstants.RELAXNG_NS_URI);
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
-                                                    + "/tests/etc/Book.rng")));
+                                                    + "/src/tests/resources/Book.rng")));
         StreamSource s =
             new StreamSource(new File(test_Constants.BASEDIR
-                                      + "/tests/etc/invalidBook.xml"));
+                                      + "/src/tests/resources/invalidBook.xml"));
         List l = v.getInstanceErrors(s);
         for (Iterator i = l.iterator(); i.hasNext(); ) {
             Object ex = i.next();
@@ -218,11 +218,11 @@ public class test_Validator extends TestCase {
     public void XtestGoodRelaxNGCompactSyntaxIsValid() throws Exception {
         Validator v = new Validator(javax.xml.XMLConstants.RELAXNG_NS_URI);
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
-                                                    + "/tests/etc/Book.rngc")));
+                                                    + "/src/tests/resources/Book.rngc")));
         assertTrue(v.isSchemaValid());
         StreamSource s =
             new StreamSource(new File(test_Constants.BASEDIR
-                                      + "/tests/etc/BookXsdGeneratedNoSchema.xml"));
+                                      + "/src/tests/resources/BookXsdGeneratedNoSchema.xml"));
         assertTrue(v.isInstanceValid(s));
     }
 

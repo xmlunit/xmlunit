@@ -8,8 +8,8 @@ namespace XmlUnit.Tests {
     
     [TestFixture]
     public class ValidatorTests {
-        public static readonly string VALID_FILE = ".\\..\\tests\\etc\\BookXsdGenerated.xml";
-        public static readonly string INVALID_FILE = ".\\..\\tests\\etc\\invalidBook.xml";
+        public static readonly string VALID_FILE = ".\\..\\src\\tests\\resources\\BookXsdGenerated.xml";
+        public static readonly string INVALID_FILE = ".\\..\\src\\tests\\resources\\invalidBook.xml";
                 
         [Test] public void XsdValidFileIsValid() {
             PerformAssertion(VALID_FILE, true);

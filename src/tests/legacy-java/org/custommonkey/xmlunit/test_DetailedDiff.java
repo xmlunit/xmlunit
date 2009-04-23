@@ -109,8 +109,8 @@ public class test_DetailedDiff extends test_Diff {
         int i = 0;
         String expr = null;
         File test, control;
-        control = new File(test_Constants.BASEDIR + "/tests/etc/controlDetail.xml");
-        test = new File(test_Constants.BASEDIR + "/tests/etc/testDetail.xml");
+        control = new File(test_Constants.BASEDIR + "/src/tests/resources/controlDetail.xml");
+        test = new File(test_Constants.BASEDIR + "/src/tests/resources/testDetail.xml");
         DetailedDiff differencesWithWhitespace = new DetailedDiff(
                                                                   new Diff(new InputSource(new FileReader(control)), 
                                                                            new InputSource(new FileReader(test))) );
