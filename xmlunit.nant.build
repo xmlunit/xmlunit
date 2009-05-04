@@ -1,11 +1,15 @@
 <project name="xmlunit" description="XmlUnit for .Net" default="compile">
-  <property name="project.version" value="0.4" overwrite="false"/>
+  <property name="project.version" value="2.0" overwrite="false"/>
   <property name="base.dir" value="${project::get-base-directory()}"
     overwrite="false"/>
-  <property name="src.dir" value="${base.dir}/src/main/net-legacy" overwrite="false"/>
+  <property name="core.src.dir" value="${base.dir}/src/main/net-core" overwrite="false"/>
+  <property name="legacy.src.dir" value="${base.dir}/src/main/net-legacy" overwrite="false"/>
   <property name="tests.src.dir" value="${base.dir}/src/tests/net-legacy"
     overwrite="false"/>
-  <property name="bin.dir" value="${base.dir}/bin" overwrite="false"/>
+
+  <property name="build.dir" value="${base.dir}/build/net" overwrite="false"/>
+  <property name="bin.dir" value="${build.dir}/bin" overwrite="false"/>
+
   <property name="csc.verbose" value="false" overwrite="false"/>
   <property name="deploy.file" overwrite="false"
     value="${project::get-name()}-${project.version}.zip"/>
@@ -24,19 +28,29 @@
   
   <target name="clean" description="clean out compiled files">
     <delete failonerror="false">
-      <fileset basedir="${bin.dir}"> 
-      	<include name="${project::get-name()}.*"/>
-      </fileset>
+      <fileset basedir="${build.dir}"/> 
     </delete>
   </target>
   
-  <target name="compile" description="compile all source files" depends="init">
-    <csc target="library" output="${bin.dir}/${project::get-name()}.dll"
+  <target name="compile-core"
+          description="compile core source files" depends="init">
+    <csc target="library" output="${bin.dir}/${project::get-name()}-core.dll"
+         debug="true" verbose="${csc.verbose}">
+      <sources basedir="${core.src.dir}">
+        <include name="**/*.cs"/>
+      </sources>
+    </csc>
+  </target>
+    
+  <target name="compile" description="compile all source files"
+          depends="compile-core">
+    <csc target="library" output="${bin.dir}/${project::get-name()}-legacy.dll"
       debug="true" verbose="${csc.verbose}">
       <references basedir="${bin.dir}">
+        <include name="${project::get-name()}-core.dll"/>
         <include name="${nunit.v2.assembly}"/>
       </references>
-      <sources basedir="${src.dir}">
+      <sources basedir="${legacy.src.dir}">
         <include name="*.cs"/>
       </sources>
     </csc>
@@ -45,7 +59,8 @@
       output="${bin.dir}/${project::get-name()}.tests.dll"
       debug="true" verbose="${csc.verbose}">
       <references basedir="${bin.dir}">
-        <include name="${project::get-name()}.dll"/>
+        <include name="${project::get-name()}-core.dll"/>
+        <include name="${project::get-name()}-legacy.dll"/>
         <include name="${nunit.v2.assembly}"/>
       </references>
       <sources basedir="${tests.src.dir}">
