@@ -88,7 +88,7 @@
 
   <target name="compile" depends="compile-core"
     description="compiles legacy sources and tests">
-    <javac srcdir="${src.dir}/legacy-java" destdir="${legacy.out.dir}"
+    <javac srcdir="${src.dir}/java-legacy" destdir="${legacy.out.dir}"
       debug="${javac.debug}" target="${javac.target}" source="${javac.source}">
       <classpath>
         <pathelement location="${core.out.dir}"/>
@@ -97,7 +97,7 @@
       </classpath>
       <exclude name="**/*XPathRegexAssert.java" unless="regexp.present"/>
     </javac>
-    <javac srcdir="${test.dir}/legacy-java" destdir="${test.out.dir}"
+    <javac srcdir="${test.dir}/java-legacy" destdir="${test.out.dir}"
       debug="${javac.debug}" target="${javac.target}" source="${javac.source}">
       <classpath>
         <pathelement location="${core.out.dir}"/>
@@ -132,7 +132,7 @@
       </classpath>
       <formatter type="xml"/>
       <batchtest todir="${test.report.dir}">
-        <fileset dir="${test.dir}/legacy-java">
+        <fileset dir="${test.dir}/java-legacy">
           <include name="**/test_*.java"/>
         </fileset>
       </batchtest>
@@ -156,12 +156,12 @@
     description="creates the API documentation">
     <delete includeEmptyDirs="true" dir="${docs.dir}/api"/>
     <javadoc destdir="${docs.dir}/api"
-      overview="${src.dir}/legacy-java/overview.html"
+      overview="${src.dir}/java-legacy/overview.html"
       windowtitle="XMLUnit Documentation"
       footer="&lt;p&gt;&lt;a href=&quot;http://xmlunit.sourceforge.net/&quot;&gt;XMLUnit&lt;/a&gt; is hosted by sourceforge.net&lt;/p&gt;">
       <group title="XMLUnit v${xmlunit.version}"
         packages="org.custommonkey.xmlunit*"/>
-      <fileset dir="${src.dir}/legacy-java">
+      <fileset dir="${src.dir}/java-legacy">
         <include name="org/custommonkey/**/*.java"/>
       </fileset>
       <classpath>

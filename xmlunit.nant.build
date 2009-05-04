@@ -2,8 +2,8 @@
   <property name="project.version" value="0.4" overwrite="false"/>
   <property name="base.dir" value="${project::get-base-directory()}"
     overwrite="false"/>
-  <property name="src.dir" value="${base.dir}/src/main/legacy-net" overwrite="false"/>
-  <property name="tests.src.dir" value="${base.dir}/src/tests/legacy-net"
+  <property name="src.dir" value="${base.dir}/src/main/net-legacy" overwrite="false"/>
+  <property name="tests.src.dir" value="${base.dir}/src/tests/net-legacy"
     overwrite="false"/>
   <property name="bin.dir" value="${base.dir}/bin" overwrite="false"/>
   <property name="csc.verbose" value="false" overwrite="false"/>
