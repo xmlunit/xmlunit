@@ -11,27 +11,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-using net.sf.xmlunit.input;
+using System.IO;
 using System.Xml;
 
-namespace net.sf.xmlunit.builder {
-    public static class Input {
-        public interface IBuilder {
-            ISource Build();
+namespace net.sf.xmlunit.input {
+    public class StreamSource : AbstractSource {
+        public StreamSource(TextReader rdr)
+            : base(XmlReader.Create(rdr)) {
         }
 
-        internal class DOMBuilder : IBuilder {
-            private readonly ISource source;
-            internal DOMBuilder(XmlDocument d) {
-                source = new DOMSource(d);
-            }
-            public ISource Build() {
-                return source;
-            }
+        public StreamSource(Stream stream)
+            : base(XmlReader.Create(stream)) {
         }
 
-        public static IBuilder FromDocument(XmlDocument d) {
-            return new DOMBuilder(d);
+        public StreamSource(string uri)
+            : base(XmlReader.Create(uri)) {
         }
     }
 }
