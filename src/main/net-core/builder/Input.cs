@@ -13,6 +13,7 @@
 */
 using System.IO;
 using System.Xml;
+using System.Xml.Xsl;
 using net.sf.xmlunit.input;
 
 namespace net.sf.xmlunit.builder {
@@ -79,5 +80,43 @@ namespace net.sf.xmlunit.builder {
             return new StreamBuilder(uri.AbsoluteUri);
         }
 
+        public interface ITransformationBuilder {
+            IBuilder WithStylesheet(ISource s);
+        }
+
+        internal class TransformationStep1 : ITransformationBuilder {
+            private ISource sourceDoc;
+            internal TransformationStep1(ISource s) {
+                sourceDoc = s;
+            }
+            public IBuilder WithStylesheet(ISource s) {
+                return new TransformationStep2(sourceDoc, s);
+            }
+        }
+
+        internal class TransformationStep2 : IBuilder {
+            private ISource source;
+            private ISource styleSheet;
+            internal TransformationStep2(ISource source, ISource styleSheet) {
+                this.source = source;
+                this.styleSheet = styleSheet;
+            }
+
+            public ISource Build() {
+                XslCompiledTransform t = new XslCompiledTransform();
+                t.Load(styleSheet.Reader);
+                MemoryStream ms = new MemoryStream();
+                using (ms) {
+                    t.Transform(source.Reader,
+                                new XsltArgumentList(),
+                                ms);
+                }
+                return FromMemory(ms.ToArray()).Build();
+            }
+        }
+
+        public static ITransformationBuilder ByTransforming(ISource s) {
+            return new TransformationStep1(s);
+        }
     }
 }

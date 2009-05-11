@@ -22,6 +22,9 @@ import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import org.w3c.dom.Document;
@@ -114,5 +117,44 @@ public class Input {
 
     public static Builder fromURI(String uri) throws Exception {
         return fromURI(new URI(uri));
+    }
+
+    public static interface TransformationBuilder {
+        Builder withStylesheet(Source s);
+    }
+
+    private static class TransformationStep1 implements TransformationBuilder {
+        private Source sourceDoc;
+        private TransformationStep1(Source s) {
+            sourceDoc = s;
+        }
+        public Builder withStylesheet(Source s) {
+            return new TransformationStep2(sourceDoc, s);
+        }
+    }
+
+    private static class TransformationStep2 implements Builder {
+        private Source source;
+        private Source styleSheet;
+        private TransformationStep2(Source source, Source styleSheet) {
+            this.source = source;
+            this.styleSheet = styleSheet;
+        }
+
+        public Source build() {
+            try {
+                DOMResult r = new DOMResult();
+                Transformer t = TransformerFactory.newInstance()
+                    .newTransformer(styleSheet);
+                t.transform(source, r);
+                return new DOMSource(r.getNode());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static TransformationBuilder byTransforming(Source s) {
+        return new TransformationStep1(s);
     }
 }
