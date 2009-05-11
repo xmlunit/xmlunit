@@ -21,6 +21,9 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -119,33 +122,50 @@ public class Input {
         return fromURI(new URI(uri));
     }
 
-    public static interface TransformationBuilder {
-        Builder withStylesheet(Source s);
+    public static interface TransformationBuilder extends Builder {
+        TransformationBuilder withStylesheet(Source s);
+        TransformationBuilder withParameter(String name, Object value);
+        TransformationBuilder withOutputProperty(String name, String value);
     }
 
-    private static class TransformationStep1 implements TransformationBuilder {
-        private Source sourceDoc;
-        private TransformationStep1(Source s) {
-            sourceDoc = s;
-        }
-        public Builder withStylesheet(Source s) {
-            return new TransformationStep2(sourceDoc, s);
-        }
-    }
-
-    private static class TransformationStep2 implements Builder {
-        private Source source;
+    private static class Transformation implements TransformationBuilder {
+        private final Source source;
         private Source styleSheet;
-        private TransformationStep2(Source source, Source styleSheet) {
-            this.source = source;
-            this.styleSheet = styleSheet;
+        private final Properties output = new Properties();
+        private final Map<String, Object> params = new HashMap<String, Object>();
+
+        private Transformation(Source s) {
+            source = s;
+        }
+        public TransformationBuilder withStylesheet(Source s) {
+            styleSheet = s;
+            return this;
+        }
+        public TransformationBuilder withOutputProperty(String name,
+                                                        String value) {
+            output.setProperty(name, value);
+            return this;
+        }
+
+        public TransformationBuilder withParameter(String name, Object value) {
+            params.put(name, value);
+            return this;
         }
 
         public Source build() {
             try {
                 DOMResult r = new DOMResult();
-                Transformer t = TransformerFactory.newInstance()
-                    .newTransformer(styleSheet);
+                TransformerFactory fac = TransformerFactory.newInstance();
+                Transformer t = null;
+                if (styleSheet != null) {
+                    t = fac.newTransformer(styleSheet);
+                } else {
+                    t = fac.newTransformer();
+                }
+                t.setOutputProperties(output);
+                for (Map.Entry<String, Object> ent : params.entrySet()) {
+                    t.setParameter(ent.getKey(), ent.getValue());
+                }
                 t.transform(source, r);
                 return new DOMSource(r.getNode());
             } catch (Exception e) {
@@ -155,6 +175,6 @@ public class Input {
     }
 
     public static TransformationBuilder byTransforming(Source s) {
-        return new TransformationStep1(s);
+        return new Transformation(s);
     }
 }

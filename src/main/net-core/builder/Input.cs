@@ -80,35 +80,49 @@ namespace net.sf.xmlunit.builder {
             return new StreamBuilder(uri.AbsoluteUri);
         }
 
-        public interface ITransformationBuilder {
-            IBuilder WithStylesheet(ISource s);
+        public interface ITransformationBuilder : IBuilder {
+            ITransformationBuilder WithStylesheet(ISource s);
+            ITransformationBuilder WithExtensionObject(string namespaceUri,
+                                                       object extension);
+            ITransformationBuilder WithParameter(string name,
+                                                 string namespaceUri,
+                                                 object parameter);
         }
 
-        internal class TransformationStep1 : ITransformationBuilder {
-            private ISource sourceDoc;
-            internal TransformationStep1(ISource s) {
-                sourceDoc = s;
-            }
-            public IBuilder WithStylesheet(ISource s) {
-                return new TransformationStep2(sourceDoc, s);
-            }
-        }
-
-        internal class TransformationStep2 : IBuilder {
-            private ISource source;
+        internal class Transformation : ITransformationBuilder {
+            private readonly ISource source;
             private ISource styleSheet;
-            internal TransformationStep2(ISource source, ISource styleSheet) {
-                this.source = source;
+            private readonly XsltArgumentList args = new XsltArgumentList();
+            internal Transformation(ISource s) {
+                source = s;
+            }
+            public ITransformationBuilder WithStylesheet(ISource s) {
                 this.styleSheet = styleSheet;
+                return this;
+            }
+
+            public ITransformationBuilder WithExtensionObject(string namespaceUri,
+                                                              object extension) {
+                args.AddExtensionObject(namespaceUri, extension);
+                return this;
+            }
+
+            public ITransformationBuilder WithParameter(string name,
+                                                        string namespaceUri,
+                                                        object parameter) {
+                args.AddParam(name, namespaceUri, parameter);
+                return this;
             }
 
             public ISource Build() {
                 XslCompiledTransform t = new XslCompiledTransform();
-                t.Load(styleSheet.Reader);
+                if (styleSheet != null) {
+                    t.Load(styleSheet.Reader);
+                }
                 MemoryStream ms = new MemoryStream();
                 using (ms) {
                     t.Transform(source.Reader,
-                                new XsltArgumentList(),
+                                args,
                                 ms);
                 }
                 return FromMemory(ms.ToArray()).Build();
@@ -116,7 +130,7 @@ namespace net.sf.xmlunit.builder {
         }
 
         public static ITransformationBuilder ByTransforming(ISource s) {
-            return new TransformationStep1(s);
+            return new Transformation(s);
         }
     }
 }
