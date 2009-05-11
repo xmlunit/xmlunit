@@ -11,8 +11,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-using net.sf.xmlunit.input;
+using System.IO;
 using System.Xml;
+using net.sf.xmlunit.input;
 
 namespace net.sf.xmlunit.builder {
     public static class Input {
@@ -33,5 +34,50 @@ namespace net.sf.xmlunit.builder {
         public static IBuilder FromDocument(XmlDocument d) {
             return new DOMBuilder(d);
         }
+
+        internal class StreamBuilder : IBuilder {
+            private readonly ISource source;
+            internal StreamBuilder(string s) {
+                source = new StreamSource(s);
+            }
+            internal StreamBuilder(Stream s) {
+                source = new StreamSource(s);
+            }
+            internal StreamBuilder(TextReader r) {
+                source = new StreamSource(r);
+            }
+            public ISource Build() {
+                return source;
+            }
+        }
+
+        public static IBuilder FromFile(string name) {
+            return new StreamBuilder(name);
+        }
+
+        public static IBuilder FromStream(Stream s) {
+            return new StreamBuilder(s);
+        }
+
+        public static IBuilder FromReader(TextReader r) {
+            return new StreamBuilder(r);
+        }
+
+        public static IBuilder FromMemory(string s) {
+            return FromReader(new StringReader(s));
+        }
+
+        public static IBuilder FromMemory(byte[] b) {
+            return FromStream(new MemoryStream(b));
+        }
+
+        public static IBuilder FromURI(string uri) {
+            return new StreamBuilder(uri);
+        }
+
+        public static IBuilder FromURI(System.Uri uri) {
+            return new StreamBuilder(uri.AbsoluteUri);
+        }
+
     }
 }
