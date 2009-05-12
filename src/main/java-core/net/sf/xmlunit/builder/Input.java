@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
@@ -30,6 +31,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
+import net.sf.xmlunit.exceptions.ConfigurationException;
+import net.sf.xmlunit.exceptions.XMLUnitRuntimeException;
 import org.w3c.dom.Document;
 
 public class Input {
@@ -94,32 +97,46 @@ public class Input {
         return fromStream(new ByteArrayInputStream(b));
     }
 
-    public static Builder fromURL(URL url) throws Exception {
-        InputStream in = null;
+    public static Builder fromURL(URL url) {
         try {
-            in = url.openStream();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            int read = -1;
-            byte[] buf = new byte[4096];
-            while ((read = in.read(buf)) >= 0) {
-                if (read > 0) {
-                    baos.write(buf, 0, read);
+            InputStream in = null;
+            try {
+                in = url.openStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int read = -1;
+                byte[] buf = new byte[4096];
+                while ((read = in.read(buf)) >= 0) {
+                    if (read > 0) {
+                        baos.write(buf, 0, read);
+                    }
+                }
+                return fromMemory(baos.toByteArray());
+            } finally {
+                if (in != null) {
+                    in.close();
                 }
             }
-            return fromMemory(baos.toByteArray());
-        } finally {
-            if (in != null) {
-                in.close();
-            }
+        } catch (IOException ex) {
+            throw new XMLUnitRuntimeException(ex);
         }
     }
 
-    public static Builder fromURI(URI uri) throws Exception {
-        return fromURL(uri.toURL());
+    public static Builder fromURI(URI uri) {
+        try {
+            return fromURL(uri.toURL());
+        } catch (java.net.MalformedURLException ex) {
+            throw new IllegalArgumentException("uri " + uri + " is not an URL",
+                                               ex);
+        }
     }
 
-    public static Builder fromURI(String uri) throws Exception {
+    public static Builder fromURI(String uri) {
+        try {
         return fromURI(new URI(uri));
+        } catch (java.net.URISyntaxException ex) {
+            throw new IllegalArgumentException("uri " + uri + " is not an URI",
+                                               ex);
+        }
     }
 
     public static interface TransformationBuilder extends Builder {
@@ -168,8 +185,10 @@ public class Input {
                 }
                 t.transform(source, r);
                 return new DOMSource(r.getNode());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            } catch (javax.xml.transform.TransformerConfigurationException e) {
+                throw new ConfigurationException(e);
+            } catch (javax.xml.transform.TransformerException e) {
+                throw new XMLUnitRuntimeException(e);
             }
         }
     }
