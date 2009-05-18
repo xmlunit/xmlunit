@@ -97,7 +97,7 @@ namespace net.sf.xmlunit.builder {
                 source = s;
             }
             public ITransformationBuilder WithStylesheet(ISource s) {
-                this.styleSheet = styleSheet;
+                this.styleSheet = s;
                 return this;
             }
 
