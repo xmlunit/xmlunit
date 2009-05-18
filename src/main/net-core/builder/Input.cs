@@ -14,6 +14,7 @@
 using System.IO;
 using System.Xml;
 using System.Xml.Xsl;
+using net.sf.xmlunit.exceptions;
 using net.sf.xmlunit.input;
 
 namespace net.sf.xmlunit.builder {
@@ -127,7 +128,7 @@ namespace net.sf.xmlunit.builder {
                                     ms);
                     }
                     return FromMemory(ms.ToArray()).Build();
-                } catch (Exception ex) {
+                } catch (System.Exception ex) {
                     throw new XMLUnitException(ex);
                 }
             }
