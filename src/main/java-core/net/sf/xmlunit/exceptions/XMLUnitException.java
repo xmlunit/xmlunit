@@ -39,7 +39,7 @@ public class XMLUnitException extends RuntimeException {
     /**
      * Inititializes an exception using the wrapped exception's message.
      *
-     * @param message the detail message
+     * @param cause the root cause of the exception
      */
     public XMLUnitException(Throwable cause) {
         this(cause != null ? cause.getMessage() : null, cause);
