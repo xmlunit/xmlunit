@@ -32,7 +32,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import net.sf.xmlunit.exceptions.ConfigurationException;
-import net.sf.xmlunit.exceptions.XMLUnitRuntimeException;
+import net.sf.xmlunit.exceptions.XMLUnitException;
 import org.w3c.dom.Document;
 
 public class Input {
@@ -117,7 +117,7 @@ public class Input {
                 }
             }
         } catch (IOException ex) {
-            throw new XMLUnitRuntimeException(ex);
+            throw new XMLUnitException(ex);
         }
     }
 
@@ -188,7 +188,7 @@ public class Input {
             } catch (javax.xml.transform.TransformerConfigurationException e) {
                 throw new ConfigurationException(e);
             } catch (javax.xml.transform.TransformerException e) {
-                throw new XMLUnitRuntimeException(e);
+                throw new XMLUnitException(e);
             }
         }
     }

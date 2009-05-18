@@ -17,7 +17,7 @@ package net.sf.xmlunit.exceptions;
  * Exception thrown when anything inside JAXP throws a
  * *ConfigurationException.
  */
-public class ConfigurationException extends XMLUnitRuntimeException {
+public class ConfigurationException extends XMLUnitException {
     public ConfigurationException(Throwable cause) {
         super(cause);
     }

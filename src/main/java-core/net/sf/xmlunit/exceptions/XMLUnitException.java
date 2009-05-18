@@ -16,14 +16,14 @@ package net.sf.xmlunit.exceptions;
 /**
  * Base class of any Exception thrown within XMLUnit.
  */
-public class XMLUnitRuntimeException extends RuntimeException {
+public class XMLUnitException extends RuntimeException {
     /**
      * Inititializes the exeption.
      *
      * @param message the detail message
      * @param cause the root cause of the exception
      */
-    public XMLUnitRuntimeException(String message, Throwable cause) {
+    public XMLUnitException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -32,7 +32,7 @@ public class XMLUnitRuntimeException extends RuntimeException {
      *
      * @param message the detail message
      */
-    public XMLUnitRuntimeException(String message) {
+    public XMLUnitException(String message) {
         this(message, null);
     }
 
@@ -41,7 +41,7 @@ public class XMLUnitRuntimeException extends RuntimeException {
      *
      * @param message the detail message
      */
-    public XMLUnitRuntimeException(Throwable cause) {
+    public XMLUnitException(Throwable cause) {
         this(cause != null ? cause.getMessage() : null, cause);
     }
 }
