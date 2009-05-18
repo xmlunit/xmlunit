@@ -18,7 +18,7 @@ package net.sf.xmlunit.exceptions;
  */
 public class XMLUnitException extends RuntimeException {
     /**
-     * Inititializes the exeption.
+     * Inititializes the exception.
      *
      * @param message the detail message
      * @param cause the root cause of the exception
@@ -28,7 +28,7 @@ public class XMLUnitException extends RuntimeException {
     }
 
     /**
-     * Inititializes an exeption without cause.
+     * Inititializes an exception without cause.
      *
      * @param message the detail message
      */
@@ -37,7 +37,7 @@ public class XMLUnitException extends RuntimeException {
     }
 
     /**
-     * Inititializes an exeption using the wrapped exception's message.
+     * Inititializes an exception using the wrapped exception's message.
      *
      * @param message the detail message
      */
