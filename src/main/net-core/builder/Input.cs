@@ -116,17 +116,17 @@ namespace net.sf.xmlunit.builder {
 
             public ISource Build() {
                 try {
-                XslCompiledTransform t = new XslCompiledTransform();
-                if (styleSheet != null) {
-                    t.Load(styleSheet.Reader);
-                }
-                MemoryStream ms = new MemoryStream();
-                using (ms) {
-                    t.Transform(source.Reader,
-                                args,
-                                ms);
-                }
-                return FromMemory(ms.ToArray()).Build();
+                    XslCompiledTransform t = new XslCompiledTransform();
+                    if (styleSheet != null) {
+                        t.Load(styleSheet.Reader);
+                    }
+                    MemoryStream ms = new MemoryStream();
+                    using (ms) {
+                        t.Transform(source.Reader,
+                                    args,
+                                    ms);
+                    }
+                    return FromMemory(ms.ToArray()).Build();
                 } catch (Exception ex) {
                     throw new XMLUnitException(ex);
                 }
