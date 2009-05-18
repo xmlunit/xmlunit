@@ -115,6 +115,7 @@ namespace net.sf.xmlunit.builder {
             }
 
             public ISource Build() {
+                try {
                 XslCompiledTransform t = new XslCompiledTransform();
                 if (styleSheet != null) {
                     t.Load(styleSheet.Reader);
@@ -126,6 +127,9 @@ namespace net.sf.xmlunit.builder {
                                 ms);
                 }
                 return FromMemory(ms.ToArray()).Build();
+                } catch (Exception ex) {
+                    throw new XMLUnitException(ex);
+                }
             }
         }
 
