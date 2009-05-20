@@ -2,7 +2,7 @@ namespace XmlUnit {
     using NUnit.Framework;
     using System.IO;
     
-    public class XmlAssertion : Assertion {
+    public class XmlAssertion : Assert {
         public static void AssertXmlEquals(TextReader controlTextReader, TextReader testTextReader) {
             AssertXmlEquals(new XmlDiff(controlTextReader, testTextReader));
         }
