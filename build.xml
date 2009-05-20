@@ -30,7 +30,8 @@
   <property name="lib.dir" value="${build.dir}/lib"/>
   <property name="core.out.dir" value="${build.dir}/core-classes"/>
   <property name="legacy.out.dir" value="${build.dir}/legacy-classes"/>
-  <property name="test.out.dir" value="${build.dir}/test-classes"/>
+  <property name="coretest.out.dir" value="${build.dir}/core-test-classes"/>
+  <property name="legacytest.out.dir" value="${build.dir}/legacy-test-classes"/>
   <property name="userguide.out.dir" value="${build.dir}/ug-classes"/>
   <property name="test.report.dir" value="${build.dir}/test-report"/>
   <property name="dist.dir" value="${build.dir}/dist"/>
@@ -56,7 +57,8 @@
     <mkdir dir="${lib.dir}"/>
     <mkdir dir="${core.out.dir}"/>
     <mkdir dir="${legacy.out.dir}"/>
-    <mkdir dir="${test.out.dir}"/>
+    <mkdir dir="${coretest.out.dir}"/>
+    <mkdir dir="${legacytest.out.dir}"/>
     <mkdir dir="${test.report.dir}"/>
     <mkdir dir="${dist.dir}"/>
     <mkdir dir="${docs.dir}"/>
@@ -69,7 +71,8 @@
       <fileset dir="${lib.dir}"/>
       <fileset dir="${core.out.dir}"/>
       <fileset dir="${legacy.out.dir}"/>
-      <fileset dir="${test.out.dir}"/>
+      <fileset dir="${coretest.out.dir}"/>
+      <fileset dir="${legacytest.out.dir}"/>
       <fileset dir="${test.report.dir}"/>
       <fileset dir="${dist.dir}"/>
       <fileset dir="${docs.dir}"/>
@@ -86,54 +89,70 @@
     </javac>
   </target>
 
-  <target name="compile" depends="compile-core"
+  <target name="compile-legacy" depends="compile-core"
     description="compiles legacy sources and tests">
     <javac srcdir="${src.dir}/java-legacy" destdir="${legacy.out.dir}"
       debug="${javac.debug}" target="${javac.target}" source="${javac.source}">
       <classpath>
         <pathelement location="${core.out.dir}"/>
         <pathelement path="${java.class.path}"/>
-        <fileset dir="lib" includes="*.jar"/>
-      </classpath>
-      <exclude name="**/*XPathRegexAssert.java" unless="regexp.present"/>
-    </javac>
-    <javac srcdir="${test.dir}/java-legacy" destdir="${test.out.dir}"
-      debug="${javac.debug}" target="${javac.target}" source="${javac.source}">
-      <classpath>
-        <pathelement location="${core.out.dir}"/>
-        <pathelement location="${legacy.out.dir}"/>
-        <pathelement path="${java.class.path}"/>
-        <fileset dir="lib" includes="*.jar"/>
+        <fileset dir="lib" includes="junit-3*.jar"/>
       </classpath>
       <exclude name="**/*XPathRegexAssert.java" unless="regexp.present"/>
     </javac>
   </target>
 
-  <target name="test" depends="compile"
-    description="runs the tests">
+  <target name="compile-legacy-tests" depends="compile-legacy"
+          description="Compiles the test for XMLUnit 1.x">
+    <javac srcdir="${test.dir}/java-legacy" destdir="${legacytest.out.dir}"
+      debug="${javac.debug}" target="${javac.target}" source="${javac.source}">
+      <classpath>
+        <pathelement location="${core.out.dir}"/>
+        <pathelement location="${legacy.out.dir}"/>
+        <pathelement path="${java.class.path}"/>
+        <fileset dir="lib" includes="junit-3*.jar"/>
+      </classpath>
+      <exclude name="**/*XPathRegexAssert.java" unless="regexp.present"/>
+    </javac>
+  </target>
+
+  <target name="compile-core-tests" depends="compile-core"
+          description="Compiles the test for XMLUnit2">
+    <javac srcdir="${test.dir}/java-core" destdir="${coretest.out.dir}"
+           debug="${javac.debug}" target="${javac.target}"
+           source="${javac.source}">
+      <classpath>
+        <pathelement location="${core.out.dir}"/>
+        <pathelement path="${java.class.path}"/>
+        <fileset dir="lib" includes="junit-4*.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="compile" depends="compile-core,compile-legacy"/>
+  <target name="compile-tests"
+          depends="compile-core-tests,compile-legacy-tests"/>
+
+  <target name="test" depends="compile-tests" description="runs the tests">
     <junit printsummary="yes" haltonfailure="no" fork="${junit.fork}"
       forkMode="perBatch" failureproperty="tests.failed">
       <sysproperty key="basedir" value="${basedir}"/>
       <sysproperty key="user.dir" value="${basedir}"/>
-      <!--
-          <sysproperty key="javax.xml.parsers.DocumentBuilderFactory"
-            value="org.apache.xerces.jaxp.DocumentBuilderFactoryImpl"/>
-          <sysproperty key="javax.xml.parsers.SAXParserFactory"
-            value="org.apache.xerces.jaxp.SAXParserFactoryImpl"/>
-          <sysproperty key="javax.xml.transform.TransformerFactory"
-        value="org.apache.xalan.processor.TransformerFactoryImpl"/>
-        -->
       <classpath>
         <pathelement location="${core.out.dir}"/>
         <pathelement location="${legacy.out.dir}"/>
-        <pathelement location="${test.out.dir}"/>
+        <pathelement location="${legacytest.out.dir}"/>
+        <pathelement location="${coretest.out.dir}"/>
         <pathelement path="${java.class.path}"/>
-        <fileset dir="lib" includes="*.jar"/>
+        <fileset dir="lib" includes="junit-4*.jar"/>
       </classpath>
       <formatter type="xml"/>
       <batchtest todir="${test.report.dir}">
         <fileset dir="${test.dir}/java-legacy">
           <include name="**/test_*.java"/>
+        </fileset>
+        <fileset dir="${test.dir}/java-core">
+          <include name="**/*Test.java"/>
         </fileset>
       </batchtest>
     </junit>
