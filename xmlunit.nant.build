@@ -4,7 +4,9 @@
     overwrite="false"/>
   <property name="core.src.dir" value="${base.dir}/src/main/net-core" overwrite="false"/>
   <property name="legacy.src.dir" value="${base.dir}/src/main/net-legacy" overwrite="false"/>
-  <property name="tests.src.dir" value="${base.dir}/src/tests/net-legacy"
+  <property name="core.tests.src.dir" value="${base.dir}/src/tests/net-core"
+    overwrite="false"/>
+  <property name="legacy.tests.src.dir" value="${base.dir}/src/tests/net-legacy"
     overwrite="false"/>
 
   <property name="build.dir" value="${base.dir}/build/net" overwrite="false"/>
@@ -56,14 +58,25 @@
     </csc>
     
     <csc target="library"
-      output="${bin.dir}/${project::get-name()}.tests.dll"
+      output="${bin.dir}/${project::get-name()}-core.tests.dll"
+      debug="true" verbose="${csc.verbose}">
+      <references basedir="${bin.dir}">
+        <include name="${project::get-name()}-core.dll"/>
+        <include name="${nunit.v2.assembly}"/>
+      </references>
+      <sources basedir="${core.tests.src.dir}">
+        <include name="**/*.cs"/>
+      </sources>
+    </csc>
+    <csc target="library"
+      output="${bin.dir}/${project::get-name()}-legacy.tests.dll"
       debug="true" verbose="${csc.verbose}">
       <references basedir="${bin.dir}">
         <include name="${project::get-name()}-core.dll"/>
         <include name="${project::get-name()}-legacy.dll"/>
         <include name="${nunit.v2.assembly}"/>
       </references>
-      <sources basedir="${tests.src.dir}">
+      <sources basedir="${legacy.tests.src.dir}">
         <include name="*.cs"/>
         <exclude name="AllTests.cs"/>
       </sources>
@@ -73,7 +86,8 @@
   <target name="test" description="run all tests" depends="compile">
     <nunit2>
       <formatter type="Plain"/>
-      <test assemblyname="${bin.dir}/${project::get-name()}.tests.dll"/>
+      <test assemblyname="${bin.dir}/${project::get-name()}-core.tests.dll"/>
+      <test assemblyname="${bin.dir}/${project::get-name()}-legacy.tests.dll"/>
     </nunit2>
   </target>
   
