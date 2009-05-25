@@ -19,32 +19,32 @@ namespace net.sf.xmlunit.validation {
     /// <summary>
     /// The result of a validation.
     /// </summary>
-public class ValidationResult {
-    private readonly bool valid;
-    private readonly IEnumerable<ValidationProblem> problems;
+    public class ValidationResult {
+        private readonly bool valid;
+        private readonly IEnumerable<ValidationProblem> problems;
 
-    public ValidationResult(bool valid, IEnumerable<ValidationProblem> problems) {
-        this.valid = valid;
-        this.problems = problems;
-    }
+        public ValidationResult(bool valid, IEnumerable<ValidationProblem> problems) {
+            this.valid = valid;
+            this.problems = problems;
+        }
 
-    /// <summary>
-    /// Has the validation been successful?
-    /// </summary>
-    public bool Valid {
-        get {
-        return valid;
+        /// <summary>
+        /// Has the validation been successful?
+        /// </summary>
+        public bool Valid {
+            get {
+                return valid;
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the problems that have been found.
+        /// </summary>
+        public IEnumerable<ValidationProblem> Problems {
+            get {
+                return problems;
+            }
         }
     }
-
-    /// <summary>
-    /// Retrieves the problems that have been found.
-    /// </summary>
-    public IEnumerable<ValidationProblem> Problems {
-        get {
-        return problems;
-        }
-    }
-}
 }
 

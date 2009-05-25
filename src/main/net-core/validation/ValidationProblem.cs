@@ -18,55 +18,55 @@ namespace net.sf.xmlunit.validation {
     /// <summary>
     /// A validation "problem" which may be an error or a warning.
     /// </summary>
-public class ValidationProblem {
-    public const int UNKNOWN = -1;
+    public class ValidationProblem {
+        public const int UNKNOWN = -1;
 
-    private readonly int line, column;
-    private readonly XmlSeverityType type;
-    private readonly string message;
+        private readonly int line, column;
+        private readonly XmlSeverityType type;
+        private readonly string message;
 
-    public ValidationProblem(string message, int line, int column,
-                             XmlSeverityType type) {
-        this.message = message;
-        this.line = line;
-        this.column = column;
-        this.type = type;
-    }
+        public ValidationProblem(string message, int line, int column,
+                                 XmlSeverityType type) {
+            this.message = message;
+            this.line = line;
+            this.column = column;
+            this.type = type;
+        }
 
-    /// <summary>
-    /// The line where the problem occured or UNKNOWN.
-    /// </summary>
-    public int Line {
-        get {
-        return line;
+        /// <summary>
+        /// The line where the problem occured or UNKNOWN.
+        /// </summary>
+        public int Line {
+            get {
+                return line;
+            }
+        }
+
+        /// <summary>
+        /// The column where the problem occured or UNKNOWN.
+        /// </summary>
+        public int Column {
+            get {
+                return column;
+            }
+        }
+
+        /// <summary>
+        /// Whether this is an error or a warning.
+        /// </summary>
+        public XmlSeverityType Type {
+            get {
+                return type;
+            }
+        }
+
+        /// <summary>
+        /// The problem's message.
+        /// </summary>
+        public string Message {
+            get {
+                return message;
+            }
         }
     }
-
-    /// <summary>
-    /// The column where the problem occured or UNKNOWN.
-    /// </summary>
-    public int Column {
-        get {
-        return column;
-        }
-    }
-
-    /// <summary>
-    /// Whether this is an error or a warning.
-    /// </summary>
-    public XmlSeverityType Type {
-        get {
-        return type;
-        }
-    }
-
-    /// <summary>
-    /// The problem's message.
-    /// </summary>
-    public string Message {
-        get {
-        return message;
-        }
-    }
-}
 }

@@ -17,16 +17,16 @@ namespace net.sf.xmlunit.validation {
     /// Constants for the languages supported by XMLUnit's schema
     /// validation.
     /// </summary>
-public static class Languages {
+    public static class Languages {
 
-    /// <summary>W3C XML Schema.</summary>
-    public const string W3C_XML_SCHEMA_NS_URI =
-        "http://www.w3.org/2001/XMLSchema";
+        /// <summary>W3C XML Schema.</summary>
+        public const string W3C_XML_SCHEMA_NS_URI =
+            "http://www.w3.org/2001/XMLSchema";
 
-    /// <summary>DTD.</summary>
-    public const string XML_DTD_NS_URI = "http://www.w3.org/TR/REC-xml";
+        /// <summary>DTD.</summary>
+        public const string XML_DTD_NS_URI = "http://www.w3.org/TR/REC-xml";
 
-    /// <summary>XDR.</summary>
-    public const string XDR_NS_URI = "xmlunit:validation:XDR";
-}
+        /// <summary>XDR.</summary>
+        public const string XDR_NS_URI = "xmlunit:validation:XDR";
+    }
 }
