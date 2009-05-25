@@ -16,7 +16,7 @@ package net.sf.xmlunit.validation;
 import javax.xml.XMLConstants;
 
 /**
- * Contants for the languages supported by XMLUnit's schema
+ * Constants for the languages supported by XMLUnit's schema
  * validation.  More languages may be supported depending on your JAXP
  * environment.
  */
