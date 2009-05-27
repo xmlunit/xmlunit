@@ -877,13 +877,66 @@ public class test_DifferenceEngine extends TestCase implements DifferenceConstan
         assertEquals(7, count[0]);
     }
 
+    /**
+     * @see http://sourceforge.net/forum/forum.php?thread_id=3284504&forum_id=73274
+     */
+    public void testNamespaceAttributeDifferences() throws Exception {
+        String control = "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+            + "<ns0:Message xmlns:ns0 = \"http://mynamespace\">"
+            + "<ns0:EventHeader>"
+            + "<ns0:EventID>9999</ns0:EventID>"
+            + "<ns0:MessageID>1243409665297</ns0:MessageID>"
+            + "<ns0:MessageVersionID>1.0</ns0:MessageVersionID>"
+            + "<ns0:EventName>TEST-EVENT</ns0:EventName>"
+            + "<ns0:BWDomain>TEST</ns0:BWDomain>"
+            + "<ns0:DateTimeStamp>2009-01-01T12:00:00</ns0:DateTimeStamp>"
+            + "<ns0:SchemaPayloadRef>anything</ns0:SchemaPayloadRef>"
+            + "<ns0:MessageURI>anything</ns0:MessageURI>"
+            + "<ns0:ResendFlag>F</ns0:ResendFlag>"
+            + "</ns0:EventHeader>"
+            + "<ns0:EventBody>"
+            + "<ns0:XMLContent>"
+            + "<xyz:root xmlns:xyz=\"http://test.com/xyz\">"
+            + "<xyz:test1>A</xyz:test1>"
+            + "<xyz:test2>B</xyz:test2>"
+            + "</xyz:root>"
+            + "</ns0:XMLContent>"
+            + "</ns0:EventBody>"
+            + "</ns0:Message>";
+        String test =
+            "<abc:Message xmlns:abc=\"http://mynamespace\" xmlns:xyz=\"http://test.com/xyz\">"
+            + "<abc:EventHeader>"
+            + "<abc:EventID>9999</abc:EventID>"
+            + "<abc:MessageID>1243409665297</abc:MessageID>"
+            + "<abc:MessageVersionID>1.0</abc:MessageVersionID>"
+            + "<abc:EventName>TEST-EVENT</abc:EventName>"
+            + "<abc:BWDomain>TEST</abc:BWDomain>"
+            + "<abc:DateTimeStamp>2009-01-01T12:00:00</abc:DateTimeStamp>"
+            + "<abc:SchemaPayloadRef>anything</abc:SchemaPayloadRef>"
+            + "<abc:MessageURI>anything</abc:MessageURI>"
+            + "<abc:ResendFlag>F</abc:ResendFlag>"
+            + "</abc:EventHeader>"
+            + "<abc:EventBody>"
+            + "<abc:XMLContent>"
+            + "<xyz:root>"
+            + "<xyz:test1>A</xyz:test1>"
+            + "<xyz:test2>B</xyz:test2>"
+            + "</xyz:root>"
+            + "</abc:XMLContent>"
+            + "</abc:EventBody>"
+            + "</abc:Message>";
+        listener.tracing = true;
+        listenToDifferences(control, test);
+        assertFalse(listener.different);
+    }
+
     private void listenToDifferences(String control, String test)
         throws SAXException, IOException {
         Document controlDoc = XMLUnit.buildControlDocument(control);
         Document testDoc = XMLUnit.buildTestDocument(test);
         engine.compare(controlDoc, testDoc, listener, DEFAULT_ELEMENT_QUALIFIER);
     }
-        
+       
 
     private void resetListener() {
         listener = new CollectingDifferenceListener();
@@ -901,13 +954,13 @@ public class test_DifferenceEngine extends TestCase implements DifferenceConstan
             return !afterDifference.isRecoverable();
         }
     }
-        
+       
     private class NeverHaltingComparisonController implements ComparisonController {
         public boolean haltComparison(Difference afterDifference) {
             return false;
         }
     }
-        
+       
     private class CollectingDifferenceListener implements DifferenceListener {
         public String expected;
         public String actual;
