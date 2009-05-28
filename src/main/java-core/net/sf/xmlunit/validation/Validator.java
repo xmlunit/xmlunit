@@ -55,7 +55,7 @@ public abstract class Validator {
     }
 
     protected Source[] getSchemaSources() {
-        return sourceLocations;
+        return sourceLocations == null ? new Source[0] : sourceLocations;
     }
 
     /**

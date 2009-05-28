@@ -13,6 +13,8 @@
 */
 package net.sf.xmlunit.validation;
 
+import org.xml.sax.SAXParseException;
+
 /**
  * A validation "problem" which may be an error or a warning.
  */
@@ -60,4 +62,15 @@ public class ValidationProblem {
     public String getMessage() {
         return message;
     }
+
+    static ValidationProblem fromException(SAXParseException e,
+                                           ProblemType type) {
+        return new ValidationProblem(e.getMessage(),
+                                     e.getLineNumber() > 0
+                                     ? e.getLineNumber() : UNKNOWN,
+                                     e.getColumnNumber() > 0
+                                     ? e.getColumnNumber() : UNKNOWN,
+                                     type);
+    }
+
 }

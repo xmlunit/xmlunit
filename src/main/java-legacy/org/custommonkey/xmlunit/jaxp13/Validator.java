@@ -38,13 +38,13 @@ package org.custommonkey.xmlunit.jaxp13;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
-import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import net.sf.xmlunit.exceptions.XMLUnitException;
+import net.sf.xmlunit.validation.JAXPValidator;
+import net.sf.xmlunit.validation.Languages;
+import net.sf.xmlunit.validation.ValidationProblem;
 import org.custommonkey.xmlunit.exceptions.XMLUnitRuntimeException;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -56,15 +56,14 @@ import org.xml.sax.SAXParseException;
  * by your SchemaFactory implementation.</p>
  */
 public class Validator {
-    private final String schemaLanguage;
-    private final SchemaFactory factory;
-    private final ArrayList sources = new ArrayList();
+    private final ArrayList<Source> sources = new ArrayList<Source>();
+    private final JAXPValidator validator;
 
     /**
      * validates using W3C XML Schema 1.0.
      */
     public Validator() {
-        this(XMLConstants.W3C_XML_SCHEMA_NS_URI, null);
+        this(Languages.W3C_XML_SCHEMA_NS_URI, null);
     }
 
     /**
@@ -93,8 +92,7 @@ public class Validator {
      * non-null, the first argument will be ignored.
      */
     protected Validator(String schemaLanguage, SchemaFactory factory) {
-        this.schemaLanguage = schemaLanguage;
-        this.factory = factory;
+        validator = new JAXPValidator(schemaLanguage, factory);
     }
 
     /**
@@ -102,13 +100,14 @@ public class Validator {
      */
     public void addSchemaSource(Source s) {
         sources.add(s);
+        validator.setSchemaSources(sources.toArray(new Source[0]));
     }
 
     /**
      * Is the given schema definition valid?
      */
     public boolean isSchemaValid() {
-        return getSchemaErrors().size() == 0;
+        return validator.validateSchema().isValid();
     }
 
     /**
@@ -117,27 +116,8 @@ public class Validator {
      * <p>The list contains {@link org.xml.sax.SAXParseException
      * SAXParseException}s.</p>
      */
-    public List/*<SAXParseException>*/ getSchemaErrors() {
-        final ArrayList l = new ArrayList();
-        try {
-            parseSchema(new CollectingErrorHandler(l));
-        } catch (SAXException e) {
-            // error should have been recorded in our ErrorHandler, at
-            // least that's what the Javadocs say "SchemaFactory is
-            // not allowed to throw SAXException without first
-            // reporting it to ErrorHandler.".
-            //
-            // Unfortunately not all implementations seem to follow
-            // this rule.  In particular using the setup described in
-            // org.custommonkey.xmlunit.jaxp13.test_Validator#XtestGoodRelaxNGCompactSyntaxIsValid()
-            // an exception ("SAXParseException: Content is not
-            // allowed in prolog.") will be thrown that never enters
-            // our Errorhandler.
-            if (l.size() == 0) {
-                l.add(e);
-            }
-        }
-        return l;
+    public List<SAXParseException> getSchemaErrors() {
+        return problemToExceptionList(validator.validateSchema().getProblems());
     }
 
     /**
@@ -150,9 +130,12 @@ public class Validator {
      * javax.xml.validation.Validator#validate validate in
      * Validator}).
      */
-    public boolean isInstanceValid(Source instance)
-        throws XMLUnitRuntimeException {
-        return getInstanceErrors(instance).size() == 0;
+    public boolean isInstanceValid(Source instance) {
+        try {
+            return validator.validateInstance(instance).isValid();
+        } catch (XMLUnitException e) {
+            throw new XMLUnitRuntimeException(e.getMessage(), e.getCause());
+        }
     }
 
     /**
@@ -167,59 +150,23 @@ public class Validator {
      * javax.xml.validation.Validator#validate validate in
      * Validator}).
      */
-    public List/*<SAXParseException>*/ getInstanceErrors(Source instance)
-        throws XMLUnitRuntimeException {
-        Schema schema = null;
+    public List<SAXParseException> getInstanceErrors(Source instance) {
         try {
-            schema = parseSchema(null);
-        } catch (SAXException e) {
-            throw new XMLUnitRuntimeException("Schema is invalid", e);
+            return problemToExceptionList(validator.validateInstance(instance).
+                                          getProblems());
+        } catch (XMLUnitException e) {
+            throw new XMLUnitRuntimeException(e.getMessage(), e.getCause());
         }
+    }
 
-        final ArrayList l = new ArrayList();
-        javax.xml.validation.Validator v = schema.newValidator();
-        v.setErrorHandler(new CollectingErrorHandler(l));
-        try {
-            v.validate(instance);
-        } catch (SAXException e) {
-            // error should have been recorded in our ErrorHandler,
-            // but better double-check.
-            if (l.size() == 0) {
-                l.add(e);
-            }
-        } catch (java.io.IOException i) {
-            throw new XMLUnitRuntimeException("Error reading instance source",
-                                              i);
+    private static List<SAXParseException>
+        problemToExceptionList(Iterable<ValidationProblem> problems) {
+        final List<SAXParseException> l = new ArrayList<SAXParseException>();
+        for (ValidationProblem p : problems) {
+            l.add(new SAXParseException(p.getMessage(),
+                                        null, null,
+                                        p.getLine(), p.getColumn()));
         }
         return l;
-    }
-
-    private Schema parseSchema(ErrorHandler h) throws SAXException {
-        SchemaFactory fac = factory != null ? factory
-            : SchemaFactory.newInstance(schemaLanguage);
-        fac.setErrorHandler(h);
-        try {
-            return fac.newSchema((Source[])
-                                 sources.toArray(new Source[sources.size()]));
-        } finally {
-            fac.setErrorHandler(null);
-        }
-    }
-
-    private static final class CollectingErrorHandler implements ErrorHandler {
-        private final List l;
-
-        CollectingErrorHandler(List l) {
-            this.l = l;
-        }
-        public void error(SAXParseException e) {
-            l.add(e);
-        }
-        public void fatalError(SAXParseException e) {
-            l.add(e);
-        }
-        public void warning(SAXParseException e) {
-            l.add(e);
-        }
     }
 }
