@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Book PUBLIC "XMLUNIT/TEST/PUB" "http://example.org/nonsense">
+<Book>
+    <Title>Chicken Soup for the Soul</Title>
+    <Author>Jack Canfield</Author>
+    <Author>Mark Victor Hansen</Author>
+    <Date>1993</Date>
+    <ISBN>1-55874-262-X</ISBN>
+</Book>

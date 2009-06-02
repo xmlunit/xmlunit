@@ -78,6 +78,9 @@ public abstract class Validator {
      * @see Languages
      */
     public static Validator forLanguage(String language) {
-        return null;
+        if (!Languages.XML_DTD_NS_URI.equals(language)) {
+            return new JAXPValidator(language);
+        }
+        return new ParsingValidator(Languages.XML_DTD_NS_URI);
     }
 }

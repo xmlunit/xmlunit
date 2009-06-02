@@ -13,14 +13,10 @@
 */
 package net.sf.xmlunit.validation;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import net.sf.xmlunit.exceptions.XMLUnitException;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -86,42 +82,4 @@ public class JAXPValidator extends Validator {
         return v.getResult();
     }
 
-
-    private static class ValidationHandler implements ErrorHandler {
-        private List<ValidationProblem> problems =
-            new LinkedList<ValidationProblem>();
-        private boolean valid = true;
-        // fatal errors are re-thrown by the parser
-        private SAXParseException lastFatalError = null;
-
-        public void error(SAXParseException e) {
-            if (e != lastFatalError) {
-                valid = false;
-                problems.add(ValidationProblem.fromException(e,
-                                                             ValidationProblem
-                                                             .ProblemType.ERROR)
-                             );
-            }
-        }
-
-        public void fatalError(SAXParseException e) {
-            valid = false;
-            lastFatalError = e;
-            problems.add(ValidationProblem.fromException(e,
-                                                         ValidationProblem
-                                                         .ProblemType.ERROR));
-        }
-
-        public void warning(SAXParseException e) {
-            problems.add(ValidationProblem.fromException(e,
-                                                         ValidationProblem
-                                                         .ProblemType.WARNING));
-        }
-
-        private ValidationResult getResult() {
-            return new ValidationResult(valid,
-                                        Collections.unmodifiableList(problems)
-                                        );
-        }
-    }
 }
