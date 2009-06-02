@@ -138,7 +138,7 @@ public class Validator extends DefaultHandler {
      * Basic constructor.
      * Validates the contents of the Reader using the DTD or schema referenced
      *  by those contents.
-     *  
+     *
      * @param readerForValidation
      */
     public Validator(Reader readerForValidation) {
@@ -149,7 +149,7 @@ public class Validator extends DefaultHandler {
      * Basic constructor.
      * Validates the contents of the String using the DTD or schema referenced
      *  by those contents.
-     *  
+     *
      * @param stringForValidation
      */
     public Validator(String stringForValidation) {
@@ -160,7 +160,7 @@ public class Validator extends DefaultHandler {
      * Basic constructor.
      * Validates the contents of the InputSource using the DTD or
      * schema referenced by those contents.
-     *  
+     *
      * @param readerForValidation
      */
     public Validator(InputSource sourceForValidation) {
@@ -173,7 +173,7 @@ public class Validator extends DefaultHandler {
      *  systemID. There must be DOCTYPE instruction in the markup that
      *  references the DTD or else the markup will be considered invalid: if
      *  there is no DOCTYPE in the markup use the 3-argument constructor
-     *  
+     *
      * @param readerForValidation
      * @param systemID
      */
@@ -188,7 +188,7 @@ public class Validator extends DefaultHandler {
      *  systemID. There must be DOCTYPE instruction in the markup that
      *  references the DTD or else the markup will be considered invalid: if
      *  there is no DOCTYPE in the markup use the 3-argument constructor
-     *  
+     *
      * @param stringForValidation
      * @param systemID
      */
@@ -203,7 +203,7 @@ public class Validator extends DefaultHandler {
      * in the markup that references the DTD or else the markup will
      * be considered invalid: if there is no DOCTYPE in the markup use
      * the 3-argument constructor
-     *  
+     *
      * @param sourceForValidation
      * @param systemID
      */
@@ -215,7 +215,7 @@ public class Validator extends DefaultHandler {
      * Full constructor.
      * Validates the contents of the InputSource using the DTD
      * specified with the systemID and named with the doctype name.
-     *  
+     *
      * @param sourceForValidation
      * @param systemID
      * @param doctype
@@ -238,7 +238,7 @@ public class Validator extends DefaultHandler {
      * Full constructor.
      * Validates the contents of the Reader using the DTD specified with the
      *  systemID and named with the doctype name.
-     *  
+     *
      * @param readerForValidation
      * @param systemID
      * @param doctype
