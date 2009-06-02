@@ -36,26 +36,30 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit;
 
+import net.sf.xmlunit.validation.Languages;
+import net.sf.xmlunit.validation.ParsingValidator;
+import net.sf.xmlunit.validation.ValidationProblem;
+import net.sf.xmlunit.validation.ValidationResult;
+
 import org.custommonkey.xmlunit.exceptions.ConfigurationException;
 import org.custommonkey.xmlunit.exceptions.XMLUnitRuntimeException;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.w3c.dom.Document;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
 
 /**
  * Validates XML against its internal or external DOCTYPE, or a completely
@@ -76,11 +80,14 @@ import javax.xml.parsers.SAXParserFactory;
  * </ul>
  * <br />Examples and more at <a href="http://xmlunit.sourceforge.net"/>xmlunit.sourceforge.net</a>
  */
-public class Validator extends DefaultHandler implements ErrorHandler {
+public class Validator extends DefaultHandler {
     private final InputSource validationInputSource;
-    private final SAXParser parser;
     private final StringBuffer messages;
     private final boolean usingDoctypeReader;
+    private final String systemId;
+
+    private Object schemaSource;
+    private boolean useSchema = false;
 
     private Boolean isValid;
 
@@ -89,8 +96,7 @@ public class Validator extends DefaultHandler implements ErrorHandler {
      * @deprecated Use the protected three arg constructor instead.
      */
     protected Validator(InputSource inputSource,
-                        boolean usingDoctypeReader)
-        throws SAXException, ConfigurationException {
+                        boolean usingDoctypeReader) {
         this(inputSource, null, usingDoctypeReader);
     }
 
@@ -100,27 +106,14 @@ public class Validator extends DefaultHandler implements ErrorHandler {
      * @param inputSource
      * @param systemId
      * @param usingDoctypeReader
-     * @throws SAXException
-     * @throws ConfigurationException if validation could not be turned on
      */
     protected Validator(InputSource inputSource,
                         String systemId,
-                        boolean usingDoctypeReader)
-        throws SAXException, ConfigurationException {
+                        boolean usingDoctypeReader) {
         isValid = null;
         messages = new StringBuffer();
-        SAXParserFactory factory = XMLUnit.getSAXParserFactory();
-        factory.setValidating(true);
-        try {
-            parser = factory.newSAXParser();
-        } catch (ParserConfigurationException ex) {
-            throw new ConfigurationException(ex);
-        }
-
         this.validationInputSource = inputSource;
-        if (systemId != null) {
-            validationInputSource.setSystemId(systemId);
-        }
+        this.systemId = systemId;
         this.usingDoctypeReader = usingDoctypeReader;
     }
 
@@ -135,11 +128,8 @@ public class Validator extends DefaultHandler implements ErrorHandler {
      * @param document
      * @param systemID
      * @param doctype
-     * @throws SAXException if unable to obtain new Sax parser via JAXP factory
-     * @throws ConfigurationException if validation could not be turned on
      */
-    public Validator(Document document, String systemID, String doctype)
-        throws SAXException, ConfigurationException {
+    public Validator(Document document, String systemID, String doctype) {
         this(new InputStreamReader(new NodeInputStream(document)),
              systemID, doctype);
     }
@@ -150,11 +140,8 @@ public class Validator extends DefaultHandler implements ErrorHandler {
      *  by those contents.
      *  
      * @param readerForValidation
-     * @throws SAXException if unable to obtain new Sax parser via JAXP factory
-     * @throws ConfigurationException if validation could not be turned on
      */
-    public Validator(Reader readerForValidation)
-        throws SAXException, ConfigurationException {
+    public Validator(Reader readerForValidation) {
         this(readerForValidation, null);
     }
 
@@ -164,11 +151,8 @@ public class Validator extends DefaultHandler implements ErrorHandler {
      *  by those contents.
      *  
      * @param stringForValidation
-     * @throws SAXException if unable to obtain new Sax parser via JAXP factory
-     * @throws ConfigurationException if validation could not be turned on
      */
-    public Validator(String stringForValidation)
-        throws SAXException, ConfigurationException {
+    public Validator(String stringForValidation) {
         this(new StringReader(stringForValidation));
     }
 
@@ -178,11 +162,8 @@ public class Validator extends DefaultHandler implements ErrorHandler {
      * schema referenced by those contents.
      *  
      * @param readerForValidation
-     * @throws SAXException if unable to obtain new Sax parser via JAXP factory
-     * @throws ConfigurationException if validation could not be turned on
      */
-    public Validator(InputSource sourceForValidation)
-        throws SAXException, ConfigurationException {
+    public Validator(InputSource sourceForValidation) {
         this(sourceForValidation, null);
     }
 
@@ -195,11 +176,8 @@ public class Validator extends DefaultHandler implements ErrorHandler {
      *  
      * @param readerForValidation
      * @param systemID
-     * @throws SAXException if unable to obtain new Sax parser via JAXP factory
-     * @throws ConfigurationException if validation could not be turned on
      */
-    public Validator(Reader readerForValidation, String systemID)
-        throws SAXException, ConfigurationException {
+    public Validator(Reader readerForValidation, String systemID) {
         this(new InputSource(readerForValidation), systemID,
              (readerForValidation instanceof DoctypeReader));
     }
@@ -213,11 +191,8 @@ public class Validator extends DefaultHandler implements ErrorHandler {
      *  
      * @param stringForValidation
      * @param systemID
-     * @throws SAXException if unable to obtain new Sax parser via JAXP factory
-     * @throws ConfigurationException if validation could not be turned on
      */
-    public Validator(String stringForValidation, String systemID)
-        throws SAXException, ConfigurationException {
+    public Validator(String stringForValidation, String systemID) {
         this(new StringReader(stringForValidation), systemID);
     }
 
@@ -231,11 +206,8 @@ public class Validator extends DefaultHandler implements ErrorHandler {
      *  
      * @param sourceForValidation
      * @param systemID
-     * @throws SAXException if unable to obtain new Sax parser via JAXP factory
-     * @throws ConfigurationException if validation could not be turned on
      */
-    public Validator(InputSource sourceForValidation, String systemID)
-        throws SAXException, ConfigurationException {
+    public Validator(InputSource sourceForValidation, String systemID) {
         this(sourceForValidation, systemID, false);
     }
 
@@ -247,12 +219,9 @@ public class Validator extends DefaultHandler implements ErrorHandler {
      * @param sourceForValidation
      * @param systemID
      * @param doctype
-     * @throws SAXException
-     * @throws ConfigurationException if validation could not be turned on
      */
     public Validator(InputSource sourceForValidation, String systemID,
-                     String doctype)
-        throws SAXException, ConfigurationException {
+                     String doctype) {
         this(sourceForValidation.getCharacterStream() != null
              ? new InputSource(new DoctypeReader(sourceForValidation
                                                  .getCharacterStream(),
@@ -273,12 +242,9 @@ public class Validator extends DefaultHandler implements ErrorHandler {
      * @param readerForValidation
      * @param systemID
      * @param doctype
-     * @throws SAXException
-     * @throws ConfigurationException if validation could not be turned on
      */
     public Validator(Reader readerForValidation, String systemID,
-                     String doctype)
-        throws SAXException, ConfigurationException {
+                     String doctype) {
         this(readerForValidation instanceof DoctypeReader
              ? readerForValidation
              : new DoctypeReader(readerForValidation, doctype, systemID),
@@ -301,26 +267,10 @@ public class Validator extends DefaultHandler implements ErrorHandler {
      *
      * @param use indicate that XML Schema should be used to validate
      * documents.
-     * @throws SAXException
      * @see #setJAXP12SchemaSource(Object)
      */
-    public void useXMLSchema(boolean use) throws SAXException {
-        boolean tryXercesProperties = false;
-        try {
-            if (use) {
-                parser.setProperty(JAXPConstants.Properties.SCHEMA_LANGUAGE,
-                                   XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            }
-        } catch (SAXNotRecognizedException e) {
-            tryXercesProperties = true;
-        } catch (SAXNotSupportedException e) {
-            tryXercesProperties = true;
-        }
-
-        if (tryXercesProperties) {
-            parser.getXMLReader().setFeature("http://apache.org/xml/features/validation/schema", use);
-            parser.getXMLReader().setFeature("http://apache.org/xml/features/validation/dynamic", use);
-        }
+    public void useXMLSchema(boolean use) {
+        useSchema = use;
     }
 
     /**
@@ -372,17 +322,30 @@ public class Validator extends DefaultHandler implements ErrorHandler {
             return;
         }
 
+        ParsingValidator v =
+            new ParsingValidator(useSchema ? Languages.W3C_XML_SCHEMA_NS_URI
+                                 : Languages.XML_DTD_NS_URI);
+        List<Source> schemaSourceList = new ArrayList<Source>();
+        if (systemId != null) {
+            schemaSourceList.add(new StreamSource(systemId));
+        }
+        addSchemaSources(schemaSource, schemaSourceList);
+        v.setSchemaSources(schemaSourceList.toArray(new Source[0]));
+
         try {
-            parser.parse(validationInputSource, this);
-        } catch (SAXException e) {
-            parserException(e);
-        } catch (IOException e) {
-            parserException(e);
+            ValidationResult r =
+                v.validateInstance(new SAXSource(validationInputSource));
+            isValid = r.isValid() ? Boolean.TRUE : Boolean.FALSE;
+            for (ValidationProblem p : r.getProblems()) {
+                validationProblem(p);
+            }
+        } catch (net.sf.xmlunit.exceptions.ConfigurationException e) {
+            throw new ConfigurationException(e.getCause());
+        } catch (net.sf.xmlunit.exceptions.XMLUnitException e) {
+            throw new XMLUnitRuntimeException(e.getMessage(), e.getCause());
         }
 
-        if (isValid == null) {
-            isValid = Boolean.TRUE;
-        } else if (usingDoctypeReader) {
+        if (usingDoctypeReader && isValid == Boolean.FALSE) {
             try {
                 messages.append("\nContent was: ")
                     .append(getOriginalContent(validationInputSource));
@@ -392,93 +355,9 @@ public class Validator extends DefaultHandler implements ErrorHandler {
         }
     }
 
-    /**
-     * Deal with any parser exceptions not handled by the ErrorHandler interface.
-     * 
-     * @param e
-     */
-    private void parserException(Exception e) {
-        invalidate(e.getMessage());
-    }
-
-    /**
-     * ErrorHandler interface method.
-     * 
-     * @param exception
-     * @throws SAXException
-     */
-    public void warning(SAXParseException exception)
-        throws SAXException {
-        errorHandlerException(exception);
-    }
-
-    /**
-     * ErrorHandler interface method.
-     * 
-     * @param exception
-     * @throws SAXException
-     */
-    public void error(SAXParseException exception)
-        throws SAXException {
-        errorHandlerException(exception);
-    }
-
-    /**
-     * ErrorHandler interface method.
-     * 
-     * @param exception
-     * @throws SAXException
-     */
-    public void fatalError(SAXParseException exception)
-        throws SAXException {
-        errorHandlerException(exception);
-    }
-
-    /**
-     * Entity Resolver method: allows us to override an existing systemID
-     * referenced in the markup DOCTYPE instruction.
-     * 
-     * @param publicId
-     * @param systemId
-     * @return the sax InputSource that points to the overridden systemID
-     */
-    public InputSource resolveEntity(String publicId, String systemId) {
-        if (validationInputSource.getSystemId() != null) {
-            return new InputSource(validationInputSource.getSystemId());
-        } else {
-            InputSource s = null;
-            try {
-                if (XMLUnit.getControlEntityResolver() != null) {
-                    s = XMLUnit.getControlEntityResolver()
-                        .resolveEntity(publicId, systemId);
-                }
-            } catch (SAXException e) {
-                throw new XMLUnitRuntimeException("failed to resolve entity: "
-                                                  + publicId, e);
-            } catch (IOException e) {
-                // even if we wanted to re-throw IOException (which we
-                // can't because of backwards compatibility) the mere
-                // fact that DefaultHandler has stripped IOException
-                // from EntityResolver's method's signature wouldn't
-                // let us.
-                throw new XMLUnitRuntimeException("failed to resolve entity: "
-                                                  + publicId, e);
-            }
-            if (s != null) {
-                return s;
-            } else if (systemId != null) {
-                return new InputSource(systemId);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Deal with exceptions passed to the ErrorHandler interface by the parser.
-     */
-    private void errorHandlerException(SAXParseException e) {
-        String msg = "At line " + e.getLineNumber() + ", column: "
-            + e.getColumnNumber() + " ==> " + e.getMessage();
+    private void validationProblem(ValidationProblem p) {
+        String msg = "At line " + p.getLine() + ", column: "
+            + p.getColumn() + " ==> " + p.getMessage();
         if (!msg.endsWith("\n")) msg += "\n";
         invalidate(msg);
     }
@@ -512,12 +391,30 @@ public class Validator extends DefaultHandler implements ErrorHandler {
      *       runtime. When an array of Objects is passed it is illegal to
      *       have two schemas that share the same namespace.</li>
      * </ul>
-     * @throws SAXException if this method of validating  isn't supported.
      * @see http://java.sun.com/webservices/jaxp/change-requests-11.html
      */
-    public void setJAXP12SchemaSource(Object schemaSource) throws SAXException {
-        parser.setProperty(JAXPConstants.Properties.SCHEMA_SOURCE,
-                           schemaSource);
+    public void setJAXP12SchemaSource(Object schemaSource) {
+        this.schemaSource = schemaSource;
+    }
+
+    private static void addSchemaSources(Object schemaSources,
+                                         List<Source> targetList) {
+        if (schemaSources instanceof String) {
+            targetList.add(new StreamSource((String) schemaSources));
+        } else if (schemaSources instanceof File) {
+            targetList.add(new StreamSource((File) schemaSources));
+        } else if (schemaSources instanceof InputStream) {
+            targetList.add(new StreamSource((InputStream) schemaSources));
+        } else if (schemaSources instanceof InputSource) {
+            targetList.add(new SAXSource((InputSource) schemaSources));
+        } else if (schemaSources instanceof Object[]) {
+            for (Object s : (Object[]) schemaSources) {
+                addSchemaSources(s, targetList);
+            }
+        } else if (schemaSources != null) {
+            throw new XMLUnitRuntimeException("Unknown schema source type: "
+                                              + schemaSources.getClass());
+        }
     }
 
     private static String getOriginalContent(InputSource s)

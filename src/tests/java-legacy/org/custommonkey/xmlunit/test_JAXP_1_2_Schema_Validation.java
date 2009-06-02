@@ -141,6 +141,26 @@ public class test_JAXP_1_2_Schema_Validation extends TestCase {
         validator.assertIsValid();
     }
     
+    public void testUsingStringArrayContainingStringURI() throws Exception {
+        File xsdFile = new File(test_Constants.BASEDIR + "/src/tests/resources/Book.xsd");
+        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists", 
+                   xsdFile.exists());
+
+        File xmlFile = new File(test_Constants.BASEDIR 
+                                + "/src/tests/resources/BookXsdGeneratedNoSchema.xml");
+        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists", 
+                   xmlFile.exists());
+
+        validator = new Validator(new FileReader(xmlFile));
+
+        validator.useXMLSchema(true);
+        validator.setJAXP12SchemaSource(new String[] {
+                                            xsdFile.getAbsolutePath()
+                                        });
+
+        validator.assertIsValid();
+    }
+    
     public void testUsingNonExistentFile() throws Exception {
         File xsdFile = new File(test_Constants.BASEDIR + "/src/tests/resources/BookDoesNotExist.xsd");
         assertFalse("xsdFile " + xsdFile.getAbsolutePath() + " exists", 
