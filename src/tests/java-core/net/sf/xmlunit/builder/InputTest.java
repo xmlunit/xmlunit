@@ -26,6 +26,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import org.w3c.dom.Document;
 import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.IsInstanceOf.*;
 import static org.hamcrest.core.IsNull.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -45,9 +46,9 @@ public class InputTest {
         // it looks as if SAXSource.sourceToInputSource cannot deal
         // with a DOMSource, so we cannot use the parse method
         Source s = Input.fromDocument(d).build();
-        assertThat(s, is(DOMSource.class));
+        assertThat(s, instanceOf(DOMSource.class));
         Object o = ((DOMSource) s).getNode();
-        assertThat(o, is(Document.class));
+        assertThat(o, instanceOf(Document.class));
         Document d2 = (Document) o;
         assertThat(d2, notNullValue());
         assertThat(d2.getDocumentElement().getTagName(), is("animal"));
@@ -113,9 +114,9 @@ public class InputTest {
                             .build())
             .build();
         // again, transformed is a DOMSource, cannot use parse()
-        assertThat(s, is(DOMSource.class));
+        assertThat(s, instanceOf(DOMSource.class));
         Object o = ((DOMSource) s).getNode();
-        assertThat(o, is(Document.class));
+        assertThat(o, instanceOf(Document.class));
         Document d2 = (Document) o;
         assertThat(d2, notNullValue());
         assertThat(d2.getDocumentElement().getTagName(), is("furry"));

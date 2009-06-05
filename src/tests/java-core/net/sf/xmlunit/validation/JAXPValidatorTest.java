@@ -16,7 +16,7 @@ package net.sf.xmlunit.validation;
 import java.io.File;
 import javax.xml.transform.stream.StreamSource;
 import net.sf.xmlunit.exceptions.XMLUnitException;
-import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.IsInstanceOf.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -61,7 +61,7 @@ public class JAXPValidatorTest {
             v.validateInstance(new StreamSource(new File("src/tests/resources/BookXsdGenerated.xml")));
             fail("should have thrown an exception");
         } catch (Exception e) {
-            assertThat(e, is(XMLUnitException.class));
+            assertThat(e, instanceOf(XMLUnitException.class));
         }
     }
 
@@ -72,7 +72,7 @@ public class JAXPValidatorTest {
             v.validateInstance(new StreamSource(new File("src/tests/resources/BookXsdGenerated.xml")));
             fail("should have thrown an exception");
         } catch (Exception e) {
-            assertThat(e, is(XMLUnitException.class));
+            assertThat(e, instanceOf(XMLUnitException.class));
         }
     }
 }
