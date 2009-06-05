@@ -13,7 +13,10 @@
 */
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
+using System.Xml.Schema;
+using net.sf.xmlunit.exceptions;
 
 namespace net.sf.xmlunit.validation {
 
@@ -73,6 +76,15 @@ namespace net.sf.xmlunit.validation {
         /// Validates a schema.
         /// </summary>
         public virtual ValidationResult ValidateSchema() {
+            if (language == ValidationType.Schema && sourceLocations != null) {
+                List<ValidationProblem> problems =
+                    new List<ValidationProblem>();
+                foreach (ISource loc in sourceLocations) {
+                    XmlSchema s = XmlSchema.Read(loc.Reader,
+                                                 CollectProblems(problems));
+                }
+                return new ValidationResult(problems.Count == 0, problems);
+            }
             throw new NotImplementedException();
         }
 
@@ -80,9 +92,30 @@ namespace net.sf.xmlunit.validation {
         /// Validates an instance against the schema.
         /// </summary>
         public virtual ValidationResult ValidateInstance(ISource instance) {
-            throw new NotImplementedException();
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.ValidationType = language;
+            settings.ValidationFlags =
+                XmlSchemaValidationFlags.ProcessIdentityConstraints
+                | XmlSchemaValidationFlags.ReportValidationWarnings;
+            if (language == ValidationType.Schema && sourceLocations != null) {
+                foreach (ISource loc in sourceLocations) {
+                    try {
+                        XmlSchema s = XmlSchema.Read(loc.Reader, ThrowOnError);
+                        settings.Schemas.Add(s);
+                    } catch (IOException ex) {
+                        throw new XMLUnitException("Schema is not readable",
+                                                   ex);
+                    }
+                }
+            }
+            List<ValidationProblem> problems = new List<ValidationProblem>();
+            settings.ValidationEventHandler += CollectProblems(problems);
+            using (XmlReader r = XmlReader.Create(instance.Reader,
+                                                  settings)) {
+                while (r.Read()) ;
+            }
+            return new ValidationResult(problems.Count == 0, problems);
         }
-
 
         private static readonly IDictionary<string, ValidationType> types;
 
@@ -104,5 +137,16 @@ namespace net.sf.xmlunit.validation {
             // TODO pick a better exception type
             throw new NotImplementedException();
         }
+
+        private static ValidationEventHandler CollectProblems(List<ValidationProblem> problems) {
+            return delegate(object sender, ValidationEventArgs e) {
+                problems.Add(ValidationProblem.FromEvent(e));
+            };
+        }
+
+        private static void ThrowOnError(object sender, ValidationEventArgs e) {
+            throw new XMLUnitException("Schema is invalid", e.Exception);
+        }
+
     }
 }

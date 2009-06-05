@@ -68,5 +68,13 @@ namespace net.sf.xmlunit.validation {
                 return message;
             }
         }
+
+        internal static ValidationProblem FromEvent(ValidationEventArgs e) {
+            XmlSchemaException ex = e.Exception;
+            return new ValidationProblem(e.Message,
+                                         ex == null ? UNKNOWN : ex.LineNumber,
+                                         ex == null ? UNKNOWN : ex.LinePosition,
+                                         e.Severity);
+        }
     }
 }
