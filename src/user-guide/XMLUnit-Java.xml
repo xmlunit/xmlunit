@@ -3542,7 +3542,14 @@ class MyNodeTester implements NodeTester {
             a <literal>ATTR_NAME_NOT_FOUND_ID</literal> kind of
             difference), the XPath expressions of the node details
             have been random.  <ulink
-            url="https://sourceforge.net/tracker/index.php?func=detail&aid=2386807&group_id=23187&atid=377768">Issue 2386807</ulink>.
+            url="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=2386807&amp;group_id=23187&amp;atid=377768">Issue 2386807</ulink>.
+          </listitem>
+          <listitem>
+            In some cases XMLUnit matched test nodes to multiple
+            control nodes and then created a "missing child"
+            difference for remaining test nodes even though they would
+            have been valid targets for control node matches as well.
+            <ulink url="https://sourceforge.net/tracker/?func=detail&amp;aid=2807167&amp;group_id=23187&amp;atid=377768">Issue 2807167</ulink>.
           </listitem>
         </itemizedlist>
       </section>

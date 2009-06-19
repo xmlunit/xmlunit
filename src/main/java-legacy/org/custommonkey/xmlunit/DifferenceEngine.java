@@ -397,6 +397,30 @@ public class DifferenceEngine implements DifferenceConstants {
             
             boolean matchFound = false;
 
+            /*
+             * XMLUnit 1.2 and earlier don't check whether the
+             * "matched" test node has already been matched to a
+             * different control node and will happily match the same
+             * test node to each and every control node, if necessary.
+             *
+             * I (Stefan) feel this is wrong but can't change it
+             * without breaking backwards compatibility
+             * (testXpathLocation12 in test_DifferenceEngine which
+             * predates XMLUnit 1.0 fails, so at one point it has been
+             * the expected and intended behaviour).
+             *
+             * As a side effect it may leave test nodes inside the
+             * unmatched list, see
+             * https://sourceforge.net/tracker/?func=detail&aid=2807167&group_id=23187&atid=377768
+             *
+             * To overcome the later problem the code will now prefer
+             * test nodes that haven't already been matched to any
+             * other node and falls back to the first
+             * (multiply-)matched node if none could be found.  Yes,
+             * this is strange.
+             */
+            int fallbackMatch = -1;
+
             while (!matchFound) {
                 Node t = (Node) testChildren.get(j);
                 if (findNodeType == t.getNodeType()
@@ -406,6 +430,18 @@ public class DifferenceEngine implements DifferenceConstants {
                         || elementQualifier
                         .qualifyForComparison((Element) nextControl,
                                               (Element) t);
+                }
+                if (matchFound && !unmatchedTestNodes.contains(t)) {
+                    /*
+                     * test node already matched to a different
+                     * control node, try the other test nodes first
+                     * but keep this as "fallback" (unless there
+                     * already is a fallback)
+                     */
+                    if (fallbackMatch < 0) {
+                        fallbackMatch = j;
+                    }
+                    matchFound = false;
                 }
                 if (!matchFound) {
                     ++j;
@@ -417,6 +453,10 @@ public class DifferenceEngine implements DifferenceConstants {
                         break;
                     }
                 }
+            }
+            if (!matchFound && fallbackMatch >= 0) {
+                matchFound = true;
+                j = fallbackMatch;
             }
             if (matchFound) {
                 matchingNodes.put(nextControl, testChildren.get(j));
