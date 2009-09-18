@@ -323,4 +323,58 @@ public class test_DetailedDiff extends test_Diff {
         secondForecast = "<weather><today temp=\"20\"/></weather>";
     }
 
+    /**
+     * https://sourceforge.net/tracker/?func=detail&aid=2758280&group_id=23187&atid=377768
+     */
+    public void testCompareUnmatched() throws Exception {
+        String control = "<root><a>1</a>"
+            + "<b>1</b>"
+            + "<c>1</c>"
+            + "<d>1</d>"
+            + "<e>1</e></root>";
+        String test = "<root><a>1</a>"
+            + "<b>1</b>"
+            + "<z>1</z>"
+            + "<d>1</d>"
+            + "<e>1</e></root>";
+        DetailedDiff d = (DetailedDiff) buildDiff(control, test);
+        List l = d.getAllDifferences();
+        assertEquals(1, l.size());
+        Difference diff = (Difference) l.get(0);
+        assertEquals(DifferenceConstants.ELEMENT_TAG_NAME_ID, diff.getId());
+    }
+
+    /**
+     * https://sourceforge.net/tracker/?func=detail&aid=2758280&group_id=23187&atid=377768
+     */
+    public void testDontCompareUnmatched() throws Exception {
+        String control = "<root><a>1</a>"
+            + "<b>1</b>"
+            + "<c>1</c>"
+            + "<d>1</d>"
+            + "<e>1</e></root>";
+        String test = "<root><a>1</a>"
+            + "<b>1</b>"
+            + "<z>1</z>"
+            + "<d>1</d>"
+            + "<e>1</e></root>";
+        try {
+            XMLUnit.setCompareUnmatched(false);
+            DetailedDiff d = (DetailedDiff) buildDiff(control, test);
+            List l = d.getAllDifferences();
+            assertEquals(2, l.size());
+            Difference diff = (Difference) l.get(0);
+            assertEquals(DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
+                         diff.getId());
+            assertNotNull(diff.getControlNodeDetail().getNode());
+            assertNull(diff.getTestNodeDetail().getNode());
+            diff = (Difference) l.get(1);
+            assertEquals(DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
+                         diff.getId());
+            assertNull(diff.getControlNodeDetail().getNode());
+            assertNotNull(diff.getTestNodeDetail().getNode());
+        } finally {
+            XMLUnit.setCompareUnmatched(true);
+        }
+    }
 }
