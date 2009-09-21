@@ -39,6 +39,11 @@
         <date>June 2008</date>
         <revremark>Documentation for XMLUnit Java 1.2</revremark>
       </revision>
+      <revision>
+        <revnumber>1.3</revnumber>
+        <date>September 2009</date>
+        <revremark>Documentation for XMLUnit Java 1.3</revremark>
+      </revision>
     </revhistory>
   </articleinfo>
 
@@ -2229,7 +2234,7 @@ assertXMLEqual("expected pieces to be similar", CONTROL, TEST);
       <literal>DOMSource</literal> overrides when specifying your
       pieces of XML, XMLUnit will use the configured XML parsers (see
       <xref linkend="JAXP"/>) and <literal>EntityResolver</literal>s
-      (see <xref linkend="EntityResolver"/>).  There configuration
+      (see <xref linkend="EntityResolver"/>).  There are configuration
       options to use different settings for the control and test
       pieces of XML.</para>
 
@@ -2362,9 +2367,46 @@ assertXMLEqual("expected pieces to be similar", CONTROL, TEST);
         definitions the parser may expand them or not.
         Using <literal>XMLUnit.setExpandEntityReferences</literal> you
         can control the parser's setting.</para>
-      </section>
-    </section>
 
+      </section>
+
+      <section id="Comparison of Unmatched Elements">
+        <title>Comparison of Unmatched Elements</title>
+
+        <para>When XMLUnit cannot match a control Element to a test
+          Element (the configured ElementQualifier - see
+          <xref linkend="ElementQualifier"/> - doesn't return true for
+          any of the test Elements) it will try to compare it against
+          the first unmatched test Element (if there is one).
+          Starting with XMLUnit 1.3 one can
+          use <literal>XMLUnit.setCompareUnmatched</literal> to
+          disable this behavior and
+          generate <literal>CHILD_NODE_NOT_FOUND</literal> differences
+          instead.</para>
+
+        <para>If the control document is
+        <programlisting language="XML"><![CDATA[
+<root>
+  <a/>
+</root>
+]]></programlisting>
+        and the test document is
+        <programlisting language="XML"><![CDATA[
+<root>
+  <b/>
+</root>
+]]></programlisting>
+
+        the default setting will create a
+        single <literal>ELEMENT_TAG_NAME</literal> Difference
+        ("expected a but found b").
+        Setting <literal>XMLUnit.setCompareUnmatched</literal> to
+        false will create two Differences of
+        type <literal>CHILD_NODE_NOT_FOUND</literal> (one for "a" and
+        one for "b") instead.</para>
+      </section>
+
+    </section>
   </section>
 
   <section id="Validating XML Documents">
@@ -3519,21 +3561,39 @@ class MyNodeTester implements NodeTester {
     <section id="Changes 1.3">
       <title>Changes from XMLUnit 1.2 to 1.3</title>
 
-      <section id="Breaking Changes 1.2">
+      <section id="Breaking Changes 1.3">
         <title>Breaking Changes</title>
 
-        <itemizedlist>
-        </itemizedlist>
+        <!--itemizedlist>
+        </itemizedlist-->
       </section>
 
-      <section id="New Features 1.2">
+      <section id="New Features 1.3">
         <title>New Features</title>
 
         <itemizedlist>
+          <listitem>
+            If XMLUnit doesn't find a matching Element for a control
+            Element, it will match it against the first unmatched test
+            Element (if there is one) instead of creating
+            a <literal>CHILD_NODE_NOT_FOUND</literal> Difference.
+            There now is a new configuration
+            option <literal>compareUnmatched</literal> in
+            the <literal>XMLUnit</literal> class that can be used to
+            turn off this behavior - as a result
+            two <literal>CHILD_NODE_NOT_FOUND</literal> Differences
+            (one for the unmatched control Element and one for an
+            unmatched test Element) will be created instead of a
+            single Difference comparing the two likely unrelated
+            nodes.  See <xref linkend="Comparison of Unmatched
+            Elements"/>.
+            <ulink
+               url="https://sourceforge.net/tracker/?func=detail&amp;aid=2758280&amp;group_id=23187&amp;atid=377768">Issue 2758280</ulink>.
+          </listitem>
         </itemizedlist>
       </section>
 
-      <section id="Bugfixes 1.2">
+      <section id="Bugfixes 1.3">
         <title>Important Bug Fixes</title>
 
         <itemizedlist>
