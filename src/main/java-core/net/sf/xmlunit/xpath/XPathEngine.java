@@ -31,6 +31,9 @@ import net.sf.xmlunit.util.Convert;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * Simplified access to JAXP's XPath API.
+ */
 public class XPathEngine {
     private final XPath xpath;
 
@@ -42,10 +45,18 @@ public class XPathEngine {
         }
     }
 
+    /**
+     * Create an XPathEngine that uses JAXP's default XPathFactory
+     * under the covers.
+     */
     public XPathEngine() {
         this(XPathFactory.newInstance());
     }
 
+    /**
+     * Returns a potentially empty collection of Nodes matching an
+     * XPath expression.
+     */
     public Iterable<Node> selectNodes(String xPath, Source s) {
         try {
             NodeList nl = (NodeList) xpath.evaluate(xPath,
@@ -57,6 +68,9 @@ public class XPathEngine {
         }
     }
 
+    /**
+     * Evaluates an XPath expression and stringifies the result.
+     */
     public String evaluate(String xPath, Source s) {
         try {
             return xpath.evaluate(xPath, Convert.toInputSource(s));
@@ -65,6 +79,11 @@ public class XPathEngine {
         }
     }
 
+    /**
+     * Establish a namespace context.
+     *
+     * @param prefix2Uri maps from prefix to namespace URI.
+     */
     public void setNamespaceContext(Map<String, String> prefix2Uri) {
         xpath.setNamespaceContext(new NC(prefix2Uri));
     }

@@ -25,12 +25,22 @@ import net.sf.xmlunit.exceptions.ConfigurationException;
 import net.sf.xmlunit.exceptions.XMLUnitException;
 import org.xml.sax.InputSource;
 
+/**
+ * Conversion methods.
+ */
 public final class Convert {
     private Convert() { }
 
+    /**
+     * Creates a SAX InputSource from a TraX Source.
+     *
+     * <p>May use an XSLT identity transformation if SAXSource cannot
+     * convert it directly.</p>
+     */
     public static InputSource toInputSource(Source s) {
         try {
-            if (!(s instanceof SAXSource) && !(s instanceof StreamSource)) {
+            InputSource is = SAXSource.sourceToInputSource(s);
+            if (is == null) {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 StreamResult r = new StreamResult(bos);
                 TransformerFactory fac = TransformerFactory.newInstance();
@@ -38,8 +48,9 @@ public final class Convert {
                 t.transform(s, r);
                 s = new StreamSource(new ByteArrayInputStream(bos
                                                               .toByteArray()));
+                is = SAXSource.sourceToInputSource(s);
             }
-            return SAXSource.sourceToInputSource(s);
+            return is;
         } catch (javax.xml.transform.TransformerConfigurationException e) {
             throw new ConfigurationException(e);
         } catch (javax.xml.transform.TransformerException e) {
