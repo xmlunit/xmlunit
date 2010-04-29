@@ -17,9 +17,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Source;
-import javax.xml.transform.sax.SAXSource;
 import net.sf.xmlunit.exceptions.ConfigurationException;
 import net.sf.xmlunit.exceptions.XMLUnitException;
+import net.sf.xmlunit.util.Convert;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
@@ -50,7 +50,7 @@ public class ParsingValidator extends Validator {
 
     @Override public ValidationResult validateSchema() {
         throw new XMLUnitException("Schema validation is not supported by"
-                                   + " ParsinValidator");
+                                   + " ParsingValidator");
     }
 
     @Override public ValidationResult validateInstance(Source s) {
@@ -69,7 +69,7 @@ public class ParsingValidator extends Validator {
                 if (Languages.W3C_XML_SCHEMA_NS_URI.equals(language)) {
                     InputSource[] schemaSource = new InputSource[source.length];
                     for (int i = 0; i < source.length; i++) {
-                        schemaSource[i] = toInputSource(source[i]);
+                        schemaSource[i] = Convert.toInputSource(source[i]);
                     }
                     parser.setProperty(Properties.SCHEMA_SOURCE,
                                        schemaSource);
@@ -77,7 +77,7 @@ public class ParsingValidator extends Validator {
                     handler.setSchemaSystemId(source[0].getSystemId());
                 }
             }
-            InputSource input = toInputSource(s);
+            InputSource input = Convert.toInputSource(s);
             try {
                 parser.parse(input, handler);
             } catch (SAXException e) {
@@ -99,11 +99,6 @@ public class ParsingValidator extends Validator {
         } catch (java.io.IOException ex) {
             throw new XMLUnitException(ex);
         }
-    }
-
-    // TODO factor out to a common class, will be needed by other parts as well
-    private static InputSource toInputSource(Source s) throws SAXException {
-        return SAXSource.sourceToInputSource(s);
     }
 
     private static class Properties {
