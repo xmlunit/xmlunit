@@ -71,11 +71,22 @@ namespace net.sf.xmlunit.builder {
             AllIsWellFor(Input.FromURI(new Uri("file:" + TEST_FILE)).Build());
         }
 
-        [Test] public void ShouldParseATransformation() {
+        [Test] public void ShouldParseATransformationFromSource() {
             ISource input = Input.FromMemory("<animal>furry</animal>").Build();
             ISource s = Input.ByTransforming(input)
                 .WithStylesheet(Input.FromFile("../../../src/tests/resources/animal.xsl")
                                 .Build())
+                .Build();
+            Assert.That(s, Is.Not.Null);
+            XmlDocument d = Parse(s);
+            Assert.That(d, Is.Not.Null);
+            Assert.That(d.DocumentElement.Name, Is.EqualTo("furry"));
+        }
+
+        [Test] public void ShouldParseATransformationFromBuilder() {
+            Input.IBuilder input = Input.FromMemory("<animal>furry</animal>");
+            ISource s = Input.ByTransforming(input)
+                .WithStylesheet(Input.FromFile("../../../src/tests/resources/animal.xsl"))
                 .Build();
             Assert.That(s, Is.Not.Null);
             XmlDocument d = Parse(s);

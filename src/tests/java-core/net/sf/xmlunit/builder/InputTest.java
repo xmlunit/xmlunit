@@ -107,11 +107,25 @@ public class InputTest {
         allIsWellFor(Input.fromURL(new URL("file:" + TEST_FILE)).build());
     }
 
-    @Test public void shouldParseATransformation() throws Exception {
+    @Test public void shouldParseATransformationFromSource() throws Exception {
         Source input = Input.fromMemory("<animal>furry</animal>").build();
         Source s = Input.byTransforming(input)
             .withStylesheet(Input.fromFile("src/tests/resources/animal.xsl")
                             .build())
+            .build();
+        // again, transformed is a DOMSource, cannot use parse()
+        assertThat(s, instanceOf(DOMSource.class));
+        Object o = ((DOMSource) s).getNode();
+        assertThat(o, instanceOf(Document.class));
+        Document d2 = (Document) o;
+        assertThat(d2, notNullValue());
+        assertThat(d2.getDocumentElement().getTagName(), is("furry"));
+    }
+
+    @Test public void shouldParseATransformationFromBuilder() throws Exception {
+        Input.Builder input = Input.fromMemory("<animal>furry</animal>");
+        Source s = Input.byTransforming(input)
+            .withStylesheet(Input.fromFile("src/tests/resources/animal.xsl"))
             .build();
         // again, transformed is a DOMSource, cannot use parse()
         assertThat(s, instanceOf(DOMSource.class));

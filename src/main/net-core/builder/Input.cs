@@ -83,6 +83,7 @@ namespace net.sf.xmlunit.builder {
 
         public interface ITransformationBuilder : IBuilder {
             ITransformationBuilder WithStylesheet(ISource s);
+            ITransformationBuilder WithStylesheet(IBuilder b);
             ITransformationBuilder WithExtensionObject(string namespaceUri,
                                                        object extension);
             ITransformationBuilder WithParameter(string name,
@@ -100,6 +101,9 @@ namespace net.sf.xmlunit.builder {
             public ITransformationBuilder WithStylesheet(ISource s) {
                 this.styleSheet = s;
                 return this;
+            }
+            public ITransformationBuilder WithStylesheet(IBuilder b) {
+                return WithStylesheet(b.Build());
             }
 
             public ITransformationBuilder WithExtensionObject(string namespaceUri,
@@ -136,6 +140,9 @@ namespace net.sf.xmlunit.builder {
 
         public static ITransformationBuilder ByTransforming(ISource s) {
             return new Transformation(s);
+        }
+        public static ITransformationBuilder ByTransforming(IBuilder b) {
+            return ByTransforming(b.Build());
         }
     }
 }

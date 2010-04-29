@@ -141,6 +141,7 @@ public class Input {
 
     public static interface TransformationBuilder extends Builder {
         TransformationBuilder withStylesheet(Source s);
+        TransformationBuilder withStylesheet(Builder b);
         TransformationBuilder withParameter(String name, Object value);
         TransformationBuilder withOutputProperty(String name, String value);
     }
@@ -157,6 +158,9 @@ public class Input {
         public TransformationBuilder withStylesheet(Source s) {
             styleSheet = s;
             return this;
+        }
+        public TransformationBuilder withStylesheet(Builder b) {
+            return withStylesheet(b.build());
         }
         public TransformationBuilder withOutputProperty(String name,
                                                         String value) {
@@ -195,5 +199,9 @@ public class Input {
 
     public static TransformationBuilder byTransforming(Source s) {
         return new Transformation(s);
+    }
+
+    public static TransformationBuilder byTransforming(Builder b) {
+        return byTransforming(b.build());
     }
 }
