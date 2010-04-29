@@ -53,24 +53,24 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import net.sf.xmlunit.exceptions.XMLUnitException;
-import net.sf.xmlunit.xpath.XPathEngine;
+import net.sf.xmlunit.xpath.JAXPXPathEngine;
 
 /**
  * XPath engine based on javax.xml.xpath.
  */
 public class Jaxp13XpathEngine implements XpathEngine {
 
-    private final XPathEngine engine;
+    private final JAXPXPathEngine engine;
 
     public Jaxp13XpathEngine() throws ConfigurationException {
         try {
-            XPathEngine e = null;
+            JAXPXPathEngine e = null;
             if (XMLUnit.getXPathFactory() != null) {
-                e = new XPathEngine((XPathFactory) Class
-                                    .forName(XMLUnit.getXPathFactory())
-                                    .newInstance());
+                e = new JAXPXPathEngine((XPathFactory) Class
+                                        .forName(XMLUnit.getXPathFactory())
+                                        .newInstance());
             } else {
-                e = new XPathEngine();
+                e = new JAXPXPathEngine();
             }
             engine = e;
         } catch (net.sf.xmlunit.exceptions.ConfigurationException ex) {

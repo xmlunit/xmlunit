@@ -34,10 +34,10 @@ import org.w3c.dom.NodeList;
 /**
  * Simplified access to JAXP's XPath API.
  */
-public class XPathEngine {
+public class JAXPXPathEngine {
     private final XPath xpath;
 
-    public XPathEngine(XPathFactory fac) {
+    public JAXPXPathEngine(XPathFactory fac) {
         try {
             xpath = fac.newXPath();
         } catch (Exception e) {
@@ -49,7 +49,7 @@ public class XPathEngine {
      * Create an XPathEngine that uses JAXP's default XPathFactory
      * under the covers.
      */
-    public XPathEngine() {
+    public JAXPXPathEngine() {
         this(XPathFactory.newInstance());
     }
 
