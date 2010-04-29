@@ -42,32 +42,39 @@ import org.custommonkey.xmlunit.XpathEngine;
 import org.custommonkey.xmlunit.exceptions.ConfigurationException;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import net.sf.xmlunit.exceptions.XMLUnitException;
+import net.sf.xmlunit.xpath.XPathEngine;
 
 /**
  * XPath engine based on javax.xml.xpath.
  */
 public class Jaxp13XpathEngine implements XpathEngine {
 
-    private final XPath xpath;
+    private final XPathEngine engine;
 
     public Jaxp13XpathEngine() throws ConfigurationException {
         try {
-            XPathFactory f = null;
+            XPathEngine e = null;
             if (XMLUnit.getXPathFactory() != null) {
-                f = (XPathFactory) Class.forName(XMLUnit.getXPathFactory())
-                    .newInstance();
+                e = new XPathEngine((XPathFactory) Class
+                                    .forName(XMLUnit.getXPathFactory())
+                                    .newInstance());
             } else {
-                f = XPathFactory.newInstance();
+                e = new XPathEngine();
             }
-
-            xpath = f.newXPath();
+            engine = e;
+        } catch (net.sf.xmlunit.exceptions.ConfigurationException ex) {
+            throw new ConfigurationException(ex.getCause());
         } catch (Exception ex) {
             throw new ConfigurationException(ex);
         }
@@ -84,10 +91,12 @@ public class Jaxp13XpathEngine implements XpathEngine {
     public NodeList getMatchingNodes(String select, Document document)
         throws XpathException {
         try {
-            return (NodeList) xpath.evaluate(select, document,
-                                             XPathConstants.NODESET);
-        } catch (XPathExpressionException ex) {
-            throw new XpathException(ex);
+            return new NodeListForIterable(engine
+                                           .selectNodes(select,
+                                                        new DOMSource(document))
+                                           );
+        } catch (XMLUnitException ex) {
+            throw new XpathException(ex.getCause());
         }
     }
     
@@ -103,13 +112,34 @@ public class Jaxp13XpathEngine implements XpathEngine {
     public String evaluate(String select, Document document)
         throws XpathException {
         try {
-            return xpath.evaluate(select, document);
-        } catch (XPathExpressionException ex) {
-            throw new XpathException(ex);
+            return engine.evaluate(select, new DOMSource(document));
+        } catch (XMLUnitException ex) {
+            throw new XpathException(ex.getCause());
         }
     }
 
     public void setNamespaceContext(NamespaceContext ctx) {
-        xpath.setNamespaceContext(new XMLUnitNamespaceContext2Jaxp13(ctx));
+        engine.setNamespaceContext(XMLUnitNamespaceContext2Jaxp13
+                                   .turnIntoMap(ctx));
+    }
+
+    private static class NodeListForIterable implements NodeList {
+        private final List<Node> l;
+
+        private NodeListForIterable(Iterable<Node> it) {
+            ArrayList<Node> a = new ArrayList<Node>();
+            for (Node n : it) {
+                a.add(n);
+            }
+            l = Collections.unmodifiableList(a);
+        }
+
+        public int getLength() {
+            return l.size();
+        }
+
+        public Node item(int idx) {
+            return l.get(idx);
+        }
     }
 }

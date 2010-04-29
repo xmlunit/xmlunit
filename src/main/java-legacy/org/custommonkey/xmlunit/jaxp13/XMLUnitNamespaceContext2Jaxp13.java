@@ -91,7 +91,7 @@ public class XMLUnitNamespaceContext2Jaxp13
         return i.hasNext() ? (String) i.next() : null;
     }
 
-    private static Map turnIntoMap(NamespaceContext ctx) {
+    static Map turnIntoMap(NamespaceContext ctx) {
         HashMap/*<String, String>*/ m = new HashMap();
         for (Iterator i = ctx.getPrefixes(); i.hasNext(); ) {
             String prefix = (String) i.next();
