@@ -17,9 +17,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -97,7 +97,7 @@ public final class Convert {
                 if (uri == null) {
                     throw new IllegalArgumentException("uri must not be null");
                 }
-                Collection<String> c = new HashSet<String>();
+                Collection<String> c = new LinkedHashSet<String>();
                 boolean done = false;
                 if (XMLConstants.XML_NS_URI.equals(uri)) {
                     c.add(XMLConstants.XML_NS_PREFIX);
