@@ -22,50 +22,42 @@ import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXSource;
 import org.w3c.dom.Document;
+import net.sf.xmlunit.Resources;
+import net.sf.xmlunit.util.Convert;
+import org.junit.Test;
+
 import static org.hamcrest.core.Is.*;
 import static org.hamcrest.core.IsInstanceOf.*;
 import static org.hamcrest.core.IsNull.*;
 import static org.junit.Assert.*;
-import org.junit.Test;
 
 public class InputTest {
-
-    private static final String TEST_FILE = "src/tests/resources/test1.xml";
 
     private static Document parse(Source s) throws Exception {
         DocumentBuilder b =
             DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        return b.parse(SAXSource.sourceToInputSource(s));
+        return b.parse(Convert.toInputSource(s));
     }
 
     @Test public void shouldParseADocument() throws Exception {
-        Document d = parse(Input.fromFile(TEST_FILE).build());
-        // it looks as if SAXSource.sourceToInputSource cannot deal
-        // with a DOMSource, so we cannot use the parse method
+        Document d = parse(Input.fromFile(Resources.ANIMAL_FILE).build());
         Source s = Input.fromDocument(d).build();
-        assertThat(s, instanceOf(DOMSource.class));
-        Object o = ((DOMSource) s).getNode();
-        assertThat(o, instanceOf(Document.class));
-        Document d2 = (Document) o;
-        assertThat(d2, notNullValue());
-        assertThat(d2.getDocumentElement().getTagName(), is("animal"));
+        allIsWellFor(s);
     }
 
     @Test public void shouldParseAnExistingFileByName() throws Exception {
-        allIsWellFor(Input.fromFile(TEST_FILE).build());
+        allIsWellFor(Input.fromFile(Resources.ANIMAL_FILE).build());
     }
 
     @Test public void shouldParseAnExistingFileByFile() throws Exception {
-        allIsWellFor(Input.fromFile(new File(TEST_FILE)).build());
+        allIsWellFor(Input.fromFile(new File(Resources.ANIMAL_FILE)).build());
     }
 
     @Test public void shouldParseAnExistingFileFromStream() throws Exception {
         FileInputStream is = null;
         try {
-            is = new FileInputStream(TEST_FILE);
+            is = new FileInputStream(Resources.ANIMAL_FILE);
             allIsWellFor(Input.fromStream(is).build());
         } finally {
             if (is != null) {
@@ -77,7 +69,7 @@ public class InputTest {
     @Test public void shouldParseAnExistingFileFromReader() throws Exception {
         FileReader r = null;
         try {
-            r = new FileReader(TEST_FILE);
+            r = new FileReader(Resources.ANIMAL_FILE);
             allIsWellFor(Input.fromReader(r).build());
         } finally {
             if (r != null) {
@@ -96,15 +88,15 @@ public class InputTest {
     }
 
     @Test public void shouldParseFileFromURIString() throws Exception {
-        allIsWellFor(Input.fromURI("file:" + TEST_FILE).build());
+        allIsWellFor(Input.fromURI("file:" + Resources.ANIMAL_FILE).build());
     }
 
     @Test public void shouldParseFileFromURI() throws Exception {
-        allIsWellFor(Input.fromURI(new URI("file:" + TEST_FILE)).build());
+        allIsWellFor(Input.fromURI(new URI("file:" + Resources.ANIMAL_FILE)).build());
     }
 
     @Test public void shouldParseFileFromURL() throws Exception {
-        allIsWellFor(Input.fromURL(new URL("file:" + TEST_FILE)).build());
+        allIsWellFor(Input.fromURL(new URL("file:" + Resources.ANIMAL_FILE)).build());
     }
 
     @Test public void shouldParseATransformationFromSource() throws Exception {
@@ -113,13 +105,7 @@ public class InputTest {
             .withStylesheet(Input.fromFile("src/tests/resources/animal.xsl")
                             .build())
             .build();
-        // again, transformed is a DOMSource, cannot use parse()
-        assertThat(s, instanceOf(DOMSource.class));
-        Object o = ((DOMSource) s).getNode();
-        assertThat(o, instanceOf(Document.class));
-        Document d2 = (Document) o;
-        assertThat(d2, notNullValue());
-        assertThat(d2.getDocumentElement().getTagName(), is("furry"));
+        allIsWellFor(s, "furry");
     }
 
     @Test public void shouldParseATransformationFromBuilder() throws Exception {
@@ -127,24 +113,23 @@ public class InputTest {
         Source s = Input.byTransforming(input)
             .withStylesheet(Input.fromFile("src/tests/resources/animal.xsl"))
             .build();
-        // again, transformed is a DOMSource, cannot use parse()
-        assertThat(s, instanceOf(DOMSource.class));
-        Object o = ((DOMSource) s).getNode();
-        assertThat(o, instanceOf(Document.class));
-        Document d2 = (Document) o;
-        assertThat(d2, notNullValue());
-        assertThat(d2.getDocumentElement().getTagName(), is("furry"));
+        allIsWellFor(s, "furry");
     }
 
     private static void allIsWellFor(Source s) throws Exception {
+        allIsWellFor(s, "animal");
+    }
+
+    private static void allIsWellFor(Source s, String rootElementName)
+        throws Exception {
         assertThat(s, notNullValue());
         Document d = parse(s);
         assertThat(d, notNullValue());
-        assertThat(d.getDocumentElement().getTagName(), is("animal"));
+        assertThat(d.getDocumentElement().getTagName(), is(rootElementName));
     }
 
     private static byte[] readTestFile() throws Exception {
-        FileInputStream is = new FileInputStream(TEST_FILE);
+        FileInputStream is = new FileInputStream(Resources.ANIMAL_FILE);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int read = -1;
