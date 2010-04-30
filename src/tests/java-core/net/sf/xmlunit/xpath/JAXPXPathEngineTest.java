@@ -73,7 +73,12 @@ public class JAXPXPathEngineTest {
                      new JAXPXPathEngine().evaluate("//title", source));
     }
 
-    @Test public void evaluateWithMultipleMatchs() {
+    @Test public void evaluateWithSingleMatchTextSelector() {
+        assertEquals("Don't blame it on the...",
+                     new JAXPXPathEngine().evaluate("//title/text()", source));
+    }
+
+    @Test public void evaluateWithMultipleMatches() {
         assertEquals("sunshine",
                      new JAXPXPathEngine().evaluate("//li", source));
     }
@@ -102,6 +107,29 @@ public class JAXPXPathEngineTest {
         m.put("x", "urn:test:1");
         e.setNamespaceContext(m);
         Iterable<Node> it = e.selectNodes("/x:d/x:e", source);
+        assertTrue(it.iterator().hasNext());
+    }
+
+    @Test public void selectNodesWithDefaultNSEmptyPrefix() {
+        JAXPXPathEngine e = new JAXPXPathEngine();
+        source = Input.fromMemory("<d xmlns='urn:test:1'><e/></d>")
+            .build();
+        HashMap<String, String> m = new HashMap<String, String>();
+        m.put("", "urn:test:1");
+        e.setNamespaceContext(m);
+        Iterable<Node> it = e.selectNodes("/:d/:e", source);
+        assertTrue(it.iterator().hasNext());
+    }
+
+    // doesn't match
+    public void selectNodesWithDefaultNSNoPrefix() {
+        JAXPXPathEngine e = new JAXPXPathEngine();
+        source = Input.fromMemory("<d xmlns='urn:test:1'><e/></d>")
+            .build();
+        HashMap<String, String> m = new HashMap<String, String>();
+        m.put("", "urn:test:1");
+        e.setNamespaceContext(m);
+        Iterable<Node> it = e.selectNodes("/d/e", source);
         assertTrue(it.iterator().hasNext());
     }
 }
