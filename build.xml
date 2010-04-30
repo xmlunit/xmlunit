@@ -84,6 +84,7 @@
   <target name="compile-core" depends="-init"
           description="compiles legacy sources and tests">
     <javac srcdir="${src.dir}/java-core" destdir="${core.out.dir}"
+           includeantruntime="false"
            debug="${javac.debug}" target="${javac.target}"
            source="${javac.source}">
     </javac>
@@ -92,7 +93,8 @@
   <target name="compile-legacy" depends="compile-core"
     description="compiles legacy sources and tests">
     <javac srcdir="${src.dir}/java-legacy" destdir="${legacy.out.dir}"
-      debug="${javac.debug}" target="${javac.target}" source="${javac.source}">
+           includeantruntime="false" debug="${javac.debug}"
+           target="${javac.target}" source="${javac.source}">
       <classpath>
         <pathelement location="${core.out.dir}"/>
         <pathelement path="${java.class.path}"/>
@@ -105,7 +107,8 @@
   <target name="compile-legacy-tests" depends="compile-legacy"
           description="Compiles the test for XMLUnit 1.x">
     <javac srcdir="${test.dir}/java-legacy" destdir="${legacytest.out.dir}"
-      debug="${javac.debug}" target="${javac.target}" source="${javac.source}">
+           includeantruntime="false" debug="${javac.debug}"
+           target="${javac.target}" source="${javac.source}">
       <classpath>
         <pathelement location="${core.out.dir}"/>
         <pathelement location="${legacy.out.dir}"/>
@@ -119,6 +122,7 @@
   <target name="compile-core-tests" depends="compile-core"
           description="Compiles the test for XMLUnit2">
     <javac srcdir="${test.dir}/java-core" destdir="${coretest.out.dir}"
+           includeantruntime="false"
            debug="${javac.debug}" target="${javac.target}"
            source="${javac.source}">
       <classpath>
@@ -288,9 +292,11 @@
   <target name="compile-userguide-examples" depends="compile">
     <mkdir dir="${userguide.out.dir}"/>
     <javac srcdir="src/user-guide" includes="org/"
-      destdir="${userguide.out.dir}" source="1.3" target="1.2">
+           includeantruntime="false"
+           destdir="${userguide.out.dir}" source="1.3" target="1.2">
       <classpath>
         <pathelement location="${legacy.out.dir}"/>
+        <fileset dir="lib" includes="junit-3*.jar"/>
       </classpath>
     </javac>
     <delete dir="${userguide.out.dir}"/>
