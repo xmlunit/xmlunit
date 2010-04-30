@@ -23,7 +23,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import org.w3c.dom.Document;
-import net.sf.xmlunit.Resources;
+import net.sf.xmlunit.TestResources;
 import net.sf.xmlunit.util.Convert;
 import org.junit.Test;
 
@@ -41,23 +41,23 @@ public class InputTest {
     }
 
     @Test public void shouldParseADocument() throws Exception {
-        Document d = parse(Input.fromFile(Resources.ANIMAL_FILE).build());
+        Document d = parse(Input.fromFile(TestResources.ANIMAL_FILE).build());
         Source s = Input.fromDocument(d).build();
         allIsWellFor(s);
     }
 
     @Test public void shouldParseAnExistingFileByName() throws Exception {
-        allIsWellFor(Input.fromFile(Resources.ANIMAL_FILE).build());
+        allIsWellFor(Input.fromFile(TestResources.ANIMAL_FILE).build());
     }
 
     @Test public void shouldParseAnExistingFileByFile() throws Exception {
-        allIsWellFor(Input.fromFile(new File(Resources.ANIMAL_FILE)).build());
+        allIsWellFor(Input.fromFile(new File(TestResources.ANIMAL_FILE)).build());
     }
 
     @Test public void shouldParseAnExistingFileFromStream() throws Exception {
         FileInputStream is = null;
         try {
-            is = new FileInputStream(Resources.ANIMAL_FILE);
+            is = new FileInputStream(TestResources.ANIMAL_FILE);
             allIsWellFor(Input.fromStream(is).build());
         } finally {
             if (is != null) {
@@ -69,7 +69,7 @@ public class InputTest {
     @Test public void shouldParseAnExistingFileFromReader() throws Exception {
         FileReader r = null;
         try {
-            r = new FileReader(Resources.ANIMAL_FILE);
+            r = new FileReader(TestResources.ANIMAL_FILE);
             allIsWellFor(Input.fromReader(r).build());
         } finally {
             if (r != null) {
@@ -88,15 +88,15 @@ public class InputTest {
     }
 
     @Test public void shouldParseFileFromURIString() throws Exception {
-        allIsWellFor(Input.fromURI("file:" + Resources.ANIMAL_FILE).build());
+        allIsWellFor(Input.fromURI("file:" + TestResources.ANIMAL_FILE).build());
     }
 
     @Test public void shouldParseFileFromURI() throws Exception {
-        allIsWellFor(Input.fromURI(new URI("file:" + Resources.ANIMAL_FILE)).build());
+        allIsWellFor(Input.fromURI(new URI("file:" + TestResources.ANIMAL_FILE)).build());
     }
 
     @Test public void shouldParseFileFromURL() throws Exception {
-        allIsWellFor(Input.fromURL(new URL("file:" + Resources.ANIMAL_FILE)).build());
+        allIsWellFor(Input.fromURL(new URL("file:" + TestResources.ANIMAL_FILE)).build());
     }
 
     @Test public void shouldParseATransformationFromSource() throws Exception {
@@ -129,7 +129,7 @@ public class InputTest {
     }
 
     private static byte[] readTestFile() throws Exception {
-        FileInputStream is = new FileInputStream(Resources.ANIMAL_FILE);
+        FileInputStream is = new FileInputStream(TestResources.ANIMAL_FILE);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int read = -1;

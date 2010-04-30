@@ -21,7 +21,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
-import net.sf.xmlunit.Resources;
+import net.sf.xmlunit.TestResources;
 import org.hamcrest.core.IsNull;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -41,18 +41,18 @@ public class ConvertTest {
     }
 
     @Test public void streamSourceToInputSource() throws Exception {
-        convertAndAssert(new StreamSource(new File(Resources.ANIMAL_FILE)));
+        convertAndAssert(new StreamSource(new File(TestResources.ANIMAL_FILE)));
     }
 
     @Test public void domSourceToInputSource() throws Exception {
         DocumentBuilder b =
             DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document d = b.parse(new File(Resources.ANIMAL_FILE));
+        Document d = b.parse(new File(TestResources.ANIMAL_FILE));
         convertAndAssert(new DOMSource(d));
     }
 
     @Test public void saxSourceToInputSource() throws Exception {
-        InputSource s = new InputSource(new FileInputStream(Resources.ANIMAL_FILE));
+        InputSource s = new InputSource(new FileInputStream(TestResources.ANIMAL_FILE));
         convertAndAssert(new SAXSource(s));
     }
 

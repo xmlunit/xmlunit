@@ -16,7 +16,7 @@ package net.sf.xmlunit.xpath;
 import java.util.HashMap;
 import java.util.Iterator;
 import javax.xml.transform.Source;
-import net.sf.xmlunit.Resources;
+import net.sf.xmlunit.TestResources;
 import net.sf.xmlunit.builder.Input;
 import net.sf.xmlunit.exceptions.XMLUnitException;
 import org.junit.Before;
@@ -30,7 +30,7 @@ public class JAXPXPathEngineTest {
     private Source source;
 
     @Before public void readSource() throws Exception {
-        source = Input.fromFile(Resources.BLAME_FILE).build();
+        source = Input.fromFile(TestResources.BLAME_FILE).build();
     }
 
     @Test public void selectNodesWithNoMatches() {
