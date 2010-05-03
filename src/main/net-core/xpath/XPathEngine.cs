@@ -23,7 +23,7 @@ namespace net.sf.xmlunit.xpath {
     /// <summary>
     /// Simplified access to System.Xml.XPath API.
     /// </summary>
-    public class XPathEngine {
+    public class XPathEngine : IXPathEngine {
         private XmlNamespaceManager nsContext;
 
         /// <summary>

@@ -29,7 +29,7 @@ import org.w3c.dom.NodeList;
 /**
  * Simplified access to JAXP's XPath API.
  */
-public class JAXPXPathEngine {
+public class JAXPXPathEngine implements IXPathEngine {
     private final XPath xpath;
 
     public JAXPXPathEngine(XPathFactory fac) {
@@ -49,8 +49,7 @@ public class JAXPXPathEngine {
     }
 
     /**
-     * Returns a potentially empty collection of Nodes matching an
-     * XPath expression.
+     * {@inheritDoc}
      */
     public Iterable<Node> selectNodes(String xPath, Source s) {
         try {
@@ -64,7 +63,7 @@ public class JAXPXPathEngine {
     }
 
     /**
-     * Evaluates an XPath expression and stringifies the result.
+     * {@inheritDoc}
      */
     public String evaluate(String xPath, Source s) {
         try {
@@ -75,9 +74,7 @@ public class JAXPXPathEngine {
     }
 
     /**
-     * Establish a namespace context.
-     *
-     * @param prefix2Uri maps from prefix to namespace URI.
+     * {@inheritDoc}
      */
     public void setNamespaceContext(Map<String, String> prefix2Uri) {
         xpath.setNamespaceContext(Convert.toNamespaceContext(prefix2Uri));
