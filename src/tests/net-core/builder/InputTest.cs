@@ -22,8 +22,6 @@ namespace net.sf.xmlunit.builder {
     [TestFixture]
     public class InputTest {
 
-        private const string TEST_FILE = "../../../src/tests/resources/test1.xml";
-
         private static XmlDocument Parse(ISource s) {
             XmlDocument d = new XmlDocument();
             d.Load(s.Reader);
@@ -31,23 +29,25 @@ namespace net.sf.xmlunit.builder {
         }
 
         [Test] public void ShouldParseADocument() {
-            XmlDocument d = Parse(Input.FromFile(TEST_FILE).Build());
+            XmlDocument d = Parse(Input.FromFile(TestResources.ANIMAL_FILE)
+                                  .Build());
             AllIsWellFor(Input.FromDocument(d).Build());
         }
 
         [Test] public void ShouldParseAnExistingFileByName() {
-            AllIsWellFor(Input.FromFile(TEST_FILE).Build());
+            AllIsWellFor(Input.FromFile(TestResources.ANIMAL_FILE).Build());
         }
 
         [Test] public void ShouldParseAnExistingFileFromStream() {
-            using (FileStream fs = new FileStream(TEST_FILE, FileMode.Open,
+            using (FileStream fs = new FileStream(TestResources.ANIMAL_FILE,
+                                                  FileMode.Open,
                                                   FileAccess.Read)) {
                 AllIsWellFor(Input.FromStream(fs).Build());
             }
         }
 
         [Test] public void ShouldParseAnExistingFileFromReader() {
-            using (StreamReader r = new StreamReader(TEST_FILE)) {
+            using (StreamReader r = new StreamReader(TestResources.ANIMAL_FILE)) {
                 AllIsWellFor(Input.FromReader(r).Build());
             }
         }
@@ -63,12 +63,15 @@ namespace net.sf.xmlunit.builder {
 
         [Ignore("looks as if file-URIs didn't work, revisit")]
         [Test] public void ShouldParseFileFromURIString() {
-            AllIsWellFor(Input.FromURI("file:" + TEST_FILE).Build());
+            AllIsWellFor(Input.FromURI("file:" + TestResources.ANIMAL_FILE)
+                         .Build());
         }
 
         [Ignore("looks as if file-URIs didn't work, revisit")]
         [Test] public void ShouldParseFileFromURI() {
-            AllIsWellFor(Input.FromURI(new Uri("file:" + TEST_FILE)).Build());
+            AllIsWellFor(Input.FromURI(new Uri("file:"
+                                               + TestResources.ANIMAL_FILE))
+                         .Build());
         }
 
         [Test] public void ShouldParseATransformationFromSource() {
@@ -102,7 +105,7 @@ namespace net.sf.xmlunit.builder {
         }
 
         private static byte[] ReadTestFile() {
-            using (FileStream fs = new FileStream(TEST_FILE, FileMode.Open,
+            using (FileStream fs = new FileStream(TestResources.ANIMAL_FILE, FileMode.Open,
                                                   FileAccess.Read))
             using (MemoryStream ms = new MemoryStream()) {
                 byte[] buffer = new byte[1024];
