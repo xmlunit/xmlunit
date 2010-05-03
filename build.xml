@@ -157,6 +157,7 @@
         </fileset>
         <fileset dir="${test.dir}/java-core">
           <include name="**/*Test.java"/>
+          <exclude name="**/Abstract*.java"/>
         </fileset>
       </batchtest>
     </junit>
