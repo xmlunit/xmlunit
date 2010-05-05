@@ -36,6 +36,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit;
 
+import net.sf.xmlunit.diff.ElementSelectors;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -60,19 +61,16 @@ public class ElementNameAndTextQualifier extends ElementNameQualifier {
      * elements; false otherwise
      */
     public boolean qualifyForComparison(Element control, Element test) {
-        if (super.qualifyForComparison(control, test)) {
-            return similar(extractText(control), extractText(test));
-        }
-        return false; 
+        return ElementSelectors.byNameAndText.canBeCompared(control, test);
     }
-        
+
     /**
      * Determine whether the text nodes contain similar values
      * @param control
      * @param test
      * @return true if text nodes are similar, false otherwise
      */
-    protected boolean similar(Text control, Text test) {                
+    protected boolean similar(Text control, Text test) {
         if (control == null) {
             return test == null;
         } else if (test == null) {
@@ -97,6 +95,6 @@ public class ElementNameAndTextQualifier extends ElementNameQualifier {
             }
         }
         return null;
-    }                   
+    }
 
 }

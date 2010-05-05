@@ -36,6 +36,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit;
 
+import net.sf.xmlunit.diff.ElementSelectors;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -58,10 +59,9 @@ public class ElementNameQualifier implements ElementQualifier {
      *  false otherwise
      */
     public boolean qualifyForComparison(Element control, Element test) {
-        return control != null && test !=null 
-            && equalsNamespace(control, test)
-            && getNonNamespacedNodeName(control).equals(getNonNamespacedNodeName(test));
+        return ElementSelectors.byName.canBeCompared(control, test);
     }
+
     /**
      * Determine whether two nodes are defined by the same namespace URI 
      * @param control
@@ -77,7 +77,7 @@ public class ElementNameQualifier implements ElementQualifier {
         }
         return controlNS.equals(testNS);
     }
-        
+
     /**
      * Strip any namespace information off a node name
      * @param node

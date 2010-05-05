@@ -142,13 +142,15 @@ public class test_ElementNameAndAttributeQualifier extends TestCase {
         final String nsURI = "http://xmlunit.sourceforge.net/tests";
 
         elementNameAndAttributeQualifier = new ElementNameAndAttributeQualifier();
-        testAssertionsFor(attrName, nsURI, new boolean[] {false, false});
+        testAssertionsFor(attrName, nsURI, new boolean[] {false, false}, true);
 
         elementNameAndAttributeQualifier = new ElementNameAndAttributeQualifier(attrName);
-        testAssertionsFor(attrName, nsURI, new boolean[] {true, true});
+        testAssertionsFor(attrName, nsURI, new boolean[] {true, true}, false);
     }
 
-    private void testAssertionsFor(String attrName, String nsURI, boolean[] expectedValues) 
+    private void testAssertionsFor(String attrName, String nsURI,
+                                   boolean[] expectedValues,
+                                   boolean matchesAllAttributes) 
         throws Exception {
         Element control = document.createElement(TAG_NAME);
         control.setAttributeNS(nsURI, attrName, "1");
@@ -161,10 +163,12 @@ public class test_ElementNameAndAttributeQualifier extends TestCase {
         assertTrue("qwerty id 1 comparable to qwerty id 1",
                    elementNameAndAttributeQualifier.qualifyForComparison(control, test));
 
-        String otherNsURI = nsURI + "/2";
-        test.setAttributeNS(otherNsURI, attrName, "2");
-        assertTrue("qwerty id 1 comparable to qwerty id 1 and other-NS id 2",
-                   elementNameAndAttributeQualifier.qualifyForComparison(control, test));
+        if (!matchesAllAttributes) {
+            String otherNsURI = nsURI + "/2";
+            test.setAttributeNS(otherNsURI, attrName, "2");
+            assertTrue("qwerty id 1 comparable to qwerty id 1 and other-NS id 2",
+                       elementNameAndAttributeQualifier.qualifyForComparison(control, test));
+        }
 
         control.setAttributeNS(nsURI, "uiop","true");
         assertEquals("qwerty id 1 && uiop comparable to qwerty id 1", expectedValues[0],

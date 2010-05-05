@@ -37,6 +37,8 @@ POSSIBILITY OF SUCH DAMAGE.
 package org.custommonkey.xmlunit;
 
 import java.util.Arrays;
+import net.sf.xmlunit.diff.ElementSelector;
+import net.sf.xmlunit.diff.ElementSelectors;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -50,10 +52,11 @@ import org.w3c.dom.NamedNodeMap;
  * @see Diff#overrideElementQualifier(ElementQualifier)
  */
 public class ElementNameAndAttributeQualifier extends ElementNameQualifier {
+    private final ElementSelector selector;
     private static final String[] ALL_ATTRIBUTES = {"*"};
-        
+
     private final String[] qualifyingAttrNames;
-        
+
     /**
      * No-args constructor: use all attributes from all elements to determine
      * whether elements qualify for comparability
@@ -61,7 +64,7 @@ public class ElementNameAndAttributeQualifier extends ElementNameQualifier {
     public ElementNameAndAttributeQualifier() {
         this(ALL_ATTRIBUTES);
     }
-        
+
     /**
      * Simple constructor for a single qualifying attribute name
      * @param attrName the value to use to qualify whether two elements can be
@@ -80,6 +83,9 @@ public class ElementNameAndAttributeQualifier extends ElementNameQualifier {
         this.qualifyingAttrNames = new String[attrNames.length];
         System.arraycopy(attrNames, 0, qualifyingAttrNames, 0,
                          attrNames.length);
+        selector = matchesAllAttributes(attrNames)
+            ? ElementSelectors.byNameAndAllAttributes
+            : ElementSelectors.byNameAndAttributesControlNS(attrNames);
     }
 
     /**
@@ -94,12 +100,9 @@ public class ElementNameAndAttributeQualifier extends ElementNameQualifier {
      * false otherwise
      */
     public boolean qualifyForComparison(Element control, Element test) {
-        if (super.qualifyForComparison(control, test)) {
-            return areAttributesComparable(control, test);
-        }
-        return false;
+        return selector.canBeCompared(control, test);
     }
-        
+
     /**
      * Determine whether the qualifying attributes are present in both elements
      * and if so whether their values are the same
@@ -123,7 +126,7 @@ public class ElementNameAndAttributeQualifier extends ElementNameQualifier {
                 qualifyingAttributes[n] = (Attr) namedNodeMap.getNamedItem(qualifyingAttrNames[n]);
             } 
         }
-                        
+
         String nsURI, name;
         for (int i=0; i < qualifyingAttributes.length; ++i) {
             if (qualifyingAttributes[i] != null) {
