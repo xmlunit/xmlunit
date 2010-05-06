@@ -93,7 +93,7 @@ public class ElementSelectorsTest {
         byNameAndText_SingleLevel(ElementSelectors.byNameAndTextRec);
     }
 
-    private void byNameAndTextRec() {
+    @Test public void byNameAndTextRec() {
         Element control = doc.createElement(FOO);
         Element child = doc.createElement(BAR);
         control.appendChild(child);
