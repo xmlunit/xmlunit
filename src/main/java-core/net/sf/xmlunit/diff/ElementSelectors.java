@@ -122,7 +122,7 @@ public final class ElementSelectors {
                         qNameByLocalName.put(local, q);
                     }
                 }
-                for (String a : attribs) {
+                for (String a : as) {
                     QName q = qNameByLocalName.get(a);
                     if (q == null) {
                         qNameByLocalName.put(a, new QName(a));
