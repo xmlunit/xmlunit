@@ -29,12 +29,12 @@ public enum ComparisonType {
      * If the documents both have DOCTYPEs, compare the PUBLIC
      * identifiers.
      */
-    DOCTYPE_PUBLIC,
+    DOCTYPE_PUBLIC_ID,
     /**
      * If the documents both have DOCTYPEs, compare the SYSTEM
      * identifiers.
      */
-    DOCTYPE_SYSTEM,
+    DOCTYPE_SYSTEM_ID,
 
     /**
      * Check whether both documents provide the same values for

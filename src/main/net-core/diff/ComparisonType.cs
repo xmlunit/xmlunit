@@ -30,12 +30,12 @@ namespace net.sf.xmlunit.diff {
         /// If the documents both have DOCTYPEs, compare the PUBLIC
         /// identifiers.
         /// </summary>
-        DOCTYPE_PUBLIC,
+        DOCTYPE_PUBLIC_ID,
         /// <summary>
         /// If the documents both have DOCTYPEs, compare the SYSTEM
         /// identifiers.
         /// </summary>
-        DOCTYPE_SYSTEM,
+        DOCTYPE_SYSTEM_ID,
 
         /// <summary>
         /// Check whether both documents provide the same values for
