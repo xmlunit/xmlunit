@@ -25,7 +25,7 @@ namespace net.sf.xmlunit.builder {
 
         internal class DOMBuilder : IBuilder {
             private readonly ISource source;
-            internal DOMBuilder(XmlDocument d) {
+            internal DOMBuilder(XmlNode d) {
                 source = new DOMSource(d);
             }
             public ISource Build() {
@@ -35,6 +35,10 @@ namespace net.sf.xmlunit.builder {
 
         public static IBuilder FromDocument(XmlDocument d) {
             return new DOMBuilder(d);
+        }
+
+        public static IBuilder FromNode(XmlNode n) {
+            return new DOMBuilder(n);
         }
 
         internal class StreamBuilder : IBuilder {
@@ -82,18 +86,25 @@ namespace net.sf.xmlunit.builder {
         }
 
         public interface ITransformationBuilder : IBuilder {
-            ITransformationBuilder WithStylesheet(ISource s);
-            ITransformationBuilder WithStylesheet(IBuilder b);
+            ITransformationBuilder WithDocumentFunction();
             ITransformationBuilder WithExtensionObject(string namespaceUri,
                                                        object extension);
             ITransformationBuilder WithParameter(string name,
                                                  string namespaceUri,
                                                  object parameter);
+            ITransformationBuilder WithScripting();
+            ITransformationBuilder WithStylesheet(ISource s);
+            ITransformationBuilder WithStylesheet(IBuilder b);
+            ITransformationBuilder WithXmlResolver(XmlResolver r);
+            ITransformationBuilder WithoutDocumentFunction();
+            ITransformationBuilder WithoutScripting();
         }
 
         internal class Transformation : ITransformationBuilder {
             private readonly ISource source;
             private ISource styleSheet;
+            private XmlResolver xmlResolver = new XmlUrlResolver();
+            private readonly XsltSettings settings = new XsltSettings();
             private readonly XsltArgumentList args = new XsltArgumentList();
             internal Transformation(ISource s) {
                 source = s;
@@ -119,11 +130,42 @@ namespace net.sf.xmlunit.builder {
                 return this;
             }
 
+            public ITransformationBuilder WithXmlResolver(XmlResolver r) {
+                xmlResolver = r;
+                return this;
+            }
+
+            public ITransformationBuilder WithScripting() {
+                return WithScripting(true);
+            }
+
+            public ITransformationBuilder WithoutScripting() {
+                return WithScripting(false);
+            }
+
+            private ITransformationBuilder WithScripting(bool b) {
+                settings.EnableScript = b;
+                return this;
+            }
+
+            public ITransformationBuilder WithDocumentFunction() {
+                return WithDocumentFunction(true);
+            }
+
+            public ITransformationBuilder WithoutDocumentFunction() {
+                return WithDocumentFunction(false);
+            }
+
+            private ITransformationBuilder WithDocumentFunction(bool b) {
+                settings.EnableDocumentFunction = b;
+                return this;
+            }
+
             public ISource Build() {
                 try {
                     XslCompiledTransform t = new XslCompiledTransform();
                     if (styleSheet != null) {
-                        t.Load(styleSheet.Reader);
+                        t.Load(styleSheet.Reader, settings, xmlResolver);
                     }
                     MemoryStream ms = new MemoryStream();
                     using (ms) {

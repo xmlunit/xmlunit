@@ -28,12 +28,14 @@ import java.util.Properties;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import net.sf.xmlunit.exceptions.ConfigurationException;
 import net.sf.xmlunit.exceptions.XMLUnitException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 public class Input {
 
@@ -43,7 +45,7 @@ public class Input {
 
     private static class DOMBuilder implements Builder {
         private final Source source;
-        private DOMBuilder(Document d) {
+        private DOMBuilder(Node d) {
             source = new DOMSource(d);
         }
         public Source build() {
@@ -54,6 +56,10 @@ public class Input {
 
     public static Builder fromDocument(Document d) {
         return new DOMBuilder(d);
+    }
+
+    public static Builder fromNode(Node n) {
+        return new DOMBuilder(n);
     }
 
     private static class StreamBuilder implements Builder {
@@ -140,15 +146,19 @@ public class Input {
     }
 
     public static interface TransformationBuilder extends Builder {
-        TransformationBuilder withStylesheet(Source s);
-        TransformationBuilder withStylesheet(Builder b);
-        TransformationBuilder withParameter(String name, Object value);
+        TransformationBuilder usingFactory(TransformerFactory f);
         TransformationBuilder withOutputProperty(String name, String value);
+        TransformationBuilder withParameter(String name, Object value);
+        TransformationBuilder withStylesheet(Builder b);
+        TransformationBuilder withStylesheet(Source s);
+        TransformationBuilder withUriResolver(URIResolver r);
     }
 
     private static class Transformation implements TransformationBuilder {
         private final Source source;
         private Source styleSheet;
+        private TransformerFactory factory;
+        private URIResolver uriResolver;
         private final Properties output = new Properties();
         private final Map<String, Object> params = new HashMap<String, Object>();
 
@@ -173,15 +183,31 @@ public class Input {
             return this;
         }
 
+        public TransformationBuilder usingFactory(TransformerFactory f) {
+            factory = f;
+            return this;
+        }
+
+        public TransformationBuilder withUriResolver(URIResolver r) {
+            uriResolver = r;
+            return this;
+        }
+
         public Source build() {
             try {
                 DOMResult r = new DOMResult();
-                TransformerFactory fac = TransformerFactory.newInstance();
+                TransformerFactory fac = factory;
+                if (fac == null) {
+                    fac = TransformerFactory.newInstance();
+                }
                 Transformer t = null;
                 if (styleSheet != null) {
                     t = fac.newTransformer(styleSheet);
                 } else {
                     t = fac.newTransformer();
+                }
+                if (uriResolver != null) {
+                    t.setURIResolver(uriResolver);
                 }
                 t.setOutputProperties(output);
                 for (Map.Entry<String, Object> ent : params.entrySet()) {
