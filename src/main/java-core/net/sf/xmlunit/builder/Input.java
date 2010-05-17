@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,6 +74,11 @@ public class Input {
         private StreamBuilder(Reader r) {
             source = new StreamSource(r);
         }
+        void setSystemId(String id) {
+            if (id != null) {
+                source.setSystemId(id);
+            }
+        }
         public Source build() {
             assert source != null;
             return source;
@@ -116,7 +122,16 @@ public class Input {
                         baos.write(buf, 0, read);
                     }
                 }
-                return fromMemory(baos.toByteArray());
+                StreamBuilder b =
+                    (StreamBuilder) fromMemory(baos.toByteArray());
+                try {
+                    b.setSystemId(url.toURI().toString());
+                } catch (URISyntaxException use) {
+                    // impossible - shouldn't have been an URL in the
+                    // first place
+                    b.setSystemId(url.toString());
+                }
+                return b;
             } finally {
                 if (in != null) {
                     in.close();

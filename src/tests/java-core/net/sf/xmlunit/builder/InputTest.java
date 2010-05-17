@@ -47,11 +47,15 @@ public class InputTest {
     }
 
     @Test public void shouldParseAnExistingFileByName() throws Exception {
-        allIsWellFor(Input.fromFile(TestResources.ANIMAL_FILE).build());
+        Source s = Input.fromFile(TestResources.ANIMAL_FILE).build();
+        allIsWellFor(s);
+        assertEquals(toFileUri(TestResources.ANIMAL_FILE), s.getSystemId());
     }
 
     @Test public void shouldParseAnExistingFileByFile() throws Exception {
-        allIsWellFor(Input.fromFile(new File(TestResources.ANIMAL_FILE)).build());
+        Source s = Input.fromFile(new File(TestResources.ANIMAL_FILE)).build();
+        allIsWellFor(s);
+        assertEquals(toFileUri(TestResources.ANIMAL_FILE), s.getSystemId());
     }
 
     @Test public void shouldParseAnExistingFileFromStream() throws Exception {
@@ -92,11 +96,13 @@ public class InputTest {
     }
 
     @Test public void shouldParseFileFromURI() throws Exception {
-        allIsWellFor(Input.fromURI(new URI("file:" + TestResources.ANIMAL_FILE)).build());
+        allIsWellFor(Input.fromURI(new URI("file:" + TestResources.ANIMAL_FILE))
+                     .build());
     }
 
     @Test public void shouldParseFileFromURL() throws Exception {
-        allIsWellFor(Input.fromURL(new URL("file:" + TestResources.ANIMAL_FILE)).build());
+        allIsWellFor(Input.fromURL(new URL("file:" + TestResources.ANIMAL_FILE))
+                     .build());
     }
 
     @Test public void shouldParseATransformationFromSource() throws Exception {
@@ -140,5 +146,9 @@ public class InputTest {
         }
         is.close();
         return bos.toByteArray();
+    }
+
+    private static String toFileUri(String fileName) {
+        return new File(fileName).toURI().toString();
     }
 }
