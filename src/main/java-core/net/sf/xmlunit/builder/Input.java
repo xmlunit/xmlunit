@@ -23,17 +23,12 @@ import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
-import net.sf.xmlunit.exceptions.ConfigurationException;
 import net.sf.xmlunit.exceptions.XMLUnitException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -170,18 +165,13 @@ public class Input {
     }
 
     private static class Transformation implements TransformationBuilder {
-        private final Source source;
-        private Source styleSheet;
-        private TransformerFactory factory;
-        private URIResolver uriResolver;
-        private final Properties output = new Properties();
-        private final Map<String, Object> params = new HashMap<String, Object>();
+        private final TransformHelper helper;
 
         private Transformation(Source s) {
-            source = s;
+            helper = new TransformHelper(s);
         }
         public TransformationBuilder withStylesheet(Source s) {
-            styleSheet = s;
+            helper.setStylesheet(s);
             return this;
         }
         public TransformationBuilder withStylesheet(Builder b) {
@@ -189,52 +179,29 @@ public class Input {
         }
         public TransformationBuilder withOutputProperty(String name,
                                                         String value) {
-            output.setProperty(name, value);
+            helper.setOutputProperty(name, value);
             return this;
         }
 
         public TransformationBuilder withParameter(String name, Object value) {
-            params.put(name, value);
+            helper.setParameter(name, value);
             return this;
         }
 
         public TransformationBuilder usingFactory(TransformerFactory f) {
-            factory = f;
+            helper.setFactory(f);
             return this;
         }
 
         public TransformationBuilder withUriResolver(URIResolver r) {
-            uriResolver = r;
+            helper.setUriResolver(r);
             return this;
         }
 
         public Source build() {
-            try {
-                DOMResult r = new DOMResult();
-                TransformerFactory fac = factory;
-                if (fac == null) {
-                    fac = TransformerFactory.newInstance();
-                }
-                Transformer t = null;
-                if (styleSheet != null) {
-                    t = fac.newTransformer(styleSheet);
-                } else {
-                    t = fac.newTransformer();
-                }
-                if (uriResolver != null) {
-                    t.setURIResolver(uriResolver);
-                }
-                t.setOutputProperties(output);
-                for (Map.Entry<String, Object> ent : params.entrySet()) {
-                    t.setParameter(ent.getKey(), ent.getValue());
-                }
-                t.transform(source, r);
-                return new DOMSource(r.getNode());
-            } catch (javax.xml.transform.TransformerConfigurationException e) {
-                throw new ConfigurationException(e);
-            } catch (javax.xml.transform.TransformerException e) {
-                throw new XMLUnitException(e);
-            }
+            DOMResult r = new DOMResult();
+            helper.transformTo(r);
+            return new DOMSource(r.getNode());
         }
     }
 
