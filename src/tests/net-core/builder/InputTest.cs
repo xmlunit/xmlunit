@@ -35,20 +35,28 @@ namespace net.sf.xmlunit.builder {
         }
 
         [Test] public void ShouldParseAnExistingFileByName() {
-            AllIsWellFor(Input.FromFile(TestResources.ANIMAL_FILE).Build());
+            ISource s = Input.FromFile(TestResources.ANIMAL_FILE).Build();
+            AllIsWellFor(s);
+            Assert.AreEqual(ToFileUri(TestResources.ANIMAL_FILE), s.SystemId);
         }
 
         [Test] public void ShouldParseAnExistingFileFromStream() {
             using (FileStream fs = new FileStream(TestResources.ANIMAL_FILE,
                                                   FileMode.Open,
                                                   FileAccess.Read)) {
-                AllIsWellFor(Input.FromStream(fs).Build());
+                ISource s = Input.FromStream(fs).Build();
+                AllIsWellFor(s);
+                Assert.AreEqual(ToFileUri(TestResources.ANIMAL_FILE),
+                                s.SystemId);
             }
         }
 
         [Test] public void ShouldParseAnExistingFileFromReader() {
             using (StreamReader r = new StreamReader(TestResources.ANIMAL_FILE)) {
-                AllIsWellFor(Input.FromReader(r).Build());
+                ISource s = Input.FromReader(r).Build();
+                AllIsWellFor(s);
+                Assert.AreEqual(ToFileUri(TestResources.ANIMAL_FILE),
+                                s.SystemId);
             }
         }
 
@@ -61,17 +69,20 @@ namespace net.sf.xmlunit.builder {
             AllIsWellFor(Input.FromMemory(ReadTestFile()).Build());
         }
 
-        [Ignore("looks as if file-URIs didn't work, revisit")]
         [Test] public void ShouldParseFileFromURIString() {
-            AllIsWellFor(Input.FromURI("file:" + TestResources.ANIMAL_FILE)
-                         .Build());
+            ISource s = Input.FromURI(ToFileUri(TestResources.ANIMAL_FILE))
+                .Build();
+            AllIsWellFor(s);
+            Assert.AreEqual(ToFileUri(TestResources.ANIMAL_FILE),
+                            s.SystemId);
         }
 
-        [Ignore("looks as if file-URIs didn't work, revisit")]
         [Test] public void ShouldParseFileFromURI() {
-            AllIsWellFor(Input.FromURI(new Uri("file:"
-                                               + TestResources.ANIMAL_FILE))
-                         .Build());
+            ISource s = Input.FromURI(new Uri(ToFileUri(TestResources.ANIMAL_FILE)))
+                .Build();
+            AllIsWellFor(s);
+            Assert.AreEqual(ToFileUri(TestResources.ANIMAL_FILE),
+                            s.SystemId);
         }
 
         [Test] public void ShouldParseATransformationFromSource() {
@@ -115,6 +126,10 @@ namespace net.sf.xmlunit.builder {
                 }
                 return ms.ToArray();
             }
+        }
+
+        private static string ToFileUri(string path) {
+            return new Uri(Path.GetFullPath(path)).ToString();
         }
     }
 }

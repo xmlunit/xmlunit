@@ -11,6 +11,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Xsl;
@@ -52,6 +53,11 @@ namespace net.sf.xmlunit.builder {
             internal StreamBuilder(TextReader r) {
                 source = new StreamSource(r);
             }
+            internal string SystemId {
+                set {
+                    source.SystemId = value ?? string.Empty;
+                }
+            }
             public ISource Build() {
                 return source;
             }
@@ -62,11 +68,23 @@ namespace net.sf.xmlunit.builder {
         }
 
         public static IBuilder FromStream(Stream s) {
-            return new StreamBuilder(s);
+            StreamBuilder b = new StreamBuilder(s);
+            if (s is FileStream) {
+                b.SystemId = new Uri(Path.GetFullPath((s as FileStream).Name))
+                    .ToString();
+            }
+            return b;
         }
 
         public static IBuilder FromReader(TextReader r) {
-            return new StreamBuilder(r);
+            StreamBuilder b = new StreamBuilder(r);
+            StreamReader s = r as StreamReader;
+            if (s != null && s.BaseStream is FileStream) {
+                b.SystemId =
+                    new Uri(Path.GetFullPath((s.BaseStream as FileStream).Name))
+                    .ToString();
+            }
+            return b;
         }
 
         public static IBuilder FromMemory(string s) {

@@ -15,13 +15,23 @@ using System.Xml;
 
 namespace net.sf.xmlunit.input {
     public abstract class AbstractSource : ISource {
+        private string systemId;
         private readonly XmlReader reader;
         protected AbstractSource(XmlReader r) {
             reader = r;
+            systemId = r.BaseURI;
         }
         public XmlReader Reader {
             get {
                 return reader;
+            }
+        }
+        public string SystemId {
+            get {
+                return systemId;
+            }
+            set {
+                systemId = value;
             }
         }
     }

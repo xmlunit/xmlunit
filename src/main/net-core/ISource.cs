@@ -16,5 +16,6 @@ using System.Xml;
 namespace net.sf.xmlunit {
     public interface ISource {
         XmlReader Reader {get;}
+        string SystemId {get; set;}
     }
 }
