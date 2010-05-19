@@ -14,7 +14,6 @@
 using System;
 using System.IO;
 using System.Xml;
-using System.Xml.Xsl;
 using net.sf.xmlunit.exceptions;
 using net.sf.xmlunit.input;
 
@@ -119,16 +118,12 @@ namespace net.sf.xmlunit.builder {
         }
 
         internal class Transformation : ITransformationBuilder {
-            private readonly ISource source;
-            private ISource styleSheet;
-            private XmlResolver xmlResolver = new XmlUrlResolver();
-            private readonly XsltSettings settings = new XsltSettings();
-            private readonly XsltArgumentList args = new XsltArgumentList();
+            private readonly net.sf.xmlunit.transform.Transformation t;
             internal Transformation(ISource s) {
-                source = s;
+                t = new net.sf.xmlunit.transform.Transformation(s);
             }
             public ITransformationBuilder WithStylesheet(ISource s) {
-                this.styleSheet = s;
+                t.Stylesheet = s;
                 return this;
             }
             public ITransformationBuilder WithStylesheet(IBuilder b) {
@@ -137,19 +132,19 @@ namespace net.sf.xmlunit.builder {
 
             public ITransformationBuilder WithExtensionObject(string namespaceUri,
                                                               object extension) {
-                args.AddExtensionObject(namespaceUri, extension);
+                t.AddExtensionObject(namespaceUri, extension);
                 return this;
             }
 
             public ITransformationBuilder WithParameter(string name,
                                                         string namespaceUri,
                                                         object parameter) {
-                args.AddParam(name, namespaceUri, parameter);
+                t.AddParameter(name, namespaceUri, parameter);
                 return this;
             }
 
             public ITransformationBuilder WithXmlResolver(XmlResolver r) {
-                xmlResolver = r;
+                t.XmlResolver = r;
                 return this;
             }
 
@@ -162,7 +157,7 @@ namespace net.sf.xmlunit.builder {
             }
 
             private ITransformationBuilder WithScripting(bool b) {
-                settings.EnableScript = b;
+                t.EnableScriptBlocks = b;
                 return this;
             }
 
@@ -175,25 +170,14 @@ namespace net.sf.xmlunit.builder {
             }
 
             private ITransformationBuilder WithDocumentFunction(bool b) {
-                settings.EnableDocumentFunction = b;
+                t.EnableDocumentFunction = b;
                 return this;
             }
 
             public ISource Build() {
-                try {
-                    XslCompiledTransform t = new XslCompiledTransform();
-                    if (styleSheet != null) {
-                        t.Load(styleSheet.Reader, settings, xmlResolver);
-                    }
-                    MemoryStream ms = new MemoryStream();
-                    using (ms) {
-                        t.Transform(source.Reader,
-                                    args,
-                                    ms);
-                    }
+                using (MemoryStream ms = new MemoryStream()) {
+                    t.TransformTo(ms);
                     return FromMemory(ms.ToArray()).Build();
-                } catch (System.Exception ex) {
-                    throw new XMLUnitException(ex);
                 }
             }
         }

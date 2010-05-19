@@ -17,6 +17,9 @@ namespace net.sf.xmlunit {
         public const string ANIMAL_FILE = "../../../src/tests/resources/test1.xml";
         public const string BLAME_FILE = "../../../src/tests/resources/test.blame.html";
 
+        public const string ANIMAL_XSL = "../../../src/tests/resources/animal.xsl";
+        public const string DOG_FILE = "../../../src/tests/resources/testAnimal.xml";
+
         private TestResources() { }
     }
 }
