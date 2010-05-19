@@ -32,9 +32,15 @@ import net.sf.xmlunit.exceptions.XMLUnitException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+/**
+ * Fluent API to create Source instances.
+ */
 public class Input {
 
     public static interface Builder {
+        /**
+         * build the actual Source instance.
+         */
         Source build();
     }
 
@@ -49,10 +55,16 @@ public class Input {
         }
     }
 
+    /**
+     * Build a Source from a DOM Document.
+     */
     public static Builder fromDocument(Document d) {
         return new DOMBuilder(d);
     }
 
+    /**
+     * Build a Source from a DOM Node.
+     */
     public static Builder fromNode(Node n) {
         return new DOMBuilder(n);
     }
@@ -79,30 +91,51 @@ public class Input {
         }
     }
 
+    /**
+     * Build a Source from a file.
+     */
     public static Builder fromFile(File f) {
         return new StreamBuilder(f);
     }
 
+    /**
+     * Build a Source from a named file.
+     */
     public static Builder fromFile(String name) {
         return new StreamBuilder(new File(name));
     }
 
+    /**
+     * Build a Source from a stream.
+     */
     public static Builder fromStream(InputStream s) {
         return new StreamBuilder(s);
     }
 
+    /**
+     * Build a Source from a reader.
+     */
     public static Builder fromReader(Reader r) {
         return new StreamBuilder(r);
     }
 
+    /**
+     * Build a Source from a string.
+     */
     public static Builder fromMemory(String s) {
         return fromReader(new StringReader(s));
     }
 
+    /**
+     * Build a Source from an array of bytes.
+     */
     public static Builder fromMemory(byte[] b) {
         return fromStream(new ByteArrayInputStream(b));
     }
 
+    /**
+     * Build a Source from an URL.
+     */
     public static Builder fromURL(URL url) {
         try {
             InputStream in = null;
@@ -136,6 +169,10 @@ public class Input {
         }
     }
 
+    /**
+     * Build a Source from an URI.
+     * @param uri must represent a valid URL
+     */
     public static Builder fromURI(URI uri) {
         try {
             return fromURL(uri.toURL());
@@ -145,6 +182,10 @@ public class Input {
         }
     }
 
+    /**
+     * Build a Source from an URI.
+     * @param uri must represent a valid URL
+     */
     public static Builder fromURI(String uri) {
         try {
             return fromURI(new URI(uri));
@@ -158,6 +199,9 @@ public class Input {
         TransformationBuilder usingFactory(TransformerFactory f);
         TransformationBuilder withOutputProperty(String name, String value);
         TransformationBuilder withParameter(String name, Object value);
+        /**
+         * Sets the stylesheet to use.
+         */
         TransformationBuilder withStylesheet(Builder b);
         TransformationBuilder withStylesheet(Source s);
         TransformationBuilder withURIResolver(URIResolver r);
@@ -202,10 +246,16 @@ public class Input {
         }
     }
 
+    /**
+     * Build a Source by XSLT transforming a different Source.
+     */
     public static TransformationBuilder byTransforming(Source s) {
         return new Transformation(s);
     }
 
+    /**
+     * Build a Source by XSLT transforming a different Source.
+     */
     public static TransformationBuilder byTransforming(Builder b) {
         return byTransforming(b.build());
     }

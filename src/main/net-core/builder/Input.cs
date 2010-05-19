@@ -18,8 +18,14 @@ using net.sf.xmlunit.exceptions;
 using net.sf.xmlunit.input;
 
 namespace net.sf.xmlunit.builder {
-    public static class Input {
+    /// <summary>
+    /// Fluent API to create ISource instances.
+    /// </summary>
+    public sealed class Input {
         public interface IBuilder {
+            /// <summary>
+            /// build the actual ISource instance.
+            /// </summary>
             ISource Build();
         }
 
@@ -33,10 +39,16 @@ namespace net.sf.xmlunit.builder {
             }
         }
 
+        /// <summary>
+        /// Build an ISource from a DOM Document.
+        /// </summary>
         public static IBuilder FromDocument(XmlDocument d) {
             return new DOMBuilder(d);
         }
 
+        /// <summary>
+        /// Build an ISource from a DOM Node.
+        /// </summary>
         public static IBuilder FromNode(XmlNode n) {
             return new DOMBuilder(n);
         }
@@ -62,10 +74,16 @@ namespace net.sf.xmlunit.builder {
             }
         }
 
+        /// <summary>
+        /// Build an ISource from a named file.
+        /// </summary>
         public static IBuilder FromFile(string name) {
             return new StreamBuilder(name);
         }
 
+        /// <summary>
+        /// Build an ISource from a stream.
+        /// </summary>
         public static IBuilder FromStream(Stream s) {
             StreamBuilder b = new StreamBuilder(s);
             if (s is FileStream) {
@@ -75,6 +93,9 @@ namespace net.sf.xmlunit.builder {
             return b;
         }
 
+        /// <summary>
+        /// Build an ISource from a reader.
+        /// </summary>
         public static IBuilder FromReader(TextReader r) {
             StreamBuilder b = new StreamBuilder(r);
             StreamReader s = r as StreamReader;
@@ -86,18 +107,32 @@ namespace net.sf.xmlunit.builder {
             return b;
         }
 
+        /// <summary>
+        /// Build an ISource from a string.
+        /// </summary>
         public static IBuilder FromMemory(string s) {
             return FromReader(new StringReader(s));
         }
 
+        /// <summary>
+        /// Build an ISource from an array of bytes.
+        /// </summary>
         public static IBuilder FromMemory(byte[] b) {
             return FromStream(new MemoryStream(b));
         }
 
+        /// <summary>
+        /// Build an ISource from an URI.
+        /// <param name="uri">must represent a valid URL</param>
+        /// </summary>
         public static IBuilder FromURI(string uri) {
             return new StreamBuilder(uri);
         }
 
+        /// <summary>
+        /// Build an ISource from an URI.
+        /// <param name="uri">must represent a valid URL</param>
+        /// </summary>
         public static IBuilder FromURI(System.Uri uri) {
             return new StreamBuilder(uri.AbsoluteUri);
         }
@@ -111,6 +146,9 @@ namespace net.sf.xmlunit.builder {
                                                  object parameter);
             ITransformationBuilder WithScripting();
             ITransformationBuilder WithStylesheet(ISource s);
+            /// <summary>
+            /// Sets the stylesheet to use.
+            /// </summary>
             ITransformationBuilder WithStylesheet(IBuilder b);
             ITransformationBuilder WithXmlResolver(XmlResolver r);
             ITransformationBuilder WithoutDocumentFunction();
@@ -182,9 +220,15 @@ namespace net.sf.xmlunit.builder {
             }
         }
 
+        /// <summary>
+        /// Build an ISource by XSLT transforming a different ISource.
+        /// </summary>
         public static ITransformationBuilder ByTransforming(ISource s) {
             return new Transformation(s);
         }
+        /// <summary>
+        /// Build an ISource by XSLT transforming a different ISource.
+        /// </summary>
         public static ITransformationBuilder ByTransforming(IBuilder b) {
             return ByTransforming(b.Build());
         }

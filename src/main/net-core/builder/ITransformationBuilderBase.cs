@@ -11,21 +11,20 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+
 using System.Xml;
 
-namespace net.sf.xmlunit {
-    /// <summary>
-    /// Representation of the various ways to provide pieces of XML to
-    /// XMLUnit.
-    /// </summary>
-    public interface ISource {
-        /// <summary>
-        /// Provides the content.
-        /// </summary>
-        XmlReader Reader {get;}
-        /// <summary>
-        /// Some sort of Base-URI of this ISource.
-        /// </summary>
-        string SystemId {get; set;}
+namespace net.sf.xmlunit.builder {
+
+    public interface ITransformationBuilderBase<T>
+        where T : ITransformationBuilderBase<T> {
+        T WithDocumentFunction();
+        T WithExtensionObject(string namespaceUri, object extension);
+        T WithParameter(string name, string namespaceUri, object parameter);
+        T WithScripting();
+        T WithStylesheet(ISource s);
+        T WithXmlResolver(XmlResolver r);
+        T WithoutDocumentFunction();
+        T WithoutScripting();
     }
 }
