@@ -16,6 +16,8 @@ package net.sf.xmlunit;
 public final class TestResources {
     public static final String ANIMAL_FILE = "src/tests/resources/test1.xml";
     public static final String BLAME_FILE = "src/tests/resources/test.blame.html";
+    public static final String ANIMAL_XSL = "src/tests/resources/animal.xsl";
+    public static final String DOG_FILE = "src/tests/resources/testAnimal.xml";
 
     private TestResources() { }
 

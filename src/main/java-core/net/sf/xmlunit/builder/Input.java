@@ -26,7 +26,6 @@ import java.net.URL;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
-import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import net.sf.xmlunit.exceptions.XMLUnitException;
@@ -161,14 +160,14 @@ public class Input {
         TransformationBuilder withParameter(String name, Object value);
         TransformationBuilder withStylesheet(Builder b);
         TransformationBuilder withStylesheet(Source s);
-        TransformationBuilder withUriResolver(URIResolver r);
+        TransformationBuilder withURIResolver(URIResolver r);
     }
 
     private static class Transformation implements TransformationBuilder {
-        private final TransformHelper helper;
+        private final net.sf.xmlunit.transform.Transformation helper;
 
         private Transformation(Source s) {
-            helper = new TransformHelper(s);
+            helper = new net.sf.xmlunit.transform.Transformation(s);
         }
         public TransformationBuilder withStylesheet(Source s) {
             helper.setStylesheet(s);
@@ -179,12 +178,12 @@ public class Input {
         }
         public TransformationBuilder withOutputProperty(String name,
                                                         String value) {
-            helper.setOutputProperty(name, value);
+            helper.addOutputProperty(name, value);
             return this;
         }
 
         public TransformationBuilder withParameter(String name, Object value) {
-            helper.setParameter(name, value);
+            helper.addParameter(name, value);
             return this;
         }
 
@@ -193,15 +192,13 @@ public class Input {
             return this;
         }
 
-        public TransformationBuilder withUriResolver(URIResolver r) {
-            helper.setUriResolver(r);
+        public TransformationBuilder withURIResolver(URIResolver r) {
+            helper.setURIResolver(r);
             return this;
         }
 
         public Source build() {
-            DOMResult r = new DOMResult();
-            helper.transformTo(r);
-            return new DOMSource(r.getNode());
+            return new DOMSource(helper.transformToDocument());
         }
     }
 
