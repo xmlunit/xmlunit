@@ -16,15 +16,46 @@ using System.Xml;
 
 namespace net.sf.xmlunit.builder {
 
-    public interface ITransformationBuilderBase<T>
-        where T : ITransformationBuilderBase<T> {
-        T WithDocumentFunction();
-        T WithExtensionObject(string namespaceUri, object extension);
-        T WithParameter(string name, string namespaceUri, object parameter);
-        T WithScripting();
-        T WithStylesheet(ISource s);
-        T WithXmlResolver(XmlResolver r);
-        T WithoutDocumentFunction();
-        T WithoutScripting();
+    /// <summary>
+    /// Holds the common builder methods for XSLT related builders.
+    /// </summary>
+    /// <remarks>
+    /// B is the derived builder interface.
+    /// </remarks>
+    public interface ITransformationBuilderBase<B>
+        where B : ITransformationBuilderBase<B> {
+        /// <summary>
+        /// Enables the document() function
+        /// </summary>
+        B WithDocumentFunction();
+        /// <summary>
+        /// Adds an extension object.
+        /// </summary>
+        B WithExtensionObject(string namespaceUri, object extension);
+        /// <summary>
+        /// Adds a parameter.
+        /// </summary>
+        B WithParameter(string name, string namespaceUri, object parameter);
+        /// <summary>
+        /// Enables Script Blocks.
+        /// </summary>
+        B WithScripting();
+        /// <summary>
+        /// Sets the stylesheet to use.
+        /// </summary>
+        B WithStylesheet(ISource s);
+        /// <summary>
+        /// Sets the resolver to use for the document() function and
+        /// xsi:import/include.
+        /// </summary>
+        B WithXmlResolver(XmlResolver r);
+        /// <summary>
+        /// Disables the document() function
+        /// </summary>
+        B WithoutDocumentFunction();
+        /// <summary>
+        /// Disables Script Blocks.
+        /// </summary>
+        B WithoutScripting();
     }
 }

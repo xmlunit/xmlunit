@@ -137,86 +137,25 @@ namespace net.sf.xmlunit.builder {
             return new StreamBuilder(uri.AbsoluteUri);
         }
 
-        public interface ITransformationBuilder : IBuilder {
-            ITransformationBuilder WithDocumentFunction();
-            ITransformationBuilder WithExtensionObject(string namespaceUri,
-                                                       object extension);
-            ITransformationBuilder WithParameter(string name,
-                                                 string namespaceUri,
-                                                 object parameter);
-            ITransformationBuilder WithScripting();
-            ITransformationBuilder WithStylesheet(ISource s);
+        public interface ITransformationBuilder
+            : ITransformationBuilderBase<ITransformationBuilder>, IBuilder {
             /// <summary>
             /// Sets the stylesheet to use.
             /// </summary>
             ITransformationBuilder WithStylesheet(IBuilder b);
-            ITransformationBuilder WithXmlResolver(XmlResolver r);
-            ITransformationBuilder WithoutDocumentFunction();
-            ITransformationBuilder WithoutScripting();
         }
 
-        internal class Transformation : ITransformationBuilder {
-            private readonly net.sf.xmlunit.transform.Transformation t;
-            internal Transformation(ISource s) {
-                t = new net.sf.xmlunit.transform.Transformation(s);
-            }
-            public ITransformationBuilder WithStylesheet(ISource s) {
-                t.Stylesheet = s;
-                return this;
+        internal class Transformation
+            : AbstractTransformationBuilder<ITransformationBuilder>,
+              ITransformationBuilder {
+
+            internal Transformation(ISource s) : base(s) {
             }
             public ITransformationBuilder WithStylesheet(IBuilder b) {
                 return WithStylesheet(b.Build());
             }
-
-            public ITransformationBuilder WithExtensionObject(string namespaceUri,
-                                                              object extension) {
-                t.AddExtensionObject(namespaceUri, extension);
-                return this;
-            }
-
-            public ITransformationBuilder WithParameter(string name,
-                                                        string namespaceUri,
-                                                        object parameter) {
-                t.AddParameter(name, namespaceUri, parameter);
-                return this;
-            }
-
-            public ITransformationBuilder WithXmlResolver(XmlResolver r) {
-                t.XmlResolver = r;
-                return this;
-            }
-
-            public ITransformationBuilder WithScripting() {
-                return WithScripting(true);
-            }
-
-            public ITransformationBuilder WithoutScripting() {
-                return WithScripting(false);
-            }
-
-            private ITransformationBuilder WithScripting(bool b) {
-                t.EnableScriptBlocks = b;
-                return this;
-            }
-
-            public ITransformationBuilder WithDocumentFunction() {
-                return WithDocumentFunction(true);
-            }
-
-            public ITransformationBuilder WithoutDocumentFunction() {
-                return WithDocumentFunction(false);
-            }
-
-            private ITransformationBuilder WithDocumentFunction(bool b) {
-                t.EnableDocumentFunction = b;
-                return this;
-            }
-
             public ISource Build() {
-                using (MemoryStream ms = new MemoryStream()) {
-                    t.TransformTo(ms);
-                    return FromMemory(ms.ToArray()).Build();
-                }
+                return new DOMSource(Helper.TransformToDocument());
             }
         }
 

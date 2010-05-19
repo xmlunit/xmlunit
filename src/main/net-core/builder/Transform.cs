@@ -17,19 +17,39 @@ using System.Xml;
 
 namespace net.sf.xmlunit.builder {
 
+    /// <summary>
+    /// Fluent API access to net.sf.xmlunit.transform.Transformation.
+    /// </summary>
     public sealed class Transform {
 
         public interface IBuilder : ITransformationBuilderBase<IBuilder> {
+            /// <summary>
+            /// Create the result of the transformation.
+            /// </summary>
             ITransformationResult Build();
         }
         public interface ITransformationResult {
+            /// <summary>
+            /// Output the result to a stream.
+            /// </summary>
             void To(Stream s);
+            /// <summary>
+            /// Output the result to a writer.
+            /// </summary>
             void To(TextWriter t);
+            /// <summary>
+            /// Output the result to a writer.
+            /// </summary>
             void To(XmlWriter x);
+            /// <summary>
+            /// Output the result to a string.
+            /// </summary>
             string ToString();
+            /// <summary>
+            /// Output the result to a DOM Document.
+            /// </summary>
             XmlDocument ToDocument();
         }
-
 
         internal class TransformationBuilder
             : AbstractTransformationBuilder<IBuilder>, IBuilder,
@@ -57,6 +77,9 @@ namespace net.sf.xmlunit.builder {
             }
         }
 
+        /// <summary>
+        /// Build a transformation for a source document.
+        /// </summary>
         public static IBuilder Source(ISource s) {
             return new TransformationBuilder(s);
         }

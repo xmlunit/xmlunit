@@ -195,54 +195,26 @@ public class Input {
         }
     }
 
-    public static interface TransformationBuilder extends Builder {
-        TransformationBuilder usingFactory(TransformerFactory f);
-        TransformationBuilder withOutputProperty(String name, String value);
-        TransformationBuilder withParameter(String name, Object value);
+    public static interface TransformationBuilder
+        extends ITransformationBuilderBase<TransformationBuilder>, Builder {
         /**
          * Sets the stylesheet to use.
          */
         TransformationBuilder withStylesheet(Builder b);
-        TransformationBuilder withStylesheet(Source s);
-        TransformationBuilder withURIResolver(URIResolver r);
     }
 
-    private static class Transformation implements TransformationBuilder {
-        private final net.sf.xmlunit.transform.Transformation helper;
+    private static class Transformation
+        extends AbstractTransformationBuilder<TransformationBuilder>
+        implements TransformationBuilder {
 
         private Transformation(Source s) {
-            helper = new net.sf.xmlunit.transform.Transformation(s);
-        }
-        public TransformationBuilder withStylesheet(Source s) {
-            helper.setStylesheet(s);
-            return this;
+            super(s);
         }
         public TransformationBuilder withStylesheet(Builder b) {
             return withStylesheet(b.build());
         }
-        public TransformationBuilder withOutputProperty(String name,
-                                                        String value) {
-            helper.addOutputProperty(name, value);
-            return this;
-        }
-
-        public TransformationBuilder withParameter(String name, Object value) {
-            helper.addParameter(name, value);
-            return this;
-        }
-
-        public TransformationBuilder usingFactory(TransformerFactory f) {
-            helper.setFactory(f);
-            return this;
-        }
-
-        public TransformationBuilder withURIResolver(URIResolver r) {
-            helper.setURIResolver(r);
-            return this;
-        }
-
         public Source build() {
-            return new DOMSource(helper.transformToDocument());
+            return new DOMSource(getHelper().transformToDocument());
         }
     }
 

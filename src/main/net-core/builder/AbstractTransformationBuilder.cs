@@ -17,55 +17,69 @@ using net.sf.xmlunit.transform;
 
 namespace net.sf.xmlunit.builder {
 
-    internal abstract class AbstractTransformationBuilder<T>
-        : ITransformationBuilderBase<T>
-          where T : class, ITransformationBuilderBase<T> {
+    /// <summary>
+    /// Base class providing the common logic of the XSLT related builders.
+    /// </summary>
+    /// <remarks>
+    /// Not intended to be used outside of this package.
+    /// I wish there was a way to say <code>: B</code>.
+    /// </remarks>
+    internal abstract class AbstractTransformationBuilder<B>
+        : ITransformationBuilderBase<B>
+        where B : class, ITransformationBuilderBase<B> {
+
         private readonly Transformation t;
 
         protected AbstractTransformationBuilder(ISource s) {
             t = new Transformation(s);
         }
-        public T WithStylesheet(ISource s) {
+        public B WithStylesheet(ISource s) {
             t.Stylesheet = s;
-            return this as T;
+            return AsB;
         }
-        public T WithExtensionObject(string namespaceUri, object extension) {
+        public B WithExtensionObject(string namespaceUri, object extension) {
             t.AddExtensionObject(namespaceUri, extension);
-            return this as T;
+            return AsB;
         }
-        public T WithParameter(string name, string namespaceUri,
+        public B WithParameter(string name, string namespaceUri,
                                object parameter) {
             t.AddParameter(name, namespaceUri, parameter);
-            return this as T;
+            return AsB;
         }
-        public T WithXmlResolver(XmlResolver r) {
+        public B WithXmlResolver(XmlResolver r) {
             t.XmlResolver = r;
-            return this as T;
+            return AsB;
         }
-        public T WithScripting() {
+        public B WithScripting() {
             return WithScripting(true);
         }
-        public T WithoutScripting() {
+        public B WithoutScripting() {
             return WithScripting(false);
         }
-        private T WithScripting(bool b) {
+        private B WithScripting(bool b) {
             t.EnableScriptBlocks = b;
-            return this as T;
+            return AsB;
         }
-        public T WithDocumentFunction() {
+        public B WithDocumentFunction() {
             return WithDocumentFunction(true);
         }
-        public T WithoutDocumentFunction() {
+        public B WithoutDocumentFunction() {
             return WithDocumentFunction(false);
         }
-        private T WithDocumentFunction(bool b) {
+        private B WithDocumentFunction(bool b) {
             t.EnableDocumentFunction = b;
-            return this as T;
+            return AsB;
         }
 
         protected Transformation Helper {
             get {
                 return t;
+            }
+        }
+
+        private B AsB {
+            get {
+                return this as B;
             }
         }
     }
