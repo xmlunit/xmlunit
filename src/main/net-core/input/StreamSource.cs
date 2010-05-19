@@ -15,6 +15,10 @@ using System.IO;
 using System.Xml;
 
 namespace net.sf.xmlunit.input {
+    /// <summary>
+    /// ISource implementation encapsulating data read from a stream
+    /// or a reader.
+    /// </summary>
     public class StreamSource : AbstractSource {
         public StreamSource(TextReader rdr)
             : base(XmlReader.Create(rdr)) {

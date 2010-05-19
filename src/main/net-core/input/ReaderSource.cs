@@ -14,6 +14,9 @@
 using System.Xml;
 
 namespace net.sf.xmlunit.input {
+    /// <summary>
+    /// ISource implementation encapsulating a plain XmlReader.
+    /// </summary>
     public class ReaderSource : AbstractSource {
         public ReaderSource(XmlReader rdr)
             : base(rdr) {

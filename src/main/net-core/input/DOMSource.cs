@@ -14,6 +14,9 @@
 using System.Xml;
 
 namespace net.sf.xmlunit.input {
+    /// <summary>
+    /// ISource implementation encapsulating a DOM Node.
+    /// </summary>
     public class DOMSource : AbstractSource {
         public DOMSource(XmlNode node)
             : base(new XmlNodeReader(node)) {

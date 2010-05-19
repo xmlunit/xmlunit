@@ -14,6 +14,10 @@
 using System.Xml;
 
 namespace net.sf.xmlunit.input {
+    /// <summary>
+    /// Provides a base implementation for the different concrete ISource
+    /// implementations.
+    /// </summary>
     public abstract class AbstractSource : ISource {
         private string systemId;
         private readonly XmlReader reader;
