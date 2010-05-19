@@ -23,14 +23,19 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import net.sf.xmlunit.exceptions.ConfigurationException;
 import net.sf.xmlunit.exceptions.XMLUnitException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 /**
@@ -64,6 +69,78 @@ public final class Convert {
         } catch (javax.xml.transform.TransformerException e) {
             throw new XMLUnitException(e);
         }
+    }
+
+    /**
+     * Creates a DOM Document from a TraX Source.
+     *
+     * <p>If the source is a {@link DOMSource} holding a Document
+     * Node, this one will be returned.  Otherwise {@link
+     * toInputSource} and a namespace aware DocumentBuilder (created
+     * by the default DocumentBuilderFactory) will be used to read the
+     * source.  This may involve an XSLT identity transform in
+     * toInputSource.</p>
+     */
+    public static Document toDocument(Source s) {
+        Document d = tryExtractDocFromDOMSource(s);
+        return d != null ? d 
+            : toDocument(s, DocumentBuilderFactory.newInstance());
+    }
+
+    /**
+     * Creates a DOM Document from a TraX Source.
+     *
+     * <p>If the source is a {@link DOMSource} holding a Document
+     * Node, this one will be returned.  Otherwise {@link
+     * toInputSource} and a namespace aware DocumentBuilder (created
+     * by given DocumentBuilderFactory) will be used to read the
+     * source.  This may involve an XSLT identity transform in
+     * toInputSource.</p>
+     */
+    public static Document toDocument(Source s,
+                                      DocumentBuilderFactory factory) {
+        Document d = tryExtractDocFromDOMSource(s);
+        if (d == null) {
+            InputSource is = toInputSource(s);
+            DocumentBuilder b = null;
+
+            // yes, there is a race condition but it is so unlikely to
+            // happen that I currently don't care enough
+            boolean oldNsAware = factory.isNamespaceAware();
+            try {
+                if (!oldNsAware) {
+                    factory.setNamespaceAware(true);
+                }
+                b = factory.newDocumentBuilder();
+            } catch (javax.xml.parsers.ParserConfigurationException e) {
+                throw new ConfigurationException(e);
+            } finally {
+                if (!oldNsAware) {
+                    factory.setNamespaceAware(false);
+                }
+            }
+
+            try {
+                d = b.parse(is);
+            } catch (org.xml.sax.SAXException e) {
+                throw new XMLUnitException(e);
+            } catch (java.io.IOException e) {
+                throw new XMLUnitException(e);
+            }
+        }
+        return d;
+    }
+
+    private static Document tryExtractDocFromDOMSource(Source s) {
+        if (s instanceof DOMSource) {
+            @SuppressWarnings("unchecked") DOMSource ds = (DOMSource) s;
+            Node n = ds.getNode();
+            if (n instanceof Document) {
+                @SuppressWarnings("unchecked") Document d = (Document) n;
+                return d;
+            }
+        }
+        return null;
     }
 
     /**

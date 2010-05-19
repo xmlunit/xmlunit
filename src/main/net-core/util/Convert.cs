@@ -14,6 +14,7 @@
 
 using System.Collections.Generic;
 using System.Xml;
+using net.sf.xmlunit.input;
 
 namespace net.sf.xmlunit.util {
     /// <summary>
@@ -21,6 +22,22 @@ namespace net.sf.xmlunit.util {
     /// </summary>
     public sealed class Convert {
         private Convert() { }
+
+        /// <summary>
+        /// Creates a DOM Document from an ISource.
+        /// </summary>
+        public static XmlDocument ToDocument(ISource s) {
+            DOMSource ds = s as DOMSource;
+            if (ds != null) {
+                XmlDocument doc = ds.Node as XmlDocument;
+                if (doc != null) {
+                    return doc;
+                }
+            }
+            XmlDocument d = new XmlDocument();
+            d.Load(s.Reader);
+            return d;
+        }
 
         /// <summary>
         /// Creates a namespace resolver from a Map prefix =&gt;

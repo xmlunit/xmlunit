@@ -18,8 +18,19 @@ namespace net.sf.xmlunit.input {
     /// ISource implementation encapsulating a DOM Node.
     /// </summary>
     public class DOMSource : AbstractSource {
+        private readonly XmlNode node;
         public DOMSource(XmlNode node)
             : base(new XmlNodeReader(node)) {
+            this.node = node;
+        }
+
+        /// <summary>
+        /// The node this source is wrapping
+        /// </summary>
+        public XmlNode Node {
+            get {
+                return node;
+            }
         }
     }
 }

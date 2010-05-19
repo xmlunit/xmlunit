@@ -27,33 +27,60 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 public class ConvertTest {
 
-    private static void convertAndAssert(Source s) throws Exception {
+    private static void convertToInputSourceAndAssert(Source s)
+        throws Exception {
         DocumentBuilder b =
             DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document d = b.parse(Convert.toInputSource(s));
+        documentAsserts(d);
+    }
+
+    private static void documentAsserts(Document d) {
         assertThat(d, IsNull.notNullValue());
         assertThat(d.getDocumentElement().getTagName(), is("animal"));
     }
 
     @Test public void streamSourceToInputSource() throws Exception {
-        convertAndAssert(new StreamSource(new File(TestResources.ANIMAL_FILE)));
+        convertToInputSourceAndAssert(new StreamSource(new File(TestResources.ANIMAL_FILE)));
     }
 
     @Test public void domSourceToInputSource() throws Exception {
         DocumentBuilder b =
             DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document d = b.parse(new File(TestResources.ANIMAL_FILE));
-        convertAndAssert(new DOMSource(d));
+        convertToInputSourceAndAssert(new DOMSource(d));
     }
 
     @Test public void saxSourceToInputSource() throws Exception {
         InputSource s = new InputSource(new FileInputStream(TestResources.ANIMAL_FILE));
-        convertAndAssert(new SAXSource(s));
+        convertToInputSourceAndAssert(new SAXSource(s));
+    }
+
+    private static void convertToDocumentAndAssert(Source s) {
+        documentAsserts(Convert.toDocument(s));
+    }
+
+    @Test public void streamSourceToDocument() throws Exception {
+        convertToDocumentAndAssert(new StreamSource(new File(TestResources.ANIMAL_FILE)));
+    }
+
+    @Test public void domSourceToDocument() throws Exception {
+        DocumentBuilder b =
+            DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document d = b.parse(new File(TestResources.ANIMAL_FILE));
+        convertToDocumentAndAssert(new DOMSource(d));
+        assertSame(d, Convert.toDocument(new DOMSource(d)));
+    }
+
+    @Test public void saxSourceToDocument() throws Exception {
+        InputSource s = new InputSource(new FileInputStream(TestResources.ANIMAL_FILE));
+        convertToDocumentAndAssert(new SAXSource(s));
     }
 
 }
