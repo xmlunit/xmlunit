@@ -134,6 +134,7 @@ public class test_Transform extends TestCase{
                 + test_Constants.XSLT_END;
             try {
                 Transform transform = new Transform(s, xsl);
+                transform.getResultString();
                 fail("should fail because of unknown include URI");
             } catch (ConfigurationException tce) {
                 // expected exception

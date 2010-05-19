@@ -47,4 +47,7 @@ public class ConfigurationException extends XMLUnitRuntimeException {
     public ConfigurationException(String s) {
         super(s, null);
     }
+    public ConfigurationException(String s, Throwable t) {
+        super(s, t);
+    }
 }

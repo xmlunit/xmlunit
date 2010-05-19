@@ -36,30 +36,28 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit;
 
-import org.custommonkey.xmlunit.exceptions.ConfigurationException;
-import org.custommonkey.xmlunit.exceptions.XMLUnitRuntimeException;
-
 import java.io.File;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
-
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import org.xml.sax.InputSource;
+import net.sf.xmlunit.builder.Input;
+import net.sf.xmlunit.exceptions.XMLUnitException;
+import net.sf.xmlunit.exceptions.XMLUnitException;
+import net.sf.xmlunit.transform.Transformation;
+import org.custommonkey.xmlunit.exceptions.XMLUnitRuntimeException;
+import org.custommonkey.xmlunit.exceptions.ConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 /**
  * Handy wrapper for an XSLT transformation performed using JAXP/Trax.
@@ -70,8 +68,9 @@ import org.w3c.dom.Node;
 public class Transform {
     private static final File PWD = new File(".");
 
-    private final Source inputSource;
-    private final Transformer transformer;
+    private final Transformation transformation;
+    // only here in order to support the getParameter method
+    private final Map<String, Object> parameters = new HashMap<String, Object>();
 
     /**
      * Create a transformation using String input XML and String stylesheet
@@ -79,8 +78,8 @@ public class Transform {
      * @param stylesheet
      */
     public Transform(String input, String stylesheet) {
-        this(new StreamSource(new StringReader(input)),
-             new StreamSource(new StringReader(stylesheet)));
+        this(input == null ? null : Input.fromMemory(input),
+             stylesheet == null ? null : Input.fromMemory(stylesheet));
     }
 
     /**
@@ -89,8 +88,8 @@ public class Transform {
      * @param stylesheet
      */
     public Transform(String input, File stylesheet) {
-        this(new StreamSource(new StringReader(input)),
-             new StreamSource(stylesheet));
+        this(input == null ? null : Input.fromMemory(input),
+             stylesheet == null ? null : Input.fromFile(stylesheet));
     }
 
     /**
@@ -110,7 +109,8 @@ public class Transform {
      * @param stylesheet
      */
     public Transform(InputSource input, File stylesheet) {
-        this(new SAXSource(input), new StreamSource(stylesheet));
+        this(new SAXSource(input),
+             stylesheet == null ? null : Input.fromFile(stylesheet).build());
     }
 
     /**
@@ -118,7 +118,7 @@ public class Transform {
      * @param source
      */
     public Transform(Node sourceNode) {
-        this(sourceNode, (Source)null);
+        this(sourceNode, (String) null);
     }
 
     /**
@@ -127,7 +127,8 @@ public class Transform {
      * @param stylesheet
      */
     public Transform(Node sourceNode, String stylesheet) {
-        this(sourceNode, new StreamSource(new StringReader(stylesheet)));
+        this(sourceNode == null ? null : Input.fromNode(sourceNode),
+             stylesheet == null ? null : Input.fromMemory(stylesheet));
     }
 
     /**
@@ -136,16 +137,13 @@ public class Transform {
      * @param stylesheet
      */
     public Transform(Node sourceNode, File stylesheet) {
-        this(sourceNode, new StreamSource(stylesheet));
+        this(sourceNode == null ? null : Input.fromNode(sourceNode),
+             stylesheet == null ? null : Input.fromFile(stylesheet));
     }
 
-    /**
-     * Create a transformation from an input Node and stylesheet in a Source
-     * @param sourceNode
-     * @param stylesheetSource
-     */
-    private Transform(Node sourceNode, Source stylesheetSource) {
-        this(new DOMSource(sourceNode), stylesheetSource);
+    private Transform(Input.Builder input, Input.Builder stylesheet) {
+        this(input == null ? null : input.build(),
+             stylesheet == null ? null : stylesheet.build());
     }
 
     /**
@@ -154,11 +152,12 @@ public class Transform {
      * @param stylesheetReader
      */
     public Transform(Source inputSource, Source stylesheetSource) {
-        this.inputSource = inputSource;
-        provideSystemIdIfRequired(inputSource);
+        transformation = new Transformation(inputSource);
+        transformation.setStylesheet(stylesheetSource);
+        transformation.setFactory(XMLUnit.getTransformerFactory());
 
+        provideSystemIdIfRequired(inputSource);
         provideSystemIdIfRequired(stylesheetSource);
-        this.transformer = getTransformer(stylesheetSource);
     }
 
     /**
@@ -184,31 +183,17 @@ public class Transform {
         }
     }
     /**
-     * Factory method
-     * @param stylesheetSource
-     * @throws ConfigurationException
-     * @return
-     */
-    private Transformer getTransformer(Source stylesheetSource)
-        throws ConfigurationException {
-        try {
-            TransformerFactory factory = XMLUnit.getTransformerFactory();
-            Transformer t = stylesheetSource == null
-                ? factory.newTransformer()
-                : factory.newTransformer(stylesheetSource);
-            return t;
-        } catch (javax.xml.transform.TransformerConfigurationException ex) {
-            throw new ConfigurationException(ex);
-        }
-    }
-
-    /**
      * Perform the actual transformation
      * @param result
      * @throws TransformerException
      */
-    protected void transformTo(Result result) throws TransformerException {
-        transformer.transform(inputSource, result);
+    protected void transformTo(final Result result) throws TransformerException {
+        withExceptionHandling(new Trans<Object>() {
+                public Object transform() {
+                    transformation.transformTo(result);
+                    return null;
+                }
+            });
     }
 
     /**
@@ -217,10 +202,11 @@ public class Transform {
      * @throws TransformerException
      */
     public String getResultString() throws TransformerException {
-        StringWriter outputWriter = new StringWriter();
-        transformTo(new StreamResult(outputWriter));
-
-        return outputWriter.toString();
+        return withExceptionHandling(new Trans<String>() {
+                public String transform() {
+                    return transformation.transformToString();
+                }
+            });
     }
 
     /**
@@ -229,10 +215,11 @@ public class Transform {
      * @throws TransformerException
      */
     public Document getResultDocument() throws TransformerException {
-        DOMResult result = new DOMResult();
-        transformTo(result);
-
-        return (Document) result.getNode();
+        return withExceptionHandling(new Trans<Document>() {
+                public Document transform() {
+                    return transformation.transformToDocument();
+                }
+            });
     }
 
     /**
@@ -241,9 +228,7 @@ public class Transform {
      * @param value
      */
     public void setOutputProperty(String name, String value) {
-        Properties properties = new Properties();
-        properties.setProperty(name, value);
-        setOutputProperties(properties);
+        transformation.addOutputProperty(name, value);
     }
 
     /**
@@ -252,9 +237,19 @@ public class Transform {
      * @see Transformer#setOutputProperties(java.util.Properties)
      */
     public void setOutputProperties(Properties outputProperties) {
-        transformer.setOutputProperties(outputProperties);
+        for (Enumeration e = outputProperties.propertyNames();
+             e.hasMoreElements(); ) {
+            Object key = e.nextElement();
+            if (key != null) {
+                String name = key.toString();
+                String value = outputProperties.getProperty(name);
+                if (value != null) {
+                    setOutputProperty(name, value);
+                }
+            }
+        }
     }
-    
+
     /**
      * Add a parameter for the transformation
      * @param name
@@ -262,9 +257,10 @@ public class Transform {
      * @see Transformer#setParameter(java.lang.String, java.lang.Object)
      */
     public void setParameter(String name, Object value) {
-        transformer.setParameter(name, value);
+        parameters.put(name, value);
+        transformation.addParameter(name, value);
     }
-    
+
     /**
      * See a parameter used for the transformation
      * @param name
@@ -272,30 +268,50 @@ public class Transform {
      * @see Transformer#getParameter(java.lang.String)
      */
     public Object getParameter(String name) {
-        return transformer.getParameter(name);
+        return parameters.get(name);
     }
-    
+
     /**
      * Clear parameters used for the transformation 
      * @see Transformer#clearParameters()
      */
     public void clearParameters() {
-        transformer.clearParameters();
+        parameters.clear();
+        transformation.clearParameters();
     }
-    
+
     /**
      * Set the URIResolver for the transformation
      * @see Transformer#setURIResolver(javax.xml.transform.URIResolver)
      */
     public void setURIResolver(URIResolver uriResolver) {
-        transformer.setURIResolver(uriResolver);
+        transformation.setURIResolver(uriResolver);
     }
-        
+
     /**
      * Set the ErrorListener for the transformation
      * @see Transformer#setErrorListener(javax.xml.transform.ErrorListener)
      */
     public void setErrorListener(ErrorListener errorListener) {
-        transformer.setErrorListener(errorListener);
+        transformation.setErrorListener(errorListener);
+    }
+
+    private static <R> R withExceptionHandling(Trans<R> trans)
+        throws TransformerException {
+        try {
+            return trans.transform();
+        } catch (net.sf.xmlunit.exceptions.ConfigurationException ex) {
+            throw new ConfigurationException(ex.getMessage(), ex.getCause());
+        } catch (XMLUnitException ex) {
+            Throwable cause = ex.getCause();
+            if (cause instanceof TransformerException) {
+                throw (TransformerException) cause;
+            }
+            throw new XMLUnitRuntimeException(ex.getMessage(), cause);
+        }
+    }
+
+    private interface Trans<R> {
+        R transform();
     }
 }
