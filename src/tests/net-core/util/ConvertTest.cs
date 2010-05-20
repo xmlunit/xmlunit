@@ -41,6 +41,15 @@ namespace net.sf.xmlunit.util {
             Assert.AreSame(d, Convert.ToDocument(new DOMSource(d)));
         }
 
+        [Test]
+        public void DomElementToDocument() {
+            XmlDocument d = new XmlDocument();
+            d.Load(TestResources.ANIMAL_FILE);
+            ConvertToDocumentAndAssert(new DOMSource(d.DocumentElement));
+            Assert.AreNotSame(d, Convert
+                              .ToDocument(new DOMSource(d.DocumentElement)));
+        }
+
         private static void ConvertToNodeAndAssert(ISource s) {
             XmlNode n = Convert.ToNode(s);
             DocumentAsserts(n is XmlDocument
@@ -58,6 +67,15 @@ namespace net.sf.xmlunit.util {
             d.Load(TestResources.ANIMAL_FILE);
             ConvertToNodeAndAssert(new DOMSource(d));
             Assert.AreSame(d, Convert.ToNode(new DOMSource(d)));
+        }
+
+        [Test]
+        public void DomElementToNode() {
+            XmlDocument d = new XmlDocument();
+            d.Load(TestResources.ANIMAL_FILE);
+            ConvertToNodeAndAssert(new DOMSource(d.DocumentElement));
+            Assert.AreSame(d.DocumentElement,
+                           Convert.ToNode(new DOMSource(d.DocumentElement)));
         }
     }
 }

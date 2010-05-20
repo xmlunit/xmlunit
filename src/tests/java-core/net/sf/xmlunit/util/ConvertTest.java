@@ -28,6 +28,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -84,6 +85,15 @@ public class ConvertTest {
         convertToDocumentAndAssert(new SAXSource(s));
     }
 
+    @Test public void domElementToDocument() throws Exception {
+        DocumentBuilder b =
+            DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document d = b.parse(new File(TestResources.ANIMAL_FILE));
+        convertToDocumentAndAssert(new DOMSource(d.getDocumentElement()));
+        assertNotSame(d,
+                      Convert.toDocument(new DOMSource(d.getDocumentElement())));
+    }
+
     private static void convertToNodeAndAssert(Source s) {
         Node n = Convert.toNode(s);
         Document d = n instanceof Document ? (Document) n : n.getOwnerDocument();
@@ -105,6 +115,15 @@ public class ConvertTest {
     @Test public void saxSourceToNode() throws Exception {
         InputSource s = new InputSource(new FileInputStream(TestResources.ANIMAL_FILE));
         convertToNodeAndAssert(new SAXSource(s));
+    }
+
+    @Test public void domElementToNode() throws Exception {
+        DocumentBuilder b =
+            DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document d = b.parse(new File(TestResources.ANIMAL_FILE));
+        convertToNodeAndAssert(new DOMSource(d.getDocumentElement()));
+        assertSame(d.getDocumentElement(),
+                   Convert.toNode(new DOMSource(d.getDocumentElement())));
     }
 
 }
