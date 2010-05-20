@@ -76,7 +76,7 @@ public final class Convert {
      *
      * <p>If the source is a {@link DOMSource} holding a Document
      * Node, this one will be returned.  Otherwise {@link
-     * toInputSource} and a namespace aware DocumentBuilder (created
+     * #toInputSource} and a namespace aware DocumentBuilder (created
      * by the default DocumentBuilderFactory) will be used to read the
      * source.  This may involve an XSLT identity transform in
      * toInputSource.</p>
@@ -92,7 +92,7 @@ public final class Convert {
      *
      * <p>If the source is a {@link DOMSource} holding a Document
      * Node, this one will be returned.  Otherwise {@link
-     * toInputSource} and a namespace aware DocumentBuilder (created
+     * #toInputSource} and a namespace aware DocumentBuilder (created
      * by given DocumentBuilderFactory) will be used to read the
      * source.  This may involve an XSLT identity transform in
      * toInputSource.</p>
@@ -132,13 +132,42 @@ public final class Convert {
     }
 
     private static Document tryExtractDocFromDOMSource(Source s) {
+        Node n = tryExtractNodeFromDOMSource(s);
+        if (n != null && n instanceof Document) {
+            @SuppressWarnings("unchecked") Document d = (Document) n;
+            return d;
+        }
+        return null;
+    }
+
+    /**
+     * Creates a DOM Node from a TraX Source.
+     *
+     * <p>If the source is a {@link DOMSource} its Node will be
+     * returned, otherwise this delegates to {@link #toDocument}.</p>
+     */
+    public static Node toNode(Source s) {
+        Node n = tryExtractNodeFromDOMSource(s);
+        return n != null ? n 
+            : toDocument(s, DocumentBuilderFactory.newInstance());
+    }
+
+    /**
+     * Creates a DOM Node from a TraX Source.
+     *
+     * <p>If the source is a {@link DOMSource} its Node will be
+     * returned, otherwise this delegates to {@link #toDocument}.</p>
+     */
+    public static Node toNode(Source s,
+                              DocumentBuilderFactory factory) {
+        Node n = tryExtractNodeFromDOMSource(s);
+        return n != null ? n : toDocument(s, factory);
+    }
+
+    private static Node tryExtractNodeFromDOMSource(Source s) {
         if (s instanceof DOMSource) {
             @SuppressWarnings("unchecked") DOMSource ds = (DOMSource) s;
-            Node n = ds.getNode();
-            if (n instanceof Document) {
-                @SuppressWarnings("unchecked") Document d = (Document) n;
-                return d;
-            }
+            return ds.getNode();
         }
         return null;
     }

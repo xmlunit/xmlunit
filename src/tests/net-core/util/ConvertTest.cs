@@ -20,7 +20,10 @@ namespace net.sf.xmlunit.util {
     [TestFixture]
     public class ConvertTest {
         private static void ConvertToDocumentAndAssert(ISource s) {
-            XmlDocument d = Convert.ToDocument(s);
+            DocumentAsserts(Convert.ToDocument(s));
+        }
+
+        private static void DocumentAsserts(XmlDocument d) {
             Assert.IsNotNull(d);
             Assert.AreEqual("animal", d.DocumentElement.Name);
         }
@@ -36,6 +39,25 @@ namespace net.sf.xmlunit.util {
             d.Load(TestResources.ANIMAL_FILE);
             ConvertToDocumentAndAssert(new DOMSource(d));
             Assert.AreSame(d, Convert.ToDocument(new DOMSource(d)));
+        }
+
+        private static void ConvertToNodeAndAssert(ISource s) {
+            XmlNode n = Convert.ToNode(s);
+            DocumentAsserts(n is XmlDocument
+                            ? n as XmlDocument : n.OwnerDocument);
+        }
+
+        [Test]
+        public void StreamSourceToNode() {
+            ConvertToNodeAndAssert(new StreamSource(TestResources.ANIMAL_FILE));
+        }
+
+        [Test]
+        public void DomSourceToNode() {
+            XmlDocument d = new XmlDocument();
+            d.Load(TestResources.ANIMAL_FILE);
+            ConvertToNodeAndAssert(new DOMSource(d));
+            Assert.AreSame(d, Convert.ToNode(new DOMSource(d)));
         }
     }
 }

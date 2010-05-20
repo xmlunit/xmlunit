@@ -25,6 +25,7 @@ import net.sf.xmlunit.TestResources;
 import org.hamcrest.core.IsNull;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 import static org.junit.Assert.assertSame;
@@ -81,6 +82,29 @@ public class ConvertTest {
     @Test public void saxSourceToDocument() throws Exception {
         InputSource s = new InputSource(new FileInputStream(TestResources.ANIMAL_FILE));
         convertToDocumentAndAssert(new SAXSource(s));
+    }
+
+    private static void convertToNodeAndAssert(Source s) {
+        Node n = Convert.toNode(s);
+        Document d = n instanceof Document ? (Document) n : n.getOwnerDocument();
+        documentAsserts(d);
+    }
+
+    @Test public void streamSourceToNode() throws Exception {
+        convertToNodeAndAssert(new StreamSource(new File(TestResources.ANIMAL_FILE)));
+    }
+
+    @Test public void domSourceToNode() throws Exception {
+        DocumentBuilder b =
+            DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document d = b.parse(new File(TestResources.ANIMAL_FILE));
+        convertToNodeAndAssert(new DOMSource(d));
+        assertSame(d, Convert.toNode(new DOMSource(d)));
+    }
+
+    @Test public void saxSourceToNode() throws Exception {
+        InputSource s = new InputSource(new FileInputStream(TestResources.ANIMAL_FILE));
+        convertToNodeAndAssert(new SAXSource(s));
     }
 
 }

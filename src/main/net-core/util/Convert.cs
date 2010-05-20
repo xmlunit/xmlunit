@@ -40,6 +40,18 @@ namespace net.sf.xmlunit.util {
         }
 
         /// <summary>
+        /// Creates a DOM Node from an ISource.
+        /// </summary>
+        /// <remarks>
+        /// Unless the source is a DOMSource this will return the same
+        /// result as ToDocument.
+        /// </remarks>
+        public static XmlNode ToNode(ISource s) {
+            DOMSource ds = s as DOMSource;
+            return ds != null ? ds.Node : ToDocument(s);
+        }
+
+        /// <summary>
         /// Creates a namespace resolver from a Map prefix =&gt;
         /// Namespace URI.
         /// </summary>
