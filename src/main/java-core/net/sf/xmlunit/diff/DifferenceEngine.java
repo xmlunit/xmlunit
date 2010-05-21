@@ -18,7 +18,7 @@ import javax.xml.transform.Source;
 /**
  * XMLUnit's difference engine.
  */
-public interface IDifferenceEngine {
+public interface DifferenceEngine {
     /**
      * Registers a listener that is notified of each comparison.
      */

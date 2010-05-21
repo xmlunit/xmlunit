@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 
 public abstract class AbstractXPathEngineTest {
 
-    protected abstract IXPathEngine getEngine();
+    protected abstract XPathEngine getEngine();
 
     private Source source;
 
@@ -91,7 +91,7 @@ public abstract class AbstractXPathEngineTest {
     }
 
     @Test public void selectNodesWithNS() {
-        IXPathEngine e = getEngine();
+        XPathEngine e = getEngine();
         source = Input.fromMemory("<n:d xmlns:n='urn:test:1'><n:e/></n:d>")
             .build();
         HashMap<String, String> m = new HashMap<String, String>();
@@ -102,7 +102,7 @@ public abstract class AbstractXPathEngineTest {
     }
 
     @Test public void selectNodesWithDefaultNS() {
-        IXPathEngine e = getEngine();
+        XPathEngine e = getEngine();
         source = Input.fromMemory("<d xmlns='urn:test:1'><e/></d>")
             .build();
         HashMap<String, String> m = new HashMap<String, String>();
@@ -113,7 +113,7 @@ public abstract class AbstractXPathEngineTest {
     }
 
     @Test public void selectNodesWithDefaultNSEmptyPrefix() {
-        IXPathEngine e = getEngine();
+        XPathEngine e = getEngine();
         source = Input.fromMemory("<d xmlns='urn:test:1'><e/></d>")
             .build();
         HashMap<String, String> m = new HashMap<String, String>();
@@ -125,7 +125,7 @@ public abstract class AbstractXPathEngineTest {
 
     // doesn't match
     public void selectNodesWithDefaultNSNoPrefix() {
-        IXPathEngine e = getEngine();
+        XPathEngine e = getEngine();
         source = Input.fromMemory("<d xmlns='urn:test:1'><e/></d>")
             .build();
         HashMap<String, String> m = new HashMap<String, String>();

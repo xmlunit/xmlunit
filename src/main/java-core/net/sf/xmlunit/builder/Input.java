@@ -196,7 +196,7 @@ public class Input {
     }
 
     public static interface TransformationBuilder
-        extends ITransformationBuilderBase<TransformationBuilder>, Builder {
+        extends TransformationBuilderBase<TransformationBuilder>, Builder {
         /**
          * Sets the stylesheet to use.
          */

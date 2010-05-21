@@ -23,7 +23,7 @@ import javax.xml.transform.URIResolver;
  * <p><code>B</code> is the derived builder interface.</p>
  */
 public interface
-    ITransformationBuilderBase<B extends ITransformationBuilderBase<B>> {
+    TransformationBuilderBase<B extends TransformationBuilderBase<B>> {
     /**
      * sets the TraX factory to use.
      */

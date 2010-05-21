@@ -29,7 +29,7 @@ import org.w3c.dom.NodeList;
 /**
  * Simplified access to JAXP's XPath API.
  */
-public class JAXPXPathEngine implements IXPathEngine {
+public class JAXPXPathEngine implements XPathEngine {
     private final XPath xpath;
 
     public JAXPXPathEngine(XPathFactory fac) {

@@ -14,7 +14,7 @@
 package net.sf.xmlunit.xpath;
 
 public class JAXPXPathEngineTest extends AbstractXPathEngineTest {
-    @Override protected IXPathEngine getEngine() {
+    @Override protected XPathEngine getEngine() {
         return new JAXPXPathEngine();
     }
 }

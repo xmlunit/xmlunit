@@ -26,8 +26,8 @@ import net.sf.xmlunit.transform.Transformation;
  * <p>I wish there was a way to say <code>implements B</code>.</p>
  */
 abstract class
-    AbstractTransformationBuilder<B extends ITransformationBuilderBase<B>>
-    implements ITransformationBuilderBase<B> {
+    AbstractTransformationBuilder<B extends TransformationBuilderBase<B>>
+    implements TransformationBuilderBase<B> {
 
     private final Transformation helper;
 

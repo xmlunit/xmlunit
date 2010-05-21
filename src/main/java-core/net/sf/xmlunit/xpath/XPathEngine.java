@@ -20,7 +20,7 @@ import org.w3c.dom.Node;
 /**
  * Interface for XMLUnit's XPath abstraction.
  */
-public interface IXPathEngine {
+public interface XPathEngine {
     /**
      * Returns a potentially empty collection of Nodes matching an
      * XPath expression.
