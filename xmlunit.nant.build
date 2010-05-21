@@ -17,10 +17,7 @@
   <property name="base.dir" value="${project::get-base-directory()}"
     overwrite="false"/>
   <property name="core.src.dir" value="${base.dir}/src/main/net-core" overwrite="false"/>
-  <property name="legacy.src.dir" value="${base.dir}/src/main/net-legacy" overwrite="false"/>
   <property name="core.tests.src.dir" value="${base.dir}/src/tests/net-core"
-    overwrite="false"/>
-  <property name="legacy.tests.src.dir" value="${base.dir}/src/tests/net-legacy"
     overwrite="false"/>
 
   <property name="build.dir" value="${base.dir}/build/net" overwrite="false"/>
@@ -43,9 +40,7 @@
   </target>
   
   <target name="clean" description="clean out compiled files">
-    <delete failonerror="false">
-      <fileset basedir="${build.dir}"/> 
-    </delete>
+    <delete dir="${build.dir}"/> 
   </target>
   
   <target name="compile-core"
@@ -60,17 +55,6 @@
     
   <target name="compile" description="compile all source files"
           depends="compile-core">
-    <csc target="library" output="${bin.dir}/${project::get-name()}-legacy.dll"
-      debug="true" verbose="${csc.verbose}">
-      <references basedir="${bin.dir}">
-        <include name="${project::get-name()}-core.dll"/>
-        <include name="${nunit.v2.assembly}"/>
-      </references>
-      <sources basedir="${legacy.src.dir}">
-        <include name="*.cs"/>
-      </sources>
-    </csc>
-    
     <csc target="library"
       output="${bin.dir}/${project::get-name()}-core.tests.dll"
       debug="true" verbose="${csc.verbose}">
@@ -82,26 +66,12 @@
         <include name="**/*.cs"/>
       </sources>
     </csc>
-    <csc target="library"
-      output="${bin.dir}/${project::get-name()}-legacy.tests.dll"
-      debug="true" verbose="${csc.verbose}">
-      <references basedir="${bin.dir}">
-        <include name="${project::get-name()}-core.dll"/>
-        <include name="${project::get-name()}-legacy.dll"/>
-        <include name="${nunit.v2.assembly}"/>
-      </references>
-      <sources basedir="${legacy.tests.src.dir}">
-        <include name="*.cs"/>
-        <exclude name="AllTests.cs"/>
-      </sources>
-    </csc>
   </target>
   
   <target name="test" description="run all tests" depends="compile">
     <nunit2>
       <formatter type="Plain"/>
       <test assemblyname="${bin.dir}/${project::get-name()}-core.tests.dll"/>
-      <test assemblyname="${bin.dir}/${project::get-name()}-legacy.tests.dll"/>
     </nunit2>
   </target>
   
