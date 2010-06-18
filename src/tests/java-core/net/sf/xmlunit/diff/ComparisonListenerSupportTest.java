@@ -51,12 +51,12 @@ public class ComparisonListenerSupportTest {
         s.fireComparisonPerformed(null, ComparisonResult.EQUAL);
     }
 
-    private static class Listener implements ComparisonListener {
+    static class Listener implements ComparisonListener {
         private final HashSet<ComparisonResult> acceptable =
             new HashSet<ComparisonResult>();
         private int invocations = 0;
 
-        private Listener(ComparisonResult... accept) {
+        Listener(ComparisonResult... accept) {
             acceptable.addAll(Arrays.asList(accept));
         }
 
@@ -66,6 +66,10 @@ public class ComparisonListenerSupportTest {
             if (!acceptable.contains(outcome)) {
                 fail("unexpected outcome: " + outcome);
             }
+        }
+
+        int getInvocations() {
+            return invocations;
         }
     }
 }
