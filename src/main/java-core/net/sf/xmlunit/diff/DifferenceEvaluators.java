@@ -67,7 +67,7 @@ public final class DifferenceEvaluators {
      * evaluator to decide which differences leave the documents
      * simlar.
      */
-    public static final DifferenceEvaluator defaultStopWhenDifferent
+    public static final DifferenceEvaluator DefaultStopWhenDifferent
         = stopWhenDifferent(Default);
 
     /**

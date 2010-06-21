@@ -13,7 +13,12 @@
 */
 package net.sf.xmlunit.diff;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import static org.junit.Assert.*;
 
 public class DOMDifferenceEngineTest {
@@ -111,4 +116,106 @@ public class DOMDifferenceEngineTest {
                                               null, null, new Short("2"))));
         assertEquals(1, l.getInvocations());
     }
+
+    private static class DiffExpecter implements ComparisonListener {
+        private int invoked = 0;
+        private final int expectedInvocations;
+        private final ComparisonType type;
+        private DiffExpecter(ComparisonType type) {
+            this(type, 1);
+        }
+        private DiffExpecter(ComparisonType type, int expected) {
+            this.type = type;
+            this.expectedInvocations = expected;
+        }
+        public void comparisonPerformed(Comparison comparison,
+                                        ComparisonResult outcome) {
+            assertTrue(invoked < expectedInvocations);
+            invoked++;
+            assertEquals(type, comparison.getType());
+            assertEquals(ComparisonResult.CRITICAL, outcome);
+        }
+    }
+
+    private Document doc;
+
+    @Before public void createDoc() throws Exception {
+        doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+            .newDocument();
+    }
+
+    @Test public void compareNodesOfDifferentType() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.NODE_TYPE);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.compareNodes(doc.createElement("x"),
+                                    doc.createComment("x")));
+        assertEquals(1, ex.invoked);
+    }
+
+    @Test public void compareNodesWithoutNS() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.NODE_TYPE, 0);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        assertEquals(ComparisonResult.EQUAL,
+                     d.compareNodes(doc.createElement("x"),
+                                    doc.createElement("x")));
+        assertEquals(0, ex.invoked);
+    }
+
+    @Test public void compareNodesDifferentNS() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.NAMESPACE_URI);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.compareNodes(doc.createElementNS("x", "y"),
+                                    doc.createElementNS("z", "y")));
+        assertEquals(1, ex.invoked);
+    }
+
+    @Test public void compareNodesDifferentPrefix() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.NAMESPACE_PREFIX);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(new DifferenceEvaluator() {
+                public ComparisonResult evaluate(Comparison comparison,
+                                                 ComparisonResult outcome) {
+                    if (comparison.getType()
+                        == ComparisonType.NAMESPACE_PREFIX) {
+                        assertEquals(ComparisonResult.DIFFERENT, outcome);
+                        return ComparisonResult.CRITICAL;
+                    }
+                    assertEquals(ComparisonResult.EQUAL, outcome);
+                    return ComparisonResult.EQUAL;
+                }
+            });
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.compareNodes(doc.createElementNS("x", "x:y"),
+                                    doc.createElementNS("x", "z:y")));
+        assertEquals(1, ex.invoked);
+    }
+
+    @Test public void compareNodesDifferentNumberOfChildren() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex =
+            new DiffExpecter(ComparisonType.CHILD_NODELIST_LENGTH, 2);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        Element e1 = doc.createElement("x");
+        Element e2 = doc.createElement("x");
+        assertEquals(ComparisonResult.EQUAL, d.compareNodes(e1, e2));
+        e1.appendChild(doc.createElement("x"));
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(e1, e2));
+        assertEquals(1, ex.invoked);
+        e2.appendChild(doc.createElement("x"));
+        assertEquals(ComparisonResult.EQUAL, d.compareNodes(e1, e2));
+        e2.appendChild(doc.createElement("x"));
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(e1, e2));
+        assertEquals(2, ex.invoked);
+    }
+
 }

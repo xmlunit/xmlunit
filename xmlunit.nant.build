@@ -25,6 +25,7 @@
   <property name="gen.src.dir" value="${base.dir}/build/generated/net"
             overwrite="false"/>
   <property name="build.dir" value="${base.dir}/build/net" overwrite="false"/>
+  <property name="test.report.dir" value="${build.dir}/test-report"/>
   <property name="bin.dir" value="${build.dir}/bin" overwrite="false"/>
 
   <property name="csc.verbose" value="false" overwrite="false"/>
@@ -99,8 +100,12 @@
   <target name="test" description="run all tests" depends="compile">
     <nunit2>
       <formatter type="Plain"/>
+      <formatter type="Xml" usefile="true" outputdir="${test.report.dir}"/>
       <test assemblyname="${bin.dir}/${project::get-name()}-core.tests.dll"/>
     </nunit2>
+    <style style="lib/NUnitSummary.xsl"
+           in="${test.report.dir}/${project::get-name()}-core.tests.dll-results"
+           out="${test.report.dir}/html/index.html"/>
   </target>
   
   <target name="deploy" description="zip all code for deployment"

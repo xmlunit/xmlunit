@@ -57,7 +57,53 @@ namespace net.sf.xmlunit.diff {
                          net.sf.xmlunit.util.Convert.ToNode(test));
         }
 
-        private ComparisonResult CompareNodes(XmlNode control, XmlNode test) {
+        /// <summary>
+        /// Recursively compares two XML nodes.
+        /// </summary>
+        /// <remarks>
+        /// Performs comparisons common to all node types, the performs
+        /// the node type specific comparisons and finally recures into
+        /// the node's child lists.
+        ///
+        /// Stops as soon as any comparison returns ComparisonResult.CRITICAL.
+        /// </remarks>
+        internal ComparisonResult CompareNodes(XmlNode control, XmlNode test) {
+            ComparisonResult lastResult =
+                Compare(new Comparison(ComparisonType.NODE_TYPE, control,
+                                       null, control.NodeType,
+                                       test, null, test.NodeType));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+            lastResult =
+                Compare(new Comparison(ComparisonType.NAMESPACE_URI, control,
+                                       null, control.NamespaceURI,
+                                       test, null, test.NamespaceURI));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+            lastResult =
+                Compare(new Comparison(ComparisonType.NAMESPACE_PREFIX, control,
+                                       null, control.Prefix,
+                                       test, null, test.Prefix));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+            XmlNodeList controlChildren = control.ChildNodes;
+            XmlNodeList testChildren = test.ChildNodes;
+            lastResult =
+                Compare(new Comparison(ComparisonType.CHILD_NODELIST_LENGTH,
+                                       control, null, controlChildren.Count,
+                                       test, null, testChildren.Count));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+            /* TODO node type specific stuff */
+            return CompareNodeLists(controlChildren, testChildren);
+        }
+
+        ComparisonResult CompareNodeLists(XmlNodeList control,
+                                          XmlNodeList test) {
             return ComparisonResult.EQUAL;
         }
 
