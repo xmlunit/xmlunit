@@ -66,7 +66,7 @@ namespace net.sf.xmlunit.diff {
         /// difference evaluator evaluate the result, notifies all
         /// listeners and returns the outcome.
         /// </summary>
-        public ComparisonResult Compare(Comparison comp) {
+        internal ComparisonResult Compare(Comparison comp) {
             object controlValue = comp.ControlNodeDetails.Value;
             object testValue = comp.TestNodeDetails.Value;
             bool equal = controlValue == null
@@ -78,8 +78,8 @@ namespace net.sf.xmlunit.diff {
             return altered;
         }
 
-        public void FireComparisonPerformed(Comparison comp,
-                                            ComparisonResult outcome) {
+        private void FireComparisonPerformed(Comparison comp,
+                                             ComparisonResult outcome) {
             if (ComparisonListener != null) {
                 ComparisonListener(comp, outcome);
             }

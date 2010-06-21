@@ -12,14 +12,18 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project name="xmlunit" description="XmlUnit for .Net" default="compile">
+<project name="xmlunit" description="XMLUnit for .Net" default="compile">
   <property name="project.version" value="2.0" overwrite="false"/>
+  <property name="project.version4" value="${project.version}.0.0"
+            overwrite="false"/>
   <property name="base.dir" value="${project::get-base-directory()}"
     overwrite="false"/>
   <property name="core.src.dir" value="${base.dir}/src/main/net-core" overwrite="false"/>
   <property name="core.tests.src.dir" value="${base.dir}/src/tests/net-core"
     overwrite="false"/>
 
+  <property name="gen.src.dir" value="${base.dir}/build/generated/net"
+            overwrite="false"/>
   <property name="build.dir" value="${base.dir}/build/net" overwrite="false"/>
   <property name="bin.dir" value="${build.dir}/bin" overwrite="false"/>
 
@@ -34,6 +38,7 @@
     value="lib" />
   
   <target name="init" description="prepare for other targets">
+    <mkdir dir="${gen.src.dir}"/>
     <mkdir dir="${bin.dir}"/>
     <copy file="${nunit.v2.bin.dir}/${nunit.v2.assembly}"
       tofile="${bin.dir}/${nunit.v2.assembly}"/>
@@ -45,9 +50,32 @@
   
   <target name="compile-core"
           description="compile core source files" depends="init">
+    <asminfo output="${gen.src.dir}/AssemblyInfo.cs" language="CSharp">
+      <imports>
+        <import namespace="System" />
+        <import namespace="System.Reflection" />
+        <import namespace="System.Runtime.InteropServices" />
+        <import namespace="System.Runtime.CompilerServices" />
+      </imports>
+      <attributes>
+        <attribute type="ComVisibleAttribute" value="false"/>
+        <attribute type="CLSCompliantAttribute" value="true"/>
+        <attribute type="AssemblyVersionAttribute" value="${project.version4}"/>
+        <attribute type="AssemblyTitleAttribute" value="XMLUnit Core" />
+        <attribute type="AssemblyDescriptionAttribute"
+                   value="Core Classes of XMLUnit for .NET" />
+        <attribute type="InternalsVisibleToAttribute"
+                   value="${project::get-name()}-core.tests"/>
+      </attributes>
+    </asminfo>
+    <copy todir="${gen.src.dir}">
+      <fileset basedir="${core.src.dir}">
+        <include name="**/*.cs"/>
+      </fileset>
+    </copy>
     <csc target="library" output="${bin.dir}/${project::get-name()}-core.dll"
          debug="true" verbose="${csc.verbose}">
-      <sources basedir="${core.src.dir}">
+      <sources basedir="${gen.src.dir}">
         <include name="**/*.cs"/>
       </sources>
     </csc>
