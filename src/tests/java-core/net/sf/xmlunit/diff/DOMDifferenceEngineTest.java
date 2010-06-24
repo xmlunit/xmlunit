@@ -17,8 +17,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.ProcessingInstruction;
+import org.w3c.dom.Text;
 import static org.junit.Assert.*;
 
 public class DOMDifferenceEngineTest {
@@ -218,4 +222,88 @@ public class DOMDifferenceEngineTest {
         assertEquals(2, ex.invoked);
     }
 
+    @Test public void compareCharacterData() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.TEXT_VALUE, 9);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+
+        Comment fooComment = doc.createComment("foo");
+        Comment barComment = doc.createComment("bar");
+        Text fooText = doc.createTextNode("foo");
+        Text barText = doc.createTextNode("bar");
+        CDATASection fooCDATASection = doc.createCDATASection("foo");
+        CDATASection barCDATASection = doc.createCDATASection("bar");
+
+        assertEquals(ComparisonResult.EQUAL,
+                     d.nodeTypeSpecificComparison(fooComment, fooComment));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(fooComment, barComment));
+        assertEquals(ComparisonResult.EQUAL,
+                     d.nodeTypeSpecificComparison(fooText, fooText));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(fooText, barText));
+        assertEquals(ComparisonResult.EQUAL,
+                     d.nodeTypeSpecificComparison(fooCDATASection, fooCDATASection));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(fooCDATASection, barCDATASection));
+        
+        assertEquals(ComparisonResult.EQUAL,
+                     d.nodeTypeSpecificComparison(fooComment, fooText));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(fooComment, barText));
+        assertEquals(ComparisonResult.EQUAL,
+                     d.nodeTypeSpecificComparison(fooComment, fooCDATASection));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(fooComment, barCDATASection));
+        assertEquals(ComparisonResult.EQUAL,
+                     d.nodeTypeSpecificComparison(fooText, fooComment));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(fooText, barComment));
+        assertEquals(ComparisonResult.EQUAL,
+                     d.nodeTypeSpecificComparison(fooText, fooCDATASection));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(fooText, barCDATASection));
+        assertEquals(ComparisonResult.EQUAL,
+                     d.nodeTypeSpecificComparison(fooCDATASection, fooText));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(fooCDATASection, barText));
+        assertEquals(ComparisonResult.EQUAL,
+                     d.nodeTypeSpecificComparison(fooCDATASection, fooComment));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(fooCDATASection, barComment));
+        assertEquals(ComparisonResult.EQUAL,
+                     d.nodeTypeSpecificComparison(fooText,
+                                                  doc.createElement("bar")));
+        assertEquals(9, ex.invoked);
+    }
+
+    @Test public void compareProcessingInstructions() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.PROCESSING_INSTRUCTION_TARGET);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+
+        ProcessingInstruction foo1 = doc.createProcessingInstruction("foo", "1");
+        ProcessingInstruction bar1 = doc.createProcessingInstruction("bar", "1");
+        assertEquals(ComparisonResult.EQUAL,
+                     d.nodeTypeSpecificComparison(foo1, foo1));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(foo1, bar1));
+        assertEquals(ComparisonResult.EQUAL,
+                     d.nodeTypeSpecificComparison(foo1,
+                                                  doc.createElement("bar")));
+        assertEquals(1, ex.invoked);
+
+        d = new DOMDifferenceEngine();
+        ex = new DiffExpecter(ComparisonType.PROCESSING_INSTRUCTION_DATA);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        ProcessingInstruction foo2 = doc.createProcessingInstruction("foo", "2");
+        assertEquals(ComparisonResult.EQUAL,
+                     d.nodeTypeSpecificComparison(foo1, foo1));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(foo1, foo2));
+        assertEquals(1, ex.invoked);
+    }
 }

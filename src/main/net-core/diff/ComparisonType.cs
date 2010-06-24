@@ -63,17 +63,10 @@ namespace net.sf.xmlunit.diff {
         NAMESPACE_URI,
 
         /// <summary>
-        /// Compare content of CDATA sections.
-        /// </summary>
-        CDATA_VALUE,
-        /// <summary>
-        /// Compare content of comments.
-        /// </summary>
-        COMMENT_VALUE,
-        /// <summary>
-        /// Compare content of text nodes.
+        /// Compare content of text nodes, comments, CDATA sections.
         /// </summary>
         TEXT_VALUE,
+
         /// <summary>
         /// Compare targets of processing instructions.
         /// </summary>
@@ -99,6 +92,7 @@ namespace net.sf.xmlunit.diff {
         /// Compare attribute's value.
         /// </summary>
         ATTR_VALUE,
+
         /// <summary>
         /// Compare number of child nodes.
         /// </summary>

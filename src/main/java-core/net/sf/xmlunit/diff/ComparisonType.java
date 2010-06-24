@@ -18,6 +18,19 @@ package net.sf.xmlunit.diff;
  */
 public enum ComparisonType {
     /**
+     * Do both documents specify the same version in their XML declaration?
+     */
+    XML_VERSION,
+    /**
+     * Do both documents specify the same standalone declaration in
+     * their XML declaration?
+     */
+    XML_STANDALONE,
+    /**
+     * Do both documents specify the same encoding in their XML declaration?
+     */
+    XML_ENCODING,
+    /**
      * Do both documents have a DOCTYPE (or neither of each)?
      */
     HAS_DOCTYPE_DECLARATION,
@@ -62,17 +75,10 @@ public enum ComparisonType {
     NAMESPACE_URI,
 
     /**
-     * Compare content of CDATA sections.
-     */
-    CDATA_VALUE,
-    /**
-     * Compare content of comments.
-     */
-    COMMENT_VALUE,
-    /**
-     * Compare content of text nodes.
+     * Compare content of text nodes, comments and CDATA sections.
      */
     TEXT_VALUE,
+
     /**
      * Compare targets of processing instructions.
      */

@@ -13,11 +13,15 @@
 */
 package net.sf.xmlunit.diff;
 
-import net.sf.xmlunit.util.Convert;
 import javax.xml.transform.Source;
+import net.sf.xmlunit.util.Convert;
+import org.w3c.dom.CharacterData;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Document;
+import org.w3c.dom.ProcessingInstruction;
 
 /**
  * Difference engine based on DOM.
@@ -90,22 +94,22 @@ public final class DOMDifferenceEngine implements DifferenceEngine {
     ComparisonResult compareNodes(Node control, Node test) {
         ComparisonResult lastResult =
             compare(new Comparison(ComparisonType.NODE_TYPE, control,
-                                    null, control.getNodeType(),
-                                    test, null, test.getNodeType()));
+                                   null, control.getNodeType(),
+                                   test, null, test.getNodeType()));
         if (lastResult == ComparisonResult.CRITICAL) {
             return lastResult;
         }
         lastResult =
             compare(new Comparison(ComparisonType.NAMESPACE_URI, control,
-                                    null, control.getNamespaceURI(),
-                                    test, null, test.getNamespaceURI()));
+                                   null, control.getNamespaceURI(),
+                                   test, null, test.getNamespaceURI()));
         if (lastResult == ComparisonResult.CRITICAL) {
             return lastResult;
         }
         lastResult =
             compare(new Comparison(ComparisonType.NAMESPACE_PREFIX, control,
-                                    null, control.getPrefix(),
-                                    test, null, test.getPrefix()));
+                                   null, control.getPrefix(),
+                                   test, null, test.getPrefix()));
         if (lastResult == ComparisonResult.CRITICAL) {
             return lastResult;
         }
@@ -113,13 +117,141 @@ public final class DOMDifferenceEngine implements DifferenceEngine {
         NodeList testChildren = test.getChildNodes();
         lastResult =
             compare(new Comparison(ComparisonType.CHILD_NODELIST_LENGTH,
-                                    control, null, controlChildren.getLength(),
-                                    test, null, testChildren.getLength()));
+                                   control, null, controlChildren.getLength(),
+                                   test, null, testChildren.getLength()));
         if (lastResult == ComparisonResult.CRITICAL) {
             return lastResult;
         }
-        /* TODO node type specific stuff */
+        lastResult = nodeTypeSpecificComparison(control, test);
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
         return compareNodeLists(controlChildren, testChildren);
+    }
+
+    /**
+     * Dispatches to the node type specific comparison if one is
+     * defined for the given combination of nodes.
+     *
+     * <p>package private to support tests.</p>
+     */
+    ComparisonResult nodeTypeSpecificComparison(Node control, Node test) {
+        switch (control.getNodeType()) {
+        case Node.CDATA_SECTION_NODE:
+        case Node.COMMENT_NODE:
+        case Node.TEXT_NODE:
+            if (test instanceof CharacterData) {
+                return compareCharacterData((CharacterData) control,
+                                            (CharacterData) test);
+            }
+            break;
+        case Node.DOCUMENT_NODE:
+            if (test instanceof Document) {
+                return compareDocuments((Document) control,
+                                        (Document) test);
+            }
+            break;
+        case Node.ELEMENT_NODE:
+            if (test instanceof Element) {
+                return compareElements((Element) control,
+                                       (Element) test);
+            }
+            break;
+        case Node.PROCESSING_INSTRUCTION_NODE:
+            if (test instanceof ProcessingInstruction) {
+                return
+                    compareProcessingInstructions((ProcessingInstruction) control,
+                                                  (ProcessingInstruction) test);
+            }
+            break;
+        }
+        return ComparisonResult.EQUAL;
+    }
+
+    /**
+     * Compares textual content.
+     */
+    private ComparisonResult compareCharacterData(CharacterData control,
+                                                  CharacterData test) {
+        return compare(new Comparison(ComparisonType.TEXT_VALUE, control,
+                                      null, control.getData(),
+                                      test, null, test.getData()));
+    }
+
+    ComparisonResult compareDocuments(Document control,
+                                      Document test) {
+        DocumentType controlDt = control.getDoctype();
+        DocumentType testDt = test.getDoctype();
+        ComparisonResult r = 
+            compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
+                                   control, null,
+                                   Boolean.valueOf(controlDt != null),
+                                   test, null,
+                                   Boolean.valueOf(testDt != null)));
+        if (r == ComparisonResult.CRITICAL) {
+            return r;
+        }
+        if (controlDt != null && testDt != null) {
+            r = compareDocTypes(controlDt, testDt);
+        }
+        if (r == ComparisonResult.CRITICAL) {
+            return r;
+        }
+        r = compare(new Comparison(ComparisonType.XML_VERSION,
+                                   control, null, control.getXmlVersion(),
+                                   test, null, test.getXmlVersion()));
+        if (r == ComparisonResult.CRITICAL) {
+            return r;
+        }
+        r = compare(new Comparison(ComparisonType.XML_STANDALONE,
+                                   control, null, control.getXmlStandalone(),
+                                   test, null, test.getXmlStandalone()));
+        if (r == ComparisonResult.CRITICAL) {
+            return r;
+        }
+        return compare(new Comparison(ComparisonType.XML_ENCODING,
+                                      control, null, control.getXmlEncoding(),
+                                      test, null, test.getXmlEncoding()));
+    }
+
+    ComparisonResult compareDocTypes(DocumentType control,
+                                     DocumentType test) {
+        ComparisonResult r = 
+            compare(new Comparison(ComparisonType.DOCTYPE_NAME,
+                                   control, null, control.getName(),
+                                   test, null, test.getName()));
+        if (r == ComparisonResult.CRITICAL) {
+            return r;
+        }
+        r = compare(new Comparison(ComparisonType.DOCTYPE_PUBLIC_ID,
+                                   control, null, control.getPublicId(),
+                                   test, null, test.getPublicId()));
+        if (r == ComparisonResult.CRITICAL) {
+            return r;
+        }
+        return compare(new Comparison(ComparisonType.DOCTYPE_SYSTEM_ID,
+                                      control, null, control.getSystemId(),
+                                      test, null, test.getSystemId()));
+    }
+
+    ComparisonResult compareElements(Element control,
+                                     Element test) {
+        return ComparisonResult.EQUAL;
+    }
+
+    ComparisonResult
+        compareProcessingInstructions(ProcessingInstruction control,
+                                      ProcessingInstruction test) {
+        ComparisonResult r = 
+            compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_TARGET,
+                                   control, null, control.getTarget(),
+                                   test, null, test.getTarget()));
+        if (r == ComparisonResult.CRITICAL) {
+            return r;
+        }
+        return compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_DATA,
+                                      control, null, control.getData(),
+                                      test, null, test.getData()));
     }
 
     ComparisonResult compareNodeLists(NodeList control, NodeList test) {
