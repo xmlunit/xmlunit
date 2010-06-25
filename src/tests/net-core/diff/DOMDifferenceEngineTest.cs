@@ -237,5 +237,132 @@ namespace net.sf.xmlunit.diff {
             Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
             Assert.AreEqual(2, invocations);
         }
+
+        [Test]
+        public void CompareCharacterData() {
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            int invocations = 0;
+            d.DifferenceListener += delegate(Comparison comp,
+                                             ComparisonResult r) {
+                Assert.Greater(9, invocations);
+                invocations++;
+                Assert.AreEqual(ComparisonType.TEXT_VALUE,
+                                comp.Type);
+                Assert.AreEqual(ComparisonResult.CRITICAL, r);
+            };
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+
+            XmlComment fooComment = doc.CreateComment("foo");
+            XmlComment barComment = doc.CreateComment("bar");
+            XmlText fooText = doc.CreateTextNode("foo");
+            XmlText barText = doc.CreateTextNode("bar");
+            XmlCDataSection fooCDataSection = doc.CreateCDataSection("foo");
+            XmlCDataSection barCDataSection = doc.CreateCDataSection("bar");
+
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.NodeTypeSpecificComparison(fooComment,
+                                                         fooComment));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(fooComment,
+                                                         barComment));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.NodeTypeSpecificComparison(fooText, fooText));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(fooText, barText));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.NodeTypeSpecificComparison(fooCDataSection,
+                                                         fooCDataSection));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(fooCDataSection,
+                                                         barCDataSection));
+        
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.NodeTypeSpecificComparison(fooComment, fooText));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(fooComment, barText));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.NodeTypeSpecificComparison(fooComment,
+                                                         fooCDataSection));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(fooComment,
+                                                         barCDataSection));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.NodeTypeSpecificComparison(fooText,
+                                                         fooComment));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(fooText, barComment));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.NodeTypeSpecificComparison(fooText,
+                                                         fooCDataSection));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(fooText,
+                                                         barCDataSection));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.NodeTypeSpecificComparison(fooCDataSection,
+                                                         fooText));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(fooCDataSection,
+                                                         barText));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.NodeTypeSpecificComparison(fooCDataSection,
+                                                         fooComment));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(fooCDataSection,
+                                                         barComment));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.NodeTypeSpecificComparison(fooText,
+                                                         doc.CreateElement("bar")));
+            Assert.AreEqual(9, invocations);
+        }
+
+        [Test] public void compareProcessingInstructions() {
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            int invocations = 0;
+            d.DifferenceListener += delegate(Comparison comp,
+                                             ComparisonResult r) {
+                Assert.AreEqual(0, invocations);
+                invocations++;
+                Assert.AreEqual(ComparisonType.PROCESSING_INSTRUCTION_TARGET,
+                                comp.Type);
+                Assert.AreEqual(ComparisonResult.CRITICAL, r);
+            };
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+
+            XmlProcessingInstruction foo1 = doc.CreateProcessingInstruction("foo",
+                                                                            "1");
+            XmlProcessingInstruction bar1 = doc.CreateProcessingInstruction("bar",
+                                                                            "1");
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.NodeTypeSpecificComparison(foo1, foo1));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(foo1, bar1));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.NodeTypeSpecificComparison(foo1,
+                                                         doc.CreateElement("bar")));
+            Assert.AreEqual(1, invocations);
+
+            d = new DOMDifferenceEngine();
+            invocations = 0;
+            d.DifferenceListener += delegate(Comparison comp,
+                                             ComparisonResult r) {
+                Assert.AreEqual(0, invocations);
+                invocations++;
+                Assert.AreEqual(ComparisonType.PROCESSING_INSTRUCTION_DATA,
+                                comp.Type);
+                Assert.AreEqual(ComparisonResult.CRITICAL, r);
+            };
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            XmlProcessingInstruction foo2 = doc.CreateProcessingInstruction("foo",
+                                                                            "2");
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.NodeTypeSpecificComparison(foo1, foo1));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(foo1, foo2));
+            Assert.AreEqual(1, invocations);
+        }
+
     }
 }

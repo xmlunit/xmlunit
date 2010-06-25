@@ -98,8 +98,78 @@ namespace net.sf.xmlunit.diff {
             if (lastResult == ComparisonResult.CRITICAL) {
                 return lastResult;
             }
-            /* TODO node type specific stuff */
+            lastResult = NodeTypeSpecificComparison(control, test);
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
             return CompareNodeLists(controlChildren, testChildren);
+        }
+
+        /// <summary>
+        /// Dispatches to the node type specific comparison if one is
+        /// defined for the given combination of nodes.
+        /// </summary>
+        internal ComparisonResult NodeTypeSpecificComparison(XmlNode control,
+                                                             XmlNode test) {
+            switch (control.NodeType) {
+            case XmlNodeType.CDATA:
+            case XmlNodeType.Comment:
+            case XmlNodeType.Text:
+                if (test is XmlCharacterData) {
+                    return CompareCharacterData((XmlCharacterData) control,
+                                                (XmlCharacterData) test);
+                }
+                break;
+            case XmlNodeType.Document:
+#if false
+                if (test instanceof Document) {
+                    return compareDocuments((Document) control,
+                                            (Document) test);
+                }
+#endif
+                break;
+            case XmlNodeType.Element:
+#if false
+                if (test instanceof Element) {
+                    return compareElements((Element) control,
+                                           (Element) test);
+                }
+#endif
+                break;
+            case XmlNodeType.ProcessingInstruction:
+                if (test is XmlProcessingInstruction) {
+                    return
+                        CompareProcessingInstructions((XmlProcessingInstruction) control,
+                                                      (XmlProcessingInstruction) test);
+                }
+                break;
+            }
+            return ComparisonResult.EQUAL;
+        }
+
+        /// <summary>
+        /// Compares textual content.
+        /// </summary>
+        private ComparisonResult CompareCharacterData(XmlCharacterData control,
+                                                      XmlCharacterData test) {
+            return Compare(new Comparison(ComparisonType.TEXT_VALUE, control,
+                                          null, control.Data,
+                                          test, null, test.Data));
+        }
+
+        private ComparisonResult
+            CompareProcessingInstructions(XmlProcessingInstruction control,
+                                          XmlProcessingInstruction test) {
+            ComparisonResult r = 
+                Compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_TARGET,
+                                       control, null, control.Target,
+                                       test, null, test.Target));
+            if (r == ComparisonResult.CRITICAL) {
+                return r;
+            }
+            return Compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_DATA,
+                                          control, null, control.Data,
+                                          test, null, test.Data));
         }
 
         ComparisonResult CompareNodeLists(XmlNodeList control,
