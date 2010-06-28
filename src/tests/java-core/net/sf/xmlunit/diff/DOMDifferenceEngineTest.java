@@ -25,100 +25,10 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 import static org.junit.Assert.*;
 
-public class DOMDifferenceEngineTest {
+public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
 
-    private static class ResultGrabber implements DifferenceEvaluator {
-        private ComparisonResult outcome = ComparisonResult.CRITICAL;
-        public ComparisonResult evaluate(Comparison comparison,
-                                         ComparisonResult outcome) {
-            this.outcome = outcome;
-            return outcome;
-        }
-    }
-
-    @Test public void compareTwoNulls() {
-        ResultGrabber g = new ResultGrabber();
-        DOMDifferenceEngine d = new DOMDifferenceEngine();
-        d.setDifferenceEvaluator(g);
-        assertEquals(ComparisonResult.EQUAL,
-                     d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, null,
-                                              null, null, null)));
-        assertEquals(ComparisonResult.EQUAL, g.outcome);
-    }
-
-    @Test public void compareControlNullTestNonNull() {
-        ResultGrabber g = new ResultGrabber();
-        DOMDifferenceEngine d = new DOMDifferenceEngine();
-        d.setDifferenceEvaluator(g);
-        assertEquals(ComparisonResult.DIFFERENT,
-                     d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, null,
-                                              null, null, "")));
-        assertEquals(ComparisonResult.DIFFERENT, g.outcome);
-    }
-
-    @Test public void compareControlNonNullTestNull() {
-        ResultGrabber g = new ResultGrabber();
-        DOMDifferenceEngine d = new DOMDifferenceEngine();
-        d.setDifferenceEvaluator(g);
-        assertEquals(ComparisonResult.DIFFERENT,
-                     d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, "",
-                                              null, null, null)));
-        assertEquals(ComparisonResult.DIFFERENT, g.outcome);
-    }
-
-    @Test public void compareTwoDifferentNonNulls() {
-        ResultGrabber g = new ResultGrabber();
-        DOMDifferenceEngine d = new DOMDifferenceEngine();
-        d.setDifferenceEvaluator(g);
-        assertEquals(ComparisonResult.DIFFERENT,
-                     d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, new Short("1"),
-                                              null, null, new Short("2"))));
-        assertEquals(ComparisonResult.DIFFERENT, g.outcome);
-    }
-
-    @Test public void compareTwoEqualNonNulls() {
-        ResultGrabber g = new ResultGrabber();
-        DOMDifferenceEngine d = new DOMDifferenceEngine();
-        d.setDifferenceEvaluator(g);
-        assertEquals(ComparisonResult.EQUAL,
-                     d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, new Short("2"),
-                                              null, null, new Short("2"))));
-        assertEquals(ComparisonResult.EQUAL, g.outcome);
-    }
-
-    @Test public void compareNotifiesListener() {
-        DOMDifferenceEngine d = new DOMDifferenceEngine();
-        ComparisonListenerSupportTest.Listener l =
-            new ComparisonListenerSupportTest.Listener(ComparisonResult.EQUAL);
-        d.addComparisonListener(l);
-        assertEquals(ComparisonResult.EQUAL,
-                     d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, new Short("2"),
-                                              null, null, new Short("2"))));
-        assertEquals(1, l.getInvocations());
-    }
-
-    @Test public void compareUsesResultOfEvaluator() {
-        DOMDifferenceEngine d = new DOMDifferenceEngine();
-        ComparisonListenerSupportTest.Listener l =
-            new ComparisonListenerSupportTest.Listener(ComparisonResult.SIMILAR);
-        d.addComparisonListener(l);
-        d.setDifferenceEvaluator(new DifferenceEvaluator() {
-                public ComparisonResult evaluate(Comparison comparison,
-                                                 ComparisonResult outcome) {
-                    return ComparisonResult.SIMILAR;
-                }
-            });
-        assertEquals(ComparisonResult.SIMILAR,
-                     d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, new Short("2"),
-                                              null, null, new Short("2"))));
-        assertEquals(1, l.getInvocations());
+    @Override protected AbstractDifferenceEngine getDifferenceEngine() {
+        return new DOMDifferenceEngine();
     }
 
     private static class DiffExpecter implements ComparisonListener {

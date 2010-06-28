@@ -20,32 +20,9 @@ namespace net.sf.xmlunit.diff {
     /// <summary>
     /// Difference engine based on DOM.
     /// </summary>
-    public sealed class DOMDifferenceEngine : IDifferenceEngine {
-        public event ComparisonListener ComparisonListener;
-        public event ComparisonListener MatchListener;
-        public event ComparisonListener DifferenceListener;
+    public sealed class DOMDifferenceEngine : AbstractDifferenceEngine {
 
-        private ElementSelector elementSelector = ElementSelectors.Default;
-        public ElementSelector ElementSelector {
-            set {
-                if (value == null) {
-                    throw new ArgumentNullException("element selector");
-                }
-                elementSelector = value;
-            }
-        }
-
-        private DifferenceEvaluator diffEvaluator = DifferenceEvaluators.Default;
-        public DifferenceEvaluator DifferenceEvaluator {
-            set {
-                if (value == null) {
-                    throw new ArgumentNullException("difference evaluator");
-                }
-                diffEvaluator = value;
-            }
-        }
-
-        public void Compare(ISource control, ISource test) {
+        public override void Compare(ISource control, ISource test) {
             if (control == null) {
                 throw new ArgumentNullException("control");
             }
@@ -177,34 +154,5 @@ namespace net.sf.xmlunit.diff {
             return ComparisonResult.EQUAL;
         }
 
-        /// <summary>
-        /// Compares the detail values for object equality, lets the
-        /// difference evaluator evaluate the result, notifies all
-        /// listeners and returns the outcome.
-        /// </summary>
-        internal ComparisonResult Compare(Comparison comp) {
-            object controlValue = comp.ControlNodeDetails.Value;
-            object testValue = comp.TestNodeDetails.Value;
-            bool equal = controlValue == null
-                ? testValue == null : controlValue.Equals(testValue);
-            ComparisonResult initial =
-                equal ? ComparisonResult.EQUAL : ComparisonResult.DIFFERENT;
-            ComparisonResult altered = diffEvaluator(comp, initial);
-            FireComparisonPerformed(comp, altered);
-            return altered;
-        }
-
-        private void FireComparisonPerformed(Comparison comp,
-                                             ComparisonResult outcome) {
-            if (ComparisonListener != null) {
-                ComparisonListener(comp, outcome);
-            }
-            if (outcome == ComparisonResult.EQUAL && MatchListener != null) {
-                MatchListener(comp, outcome);
-            } else if (outcome != ComparisonResult.EQUAL
-                       && DifferenceListener != null) {
-                DifferenceListener(comp, outcome);
-            }
-        }
     }
 }

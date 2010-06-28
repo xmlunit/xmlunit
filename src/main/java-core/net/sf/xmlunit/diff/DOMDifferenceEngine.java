@@ -26,48 +26,7 @@ import org.w3c.dom.ProcessingInstruction;
 /**
  * Difference engine based on DOM.
  */
-public final class DOMDifferenceEngine implements DifferenceEngine {
-    private final ComparisonListenerSupport listeners =
-        new ComparisonListenerSupport();
-    private ElementSelector elementSelector = ElementSelectors.Default;
-    private DifferenceEvaluator diffEvaluator = DifferenceEvaluators.Default;
-
-    public void addComparisonListener(ComparisonListener l) {
-        if (l == null) {
-            throw new IllegalArgumentException("listener must not be null");
-        }
-        listeners.addComparisonListener(l);
-    }
-
-    public void addMatchListener(ComparisonListener l) {
-        if (l == null) {
-            throw new IllegalArgumentException("listener must not be null");
-        }
-        listeners.addMatchListener(l);
-    }
-
-    public void addDifferenceListener(ComparisonListener l) {
-        if (l == null) {
-            throw new IllegalArgumentException("listener must not be null");
-        }
-        listeners.addDifferenceListener(l);
-    }
-
-    public void setElementSelector(ElementSelector s) {
-        if (s == null) {
-            throw new IllegalArgumentException("element selector must"
-                                               + " not be null");
-        }
-        elementSelector = s;
-    }
-
-    public void setDifferenceEvaluator(DifferenceEvaluator e) {
-        if (e == null) {
-            throw new IllegalArgumentException("difference evaluator must"
-                                               + " not be null");
-        }
-        diffEvaluator = e;
-    }
+public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
 
     public void compare(Source control, Source test) {
         if (control == null) {
@@ -256,24 +215,5 @@ public final class DOMDifferenceEngine implements DifferenceEngine {
 
     ComparisonResult compareNodeLists(NodeList control, NodeList test) {
         return ComparisonResult.EQUAL;
-    }
-
-    /**
-     * Compares the detail values for object equality, lets the
-     * difference evaluator evaluate the result, notifies all
-     * listeners and returns the outcome.
-     *
-     * <p>package private to support tests.</p>
-     */
-    ComparisonResult compare(Comparison comp) {
-        Object controlValue = comp.getControlNodeDetails().getValue();
-        Object testValue = comp.getTestNodeDetails().getValue();
-        boolean equal = controlValue == null
-            ? testValue == null : controlValue.equals(testValue);
-        ComparisonResult initial =
-            equal ? ComparisonResult.EQUAL : ComparisonResult.DIFFERENT;
-        ComparisonResult altered = diffEvaluator.evaluate(comp, initial);
-        listeners.fireComparisonPerformed(comp, altered);
-        return altered;
     }
 }

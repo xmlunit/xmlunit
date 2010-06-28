@@ -18,112 +18,12 @@ using NUnit.Framework;
 namespace net.sf.xmlunit.diff {
 
     [TestFixture]
-    public class DOMDifferenceEngineTest {
+    public class DOMDifferenceEngineTest : AbstractDifferenceEngineTest {
 
-        private ComparisonResult outcome = ComparisonResult.CRITICAL;
-        private ComparisonResult ResultGrabber(Comparison comparison,
-                                               ComparisonResult outcome) {
-            this.outcome = outcome;
-            return outcome;
-        }
-
-        [Test]
-        public void CompareTwoNulls() {
-            DOMDifferenceEngine d = new DOMDifferenceEngine();
-            d.DifferenceEvaluator = ResultGrabber;
-            Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.Compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                                     null, null, null,
-                                                     null, null, null)));
-            Assert.AreEqual(ComparisonResult.EQUAL, outcome);
-        }
-
-        [Test]
-        public void CompareControlNullTestNonNull() {
-            DOMDifferenceEngine d = new DOMDifferenceEngine();
-            d.DifferenceEvaluator = ResultGrabber;
-            Assert.AreEqual(ComparisonResult.DIFFERENT,
-                         d.Compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                                  null, null, null,
-                                                  null, null, "")));
-            Assert.AreEqual(ComparisonResult.DIFFERENT, outcome);
-        }
-
-        [Test]
-        public void CompareControlNonNullTestNull() {
-            DOMDifferenceEngine d = new DOMDifferenceEngine();
-            d.DifferenceEvaluator = ResultGrabber;
-            Assert.AreEqual(ComparisonResult.DIFFERENT,
-                            d.Compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                                     null, null, "",
-                                                     null, null, null)));
-            Assert.AreEqual(ComparisonResult.DIFFERENT, outcome);
-        }
-
-        [Test]
-        public void CompareTwoDifferentNonNulls() {
-            DOMDifferenceEngine d = new DOMDifferenceEngine();
-            d.DifferenceEvaluator = ResultGrabber;
-            Assert.AreEqual(ComparisonResult.DIFFERENT,
-                            d.Compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                                     null, null,
-                                                     Convert.ToInt16("1"),
-                                                     null, null,
-                                                     Convert.ToInt16("2"))));
-            Assert.AreEqual(ComparisonResult.DIFFERENT, outcome);
-        }
-
-        [Test]
-        public void CompareTwoEqualNonNulls() {
-            DOMDifferenceEngine d = new DOMDifferenceEngine();
-            d.DifferenceEvaluator = ResultGrabber;
-            Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.Compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                                     null, null,
-                                                     Convert.ToInt16("2"),
-                                                     null, null,
-                                                     Convert.ToInt16("2"))));
-            Assert.AreEqual(ComparisonResult.EQUAL, outcome);
-        }
-
-        [Test]
-        public void CompareNotifiesListener() {
-            DOMDifferenceEngine d = new DOMDifferenceEngine();
-            int invocations = 0;
-            d.ComparisonListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                invocations++;
-                Assert.AreEqual(ComparisonResult.EQUAL, r);
-            };
-            Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.Compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                                     null, null,
-                                                     Convert.ToInt16("2"),
-                                                     null, null,
-                                                     Convert.ToInt16("2"))));
-            Assert.AreEqual(1, invocations);
-        }
-
-        [Test]
-        public void CompareUsesResultOfEvaluator() {
-            DOMDifferenceEngine d = new DOMDifferenceEngine();
-            int invocations = 0;
-            d.ComparisonListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                invocations++;
-                Assert.AreEqual(ComparisonResult.SIMILAR, r);
-            };
-            d.DifferenceEvaluator = delegate(Comparison comparison,
-                                             ComparisonResult outcome) {
-                return ComparisonResult.SIMILAR;
-            };
-            Assert.AreEqual(ComparisonResult.SIMILAR,
-                            d.Compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                                     null, null,
-                                                     Convert.ToInt16("2"),
-                                                     null, null,
-                                                     Convert.ToInt16("2"))));
-            Assert.AreEqual(1, invocations);
+        protected override AbstractDifferenceEngine DifferenceEngine {
+            get {
+                return new DOMDifferenceEngine();
+            }
         }
 
         private XmlDocument doc;
@@ -316,7 +216,8 @@ namespace net.sf.xmlunit.diff {
             Assert.AreEqual(9, invocations);
         }
 
-        [Test] public void compareProcessingInstructions() {
+        [Test]
+        public void CompareProcessingInstructions() {
             DOMDifferenceEngine d = new DOMDifferenceEngine();
             int invocations = 0;
             d.DifferenceListener += delegate(Comparison comp,
