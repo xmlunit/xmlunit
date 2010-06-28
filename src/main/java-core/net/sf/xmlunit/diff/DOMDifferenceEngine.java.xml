@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0"?>
+<!--
   This file is licensed to You under the Apache License, Version 2.0
   (the "License"); you may not use this file except in compliance with
   the License.  You may obtain a copy of the License at
@@ -10,24 +11,23 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-*/
-package net.sf.xmlunit.diff;
+-->
+<class ns="net.sf.xmlunit.diff" qualifiers="public final"
+       name="DOMDifferenceEngine"
+       summary="Difference engine based on DOM."
+       extends="AbstractDifferenceEngine">
 
-import javax.xml.transform.Source;
-import net.sf.xmlunit.util.Convert;
-import org.w3c.dom.CharacterData;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.ProcessingInstruction;
+  <import reference="javax.xml.transform.Source"/>
+  <import reference="net.sf.xmlunit.util.Convert"/>
+  <import reference="org.w3c.dom.CharacterData"/>
+  <import reference="org.w3c.dom.Document"/>
+  <import reference="org.w3c.dom.DocumentType"/>
+  <import reference="org.w3c.dom.Element"/>
+  <import reference="org.w3c.dom.Node"/>
+  <import reference="org.w3c.dom.NodeList"/>
+  <import reference="org.w3c.dom.ProcessingInstruction"/>
 
-/**
- * Difference engine based on DOM.
- */
-public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
-
+  <literal><![CDATA[
     public void compare(Source control, Source test) {
         if (control == null) {
             throw new IllegalArgumentException("control must not be null");
@@ -51,40 +51,20 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
      * <p>package private to support tests.</p>
      */
     ComparisonResult compareNodes(Node control, Node test) {
-        ComparisonResult lastResult =
-            compare(new Comparison(ComparisonType.NODE_TYPE, control,
-                                   null, control.getNodeType(),
-                                   test, null, test.getNodeType()));
-        if (lastResult == ComparisonResult.CRITICAL) {
-            return lastResult;
-        }
-        lastResult =
-            compare(new Comparison(ComparisonType.NAMESPACE_URI, control,
-                                   null, control.getNamespaceURI(),
-                                   test, null, test.getNamespaceURI()));
-        if (lastResult == ComparisonResult.CRITICAL) {
-            return lastResult;
-        }
-        lastResult =
-            compare(new Comparison(ComparisonType.NAMESPACE_PREFIX, control,
-                                   null, control.getPrefix(),
-                                   test, null, test.getPrefix()));
-        if (lastResult == ComparisonResult.CRITICAL) {
-            return lastResult;
-        }
+]]></literal>
+  <lastResultDef/>
+  <compare type="NODE_TYPE" property="getNodeType()"/>
+  <compare type="NAMESPACE_URI" property="getNamespaceURI()"/>
+  <compare type="NAMESPACE_PREFIX" property="getPrefix()"/>
+  <literal><![CDATA[
         NodeList controlChildren = control.getChildNodes();
         NodeList testChildren = test.getChildNodes();
-        lastResult =
-            compare(new Comparison(ComparisonType.CHILD_NODELIST_LENGTH,
-                                   control, null, controlChildren.getLength(),
-                                   test, null, testChildren.getLength()));
-        if (lastResult == ComparisonResult.CRITICAL) {
-            return lastResult;
-        }
-        lastResult = nodeTypeSpecificComparison(control, test);
-        if (lastResult == ComparisonResult.CRITICAL) {
-            return lastResult;
-        }
+]]></literal>
+  <compareExpr type="CHILD_NODELIST_LENGTH"
+               controlExpr="controlChildren.getLength()"
+               testExpr="testChildren.getLength()"/>
+  <compareMethod method="nodeTypeSpecificComparison"/>
+  <literal><![CDATA[
         return compareNodeLists(controlChildren, testChildren);
     }
 
@@ -141,33 +121,23 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                       Document test) {
         DocumentType controlDt = control.getDoctype();
         DocumentType testDt = test.getDoctype();
-        ComparisonResult r = 
-            compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                   control, null,
-                                   Boolean.valueOf(controlDt != null),
-                                   test, null,
-                                   Boolean.valueOf(testDt != null)));
-        if (r == ComparisonResult.CRITICAL) {
-            return r;
-        }
+]]></literal>
+  <lastResultDef/>
+  <compareExpr type="HAS_DOCTYPE_DECLARATION"
+               controlExpr="Boolean.valueOf(controlDt != null)"
+               testExpr="Boolean.valueOf(testDt != null)"/>
+  <literal><![CDATA[
         if (controlDt != null && testDt != null) {
-            r = compareDocTypes(controlDt, testDt);
+]]></literal>
+  <compareMethodExpr method="compareDocTypes"
+                     controlExpr="controlDt"
+                     testExpr="testDt"/>
+  <literal><![CDATA[
         }
-        if (r == ComparisonResult.CRITICAL) {
-            return r;
-        }
-        r = compare(new Comparison(ComparisonType.XML_VERSION,
-                                   control, null, control.getXmlVersion(),
-                                   test, null, test.getXmlVersion()));
-        if (r == ComparisonResult.CRITICAL) {
-            return r;
-        }
-        r = compare(new Comparison(ComparisonType.XML_STANDALONE,
-                                   control, null, control.getXmlStandalone(),
-                                   test, null, test.getXmlStandalone()));
-        if (r == ComparisonResult.CRITICAL) {
-            return r;
-        }
+]]></literal>
+  <compare type="XML_VERSION" property="getXmlVersion()"/>
+  <compare type="XML_STANDALONE" property="getXmlStandalone()"/>
+  <literal><![CDATA[
         return compare(new Comparison(ComparisonType.XML_ENCODING,
                                       control, null, control.getXmlEncoding(),
                                       test, null, test.getXmlEncoding()));
@@ -175,19 +145,11 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
 
     ComparisonResult compareDocTypes(DocumentType control,
                                      DocumentType test) {
-        ComparisonResult r = 
-            compare(new Comparison(ComparisonType.DOCTYPE_NAME,
-                                   control, null, control.getName(),
-                                   test, null, test.getName()));
-        if (r == ComparisonResult.CRITICAL) {
-            return r;
-        }
-        r = compare(new Comparison(ComparisonType.DOCTYPE_PUBLIC_ID,
-                                   control, null, control.getPublicId(),
-                                   test, null, test.getPublicId()));
-        if (r == ComparisonResult.CRITICAL) {
-            return r;
-        }
+]]></literal>
+  <lastResultDef/>
+  <compare type="DOCTYPE_NAME" property="getName()"/>
+  <compare type="DOCTYPE_PUBLIC_ID" property="getPublicId()"/>
+  <literal><![CDATA[
         return compare(new Comparison(ComparisonType.DOCTYPE_SYSTEM_ID,
                                       control, null, control.getSystemId(),
                                       test, null, test.getSystemId()));
@@ -201,13 +163,10 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     ComparisonResult
         compareProcessingInstructions(ProcessingInstruction control,
                                       ProcessingInstruction test) {
-        ComparisonResult r = 
-            compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_TARGET,
-                                   control, null, control.getTarget(),
-                                   test, null, test.getTarget()));
-        if (r == ComparisonResult.CRITICAL) {
-            return r;
-        }
+]]></literal>
+  <lastResultDef/>
+  <compare type="PROCESSING_INSTRUCTION_TARGET" property="getTarget()"/>
+  <literal><![CDATA[
         return compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_DATA,
                                       control, null, control.getData(),
                                       test, null, test.getData()));
@@ -216,4 +175,5 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     ComparisonResult compareNodeLists(NodeList control, NodeList test) {
         return ComparisonResult.EQUAL;
     }
-}
+]]></literal>
+</class>

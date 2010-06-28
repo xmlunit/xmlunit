@@ -22,9 +22,9 @@
   <property name="core.tests.src.dir" value="${base.dir}/src/tests/net-core"
     overwrite="false"/>
 
-  <property name="gen.src.dir" value="${base.dir}/build/generated/net"
-            overwrite="false"/>
   <property name="build.dir" value="${base.dir}/build/net" overwrite="false"/>
+  <property name="gen.src.dir" value="${build.dir}/generated"
+            overwrite="false"/>
   <property name="test.report.dir" value="${build.dir}/test-report"/>
   <property name="bin.dir" value="${build.dir}/bin" overwrite="false"/>
 
@@ -74,6 +74,26 @@
         <include name="**/*.cs"/>
       </fileset>
     </copy>
+    <style destdir="${gen.src.dir}"
+           extension="cs"
+           style="src/buildtools/codegen.xslt">
+      <infiles basedir="${core.src.dir}">
+        <include name="**/*.xml"/>
+      </infiles>
+      <parameters>
+
+        <parameter name="nsQualifier" value="namespace"/>
+        <parameter name="nsStart" value="{"/>
+        <parameter name="nsEnd" value="}"/>
+        <parameter name="import" value="using"/>
+        <parameter name="extends" value=":"/>
+        <parameter name="implements" value=":"/>
+        <parameter name="summaryStart" value="/// &lt;summary&gt;"/>
+        <parameter name="summaryEnd" value="/// &lt;/summary&gt;"/>
+
+        <parameter name="compareMethod" value="Compare"/>
+      </parameters>
+    </style>
     <csc target="library" output="${bin.dir}/${project::get-name()}-core.dll"
          debug="true" verbose="${csc.verbose}">
       <sources basedir="${gen.src.dir}">
