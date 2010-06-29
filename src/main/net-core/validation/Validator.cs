@@ -80,8 +80,7 @@ namespace net.sf.xmlunit.validation {
                 List<ValidationProblem> problems =
                     new List<ValidationProblem>();
                 foreach (ISource loc in sourceLocations) {
-                    XmlSchema s = XmlSchema.Read(loc.Reader,
-                                                 CollectProblems(problems));
+                    XmlSchema.Read(loc.Reader, CollectProblems(problems));
                 }
                 return new ValidationResult(problems.Count == 0, problems);
             }
