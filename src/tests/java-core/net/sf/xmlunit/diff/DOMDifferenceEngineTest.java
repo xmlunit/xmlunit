@@ -15,12 +15,18 @@ package net.sf.xmlunit.diff;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import net.sf.xmlunit.NullNode;
+import net.sf.xmlunit.TestResources;
+import net.sf.xmlunit.builder.Input;
+import net.sf.xmlunit.util.Convert;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 import static org.junit.Assert.*;
@@ -214,6 +220,152 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                      d.nodeTypeSpecificComparison(foo1, foo1));
         assertEquals(ComparisonResult.CRITICAL,
                      d.nodeTypeSpecificComparison(foo1, foo2));
+        assertEquals(1, ex.invoked);
+    }
+
+    @Test public void compareDocuments() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.HAS_DOCTYPE_DECLARATION);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(new DifferenceEvaluator() {
+                public ComparisonResult evaluate(Comparison comparison,
+                                                 ComparisonResult outcome) {
+                    if (comparison.getType()
+                        == ComparisonType.HAS_DOCTYPE_DECLARATION) {
+                        assertEquals(ComparisonResult.DIFFERENT, outcome);
+                        return ComparisonResult.CRITICAL;
+                    }
+                    assertEquals(ComparisonResult.EQUAL, outcome);
+                    return ComparisonResult.EQUAL;
+                }
+            });
+        Document d1 = Convert.toDocument(Input.fromMemory("<Book/>").build());
+        Document d2 =
+            Convert.toDocument(Input.fromMemory("<!DOCTYPE Book PUBLIC "
+                                                + "\"XMLUNIT/TEST/PUB\" "
+                                                + "\"" + TestResources.BOOK_DTD
+                                                + "\">"
+                                                + "<Book/>")
+                               .build());
+        assertEquals(ComparisonResult.CRITICAL, d.compareDocuments(d1, d2));
+        assertEquals(1, ex.invoked);
+
+        d = new DOMDifferenceEngine();
+        ex = new DiffExpecter(ComparisonType.XML_VERSION);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+
+        d1 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.0\""
+                                                 + " encoding=\"UTF-8\"?>"
+                                                 + "<Book/>").build());
+        d2 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.1\""
+                                                 + " encoding=\"UTF-8\"?>"
+                                                 + "<Book/>").build());
+        assertEquals(ComparisonResult.CRITICAL, d.compareDocuments(d1, d2));
+        assertEquals(1, ex.invoked);
+
+        d = new DOMDifferenceEngine();
+        ex = new DiffExpecter(ComparisonType.XML_STANDALONE);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+
+        d1 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.0\""
+                                                 + " standalone=\"yes\"?>"
+                                                 + "<Book/>").build());
+        d2 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.0\""
+                                                 + " standalone=\"no\"?>"
+                                                 + "<Book/>").build());
+        assertEquals(ComparisonResult.CRITICAL, d.compareDocuments(d1, d2));
+        assertEquals(1, ex.invoked);
+
+        d = new DOMDifferenceEngine();
+        ex = new DiffExpecter(ComparisonType.XML_ENCODING);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(new DifferenceEvaluator() {
+                public ComparisonResult evaluate(Comparison comparison,
+                                                 ComparisonResult outcome) {
+                    if (comparison.getType()
+                        == ComparisonType.XML_ENCODING) {
+                        assertEquals(ComparisonResult.DIFFERENT, outcome);
+                        return ComparisonResult.CRITICAL;
+                    }
+                    assertEquals(ComparisonResult.EQUAL, outcome);
+                    return ComparisonResult.EQUAL;
+                }
+            });
+
+        d1 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.0\""
+                                                 + " encoding=\"UTF-8\"?>"
+                                                 + "<Book/>").build());
+        d2 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.0\""
+                                                 + " encoding=\"UTF-16\"?>"
+                                                 + "<Book/>").build());
+        assertEquals(ComparisonResult.CRITICAL, d.compareDocuments(d1, d2));
+        assertEquals(1, ex.invoked);
+    }
+
+    private static class DocType extends NullNode implements DocumentType {
+        private final String name, publicId, systemId;
+        private DocType(String name, String publicId, String systemId) {
+            this.name = name;
+            this.publicId = publicId;
+            this.systemId = systemId;
+        }
+        public NamedNodeMap getEntities() {
+            return null;
+        }
+        public String getInternalSubset() {
+            return null;
+        }
+        public String getName() {
+            return name;
+        }
+        public NamedNodeMap getNotations() {
+            return null;
+        }
+        public String getPublicId() {
+            return publicId;
+        }
+        public String getSystemId() {
+            return systemId;
+        }
+    }
+
+    @Test public void compareDocTypes() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.DOCTYPE_NAME);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        DocumentType dt1 = new DocType("name", "pub", "system");
+        DocumentType dt2 = new DocType("name2", "pub", "system");
+        assertEquals(ComparisonResult.CRITICAL, d.compareDocTypes(dt1, dt2));
+        assertEquals(1, ex.invoked);
+
+        d = new DOMDifferenceEngine();
+        ex = new DiffExpecter(ComparisonType.DOCTYPE_PUBLIC_ID);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        dt2 = new DocType("name", "pub2", "system");
+        assertEquals(ComparisonResult.CRITICAL, d.compareDocTypes(dt1, dt2));
+        assertEquals(1, ex.invoked);
+
+        d = new DOMDifferenceEngine();
+        ex = new DiffExpecter(ComparisonType.DOCTYPE_SYSTEM_ID);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(new DifferenceEvaluator() {
+                public ComparisonResult evaluate(Comparison comparison,
+                                                 ComparisonResult outcome) {
+                    if (comparison.getType()
+                        == ComparisonType.DOCTYPE_SYSTEM_ID) {
+                        assertEquals(ComparisonResult.DIFFERENT, outcome);
+                        return ComparisonResult.CRITICAL;
+                    }
+                    assertEquals(ComparisonResult.EQUAL, outcome);
+                    return ComparisonResult.EQUAL;
+                }
+            });
+        dt2 = new DocType("name", "pub", "system2");
+        assertEquals(ComparisonResult.CRITICAL, d.compareDocTypes(dt1, dt2));
         assertEquals(1, ex.invoked);
     }
 }

@@ -53,6 +53,7 @@ public final class DifferenceEvaluators {
                     case NAMESPACE_PREFIX:
                     case ATTR_VALUE_EXPLICITLY_SPECIFIED:
                     case CHILD_NODELIST_SEQUENCE:
+                    case XML_ENCODING:
                         outcome = ComparisonResult.SIMILAR;
                         break;
                     }

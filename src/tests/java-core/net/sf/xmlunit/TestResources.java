@@ -19,6 +19,8 @@ public final class TestResources {
     public static final String ANIMAL_XSL = "src/tests/resources/animal.xsl";
     public static final String DOG_FILE = "src/tests/resources/testAnimal.xml";
 
+    public static final String BOOK_DTD = "src/tests/resources/Book.dtd";
+
     private TestResources() { }
 
 }
