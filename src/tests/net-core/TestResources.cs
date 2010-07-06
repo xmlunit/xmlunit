@@ -20,6 +20,9 @@ namespace net.sf.xmlunit {
         public const string ANIMAL_XSL = "../../../src/tests/resources/animal.xsl";
         public const string DOG_FILE = "../../../src/tests/resources/testAnimal.xml";
 
+        public const string BOOK_DTD = "../../../src/tests/resources/Book.dtd";
+        public const string TEST_DTD = "../../../src/tests/resources/test.dtd";
+
         private TestResources() { }
     }
 }

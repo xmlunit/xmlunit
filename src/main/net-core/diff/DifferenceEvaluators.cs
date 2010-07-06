@@ -43,6 +43,7 @@ namespace net.sf.xmlunit.diff {
                         outcome = ComparisonResult.SIMILAR;
                     }
                     break;
+                case ComparisonType.XML_ENCODING:
                 case ComparisonType.HAS_DOCTYPE_DECLARATION:
                 case ComparisonType.DOCTYPE_SYSTEM_ID:
                 case ComparisonType.SCHEMA_LOCATION:

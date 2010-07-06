@@ -19,6 +19,20 @@ namespace net.sf.xmlunit.diff {
     /// </summary>
     public enum ComparisonType {
         /// <summary>
+        /// Do both documents specify the same version in their XML declaration?
+        /// </summary>
+        XML_VERSION,
+        /// <summary>
+        /// Do both documents specify the same standalone declaration
+        /// in their XML declaration?
+        /// </summary>
+        XML_STANDALONE,
+        /// <summary>
+        /// Do both documents specify the same encoding in their XML
+        /// declaration?
+        /// </summary>
+        XML_ENCODING,
+        /// <summary>
         /// Do both documents have a DOCTYPE (or neither of each)?
         /// </summary>
         HAS_DOCTYPE_DECLARATION,

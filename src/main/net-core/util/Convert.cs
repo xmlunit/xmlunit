@@ -27,6 +27,13 @@ namespace net.sf.xmlunit.util {
         /// Creates a DOM Document from an ISource.
         /// </summary>
         public static XmlDocument ToDocument(ISource s) {
+            return ToDocument(s, true);
+        }
+
+        /// <summary>
+        /// Creates a DOM Document from an ISource.
+        /// </summary>
+        public static XmlDocument ToDocument(ISource s, bool prohibitDTD) {
             DOMSource ds = s as DOMSource;
             if (ds != null) {
                 XmlDocument doc = ds.Node as XmlDocument;
@@ -35,7 +42,9 @@ namespace net.sf.xmlunit.util {
                 }
             }
             XmlDocument d = new XmlDocument();
-            d.Load(s.Reader);
+            XmlReaderSettings sett = new XmlReaderSettings();
+            sett.ProhibitDtd = prohibitDTD;
+            d.Load(XmlReader.Create(s.Reader, sett));
             return d;
         }
 

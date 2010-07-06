@@ -78,12 +78,10 @@
                 }
                 break;
             case XmlNodeType.Document:
-#if false
-                if (test instanceof Document) {
-                    return compareDocuments((Document) control,
-                                            (Document) test);
+                if (test is XmlDocument) {
+                    return CompareDocuments((XmlDocument) control,
+                                            (XmlDocument) test);
                 }
-#endif
                 break;
             case XmlNodeType.Element:
 #if false
@@ -100,6 +98,12 @@
                                                       (XmlProcessingInstruction) test);
                 }
                 break;
+            case XmlNodeType.DocumentType:
+                if (test is XmlDocumentType) {
+                    return CompareDocTypes((XmlDocumentType) control,
+                                           (XmlDocumentType) test);
+                }
+                break;
             }
             return ComparisonResult.EQUAL;
         }
@@ -112,6 +116,48 @@
             return Compare(new Comparison(ComparisonType.TEXT_VALUE, control,
                                           null, control.Data,
                                           test, null, test.Data));
+        }
+
+        private ComparisonResult CompareDocuments(XmlDocument control,
+                                                  XmlDocument test) {
+            XmlDocumentType controlDt = control.DocumentType;
+            XmlDocumentType testDt = test.DocumentType;
+]]></literal>
+  <lastResultDef/>
+  <compareExpr type="HAS_DOCTYPE_DECLARATION"
+               controlExpr="controlDt != null"
+               testExpr="testDt != null"/>
+  <literal><![CDATA[
+            if (controlDt != null && testDt != null) {
+]]></literal>
+  <compareMethodExpr method="NodeTypeSpecificComparison"
+                     controlExpr="controlDt"
+                     testExpr="testDt"/>
+  <literal><![CDATA[
+            }
+]]></literal>
+<!--
+  <compare type="XML_VERSION" property="getXmlVersion()"/>
+  <compare type="XML_STANDALONE" property="getXmlStandalone()"/>
+  <literal><![CDATA[
+            return Compare(new Comparison(ComparisonType.XML_ENCODING,
+                                          control, null, control.getXmlEncoding(),
+                                          test, null, test.getXmlEncoding()));
+-->
+  <literal><![CDATA[
+            return lastResult;
+        }
+
+        private ComparisonResult CompareDocTypes(XmlDocumentType control,
+                                                 XmlDocumentType test) {
+]]></literal>
+  <lastResultDef/>
+  <compare type="DOCTYPE_NAME" property="Name"/>
+  <compare type="DOCTYPE_PUBLIC_ID" property="PublicId"/>
+  <literal><![CDATA[
+            return Compare(new Comparison(ComparisonType.DOCTYPE_SYSTEM_ID,
+                                          control, null, control.SystemId,
+                                          test, null, test.SystemId));
         }
 
         private ComparisonResult

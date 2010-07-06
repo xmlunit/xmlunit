@@ -14,6 +14,7 @@
 using System;
 using System.Xml;
 using NUnit.Framework;
+using net.sf.xmlunit.builder;
 
 namespace net.sf.xmlunit.diff {
 
@@ -262,6 +263,205 @@ namespace net.sf.xmlunit.diff {
                             d.NodeTypeSpecificComparison(foo1, foo1));
             Assert.AreEqual(ComparisonResult.CRITICAL,
                             d.NodeTypeSpecificComparison(foo1, foo2));
+            Assert.AreEqual(1, invocations);
+        }
+
+        [Test]
+        public void CompareDocuments() {
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            int invocations = 0;
+            d.DifferenceListener += delegate(Comparison comp,
+                                             ComparisonResult r) {
+                Assert.AreEqual(0, invocations);
+                invocations++;
+                Assert.AreEqual(ComparisonType.HAS_DOCTYPE_DECLARATION,
+                                comp.Type);
+                Assert.AreEqual(ComparisonResult.CRITICAL, r);
+            };
+            d.DifferenceEvaluator = delegate(Comparison comparison,
+                                             ComparisonResult outcome) {
+                if (comparison.Type == ComparisonType.HAS_DOCTYPE_DECLARATION) {
+                    Assert.AreEqual(ComparisonResult.DIFFERENT, outcome);
+                    return ComparisonResult.CRITICAL;
+                }
+                Assert.AreEqual(ComparisonResult.EQUAL, outcome);
+                return ComparisonResult.EQUAL;
+            };
+
+            XmlDocument d1, d2;
+
+#if false // ProhibitDtd needs to be handled at a lower level
+            d1 = net.sf.xmlunit.util.Convert
+                .ToDocument(Input.FromMemory("<Book/>").Build());
+            d2 = net.sf.xmlunit.util.Convert
+                .ToDocument(Input.FromMemory("<!DOCTYPE Book PUBLIC "
+                                             + "\"XMLUNIT/TEST/PUB\" "
+                                             + "\"" + TestResources.BOOK_DTD
+                                             + "\">"
+                                             + "<Book/>")
+                            .Build());
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(d1, d2));
+            Assert.AreEqual(1, invocations);
+#endif
+
+#if false // need a way to figure out the XML_* differences
+
+            // .NET doesn't like XML 1.1 anyway
+            invocations = 0;
+            d = new DOMDifferenceEngine();
+            d.DifferenceListener += delegate(Comparison comp,
+                                             ComparisonResult r) {
+                Assert.AreEqual(0, invocations);
+                invocations++;
+                Assert.AreEqual(ComparisonType.XML_VERSION,
+                                comp.Type);
+                Assert.AreEqual(ComparisonResult.CRITICAL, r);
+            };
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+
+            d1 = net.sf.xmlunit.util.Convert
+                .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
+                                             + " encoding=\"UTF-8\"?>"
+                                             + "<Book/>").Build());
+            d2 = net.sf.xmlunit.util.Convert
+                .ToDocument(Input.FromMemory("<?xml version=\"1.1\""
+                                             + " encoding=\"UTF-8\"?>"
+                                             + "<Book/>").Build());
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(d1, d2));
+            Assert.AreEqual(1, invocations);
+#endif
+
+#if false // need a way to figure out the XML_* differences
+            invocations = 0;
+            d = new DOMDifferenceEngine();
+            d.DifferenceListener += delegate(Comparison comp,
+                                             ComparisonResult r) {
+                Assert.AreEqual(0, invocations);
+                invocations++;
+                Assert.AreEqual(ComparisonType.XML_STANDALONE,
+                                comp.Type);
+                Assert.AreEqual(ComparisonResult.CRITICAL, r);
+            };
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+
+            d1 = net.sf.xmlunit.util.Convert
+                .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
+                                             + " standalone=\"yes\"?>"
+                                             + "<Book/>").Build());
+            d2 = net.sf.xmlunit.util.Convert
+                .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
+                                             + " standalone=\"no\"?>"
+                                             + "<Book/>").Build());
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(d1, d2));
+            Assert.AreEqual(1, invocations);
+#endif
+
+#if false // need a way to figure out the XML_* differences
+            invocations = 0;
+            d = new DOMDifferenceEngine();
+            d.DifferenceListener += delegate(Comparison comp,
+                                             ComparisonResult r) {
+                Assert.AreEqual(0, invocations);
+                invocations++;
+                Assert.AreEqual(ComparisonType.XML_ENCODING,
+                                comp.Type);
+                Assert.AreEqual(ComparisonResult.CRITICAL, r);
+            };
+            d.DifferenceEvaluator = delegate(Comparison comparison,
+                                             ComparisonResult outcome) {
+                if (comparison.Type == ComparisonType.XML_ENCODING) {
+                    Assert.AreEqual(ComparisonResult.DIFFERENT, outcome);
+                    return ComparisonResult.CRITICAL;
+                }
+                Assert.AreEqual(ComparisonResult.EQUAL, outcome);
+                return ComparisonResult.EQUAL;
+            };
+
+            d1 = net.sf.xmlunit.util.Convert
+                .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
+                                             + " encoding=\"UTF-8\"?>"
+                                             + "<Book/>").Build());
+            d2 = net.sf.xmlunit.util.Convert
+                .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
+                                             + " encoding=\"UTF-16\"?>"
+                                             + "<Book/>").Build());
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(d1, d2));
+            Assert.AreEqual(1, invocations);
+#endif
+        }
+
+        [Test]
+        public void CompareDocTypes() {
+            int invocations = 0;
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            d.DifferenceListener += delegate(Comparison comp,
+                                             ComparisonResult r) {
+                Assert.AreEqual(0, invocations);
+                invocations++;
+                Assert.AreEqual(ComparisonType.DOCTYPE_NAME,
+                                comp.Type);
+                Assert.AreEqual(ComparisonResult.CRITICAL, r);
+            };
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+
+            XmlDocumentType dt1 = doc.CreateDocumentType("name", "pub",
+                                                         TestResources.BOOK_DTD,
+                                                         null);
+            XmlDocumentType dt2 = doc.CreateDocumentType("name2", "pub",
+                                                         TestResources.BOOK_DTD,
+                                                         null);
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(dt1, dt2));
+            Assert.AreEqual(1, invocations);
+
+            invocations = 0;
+            d = new DOMDifferenceEngine();
+            d.DifferenceListener += delegate(Comparison comp,
+                                             ComparisonResult r) {
+                Assert.AreEqual(0, invocations);
+                invocations++;
+                Assert.AreEqual(ComparisonType.DOCTYPE_PUBLIC_ID,
+                                comp.Type);
+                Assert.AreEqual(ComparisonResult.CRITICAL, r);
+            };
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            dt2 = doc.CreateDocumentType("name", "pub2",
+                                         TestResources.BOOK_DTD, null);
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(dt1, dt2));
+            Assert.AreEqual(1, invocations);
+
+            invocations = 0;
+            d = new DOMDifferenceEngine();
+            d.DifferenceListener += delegate(Comparison comp,
+                                             ComparisonResult r) {
+                Assert.AreEqual(0, invocations);
+                invocations++;
+                Assert.AreEqual(ComparisonType.DOCTYPE_SYSTEM_ID,
+                                comp.Type);
+                Assert.AreEqual(ComparisonResult.CRITICAL, r);
+            };
+            d.DifferenceEvaluator = delegate(Comparison comparison,
+                                             ComparisonResult outcome) {
+                if (comparison.Type == ComparisonType.DOCTYPE_SYSTEM_ID) {
+                    Assert.AreEqual(ComparisonResult.DIFFERENT, outcome);
+                    return ComparisonResult.CRITICAL;
+                }
+                Assert.AreEqual(ComparisonResult.EQUAL, outcome);
+                return ComparisonResult.EQUAL;
+            };
+            dt2 = doc.CreateDocumentType("name", "pub",
+                                         TestResources.TEST_DTD, null);
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.NodeTypeSpecificComparison(dt1, dt2));
             Assert.AreEqual(1, invocations);
         }
 
