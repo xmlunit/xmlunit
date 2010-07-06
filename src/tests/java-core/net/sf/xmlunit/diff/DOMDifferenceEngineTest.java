@@ -27,6 +27,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 import static org.junit.Assert.*;
@@ -247,7 +248,8 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                                                 + "\">"
                                                 + "<Book/>")
                                .build());
-        assertEquals(ComparisonResult.CRITICAL, d.compareDocuments(d1, d2));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(d1, d2));
         assertEquals(1, ex.invoked);
 
         d = new DOMDifferenceEngine();
@@ -261,7 +263,8 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         d2 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.1\""
                                                  + " encoding=\"UTF-8\"?>"
                                                  + "<Book/>").build());
-        assertEquals(ComparisonResult.CRITICAL, d.compareDocuments(d1, d2));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(d1, d2));
         assertEquals(1, ex.invoked);
 
         d = new DOMDifferenceEngine();
@@ -275,7 +278,8 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         d2 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.0\""
                                                  + " standalone=\"no\"?>"
                                                  + "<Book/>").build());
-        assertEquals(ComparisonResult.CRITICAL, d.compareDocuments(d1, d2));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(d1, d2));
         assertEquals(1, ex.invoked);
 
         d = new DOMDifferenceEngine();
@@ -300,7 +304,8 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         d2 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.0\""
                                                  + " encoding=\"UTF-16\"?>"
                                                  + "<Book/>").build());
-        assertEquals(ComparisonResult.CRITICAL, d.compareDocuments(d1, d2));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(d1, d2));
         assertEquals(1, ex.invoked);
     }
 
@@ -310,6 +315,9 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
             this.name = name;
             this.publicId = publicId;
             this.systemId = systemId;
+        }
+        @Override public short getNodeType() {
+            return Node.DOCUMENT_TYPE_NODE;
         }
         public NamedNodeMap getEntities() {
             return null;
@@ -338,7 +346,8 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
         DocumentType dt1 = new DocType("name", "pub", "system");
         DocumentType dt2 = new DocType("name2", "pub", "system");
-        assertEquals(ComparisonResult.CRITICAL, d.compareDocTypes(dt1, dt2));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(dt1, dt2));
         assertEquals(1, ex.invoked);
 
         d = new DOMDifferenceEngine();
@@ -346,7 +355,8 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         d.addDifferenceListener(ex);
         d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
         dt2 = new DocType("name", "pub2", "system");
-        assertEquals(ComparisonResult.CRITICAL, d.compareDocTypes(dt1, dt2));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(dt1, dt2));
         assertEquals(1, ex.invoked);
 
         d = new DOMDifferenceEngine();
@@ -365,7 +375,8 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                 }
             });
         dt2 = new DocType("name", "pub", "system2");
-        assertEquals(ComparisonResult.CRITICAL, d.compareDocTypes(dt1, dt2));
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.nodeTypeSpecificComparison(dt1, dt2));
         assertEquals(1, ex.invoked);
     }
 }

@@ -103,6 +103,12 @@
                                                   (ProcessingInstruction) test);
             }
             break;
+        case Node.DOCUMENT_TYPE_NODE:
+            if (test instanceof DocumentType) {
+                return compareDocTypes((DocumentType) control,
+                                       (DocumentType) test);
+            }
+            break;
         }
         return ComparisonResult.EQUAL;
     }
@@ -117,8 +123,8 @@
                                       test, null, test.getData()));
     }
 
-    ComparisonResult compareDocuments(Document control,
-                                      Document test) {
+    private ComparisonResult compareDocuments(Document control,
+                                              Document test) {
         DocumentType controlDt = control.getDoctype();
         DocumentType testDt = test.getDoctype();
 ]]></literal>
@@ -129,7 +135,7 @@
   <literal><![CDATA[
         if (controlDt != null && testDt != null) {
 ]]></literal>
-  <compareMethodExpr method="compareDocTypes"
+  <compareMethodExpr method="nodeTypeSpecificComparison"
                      controlExpr="controlDt"
                      testExpr="testDt"/>
   <literal><![CDATA[
@@ -143,8 +149,8 @@
                                       test, null, test.getXmlEncoding()));
     }
 
-    ComparisonResult compareDocTypes(DocumentType control,
-                                     DocumentType test) {
+    private ComparisonResult compareDocTypes(DocumentType control,
+                                             DocumentType test) {
 ]]></literal>
   <lastResultDef/>
   <compare type="DOCTYPE_NAME" property="getName()"/>
