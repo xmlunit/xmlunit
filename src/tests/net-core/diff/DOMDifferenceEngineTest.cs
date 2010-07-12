@@ -27,6 +27,24 @@ namespace net.sf.xmlunit.diff {
             }
         }
 
+        private class DiffExpecter {
+            internal int invoked = 0;
+            private readonly int expectedInvocations;
+            private readonly ComparisonType type;
+            internal DiffExpecter(ComparisonType type) : this(type, 1) { }
+            internal DiffExpecter(ComparisonType type, int expected) {
+                this.type = type;
+                this.expectedInvocations = expected;
+            }
+            public void ComparisonPerformed(Comparison comparison,
+                                            ComparisonResult outcome) {
+                Assert.Greater(expectedInvocations, invoked);
+                invoked++;
+                Assert.AreEqual(type, comparison.Type);
+                Assert.AreEqual(ComparisonResult.CRITICAL, outcome);
+            }
+        }
+
         private XmlDocument doc;
 
         [SetUp]
@@ -37,20 +55,14 @@ namespace net.sf.xmlunit.diff {
         [Test]
         public void CompareNodesOfDifferentType() {
             DOMDifferenceEngine d = new DOMDifferenceEngine();
-            int invocations = 0;
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.AreEqual(0, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.NODE_TYPE, comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
-            };
+            DiffExpecter ex = new DiffExpecter(ComparisonType.NODE_TYPE);
+            d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
             Assert.AreEqual(ComparisonResult.CRITICAL,
                             d.CompareNodes(doc.CreateElement("x"),
                                            doc.CreateComment("x")));
-            Assert.AreEqual(1, invocations);
+            Assert.AreEqual(1, ex.invoked);
         }
 
         [Test]
@@ -70,33 +82,21 @@ namespace net.sf.xmlunit.diff {
         [Test]
         public void CompareNodesDifferentNS() {
             DOMDifferenceEngine d = new DOMDifferenceEngine();
-            int invocations = 0;
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.AreEqual(0, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.NAMESPACE_URI, comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
-            };
+            DiffExpecter ex = new DiffExpecter(ComparisonType.NAMESPACE_URI);
+            d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
             Assert.AreEqual(ComparisonResult.CRITICAL,
                             d.CompareNodes(doc.CreateElement("y", "x"),
                                            doc.CreateElement("y", "z")));
-            Assert.AreEqual(1, invocations);
+            Assert.AreEqual(1, ex.invoked);
         }
 
         [Test]
         public void CompareNodesDifferentPrefix() {
             DOMDifferenceEngine d = new DOMDifferenceEngine();
-            int invocations = 0;
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.AreEqual(0, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.NAMESPACE_PREFIX, comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
-            };
+            DiffExpecter ex = new DiffExpecter(ComparisonType.NAMESPACE_PREFIX);
+            d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator = delegate(Comparison comparison,
                                              ComparisonResult outcome) {
                 if (comparison.Type == ComparisonType.NAMESPACE_PREFIX) {
@@ -109,21 +109,15 @@ namespace net.sf.xmlunit.diff {
             Assert.AreEqual(ComparisonResult.CRITICAL,
                             d.CompareNodes(doc.CreateElement("x:y", "x"),
                                            doc.CreateElement("z:y", "x")));
-            Assert.AreEqual(1, invocations);
+            Assert.AreEqual(1, ex.invoked);
         }
 
         [Test]
         public void CompareNodesDifferentNumberOfChildren() {
             DOMDifferenceEngine d = new DOMDifferenceEngine();
-            int invocations = 0;
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.Greater(2, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.CHILD_NODELIST_LENGTH,
-                                comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
-            };
+            DiffExpecter ex =
+                new DiffExpecter(ComparisonType.CHILD_NODELIST_LENGTH, 2);
+            d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
             XmlElement e1 = doc.CreateElement("x");
@@ -131,28 +125,35 @@ namespace net.sf.xmlunit.diff {
             Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
             e1.AppendChild(doc.CreateElement("x"));
             Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
-            Assert.AreEqual(1, invocations);
+            Assert.AreEqual(1, ex.invoked);
             e2.AppendChild(doc.CreateElement("x"));
             Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
             e2.AppendChild(doc.CreateElement("x"));
             Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
-            Assert.AreEqual(2, invocations);
+            Assert.AreEqual(2, ex.invoked);
         }
 
         [Test]
         public void CompareCharacterData() {
             DOMDifferenceEngine d = new DOMDifferenceEngine();
-            int invocations = 0;
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.Greater(9, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.TEXT_VALUE,
-                                comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
+            DiffExpecter ex = new DiffExpecter(ComparisonType.TEXT_VALUE, 9);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator = delegate(Comparison comparison,
+                                             ComparisonResult outcome) {
+                if (comparison.Type == ComparisonType.NODE_TYPE) {
+                    if (outcome == ComparisonResult.EQUAL
+                        || (
+                            comparison.ControlNodeDetails.Node
+                            is XmlCharacterData
+                            &&
+                            comparison.TestNodeDetails.Node is XmlCharacterData
+                            )) {
+                        return ComparisonResult.EQUAL;
+                    }
+                }
+                return DifferenceEvaluators.DefaultStopWhenDifferent(comparison,
+                                                                     outcome);
             };
-            d.DifferenceEvaluator =
-                DifferenceEvaluators.DefaultStopWhenDifferent;
 
             XmlComment fooComment = doc.CreateComment("foo");
             XmlComment barComment = doc.CreateComment("bar");
@@ -162,73 +163,51 @@ namespace net.sf.xmlunit.diff {
             XmlCDataSection barCDataSection = doc.CreateCDataSection("bar");
 
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.NodeTypeSpecificComparison(fooComment,
-                                                         fooComment));
+                            d.CompareNodes(fooComment, fooComment));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(fooComment,
-                                                         barComment));
+                            d.CompareNodes(fooComment, barComment));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.NodeTypeSpecificComparison(fooText, fooText));
+                            d.CompareNodes(fooText, fooText));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(fooText, barText));
+                            d.CompareNodes(fooText, barText));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.NodeTypeSpecificComparison(fooCDataSection,
-                                                         fooCDataSection));
+                            d.CompareNodes(fooCDataSection, fooCDataSection));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(fooCDataSection,
-                                                         barCDataSection));
+                            d.CompareNodes(fooCDataSection, barCDataSection));
         
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.NodeTypeSpecificComparison(fooComment, fooText));
+                            d.CompareNodes(fooComment, fooText));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(fooComment, barText));
+                            d.CompareNodes(fooComment, barText));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.NodeTypeSpecificComparison(fooComment,
-                                                         fooCDataSection));
+                            d.CompareNodes(fooComment, fooCDataSection));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(fooComment,
-                                                         barCDataSection));
+                            d.CompareNodes(fooComment, barCDataSection));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.NodeTypeSpecificComparison(fooText,
-                                                         fooComment));
+                            d.CompareNodes(fooText, fooComment));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(fooText, barComment));
+                            d.CompareNodes(fooText, barComment));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.NodeTypeSpecificComparison(fooText,
-                                                         fooCDataSection));
+                            d.CompareNodes(fooText, fooCDataSection));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(fooText,
-                                                         barCDataSection));
+                            d.CompareNodes(fooText, barCDataSection));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.NodeTypeSpecificComparison(fooCDataSection,
-                                                         fooText));
+                            d.CompareNodes(fooCDataSection, fooText));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(fooCDataSection,
-                                                         barText));
+                            d.CompareNodes(fooCDataSection, barText));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.NodeTypeSpecificComparison(fooCDataSection,
-                                                         fooComment));
+                            d.CompareNodes(fooCDataSection, fooComment));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(fooCDataSection,
-                                                         barComment));
-            Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.NodeTypeSpecificComparison(fooText,
-                                                         doc.CreateElement("bar")));
-            Assert.AreEqual(9, invocations);
+                            d.CompareNodes(fooCDataSection, barComment));
+            Assert.AreEqual(9, ex.invoked);
         }
 
         [Test]
         public void CompareProcessingInstructions() {
             DOMDifferenceEngine d = new DOMDifferenceEngine();
-            int invocations = 0;
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.AreEqual(0, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.PROCESSING_INSTRUCTION_TARGET,
-                                comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
-            };
+            DiffExpecter ex =
+                new DiffExpecter(ComparisonType.PROCESSING_INSTRUCTION_TARGET);
+            d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
 
@@ -237,47 +216,30 @@ namespace net.sf.xmlunit.diff {
             XmlProcessingInstruction bar1 = doc.CreateProcessingInstruction("bar",
                                                                             "1");
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.NodeTypeSpecificComparison(foo1, foo1));
+                            d.CompareNodes(foo1, foo1));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(foo1, bar1));
-            Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.NodeTypeSpecificComparison(foo1,
-                                                         doc.CreateElement("bar")));
-            Assert.AreEqual(1, invocations);
+                            d.CompareNodes(foo1, bar1));
+            Assert.AreEqual(1, ex.invoked);
 
             d = new DOMDifferenceEngine();
-            invocations = 0;
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.AreEqual(0, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.PROCESSING_INSTRUCTION_DATA,
-                                comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
-            };
+            ex = new DiffExpecter(ComparisonType.PROCESSING_INSTRUCTION_DATA);
+            d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
             XmlProcessingInstruction foo2 = doc.CreateProcessingInstruction("foo",
                                                                             "2");
-            Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.NodeTypeSpecificComparison(foo1, foo1));
+            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(foo1, foo1));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(foo1, foo2));
-            Assert.AreEqual(1, invocations);
+                            d.CompareNodes(foo1, foo2));
+            Assert.AreEqual(1, ex.invoked);
         }
 
         [Test]
         public void CompareDocuments() {
             DOMDifferenceEngine d = new DOMDifferenceEngine();
-            int invocations = 0;
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.AreEqual(0, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
-            };
+            DiffExpecter ex =
+                new DiffExpecter(ComparisonType.HAS_DOCTYPE_DECLARATION);
+            d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator = delegate(Comparison comparison,
                                              ComparisonResult outcome) {
                 if (comparison.Type == ComparisonType.HAS_DOCTYPE_DECLARATION) {
@@ -301,23 +263,16 @@ namespace net.sf.xmlunit.diff {
                                              + "<Book/>")
                             .Build());
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(d1, d2));
-            Assert.AreEqual(1, invocations);
+                            d.CompareNodes(d1, d2));
+            Assert.AreEqual(1, ex.invoked);
 #endif
 
 #if false // need a way to figure out the XML_* differences
 
             // .NET doesn't like XML 1.1 anyway
-            invocations = 0;
             d = new DOMDifferenceEngine();
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.AreEqual(0, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.XML_VERSION,
-                                comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
-            };
+            ex = new DiffExpecter(ComparisonType.XML_VERSION);
+            d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
 
@@ -330,21 +285,14 @@ namespace net.sf.xmlunit.diff {
                                              + " encoding=\"UTF-8\"?>"
                                              + "<Book/>").Build());
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(d1, d2));
-            Assert.AreEqual(1, invocations);
+                            d.CompareNodes(d1, d2));
+            Assert.AreEqual(1, ex.invoked);
 #endif
 
 #if false // need a way to figure out the XML_* differences
-            invocations = 0;
             d = new DOMDifferenceEngine();
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.AreEqual(0, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.XML_STANDALONE,
-                                comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
-            };
+            ex = new DiffExpecter(ComparisonType.XML_STANDALONE);
+            d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
 
@@ -357,21 +305,14 @@ namespace net.sf.xmlunit.diff {
                                              + " standalone=\"no\"?>"
                                              + "<Book/>").Build());
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(d1, d2));
-            Assert.AreEqual(1, invocations);
+                            d.CompareNodes(d1, d2));
+            Assert.AreEqual(1, ex.invoked);
 #endif
 
 #if false // need a way to figure out the XML_* differences
-            invocations = 0;
             d = new DOMDifferenceEngine();
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.AreEqual(0, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.XML_ENCODING,
-                                comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
-            };
+            ex = new DiffExpecter(ComparisonType.XML_ENCODING);
+            d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator = delegate(Comparison comparison,
                                              ComparisonResult outcome) {
                 if (comparison.Type == ComparisonType.XML_ENCODING) {
@@ -391,23 +332,16 @@ namespace net.sf.xmlunit.diff {
                                              + " encoding=\"UTF-16\"?>"
                                              + "<Book/>").Build());
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(d1, d2));
-            Assert.AreEqual(1, invocations);
+                            d.CompareNodes(d1, d2));
+            Assert.AreEqual(1, ex.invoked);
 #endif
         }
 
         [Test]
         public void CompareDocTypes() {
-            int invocations = 0;
             DOMDifferenceEngine d = new DOMDifferenceEngine();
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.AreEqual(0, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.DOCTYPE_NAME,
-                                comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
-            };
+            DiffExpecter ex = new DiffExpecter(ComparisonType.DOCTYPE_NAME);
+            d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
 
@@ -418,37 +352,23 @@ namespace net.sf.xmlunit.diff {
                                                          TestResources.BOOK_DTD,
                                                          null);
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(dt1, dt2));
-            Assert.AreEqual(1, invocations);
+                            d.CompareNodes(dt1, dt2));
+            Assert.AreEqual(1, ex.invoked);
 
-            invocations = 0;
             d = new DOMDifferenceEngine();
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.AreEqual(0, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.DOCTYPE_PUBLIC_ID,
-                                comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
-            };
+            ex = new DiffExpecter(ComparisonType.DOCTYPE_PUBLIC_ID);
+            d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
             dt2 = doc.CreateDocumentType("name", "pub2",
                                          TestResources.BOOK_DTD, null);
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(dt1, dt2));
-            Assert.AreEqual(1, invocations);
+                            d.CompareNodes(dt1, dt2));
+            Assert.AreEqual(1, ex.invoked);
 
-            invocations = 0;
             d = new DOMDifferenceEngine();
-            d.DifferenceListener += delegate(Comparison comp,
-                                             ComparisonResult r) {
-                Assert.AreEqual(0, invocations);
-                invocations++;
-                Assert.AreEqual(ComparisonType.DOCTYPE_SYSTEM_ID,
-                                comp.Type);
-                Assert.AreEqual(ComparisonResult.CRITICAL, r);
-            };
+            ex = new DiffExpecter(ComparisonType.DOCTYPE_SYSTEM_ID);
+            d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator = delegate(Comparison comparison,
                                              ComparisonResult outcome) {
                 if (comparison.Type == ComparisonType.DOCTYPE_SYSTEM_ID) {
@@ -461,9 +381,86 @@ namespace net.sf.xmlunit.diff {
             dt2 = doc.CreateDocumentType("name", "pub",
                                          TestResources.TEST_DTD, null);
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.NodeTypeSpecificComparison(dt1, dt2));
-            Assert.AreEqual(1, invocations);
+                            d.CompareNodes(dt1, dt2));
+            Assert.AreEqual(1, ex.invoked);
         }
 
+        [Test]
+        public void CompareElements() {
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.ELEMENT_TAG_NAME);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+
+            XmlElement e1 = doc.CreateElement("foo");
+            XmlElement e2 = doc.CreateElement("foo");
+            XmlElement e3 = doc.CreateElement("bar");
+            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e3));
+            Assert.AreEqual(1, ex.invoked);
+
+            d = new DOMDifferenceEngine();
+            ex = new DiffExpecter(ComparisonType.ELEMENT_NUM_ATTRIBUTES);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            e1.SetAttribute("attr1", "value1");
+            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(1, ex.invoked);
+
+            d = new DOMDifferenceEngine();
+            ex = new DiffExpecter(ComparisonType.ATTR_NAME_LOOKUP);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            e2.SetAttribute("attr1", "urn:xmlunit:test", "value1");
+            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(1, ex.invoked);
+
+            d = new DOMDifferenceEngine();
+            d.DifferenceListener += delegate(Comparison comp,
+                                             ComparisonResult r) {
+                Assert.Fail("unexpected Comparison of type " + comp.Type
+                            + " with outcome " + r + " and values '"
+                            + comp.ControlNodeDetails.Value
+                            + "' and '"
+                            + comp.TestNodeDetails.Value + "'");
+            };
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            e1.SetAttribute("attr1", "urn:xmlunit:test", "value1");
+            e2.SetAttribute("attr1", null, "value1");
+            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
+        }
+
+        [Test]
+        public void CompareAttributes() {
+            XmlAttribute a1 = doc.CreateAttribute("foo");
+            XmlAttribute a2 = doc.CreateAttribute("foo");
+
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+#if false // Can't reset "explicitly set" state for Documents created via API
+            DiffExpecter ex = new DiffExpecter(ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator = DifferenceEvaluators.Accept;
+            a2.Value = string.Empty;
+            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(a1, a2));
+            Assert.AreEqual(1, ex.invoked);
+#endif
+
+            d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.ATTR_VALUE);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            XmlAttribute a3 = doc.CreateAttribute("foo");
+            a1.Value = "foo";
+            a2.Value = "foo";
+            a3.Value = "bar";
+            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(a1, a2));
+            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(a1, a3));
+            Assert.AreEqual(1, ex.invoked);
+        }
     }
 }

@@ -25,6 +25,17 @@ public final class DifferenceEvaluators {
     private static final Short TEXT = Node.CDATA_SECTION_NODE;
 
     /**
+     * Difference evaluator that just echos the result passed in.
+     */
+    public static final DifferenceEvaluator Accept =
+        new DifferenceEvaluator() {
+            public ComparisonResult evaluate(Comparison comparison,
+                                             ComparisonResult outcome) {
+                return outcome;
+            }
+        };
+
+    /**
      * The "standard" difference evaluator which decides which
      * differences make two XML documents really different and which
      * still leave them similar.

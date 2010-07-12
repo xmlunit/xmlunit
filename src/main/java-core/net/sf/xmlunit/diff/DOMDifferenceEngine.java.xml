@@ -19,10 +19,12 @@
 
   <import reference="javax.xml.transform.Source"/>
   <import reference="net.sf.xmlunit.util.Convert"/>
+  <import reference="org.w3c.dom.Attr"/>
   <import reference="org.w3c.dom.CharacterData"/>
   <import reference="org.w3c.dom.Document"/>
   <import reference="org.w3c.dom.DocumentType"/>
   <import reference="org.w3c.dom.Element"/>
+  <import reference="org.w3c.dom.NamedNodeMap"/>
   <import reference="org.w3c.dom.Node"/>
   <import reference="org.w3c.dom.NodeList"/>
   <import reference="org.w3c.dom.ProcessingInstruction"/>
@@ -74,7 +76,8 @@
      *
      * <p>package private to support tests.</p>
      */
-    ComparisonResult nodeTypeSpecificComparison(Node control, Node test) {
+    private ComparisonResult nodeTypeSpecificComparison(Node control,
+                                                        Node test) {
         switch (control.getNodeType()) {
         case Node.CDATA_SECTION_NODE:
         case Node.COMMENT_NODE:
@@ -109,6 +112,12 @@
                                        (DocumentType) test);
             }
             break;
+        case Node.ATTRIBUTE_NODE:
+            if (test instanceof Attr) {
+                return compareAttributes((Attr) control,
+                                         (Attr) test);
+            }
+            break;
         }
         return ComparisonResult.EQUAL;
     }
@@ -135,7 +144,7 @@
   <literal><![CDATA[
         if (controlDt != null && testDt != null) {
 ]]></literal>
-  <compareMethodExpr method="nodeTypeSpecificComparison"
+  <compareMethodExpr method="compareNodes"
                      controlExpr="controlDt"
                      testExpr="testDt"/>
   <literal><![CDATA[
@@ -161,12 +170,61 @@
                                       test, null, test.getSystemId()));
     }
 
-    ComparisonResult compareElements(Element control,
-                                     Element test) {
-        return ComparisonResult.EQUAL;
+    private ComparisonResult compareElements(Element control,
+                                             Element test) {
+]]></literal>
+  <lastResultDef/>
+  <compare type="ELEMENT_TAG_NAME" property="getTagName()"/>
+  <literal><![CDATA[
+        NamedNodeMap controlAttributes = control.getAttributes();
+        NamedNodeMap testAttributes = test.getAttributes();
+        final int controlAttrLen = controlAttributes.getLength();
+        final int testAttrLen = testAttributes.getLength();
+]]></literal>
+  <compareExpr type="ELEMENT_NUM_ATTRIBUTES"
+               controlExpr="controlAttrLen"
+               testExpr="testAttrLen"/>
+  <literal><![CDATA[
+        for (int i = 0; i < controlAttrLen; i++) {
+            final Attr controlAttr = (Attr) controlAttributes.item(i);
+            final Attr testAttr = findMatchingAttr(testAttributes, controlAttr);
+]]></literal>
+  <compareExpr type="ATTR_NAME_LOOKUP"
+               controlExpr="Boolean.TRUE"
+               testExpr="Boolean.valueOf(testAttr != null)"/>
+  <literal><![CDATA[
+        }
+]]></literal>
+  <literal><![CDATA[
+        for (int i = 0; i < testAttrLen; i++) {
+            final Attr testAttr = (Attr) testAttributes.item(i);
+            final Attr controlAttr = findMatchingAttr(controlAttributes,
+                                                      testAttr);
+]]></literal>
+  <compareExpr type="ATTR_NAME_LOOKUP"
+               controlExpr="Boolean.valueOf(controlAttr != null)"
+               testExpr="Boolean.TRUE"/>
+  <literal><![CDATA[
+        }
+]]></literal>
+  <literal><![CDATA[
+        for (int i = 0; i < controlAttrLen; i++) {
+            final Attr controlAttr = (Attr) controlAttributes.item(i);
+            final Attr testAttr = findMatchingAttr(testAttributes, controlAttr);
+            if (testAttr != null) {
+]]></literal>
+  <compareMethodExpr method="compareNodes"
+                     controlExpr="controlAttr"
+                     testExpr="testAttr"/>
+  <literal><![CDATA[
+            }
+        }
+]]></literal>
+  <literal><![CDATA[
+        return lastResult;
     }
 
-    ComparisonResult
+    private ComparisonResult
         compareProcessingInstructions(ProcessingInstruction control,
                                       ProcessingInstruction test) {
 ]]></literal>
@@ -178,8 +236,28 @@
                                       test, null, test.getData()));
     }
 
-    ComparisonResult compareNodeLists(NodeList control, NodeList test) {
+    private ComparisonResult compareNodeLists(NodeList control, NodeList test) {
         return ComparisonResult.EQUAL;
     }
+
+    private ComparisonResult compareAttributes(Attr control, Attr test) {
+]]></literal>
+  <lastResultDef/>
+  <compare type="ATTR_VALUE_EXPLICITLY_SPECIFIED" property="getSpecified()"/>
+  <literal><![CDATA[
+        return compare(new Comparison(ComparisonType.ATTR_VALUE,
+                                      control, null, control.getValue(),
+                                      test, null, test.getValue()));
+    }
+
+    private static Attr findMatchingAttr(NamedNodeMap map, Attr attrToMatch) {
+        if (attrToMatch.getNamespaceURI() == null) {
+            return (Attr) map.getNamedItem(attrToMatch.getName());
+        } else {
+            return (Attr) map.getNamedItemNS(attrToMatch.getNamespaceURI(),
+                                             attrToMatch.getLocalName());
+        }
+    }
+
 ]]></literal>
 </class>

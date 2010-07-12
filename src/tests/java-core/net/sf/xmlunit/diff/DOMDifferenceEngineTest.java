@@ -21,7 +21,9 @@ import net.sf.xmlunit.builder.Input;
 import net.sf.xmlunit.util.Convert;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
@@ -51,7 +53,8 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         }
         public void comparisonPerformed(Comparison comparison,
                                         ComparisonResult outcome) {
-            assertTrue(invoked < expectedInvocations);
+            assertTrue(invoked + " should be less than " + expectedInvocations,
+                       invoked < expectedInvocations);
             invoked++;
             assertEquals(type, comparison.getType());
             assertEquals(ComparisonResult.CRITICAL, outcome);
@@ -143,7 +146,25 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         DOMDifferenceEngine d = new DOMDifferenceEngine();
         DiffExpecter ex = new DiffExpecter(ComparisonType.TEXT_VALUE, 9);
         d.addDifferenceListener(ex);
-        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        d.setDifferenceEvaluator(new DifferenceEvaluator() {
+                public ComparisonResult evaluate(Comparison comparison,
+                                                 ComparisonResult outcome) {
+                    if (comparison.getType() == ComparisonType.NODE_TYPE) {
+                        if (outcome == ComparisonResult.EQUAL
+                            || (
+                                comparison.getControlNodeDetails()
+                                .getNode() instanceof CharacterData
+                                &&
+                                comparison.getTestNodeDetails()
+                                .getNode() instanceof CharacterData
+                                )) {
+                            return ComparisonResult.EQUAL;
+                        }
+                    }
+                    return DifferenceEvaluators.DefaultStopWhenDifferent
+                        .evaluate(comparison, outcome);
+                }
+            });
 
         Comment fooComment = doc.createComment("foo");
         Comment barComment = doc.createComment("bar");
@@ -153,45 +174,42 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         CDATASection barCDATASection = doc.createCDATASection("bar");
 
         assertEquals(ComparisonResult.EQUAL,
-                     d.nodeTypeSpecificComparison(fooComment, fooComment));
+                     d.compareNodes(fooComment, fooComment));
         assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(fooComment, barComment));
+                     d.compareNodes(fooComment, barComment));
         assertEquals(ComparisonResult.EQUAL,
-                     d.nodeTypeSpecificComparison(fooText, fooText));
+                     d.compareNodes(fooText, fooText));
         assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(fooText, barText));
+                     d.compareNodes(fooText, barText));
         assertEquals(ComparisonResult.EQUAL,
-                     d.nodeTypeSpecificComparison(fooCDATASection, fooCDATASection));
+                     d.compareNodes(fooCDATASection, fooCDATASection));
         assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(fooCDATASection, barCDATASection));
+                     d.compareNodes(fooCDATASection, barCDATASection));
         
         assertEquals(ComparisonResult.EQUAL,
-                     d.nodeTypeSpecificComparison(fooComment, fooText));
+                     d.compareNodes(fooComment, fooText));
         assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(fooComment, barText));
+                     d.compareNodes(fooComment, barText));
         assertEquals(ComparisonResult.EQUAL,
-                     d.nodeTypeSpecificComparison(fooComment, fooCDATASection));
+                     d.compareNodes(fooComment, fooCDATASection));
         assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(fooComment, barCDATASection));
+                     d.compareNodes(fooComment, barCDATASection));
         assertEquals(ComparisonResult.EQUAL,
-                     d.nodeTypeSpecificComparison(fooText, fooComment));
+                     d.compareNodes(fooText, fooComment));
         assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(fooText, barComment));
+                     d.compareNodes(fooText, barComment));
         assertEquals(ComparisonResult.EQUAL,
-                     d.nodeTypeSpecificComparison(fooText, fooCDATASection));
+                     d.compareNodes(fooText, fooCDATASection));
         assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(fooText, barCDATASection));
+                     d.compareNodes(fooText, barCDATASection));
         assertEquals(ComparisonResult.EQUAL,
-                     d.nodeTypeSpecificComparison(fooCDATASection, fooText));
+                     d.compareNodes(fooCDATASection, fooText));
         assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(fooCDATASection, barText));
+                     d.compareNodes(fooCDATASection, barText));
         assertEquals(ComparisonResult.EQUAL,
-                     d.nodeTypeSpecificComparison(fooCDATASection, fooComment));
+                     d.compareNodes(fooCDATASection, fooComment));
         assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(fooCDATASection, barComment));
-        assertEquals(ComparisonResult.EQUAL,
-                     d.nodeTypeSpecificComparison(fooText,
-                                                  doc.createElement("bar")));
+                     d.compareNodes(fooCDATASection, barComment));
         assertEquals(9, ex.invoked);
     }
 
@@ -203,13 +221,8 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
 
         ProcessingInstruction foo1 = doc.createProcessingInstruction("foo", "1");
         ProcessingInstruction bar1 = doc.createProcessingInstruction("bar", "1");
-        assertEquals(ComparisonResult.EQUAL,
-                     d.nodeTypeSpecificComparison(foo1, foo1));
-        assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(foo1, bar1));
-        assertEquals(ComparisonResult.EQUAL,
-                     d.nodeTypeSpecificComparison(foo1,
-                                                  doc.createElement("bar")));
+        assertEquals(ComparisonResult.EQUAL, d.compareNodes(foo1, foo1));
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(foo1, bar1));
         assertEquals(1, ex.invoked);
 
         d = new DOMDifferenceEngine();
@@ -217,10 +230,8 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         d.addDifferenceListener(ex);
         d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
         ProcessingInstruction foo2 = doc.createProcessingInstruction("foo", "2");
-        assertEquals(ComparisonResult.EQUAL,
-                     d.nodeTypeSpecificComparison(foo1, foo1));
-        assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(foo1, foo2));
+        assertEquals(ComparisonResult.EQUAL, d.compareNodes(foo1, foo1));
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(foo1, foo2));
         assertEquals(1, ex.invoked);
     }
 
@@ -232,11 +243,18 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                 public ComparisonResult evaluate(Comparison comparison,
                                                  ComparisonResult outcome) {
                     if (comparison.getType()
+                        == ComparisonType.CHILD_NODELIST_LENGTH) {
+                        assertEquals(ComparisonResult.DIFFERENT, outcome);
+                        return ComparisonResult.EQUAL;
+                    }
+                    if (comparison.getType()
                         == ComparisonType.HAS_DOCTYPE_DECLARATION) {
                         assertEquals(ComparisonResult.DIFFERENT, outcome);
                         return ComparisonResult.CRITICAL;
                     }
-                    assertEquals(ComparisonResult.EQUAL, outcome);
+                    assertEquals("Expected EQUAL for " + comparison.getType()
+                                 + " comparison.",
+                                 ComparisonResult.EQUAL, outcome);
                     return ComparisonResult.EQUAL;
                 }
             });
@@ -248,8 +266,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                                                 + "\">"
                                                 + "<Book/>")
                                .build());
-        assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(d1, d2));
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(d1, d2));
         assertEquals(1, ex.invoked);
 
         d = new DOMDifferenceEngine();
@@ -264,7 +281,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                                                  + " encoding=\"UTF-8\"?>"
                                                  + "<Book/>").build());
         assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(d1, d2));
+                     d.compareNodes(d1, d2));
         assertEquals(1, ex.invoked);
 
         d = new DOMDifferenceEngine();
@@ -279,7 +296,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                                                  + " standalone=\"no\"?>"
                                                  + "<Book/>").build());
         assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(d1, d2));
+                     d.compareNodes(d1, d2));
         assertEquals(1, ex.invoked);
 
         d = new DOMDifferenceEngine();
@@ -305,7 +322,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                                                  + " encoding=\"UTF-16\"?>"
                                                  + "<Book/>").build());
         assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(d1, d2));
+                     d.compareNodes(d1, d2));
         assertEquals(1, ex.invoked);
     }
 
@@ -346,8 +363,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
         DocumentType dt1 = new DocType("name", "pub", "system");
         DocumentType dt2 = new DocType("name2", "pub", "system");
-        assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(dt1, dt2));
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(dt1, dt2));
         assertEquals(1, ex.invoked);
 
         d = new DOMDifferenceEngine();
@@ -355,8 +371,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         d.addDifferenceListener(ex);
         d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
         dt2 = new DocType("name", "pub2", "system");
-        assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(dt1, dt2));
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(dt1, dt2));
         assertEquals(1, ex.invoked);
 
         d = new DOMDifferenceEngine();
@@ -375,8 +390,81 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                 }
             });
         dt2 = new DocType("name", "pub", "system2");
-        assertEquals(ComparisonResult.CRITICAL,
-                     d.nodeTypeSpecificComparison(dt1, dt2));
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(dt1, dt2));
+        assertEquals(1, ex.invoked);
+    }
+
+    @Test public void compareElements() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.ELEMENT_TAG_NAME);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        Element e1 = doc.createElement("foo");
+        Element e2 = doc.createElement("foo");
+        Element e3 = doc.createElement("bar");
+        assertEquals(ComparisonResult.EQUAL, d.compareNodes(e1, e2));
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(e1, e3));
+        assertEquals(1, ex.invoked);
+
+        d = new DOMDifferenceEngine();
+        ex = new DiffExpecter(ComparisonType.ELEMENT_NUM_ATTRIBUTES);
+        e1.setAttribute("attr1", "value1");
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(e1, e2));
+        assertEquals(1, ex.invoked);
+
+        d = new DOMDifferenceEngine();
+        ex = new DiffExpecter(ComparisonType.ATTR_NAME_LOOKUP);
+        e2.setAttributeNS("urn:xmlunit:test", "attr1", "value1");
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(e1, e2));
+        assertEquals(1, ex.invoked);
+
+
+        d = new DOMDifferenceEngine();
+        d.addDifferenceListener(new ComparisonListener() {
+                public void comparisonPerformed(Comparison comparison,
+                                                ComparisonResult outcome) {
+                    fail("unexpected Comparison of type " + comparison.getType()
+                         + " with outcome " + outcome + " and values '"
+                         + comparison.getControlNodeDetails().getValue()
+                         + "' and '"
+                         + comparison.getTestNodeDetails().getValue() + "'");
+                }
+            });
+        e1.setAttributeNS("urn:xmlunit:test", "attr1", "value1");
+        e2.setAttributeNS(null, "attr1", "value1");
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        assertEquals(ComparisonResult.EQUAL, d.compareNodes(e1, e2));
+    }
+
+    @Test public void compareAttributes() {
+        Attr a1 = doc.createAttribute("foo");
+        Attr a2 = doc.createAttribute("foo");
+
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED);
+        /* Can't reset "explicitly set" state for Documents created via API
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.Accept);
+        a2.setValue("");
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(a1, a2));
+        assertEquals(1, ex.invoked);
+
+        d = new DOMDifferenceEngine();
+        */
+        ex = new DiffExpecter(ComparisonType.ATTR_VALUE);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        Attr a3 = doc.createAttribute("foo");
+        a1.setValue("foo");
+        a2.setValue("foo");
+        a3.setValue("bar");
+        assertEquals(ComparisonResult.EQUAL, d.compareNodes(a1, a2));
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(a1, a3));
         assertEquals(1, ex.invoked);
     }
 }

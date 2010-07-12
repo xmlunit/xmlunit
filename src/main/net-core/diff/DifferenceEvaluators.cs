@@ -23,6 +23,14 @@ namespace net.sf.xmlunit.diff {
         private DifferenceEvaluators() { }
 
         /// <summary>
+        /// Difference evaluator that just echos the result passed in.
+        /// </summary>
+        public static ComparisonResult Accept(Comparison comparison,
+                                              ComparisonResult outcome) {
+            return outcome;
+        }
+
+        /// <summary>
         /// The "standard" difference evaluator which decides which
         /// differences make two XML documents really different and which
         /// still leave them similar.

@@ -66,8 +66,8 @@
         /// Dispatches to the node type specific comparison if one is
         /// defined for the given combination of nodes.
         /// </summary>
-        internal ComparisonResult NodeTypeSpecificComparison(XmlNode control,
-                                                             XmlNode test) {
+        private ComparisonResult NodeTypeSpecificComparison(XmlNode control,
+                                                            XmlNode test) {
             switch (control.NodeType) {
             case XmlNodeType.CDATA:
             case XmlNodeType.Comment:
@@ -84,12 +84,10 @@
                 }
                 break;
             case XmlNodeType.Element:
-#if false
-                if (test instanceof Element) {
-                    return compareElements((Element) control,
-                                           (Element) test);
+                if (test is XmlElement) {
+                    return CompareElements((XmlElement) control,
+                                           (XmlElement) test);
                 }
-#endif
                 break;
             case XmlNodeType.ProcessingInstruction:
                 if (test is XmlProcessingInstruction) {
@@ -102,6 +100,12 @@
                 if (test is XmlDocumentType) {
                     return CompareDocTypes((XmlDocumentType) control,
                                            (XmlDocumentType) test);
+                }
+                break;
+            case XmlNodeType.Attribute:
+                if (test is XmlAttribute) {
+                    return CompareAttributes((XmlAttribute) control,
+                                             (XmlAttribute) test);
                 }
                 break;
             }
@@ -130,7 +134,7 @@
   <literal><![CDATA[
             if (controlDt != null && testDt != null) {
 ]]></literal>
-  <compareMethodExpr method="NodeTypeSpecificComparison"
+  <compareMethodExpr method="CompareNodes"
                      controlExpr="controlDt"
                      testExpr="testDt"/>
   <literal><![CDATA[
@@ -160,6 +164,62 @@
                                           test, null, test.SystemId));
         }
 
+        private ComparisonResult CompareElements(XmlElement control,
+                                                 XmlElement test) {
+]]></literal>
+  <lastResultDef/>
+  <compare type="ELEMENT_TAG_NAME" property="Name"/>
+  <literal><![CDATA[
+        XmlAttributeCollection controlAttributes = control.Attributes;
+        XmlAttributeCollection testAttributes = test.Attributes;
+        int controlAttrLen = controlAttributes.Count;
+        int testAttrLen = testAttributes.Count;
+]]></literal>
+  <compareExpr type="ELEMENT_NUM_ATTRIBUTES"
+               controlExpr="controlAttrLen"
+               testExpr="testAttrLen"/>
+  <literal><![CDATA[
+        for (int i = 0; i < controlAttrLen; i++) {
+            XmlAttribute controlAttr = controlAttributes[i];
+            XmlAttribute testAttr = FindMatchingAttr(testAttributes,
+                                                     controlAttr);
+]]></literal>
+  <compareExpr type="ATTR_NAME_LOOKUP"
+               controlExpr="true"
+               testExpr="testAttr != null"/>
+  <literal><![CDATA[
+        }
+]]></literal>
+  <literal><![CDATA[
+        for (int i = 0; i < testAttrLen; i++) {
+            XmlAttribute testAttr = testAttributes[i];
+            XmlAttribute controlAttr = FindMatchingAttr(controlAttributes,
+                                                        testAttr);
+]]></literal>
+  <compareExpr type="ATTR_NAME_LOOKUP"
+               controlExpr="controlAttr != null"
+               testExpr="true"/>
+  <literal><![CDATA[
+        }
+]]></literal>
+  <literal><![CDATA[
+        for (int i = 0; i < controlAttrLen; i++) {
+            XmlAttribute controlAttr = controlAttributes[i];
+            XmlAttribute testAttr = FindMatchingAttr(testAttributes,
+                                                     controlAttr);
+            if (testAttr != null) {
+]]></literal>
+  <compareMethodExpr method="CompareNodes"
+                     controlExpr="controlAttr"
+                     testExpr="testAttr"/>
+  <literal><![CDATA[
+            }
+        }
+]]></literal>
+  <literal><![CDATA[
+        return lastResult;
+    }
+
         private ComparisonResult
             CompareProcessingInstructions(XmlProcessingInstruction control,
                                           XmlProcessingInstruction test) {
@@ -172,10 +232,31 @@
                                           test, null, test.Data));
         }
 
-        ComparisonResult CompareNodeLists(XmlNodeList control,
-                                          XmlNodeList test) {
+        private ComparisonResult CompareNodeLists(XmlNodeList control,
+                                                  XmlNodeList test) {
             return ComparisonResult.EQUAL;
         }
 
+        private ComparisonResult CompareAttributes(XmlAttribute control,
+                                                   XmlAttribute test) {
+]]></literal>
+  <lastResultDef/>
+  <compare type="ATTR_VALUE_EXPLICITLY_SPECIFIED" property="Specified"/>
+  <literal><![CDATA[
+            return Compare(new Comparison(ComparisonType.ATTR_VALUE,
+                                          control, null, control.Value,
+                                          test, null, test.Value));
+        }
+
+        private static XmlAttribute FindMatchingAttr(XmlAttributeCollection map,
+                                                     XmlAttribute attrToMatch) {
+            if (attrToMatch.NamespaceURI == null) {
+                return map.GetNamedItem(attrToMatch.Name) as XmlAttribute;
+            } else {
+                return map.GetNamedItem(attrToMatch.LocalName,
+                                        attrToMatch.NamespaceURI)
+                     as XmlAttribute;
+            }
+        }
 ]]></literal>
 </class>
