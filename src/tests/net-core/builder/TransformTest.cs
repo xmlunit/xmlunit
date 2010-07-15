@@ -26,7 +26,8 @@ namespace net.sf.xmlunit.builder {
                             .WithStylesheet(Input.FromFile(TestResources.ANIMAL_XSL)
                                             .Build())
                             .Build()
-                            .ToString());
+                            .ToString()
+                            .Replace("\n", string.Empty));
         }
 
         [Test] public void TransformAnimalToDocument() {

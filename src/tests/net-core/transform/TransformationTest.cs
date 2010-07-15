@@ -29,7 +29,7 @@ namespace net.sf.xmlunit.transform {
 
         [Test] public void TransformAnimalToString() {
             Assert.AreEqual("<?xml version=\"1.0\" encoding=\"utf-16\"?><dog />",
-                            t.TransformToString());
+                            t.TransformToString().Replace("\n", string.Empty));
         }
 
         [Test] public void TransformAnimalToDocument() {
