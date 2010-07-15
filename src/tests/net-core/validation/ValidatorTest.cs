@@ -12,6 +12,7 @@
   limitations under the License.
 */
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using net.sf.xmlunit.exceptions;
 using net.sf.xmlunit.input;
@@ -33,8 +34,13 @@ namespace net.sf.xmlunit.validation {
             Validator v = Validator.ForLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
             v.SchemaSource = new StreamSource("../../../src/tests/resources/Book.xsd");
             ValidationResult r = v.ValidateInstance(new StreamSource("../../../src/tests/resources/BookXsdGenerated.xml"));
-            Assert.IsTrue(r.Valid);
-            Assert.IsFalse(r.Problems.GetEnumerator().MoveNext());
+            IEnumerator<ValidationProblem> problems = r.Problems.GetEnumerator();
+            bool haveErrors = problems.MoveNext();
+
+            Assert.IsTrue(r.Valid,
+                          "Expected validation to pass, first validation error"
+                          + " is " + problems.Current.Message);
+            Assert.IsFalse(haveErrors);
         }
 
         [Test]
