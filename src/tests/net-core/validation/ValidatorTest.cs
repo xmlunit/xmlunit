@@ -39,7 +39,8 @@ namespace net.sf.xmlunit.validation {
 
             Assert.IsTrue(r.Valid,
                           "Expected validation to pass, first validation error"
-                          + " is " + problems.Current.Message);
+                          + " is "
+                          + (haveErrors ? problems.Current.Message : "unknown"));
             Assert.IsFalse(haveErrors);
         }
 
