@@ -23,7 +23,7 @@ namespace net.sf.xmlunit.validation {
         [Test]
         public void ShouldSuccessfullyValidateSchema() {
             Validator v = Validator.ForLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
-            v.SchemaSource = new StreamSource("../../../src/tests/resources/Book.xsd");
+            v.SchemaSource = new StreamSource(TestResources.TESTS_DIR + "Book.xsd");
             ValidationResult r = v.ValidateSchema();
             Assert.IsTrue(r.Valid);
             Assert.IsFalse(r.Problems.GetEnumerator().MoveNext());
@@ -32,8 +32,8 @@ namespace net.sf.xmlunit.validation {
         [Test]
         public void ShouldSuccessfullyValidateInstance() {
             Validator v = Validator.ForLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
-            v.SchemaSource = new StreamSource("../../../src/tests/resources/Book.xsd");
-            ValidationResult r = v.ValidateInstance(new StreamSource("../../../src/tests/resources/BookXsdGenerated.xml"));
+            v.SchemaSource = new StreamSource(TestResources.TESTS_DIR + "Book.xsd");
+            ValidationResult r = v.ValidateInstance(new StreamSource(TestResources.TESTS_DIR + "BookXsdGenerated.xml"));
             IEnumerator<ValidationProblem> problems = r.Problems.GetEnumerator();
             bool haveErrors = problems.MoveNext();
 
@@ -47,7 +47,7 @@ namespace net.sf.xmlunit.validation {
         [Test]
         public void ShouldFailOnBrokenSchema() {
             Validator v = Validator.ForLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
-            v.SchemaSource = new StreamSource("../../../src/tests/resources/broken.xsd");
+            v.SchemaSource = new StreamSource(TestResources.TESTS_DIR + "broken.xsd");
             ValidationResult r = v.ValidateSchema();
             Assert.IsFalse(r.Valid);
             Assert.IsTrue(r.Problems.GetEnumerator().MoveNext());
@@ -56,8 +56,8 @@ namespace net.sf.xmlunit.validation {
         [Test]
         public void ShouldFailOnBrokenInstance() {
             Validator v = Validator.ForLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
-            v.SchemaSource = new StreamSource("../../../src/tests/resources/Book.xsd");
-            ValidationResult r = v.ValidateInstance(new StreamSource("../../../src/tests/resources/invalidBook.xml"));
+            v.SchemaSource = new StreamSource(TestResources.TESTS_DIR + "Book.xsd");
+            ValidationResult r = v.ValidateInstance(new StreamSource(TestResources.TESTS_DIR + "invalidBook.xml"));
             Assert.IsFalse(r.Valid);
             Assert.IsTrue(r.Problems.GetEnumerator().MoveNext());
         }
@@ -65,9 +65,9 @@ namespace net.sf.xmlunit.validation {
         [Test]
         public void ShouldThrowWhenValidatingInstanceAndSchemaIsInvalid() {
             Validator v = Validator.ForLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
-            v.SchemaSource = new StreamSource("../../../src/tests/resources/broken.xsd");
+            v.SchemaSource = new StreamSource(TestResources.TESTS_DIR + "broken.xsd");
             Assert.Throws(typeof(XMLUnitException), delegate() {
-                    v.ValidateInstance(new StreamSource("../../../src/tests/resources/BookXsdGenerated.xml"));
+                    v.ValidateInstance(new StreamSource(TestResources.TESTS_DIR + "BookXsdGenerated.xml"));
                 });
         }
 

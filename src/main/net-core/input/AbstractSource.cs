@@ -38,5 +38,9 @@ namespace net.sf.xmlunit.input {
                 systemId = value;
             }
         }
+        public override string ToString() {
+            return string.Format("{0} with systemId {1}", GetType().Name,
+                                 SystemId);
+        }
     }
 }

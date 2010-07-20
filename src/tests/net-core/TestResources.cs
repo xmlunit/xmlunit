@@ -11,17 +11,26 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+
+using System;
+
 namespace net.sf.xmlunit {
 
     public sealed class TestResources {
-        public const string ANIMAL_FILE = "../../../src/tests/resources/test1.xml";
-        public const string BLAME_FILE = "../../../src/tests/resources/test.blame.html";
+        private static readonly string PREFIX = "../../../";
 
-        public const string ANIMAL_XSL = "../../../src/tests/resources/animal.xsl";
-        public const string DOG_FILE = "../../../src/tests/resources/testAnimal.xml";
+        public static readonly string TESTS_DIR =
+            PREFIX + "src/tests/resources/";
 
-        public const string BOOK_DTD = "../../../src/tests/resources/Book.dtd";
-        public const string TEST_DTD = "../../../src/tests/resources/test.dtd";
+        public static readonly string ANIMAL_FILE = TESTS_DIR + "test1.xml";
+        public static readonly string BLAME_FILE =
+            TESTS_DIR + "test.blame.html";
+
+        public static readonly string ANIMAL_XSL = TESTS_DIR + "animal.xsl";
+        public static readonly string DOG_FILE = TESTS_DIR + "testAnimal.xml";
+
+        public static readonly string BOOK_DTD = TESTS_DIR + "Book.dtd";
+        public static readonly string TEST_DTD = TESTS_DIR + "test.dtd";
 
         private TestResources() { }
     }
