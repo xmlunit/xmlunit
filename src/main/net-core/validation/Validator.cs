@@ -101,6 +101,7 @@ namespace net.sf.xmlunit.validation {
                     try {
                         XmlSchema s = XmlSchema.Read(loc.Reader, ThrowOnError);
                         settings.Schemas.Add(s);
+                        settings.Schemas.XmlResolver = new ThrowingResolver();
                     } catch (IOException ex) {
                         throw new XMLUnitException("Schema is not readable",
                                                    ex);
@@ -109,7 +110,6 @@ namespace net.sf.xmlunit.validation {
             }
             List<ValidationProblem> problems = new List<ValidationProblem>();
             settings.ValidationEventHandler += CollectProblems(problems);
-            settings.XmlResolver = new ThrowingResolver();
             using (XmlReader r = XmlReader.Create(instance.Reader,
                                                   settings)) {
                 while (r.Read()) ;
