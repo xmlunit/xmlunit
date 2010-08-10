@@ -33,7 +33,7 @@ namespace net.sf.xmlunit.validation {
         public void ShouldSuccessfullyValidateInstance() {
             Validator v = Validator.ForLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
             v.SchemaSource = new StreamSource(TestResources.TESTS_DIR + "Book.xsd");
-            ValidationResult r = v.ValidateInstance(new StreamSource(TestResources.TESTS_DIR + "BookXsdGenerated.xml"));
+            ValidationResult r = v.ValidateInstance(new StreamSource(TestResources.TESTS_DIR + "BookXsdGeneratedNoSchema.xml"));
             IEnumerator<ValidationProblem> problems = r.Problems.GetEnumerator();
             bool haveErrors = problems.MoveNext();
 
