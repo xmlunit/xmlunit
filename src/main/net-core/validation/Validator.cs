@@ -101,7 +101,6 @@ namespace net.sf.xmlunit.validation {
                     try {
                         XmlSchema s = XmlSchema.Read(loc.Reader, ThrowOnError);
                         settings.Schemas.Add(s);
-                        settings.Schemas.XmlResolver = new ThrowingResolver();
                     } catch (IOException ex) {
                         throw new XMLUnitException("Schema is not readable",
                                                    ex);
@@ -116,17 +115,6 @@ namespace net.sf.xmlunit.validation {
             }
             return new ValidationResult(problems.Count == 0, problems);
         }
-
-        private class ThrowingResolver : XmlResolver {
-            public override object GetEntity(Uri uri, string role, Type type) {
-                throw new Exception(string.Format("GetEntity invoked with ({0}, {1}, {2}",
-                                                  uri, role, type));
-            }
-
-            public override System.Net.ICredentials Credentials {
-                set {}
-            }
-        } 
 
         private static readonly IDictionary<string, ValidationType> types;
 
