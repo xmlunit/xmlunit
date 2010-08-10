@@ -109,12 +109,24 @@ namespace net.sf.xmlunit.validation {
             }
             List<ValidationProblem> problems = new List<ValidationProblem>();
             settings.ValidationEventHandler += CollectProblems(problems);
+            settings.XmlResolver = new ThrowingResolver();
             using (XmlReader r = XmlReader.Create(instance.Reader,
                                                   settings)) {
                 while (r.Read()) ;
             }
             return new ValidationResult(problems.Count == 0, problems);
         }
+
+        private class ThrowingResolver : XmlResolver {
+            public override object GetEntity(Uri uri, string role, Type type) {
+                throw new Exception(string.Format("GetEntity invoked with ({0}, {1}, {2}",
+                                                  uri, role, type));
+            }
+
+            public override System.Net.ICredentials Credentials {
+                set {}
+            }
+        } 
 
         private static readonly IDictionary<string, ValidationType> types;
 
