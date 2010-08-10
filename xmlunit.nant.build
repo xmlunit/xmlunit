@@ -123,9 +123,6 @@
       <formatter type="Xml" usefile="true" outputdir="${test.report.dir}"/>
       <test assemblyname="${bin.dir}/${project::get-name()}-core.tests.dll"/>
     </nunit2>
-    <style style="lib/NUnitSummary.xsl"
-           in="${test.report.dir}/${project::get-name()}-core.tests.dll-results"
-           out="${test.report.dir}/html/index.html"/>
   </target>
   
   <target name="deploy" description="zip all code for deployment"
