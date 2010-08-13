@@ -172,7 +172,7 @@ namespace net.sf.xmlunit.diff {
                             d.CompareNodes(fooCDataSection, fooCDataSection));
             Assert.AreEqual(ComparisonResult.CRITICAL,
                             d.CompareNodes(fooCDataSection, barCDataSection));
-        
+
             Assert.AreEqual(ComparisonResult.EQUAL,
                             d.CompareNodes(fooComment, fooText));
             Assert.AreEqual(ComparisonResult.CRITICAL,
@@ -460,5 +460,37 @@ namespace net.sf.xmlunit.diff {
             Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(a1, a3));
             Assert.AreEqual(1, ex.invoked);
         }
+
+        [Test]
+        public void NaiveRecursion() {
+            XmlElement e1 = doc.CreateElement("foo");
+            XmlElement e2 = doc.CreateElement("foo");
+            XmlElement c1 = doc.CreateElement("bar");
+            e1.AppendChild(c1);
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            DifferenceEvaluator ev = delegate(Comparison comparison,
+                                              ComparisonResult outcome) {
+                if (comparison.Type == ComparisonType.CHILD_NODELIST_LENGTH) {
+                    return ComparisonResult.EQUAL;
+                }
+                return DifferenceEvaluators.DefaultStopWhenDifferent(comparison,
+                                                                     outcome);
+            };
+            d.DifferenceEvaluator = ev;
+            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(1, ex.invoked);
+
+            XmlElement c2 = doc.CreateElement("bar");
+            e2.AppendChild(c2);
+            d = new DOMDifferenceEngine();
+            ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator = ev;
+            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(0, ex.invoked);
+        }
+
     }
 }

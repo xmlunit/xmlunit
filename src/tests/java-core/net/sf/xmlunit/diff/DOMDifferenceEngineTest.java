@@ -185,7 +185,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                      d.compareNodes(fooCDATASection, fooCDATASection));
         assertEquals(ComparisonResult.CRITICAL,
                      d.compareNodes(fooCDATASection, barCDATASection));
-        
+
         assertEquals(ComparisonResult.EQUAL,
                      d.compareNodes(fooComment, fooText));
         assertEquals(ComparisonResult.CRITICAL,
@@ -466,5 +466,37 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         assertEquals(ComparisonResult.EQUAL, d.compareNodes(a1, a2));
         assertEquals(ComparisonResult.CRITICAL, d.compareNodes(a1, a3));
         assertEquals(1, ex.invoked);
+    }
+
+    @Test public void naiveRecursion() {
+        Element e1 = doc.createElement("foo");
+        Element e2 = doc.createElement("foo");
+        Element c1 = doc.createElement("bar");
+        e1.appendChild(c1);
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP);
+        d.addDifferenceListener(ex);
+        DifferenceEvaluator ev = new DifferenceEvaluator() {
+                public ComparisonResult evaluate(Comparison comparison,
+                                                 ComparisonResult outcome) {
+                    if (comparison.getType() == ComparisonType.CHILD_NODELIST_LENGTH) {
+                        return ComparisonResult.EQUAL;
+                    }
+                    return DifferenceEvaluators.DefaultStopWhenDifferent
+                        .evaluate(comparison, outcome);
+                }
+            };
+        d.setDifferenceEvaluator(ev);
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(e1, e2));
+        assertEquals(1, ex.invoked);
+
+        Element c2 = doc.createElement("bar");
+        e2.appendChild(c2);
+        d = new DOMDifferenceEngine();
+        ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(ev);
+        assertEquals(ComparisonResult.EQUAL, d.compareNodes(e1, e2));
+        assertEquals(0, ex.invoked);
     }
 }

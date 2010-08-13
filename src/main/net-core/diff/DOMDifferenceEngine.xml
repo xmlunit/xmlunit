@@ -18,6 +18,7 @@
        extends="AbstractDifferenceEngine">
 
   <import reference="System"/>
+  <import reference="System.Collections.Generic"/>
   <import reference="System.Xml"/>
 
   <literal><![CDATA[
@@ -234,7 +235,40 @@
 
         private ComparisonResult CompareNodeLists(XmlNodeList control,
                                                   XmlNodeList test) {
-            return ComparisonResult.EQUAL;
+            List<XmlNode> controlList =
+                new List<XmlNode>(net.sf.xmlunit.util.Convert
+                                  .Cast<XmlNode>(control));
+            List<XmlNode> testList =
+                new List<XmlNode>(net.sf.xmlunit.util.Convert
+                                  .Cast<XmlNode>(test));
+            Match lastMatch = new Match(null, -1);
+]]></literal>
+  <lastResultDef/>
+            // if there are no children on either Node, the result is equal
+            lastResult = ComparisonResult.EQUAL;
+  <literal><![CDATA[
+            for (int i = 0; i < controlList.Count; i++) {
+                Match testMatch = FindMatchingNode(controlList[i], testList,
+                                                   lastMatch.index);
+                if (testMatch != null) {
+]]></literal>
+  <compareMethodExpr method="CompareNodes"
+                     controlExpr="controlList[i]"
+                     testExpr="testMatch.node"/>
+  <literal><![CDATA[
+                    lastMatch = testMatch;
+                } else {
+                    lastResult =
+                        Compare(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                               controlList[i], null,
+                                               controlList[i],
+                                               null, null, null));
+]]></literal>
+ <if-return-boilerplate/>
+ <literal><![CDATA[
+                }
+            }
+            return lastResult;
         }
 
         private ComparisonResult CompareAttributes(XmlAttribute control,
@@ -256,6 +290,40 @@
                 return map.GetNamedItem(attrToMatch.LocalName,
                                         attrToMatch.NamespaceURI)
                      as XmlAttribute;
+            }
+        }
+
+        private Match FindMatchingNode(XmlNode searchFor,
+                                       IList<XmlNode> searchIn,
+                                       int indexOfLastMatch) {
+            int searchSize = searchIn.Count;
+            for (int i = indexOfLastMatch + 1; i < searchSize; i++) {
+                if (NodesMatch(searchFor, searchIn[i])) {
+                    return new Match(searchIn[i], i);
+                }
+            }
+            for (int i = 0; i < indexOfLastMatch; i++) {
+                if (NodesMatch(searchFor, searchIn[i])) {
+                    return new Match(searchIn[i], i);
+                }
+            }
+            return null;
+        }
+
+        private bool NodesMatch(XmlNode n1, XmlNode n2) {
+            ComparisonResult r =
+                Compare(new Comparison(ComparisonType.NODE_TYPE,
+                                       n1, null, n1.NodeType,
+                                       n2, null, n2.NodeType));
+            return r == ComparisonResult.EQUAL;
+        }
+
+        internal class Match {
+            internal readonly XmlNode node;
+            internal readonly int index;
+            internal Match(XmlNode match, int index) {
+                this.node = match;
+                this.index = index;
             }
         }
 ]]></literal>

@@ -17,8 +17,10 @@
        summary="Difference engine based on DOM."
        extends="AbstractDifferenceEngine">
 
+  <import reference="java.util.List"/>
   <import reference="javax.xml.transform.Source"/>
   <import reference="net.sf.xmlunit.util.Convert"/>
+  <import reference="net.sf.xmlunit.util.IterableNodeList"/>
   <import reference="org.w3c.dom.Attr"/>
   <import reference="org.w3c.dom.CharacterData"/>
   <import reference="org.w3c.dom.Document"/>
@@ -237,7 +239,36 @@
     }
 
     private ComparisonResult compareNodeLists(NodeList control, NodeList test) {
-        return ComparisonResult.EQUAL;
+        List<Node> controlList = IterableNodeList.asList(control);
+        List<Node> testList = IterableNodeList.asList(test);
+        Match lastMatch = new Match(null, -1);
+]]></literal>
+  <lastResultDef/>
+        // if there are no children on either Node, the result is equal
+        lastResult = ComparisonResult.EQUAL;
+  <literal><![CDATA[
+        for (int i = 0; i < controlList.size(); i++) {
+            Match testMatch = findMatchingNode(controlList.get(i), testList,
+                                               lastMatch.index);
+            if (testMatch != null) {
+]]></literal>
+  <compareMethodExpr method="compareNodes"
+                     controlExpr="controlList.get(i)"
+                     testExpr="testMatch.node"/>
+  <literal><![CDATA[
+                lastMatch = testMatch;
+            } else {
+                lastResult =
+                    compare(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                           controlList.get(i), null,
+                                           controlList.get(i),
+                                           null, null, null));
+]]></literal>
+  <if-return-boilerplate/>
+  <literal><![CDATA[
+            }
+        }
+        return lastResult;
     }
 
     private ComparisonResult compareAttributes(Attr control, Attr test) {
@@ -250,12 +281,47 @@
                                       test, null, test.getValue()));
     }
 
-    private static Attr findMatchingAttr(NamedNodeMap map, Attr attrToMatch) {
+    private static Attr findMatchingAttr(final NamedNodeMap map,
+                                         final Attr attrToMatch) {
         if (attrToMatch.getNamespaceURI() == null) {
             return (Attr) map.getNamedItem(attrToMatch.getName());
         } else {
             return (Attr) map.getNamedItemNS(attrToMatch.getNamespaceURI(),
                                              attrToMatch.getLocalName());
+        }
+    }
+
+    private Match findMatchingNode(final Node searchFor,
+                                   final List<Node> searchIn,
+                                   final int indexOfLastMatch) {
+        final int searchSize = searchIn.size();
+        for (int i = indexOfLastMatch + 1; i < searchSize; i++) {
+            if (nodesMatch(searchFor, searchIn.get(i))) {
+                return new Match(searchIn.get(i), i);
+            }
+        }
+        for (int i = 0; i < indexOfLastMatch; i++) {
+            if (nodesMatch(searchFor, searchIn.get(i))) {
+                return new Match(searchIn.get(i), i);
+            }
+        }
+        return null;
+    }
+
+    private boolean nodesMatch(final Node n1, final Node n2) {
+        ComparisonResult r =
+            compare(new Comparison(ComparisonType.NODE_TYPE,
+                                   n1, null, n1.getNodeType(),
+                                   n2, null, n2.getNodeType()));
+        return r == ComparisonResult.EQUAL;
+    }
+
+    private class Match {
+        private final Node node;
+        private final int index;
+        private Match(Node match, int index) {
+            this.node = match;
+            this.index = index;
         }
     }
 

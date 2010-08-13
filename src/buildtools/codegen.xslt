@@ -122,6 +122,10 @@
         <xsl:call-template name="if-return-boilerplate"/>
    </xsl:template>
 
+   <xsl:template match="if-return-boilerplate">
+        <xsl:call-template name="if-return-boilerplate"/>
+   </xsl:template>
+
    <xsl:template name="if-return-boilerplate">
         if (lastResult == ComparisonResult.CRITICAL) {
             return lastResult;
