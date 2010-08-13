@@ -41,9 +41,9 @@ namespace net.sf.xmlunit.diff {
                 switch (comparison.Type) {
                 case ComparisonType.NODE_TYPE:
                     XmlNodeType control =
-                        (XmlNodeType) comparison.ControlNodeDetails.Value;
+                        (XmlNodeType) comparison.ControlDetails.Value;
                     XmlNodeType test =
-                        (XmlNodeType) comparison.TestNodeDetails.Value;
+                        (XmlNodeType) comparison.TestDetails.Value;
                     if ((control == XmlNodeType.Text && test == XmlNodeType.CDATA)
                         ||
                         (control == XmlNodeType.CDATA && test == XmlNodeType.Text)

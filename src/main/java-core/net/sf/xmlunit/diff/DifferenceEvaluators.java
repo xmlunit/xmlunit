@@ -48,9 +48,9 @@ public final class DifferenceEvaluators {
                     switch (comparison.getType()) {
                     case NODE_TYPE:
                         Short control = (Short) comparison
-                            .getControlNodeDetails().getValue();
+                            .getControlDetails().getValue();
                         Short test = (Short) comparison
-                            .getTestNodeDetails().getValue();
+                            .getTestDetails().getValue();
                         if ((control.equals(TEXT) && test.equals(CDATA))
                             ||
                             (control.equals(CDATA) && test.equals(TEXT))) {

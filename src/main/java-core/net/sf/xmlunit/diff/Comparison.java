@@ -13,37 +13,36 @@
 */
 package net.sf.xmlunit.diff;
 
-import org.w3c.dom.Node;
-
 /**
  * Details of a single comparison XMLUnit has performed.
  */
 public class Comparison {
 
     /**
-     * The details of a Node that took part in the comparision.
+     * The details of a target (usually some representation of an XML
+     * Node) that took part in the comparison.
      */
     public static class Detail {
-        private final Node node;
+        private final Object target;
         private final String xpath;
         private final Object value;
 
-        private Detail(Node n, String x, Object v) {
-            node = n;
+        private Detail(Object n, String x, Object v) {
+            target = n;
             xpath = x;
             value = v;
         }
 
         /**
-         * The actual Node.
+         * The actual target.
          */
-        public Node getNode() { return node; }
+        public Object getTarget() { return target; }
         /**
-         * XPath leading to the Node.
+         * XPath leading to the target.
          */
         public String getXPath() { return xpath; }
         /**
-         * The value for comparision found at the current node.
+         * The value for comparison found at the current target.
          */
         public Object getValue() { return value; }
     }
@@ -51,32 +50,32 @@ public class Comparison {
     private final Detail control, test;
     private final ComparisonType type;
 
-    public Comparison(ComparisonType t, Node controlNode,
+    public Comparison(ComparisonType t, Object controlTarget,
                       String controlXPath, Object controlValue,
-                      Node testNode, String testXPath, Object testValue) {
+                      Object testTarget, String testXPath, Object testValue) {
         type = t;
-        control = new Detail(controlNode, controlXPath, controlValue);
-        test = new Detail(testNode, testXPath, testValue);
+        control = new Detail(controlTarget, controlXPath, controlValue);
+        test = new Detail(testTarget, testXPath, testValue);
     }
 
     /**
-     * The kind of comparision performed.
+     * The kind of comparison performed.
      */
     public ComparisonType getType() {
         return type;
     }
 
     /**
-     * Details of the control node.
+     * Details of the control target.
      */
-    public Detail getControlNodeDetails() {
+    public Detail getControlDetails() {
         return control;
     }
 
     /**
-     * Details of the test node.
+     * Details of the test target.
      */
-    public Detail getTestNodeDetails() {
+    public Detail getTestDetails() {
         return test;
     }
 

@@ -12,8 +12,6 @@
   limitations under the License.
 */
 
-using System.Xml;
-
 namespace net.sf.xmlunit.diff {
 
     /// <summary>
@@ -22,29 +20,30 @@ namespace net.sf.xmlunit.diff {
     public class Comparison {
 
         /// <summary>
-        /// The details of a Node that took part in the comparision.
+        /// The details of a target (usually a representation of an
+        /// XML node) that took part in the comparison.
         /// </summary>
         public sealed class Detail {
-            private readonly XmlNode node;
+            private readonly object target;
             private readonly string xpath;
             private readonly object value;
 
-            internal Detail(XmlNode n, string x, object v) {
-                node = n;
+            internal Detail(object t, string x, object v) {
+                target = t;
                 xpath = x;
                 value = v;
             }
 
             /// <summary>
-            /// The actual Node.
+            /// The actual target.
             /// </summary>
-            public XmlNode Node { get { return node; } }
+            public object Target { get { return target; } }
             /// <summary>
-            /// XPath leading to the Node.
+            /// XPath leading to the target.
             /// </summary>
             public string XPath { get { return xpath; } }
             /// <summary>
-            /// The value for comparision found at the current node.
+            /// The value for comparison found at the current target.
             /// </summary>
             public object Value { get { return value; } }
         }
@@ -52,17 +51,17 @@ namespace net.sf.xmlunit.diff {
         private readonly Detail control, test;
         private readonly ComparisonType type;
 
-        public Comparison(ComparisonType t, XmlNode controlNode,
+        public Comparison(ComparisonType t, object controlTarget,
                           string controlXPath, object controlValue,
-                          XmlNode testNode, string testXPath,
+                          object testTarget, string testXPath,
                           object testValue) {
             type = t;
-            control = new Detail(controlNode, controlXPath, controlValue);
-            test = new Detail(testNode, testXPath, testValue);
+            control = new Detail(controlTarget, controlXPath, controlValue);
+            test = new Detail(testTarget, testXPath, testValue);
         }
 
         /// <summary>
-        /// The kind of comparision performed.
+        /// The kind of comparison performed.
         /// </summary>
         public ComparisonType Type {
             get {
@@ -71,18 +70,18 @@ namespace net.sf.xmlunit.diff {
         }
 
         /// <summary>
-        /// Details of the control node.
+        /// Details of the control target.
         /// </summary>
-        public Detail ControlNodeDetails {
+        public Detail ControlDetails {
             get {
                 return control;
             }
         }
 
         /// <summary>
-        /// Details of the test node.
+        /// Details of the test target.
         /// </summary>
-        public Detail TestNodeDetails {
+        public Detail TestDetails {
             get {
                 return test;
             }

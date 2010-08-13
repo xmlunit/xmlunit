@@ -152,11 +152,11 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                     if (comparison.getType() == ComparisonType.NODE_TYPE) {
                         if (outcome == ComparisonResult.EQUAL
                             || (
-                                comparison.getControlNodeDetails()
-                                .getNode() instanceof CharacterData
+                                comparison.getControlDetails()
+                                .getTarget() instanceof CharacterData
                                 &&
-                                comparison.getTestNodeDetails()
-                                .getNode() instanceof CharacterData
+                                comparison.getTestDetails()
+                                .getTarget() instanceof CharacterData
                                 )) {
                             return ComparisonResult.EQUAL;
                         }
@@ -429,9 +429,9 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                                                 ComparisonResult outcome) {
                     fail("unexpected Comparison of type " + comparison.getType()
                          + " with outcome " + outcome + " and values '"
-                         + comparison.getControlNodeDetails().getValue()
+                         + comparison.getControlDetails().getValue()
                          + "' and '"
-                         + comparison.getTestNodeDetails().getValue() + "'");
+                         + comparison.getTestDetails().getValue() + "'");
                 }
             });
         e1.setAttributeNS("urn:xmlunit:test", "attr1", "value1");

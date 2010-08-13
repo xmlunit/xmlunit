@@ -143,11 +143,9 @@ namespace net.sf.xmlunit.diff {
                 if (comparison.Type == ComparisonType.NODE_TYPE) {
                     if (outcome == ComparisonResult.EQUAL
                         || (
-                            comparison.ControlNodeDetails.Node
-                            is XmlCharacterData
+                            comparison.ControlDetails.Target is XmlCharacterData
                             &&
-                            comparison.TestNodeDetails.Node is XmlCharacterData
-                            )) {
+                            comparison.TestDetails.Target is XmlCharacterData)) {
                         return ComparisonResult.EQUAL;
                     }
                 }
@@ -423,9 +421,9 @@ namespace net.sf.xmlunit.diff {
                                              ComparisonResult r) {
                 Assert.Fail("unexpected Comparison of type " + comp.Type
                             + " with outcome " + r + " and values '"
-                            + comp.ControlNodeDetails.Value
+                            + comp.ControlDetails.Value
                             + "' and '"
-                            + comp.TestNodeDetails.Value + "'");
+                            + comp.TestDetails.Value + "'");
             };
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;

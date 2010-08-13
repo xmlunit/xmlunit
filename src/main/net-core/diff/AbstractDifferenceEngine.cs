@@ -59,8 +59,8 @@ namespace net.sf.xmlunit.diff {
         /// listeners and returns the outcome.
         /// </summary>
         protected internal ComparisonResult Compare(Comparison comp) {
-            object controlValue = comp.ControlNodeDetails.Value;
-            object testValue = comp.TestNodeDetails.Value;
+            object controlValue = comp.ControlDetails.Value;
+            object testValue = comp.TestDetails.Value;
             bool equal = controlValue == null
                 ? testValue == null : controlValue.Equals(testValue);
             ComparisonResult initial =
