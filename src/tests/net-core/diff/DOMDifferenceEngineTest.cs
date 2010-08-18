@@ -482,6 +482,14 @@ namespace net.sf.xmlunit.diff {
             Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
             Assert.AreEqual(1, ex.invoked);
 
+            // symmetric?
+            d = new DOMDifferenceEngine();
+            ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator = ev;
+            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e2, e1));
+            Assert.AreEqual(1, ex.invoked);
+
             XmlElement c2 = doc.CreateElement("bar");
             e2.AppendChild(c2);
             d = new DOMDifferenceEngine();

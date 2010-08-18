@@ -490,6 +490,14 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         assertEquals(ComparisonResult.CRITICAL, d.compareNodes(e1, e2));
         assertEquals(1, ex.invoked);
 
+        // symmetric?
+        d = new DOMDifferenceEngine();
+        ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(ev);
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(e2, e1));
+        assertEquals(1, ex.invoked);
+
         Element c2 = doc.createElement("bar");
         e2.appendChild(c2);
         d = new DOMDifferenceEngine();

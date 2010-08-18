@@ -233,29 +233,37 @@
                                           test, null, test.Data));
         }
 
+        private static readonly object DUMMY = new object();
+
         private ComparisonResult CompareNodeLists(XmlNodeList control,
                                                   XmlNodeList test) {
-            List<XmlNode> controlList =
+            IList<XmlNode> controlList =
                 new List<XmlNode>(net.sf.xmlunit.util.Convert
                                   .Cast<XmlNode>(control));
-            List<XmlNode> testList =
+            IList<XmlNode> testList =
                 new List<XmlNode>(net.sf.xmlunit.util.Convert
                                   .Cast<XmlNode>(test));
-            Match lastMatch = new Match(null, -1);
+            IDictionary<int, object> unmatchedTestIndexes =
+                new SortedDictionary<int, object>();
+            for (int i = 0; i < testList.Count; i++) {
+                unmatchedTestIndexes.Add(i, DUMMY);
+            }
 ]]></literal>
   <lastResultDef/>
+  <literal><![CDATA[
             // if there are no children on either Node, the result is equal
             lastResult = ComparisonResult.EQUAL;
-  <literal><![CDATA[
+            Match lastMatch = new Match(null, -1);
             for (int i = 0; i < controlList.Count; i++) {
                 Match testMatch = FindMatchingNode(controlList[i], testList,
-                                                   lastMatch.index);
+                                                   lastMatch.Index);
                 if (testMatch != null) {
 ]]></literal>
   <compareMethodExpr method="CompareNodes"
                      controlExpr="controlList[i]"
-                     testExpr="testMatch.node"/>
+                     testExpr="testMatch.Node"/>
   <literal><![CDATA[
+                    unmatchedTestIndexes.Remove(testMatch.Index);
                     lastMatch = testMatch;
                 } else {
                     lastResult =
@@ -267,6 +275,15 @@
  <if-return-boilerplate/>
  <literal><![CDATA[
                 }
+            }
+            foreach (int i in unmatchedTestIndexes.Keys) {
+                lastResult =
+                    Compare(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                           null, null, null,
+                                           testList[i], null, testList[i]));
+]]></literal>
+  <if-return-boilerplate/>
+  <literal><![CDATA[
             }
             return lastResult;
         }
@@ -319,11 +336,11 @@
         }
 
         internal class Match {
-            internal readonly XmlNode node;
-            internal readonly int index;
+            internal readonly XmlNode Node;
+            internal readonly int Index;
             internal Match(XmlNode match, int index) {
-                this.node = match;
-                this.index = index;
+                Node = match;
+                Index = index;
             }
         }
 ]]></literal>

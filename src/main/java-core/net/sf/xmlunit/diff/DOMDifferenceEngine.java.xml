@@ -18,6 +18,8 @@
        extends="AbstractDifferenceEngine">
 
   <import reference="java.util.List"/>
+  <import reference="java.util.Set"/>
+  <import reference="java.util.TreeSet"/>
   <import reference="javax.xml.transform.Source"/>
   <import reference="net.sf.xmlunit.util.Convert"/>
   <import reference="net.sf.xmlunit.util.IterableNodeList"/>
@@ -241,13 +243,19 @@
     private ComparisonResult compareNodeLists(NodeList control, NodeList test) {
         List<Node> controlList = IterableNodeList.asList(control);
         List<Node> testList = IterableNodeList.asList(test);
-        Match lastMatch = new Match(null, -1);
+        final int testSize = testList.size();
+        Set<Integer> unmatchedTestIndexes = new TreeSet<Integer>();
+        for (int i = 0; i < testSize; i++) {
+            unmatchedTestIndexes.add(Integer.valueOf(i));
+        }
 ]]></literal>
   <lastResultDef/>
+  <literal><![CDATA[
         // if there are no children on either Node, the result is equal
         lastResult = ComparisonResult.EQUAL;
-  <literal><![CDATA[
-        for (int i = 0; i < controlList.size(); i++) {
+        final int controlSize = controlList.size();
+        Match lastMatch = new Match(null, -1);
+        for (int i = 0; i < controlSize; i++) {
             Match testMatch = findMatchingNode(controlList.get(i), testList,
                                                lastMatch.index);
             if (testMatch != null) {
@@ -256,6 +264,7 @@
                      controlExpr="controlList.get(i)"
                      testExpr="testMatch.node"/>
   <literal><![CDATA[
+                unmatchedTestIndexes.remove(Integer.valueOf(testMatch.index));
                 lastMatch = testMatch;
             } else {
                 lastResult =
@@ -267,6 +276,16 @@
   <if-return-boilerplate/>
   <literal><![CDATA[
             }
+        }
+        for (Integer I : unmatchedTestIndexes) {
+            int i = I.intValue();
+            lastResult =
+                compare(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                       null, null, null,
+                                       testList.get(i), null, testList.get(i)));
+]]></literal>
+  <if-return-boilerplate/>
+  <literal><![CDATA[
         }
         return lastResult;
     }
