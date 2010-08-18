@@ -497,8 +497,21 @@ namespace net.sf.xmlunit.diff {
             d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator = ev;
             Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e2, e1));
             Assert.AreEqual(0, ex.invoked);
         }
 
+        [Test] 
+        public void textAndCDataMatchRecursively() {
+            XmlElement e1 = doc.CreateElement("foo");
+            XmlElement e2 = doc.CreateElement("foo");
+            XmlText fooText = doc.CreateTextNode("foo");
+            e1.AppendChild(fooText);
+            XmlCDataSection fooCDATASection = doc.CreateCDataSection("foo");
+            e2.AppendChild(fooCDATASection);
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e2, e1));
+        }
     }
 }

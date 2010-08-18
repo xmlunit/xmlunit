@@ -332,7 +332,7 @@
             compare(new Comparison(ComparisonType.NODE_TYPE,
                                    n1, null, n1.getNodeType(),
                                    n2, null, n2.getNodeType()));
-        return r == ComparisonResult.EQUAL;
+        return r != ComparisonResult.CRITICAL;
     }
 
     private class Match {

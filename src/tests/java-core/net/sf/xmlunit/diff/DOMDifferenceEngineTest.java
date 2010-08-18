@@ -505,6 +505,19 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         d.addDifferenceListener(ex);
         d.setDifferenceEvaluator(ev);
         assertEquals(ComparisonResult.EQUAL, d.compareNodes(e1, e2));
+        assertEquals(ComparisonResult.EQUAL, d.compareNodes(e2, e1));
         assertEquals(0, ex.invoked);
+    }
+
+    @Test public void textAndCDataMatchRecursively() {
+        Element e1 = doc.createElement("foo");
+        Element e2 = doc.createElement("foo");
+        Text fooText = doc.createTextNode("foo");
+        e1.appendChild(fooText);
+        CDATASection fooCDATASection = doc.createCDATASection("foo");
+        e2.appendChild(fooCDATASection);
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        assertEquals(ComparisonResult.EQUAL, d.compareNodes(e1, e2));
+        assertEquals(ComparisonResult.EQUAL, d.compareNodes(e2, e1));
     }
 }
