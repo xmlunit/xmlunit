@@ -520,4 +520,27 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         assertEquals(ComparisonResult.EQUAL, d.compareNodes(e1, e2));
         assertEquals(ComparisonResult.EQUAL, d.compareNodes(e2, e1));
     }
+
+    @Test public void recursionUsesElementSelector() {
+        Element e1 = doc.createElement("foo");
+        Element e2 = doc.createElement("foo");
+        Element e3 = doc.createElement("bar");
+        e1.appendChild(e3);
+        Element e4 = doc.createElement("baz");
+        e2.appendChild(e4);
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.ELEMENT_TAG_NAME);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(e1, e2));
+        assertEquals(1, ex.invoked);
+
+        d = new DOMDifferenceEngine();
+        d.setElementSelector(ElementSelectors.byName);
+        ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(e1, e2));
+        assertEquals(1, ex.invoked);
+    }
 }

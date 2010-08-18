@@ -328,6 +328,9 @@
         }
 
         private bool NodesMatch(XmlNode n1, XmlNode n2) {
+            if (n1 is XmlElement && n2 is XmlElement) {
+                return ElementSelector(n1 as XmlElement, n2 as XmlElement);
+            }
             ComparisonResult r =
                 Compare(new Comparison(ComparisonType.NODE_TYPE,
                                        n1, null, n1.NodeType,

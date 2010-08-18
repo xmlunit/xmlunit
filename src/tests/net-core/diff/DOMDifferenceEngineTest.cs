@@ -502,7 +502,7 @@ namespace net.sf.xmlunit.diff {
         }
 
         [Test] 
-        public void textAndCDataMatchRecursively() {
+        public void TextAndCDataMatchRecursively() {
             XmlElement e1 = doc.CreateElement("foo");
             XmlElement e2 = doc.CreateElement("foo");
             XmlText fooText = doc.CreateTextNode("foo");
@@ -512,6 +512,32 @@ namespace net.sf.xmlunit.diff {
             DOMDifferenceEngine d = new DOMDifferenceEngine();
             Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
             Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e2, e1));
+        }
+
+        [Test]
+        public void RecursionUsesElementSelector() {
+            XmlElement e1 = doc.CreateElement("foo");
+            XmlElement e2 = doc.CreateElement("foo");
+            XmlElement e3 = doc.CreateElement("bar");
+            e1.AppendChild(e3);
+            XmlElement e4 = doc.CreateElement("baz");
+            e2.AppendChild(e4);
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.ELEMENT_TAG_NAME);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(1, ex.invoked);
+
+            d = new DOMDifferenceEngine();
+            d.ElementSelector = ElementSelectors.ByName;
+            ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(1, ex.invoked);
         }
     }
 }

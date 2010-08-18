@@ -328,6 +328,10 @@
     }
 
     private boolean nodesMatch(final Node n1, final Node n2) {
+        if (n1 instanceof Element && n2 instanceof Element) {
+            return getElementSelector()
+                .canBeCompared((Element) n1, (Element) n2);
+        }
         ComparisonResult r =
             compare(new Comparison(ComparisonType.NODE_TYPE,
                                    n1, null, n1.getNodeType(),
