@@ -265,9 +265,7 @@ namespace net.sf.xmlunit.diff {
             Assert.AreEqual(1, ex.invoked);
 #endif
 
-#if false // need a way to figure out the XML_* differences
-
-            // .NET doesn't like XML 1.1 anyway
+#if false // .NET doesn't like XML 1.1 anyway
             d = new DOMDifferenceEngine();
             ex = new DiffExpecter(ComparisonType.XML_VERSION);
             d.DifferenceListener += ex.ComparisonPerformed;
@@ -287,7 +285,6 @@ namespace net.sf.xmlunit.diff {
             Assert.AreEqual(1, ex.invoked);
 #endif
 
-#if false // need a way to figure out the XML_* differences
             d = new DOMDifferenceEngine();
             ex = new DiffExpecter(ComparisonType.XML_STANDALONE);
             d.DifferenceListener += ex.ComparisonPerformed;
@@ -305,9 +302,7 @@ namespace net.sf.xmlunit.diff {
             Assert.AreEqual(ComparisonResult.CRITICAL,
                             d.CompareNodes(d1, d2));
             Assert.AreEqual(1, ex.invoked);
-#endif
 
-#if false // need a way to figure out the XML_* differences
             d = new DOMDifferenceEngine();
             ex = new DiffExpecter(ComparisonType.XML_ENCODING);
             d.DifferenceListener += ex.ComparisonPerformed;
@@ -332,7 +327,6 @@ namespace net.sf.xmlunit.diff {
             Assert.AreEqual(ComparisonResult.CRITICAL,
                             d.CompareNodes(d1, d2));
             Assert.AreEqual(1, ex.invoked);
-#endif
         }
 
         [Test]

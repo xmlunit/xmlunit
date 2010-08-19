@@ -143,15 +143,12 @@
                      testExpr="testDt"/>
   <literal><![CDATA[
             }
+            XmlDeclaration controlDecl = control.FirstChild as XmlDeclaration;
+            XmlDeclaration testDecl = test.FirstChild as XmlDeclaration;
 ]]></literal>
-<!--
-  <compare type="XML_VERSION" property="getXmlVersion()"/>
-  <compare type="XML_STANDALONE" property="getXmlStandalone()"/>
-  <literal><![CDATA[
-            return Compare(new Comparison(ComparisonType.XML_ENCODING,
-                                          control, null, control.getXmlEncoding(),
-                                          test, null, test.getXmlEncoding()));
--->
+  <compareMethodExpr method="CompareDeclarations"
+                     controlExpr="controlDecl"
+                     testExpr="testDecl"/>
   <literal><![CDATA[
             return lastResult;
         }
@@ -166,6 +163,37 @@
             return Compare(new Comparison(ComparisonType.DOCTYPE_SYSTEM_ID,
                                           control, null, control.SystemId,
                                           test, null, test.SystemId));
+        }
+
+        private ComparisonResult CompareDeclarations(XmlDeclaration control,
+                                                     XmlDeclaration test) {
+]]></literal>
+  <lastResultDef/>
+  <literal><![CDATA[
+            string controlVersion =
+                control == null ? "1.0" : control.Version;
+            string testVersion =
+                test == null ? "1.0" : test.Version;
+]]></literal>
+  <compareExpr type="XML_VERSION"
+               controlExpr="controlVersion"
+               testExpr="testVersion"/>
+  <literal><![CDATA[
+            string controlStandalone =
+                control == null ? string.Empty : control.Standalone;
+            string testStandalone =
+                test == null ? string.Empty : test.Standalone;
+]]></literal>
+  <compareExpr type="XML_STANDALONE"
+               controlExpr="controlStandalone"
+               testExpr="testStandalone"/>
+  <literal><![CDATA[
+            string controlEncoding =
+                control != null ? control.Encoding : string.Empty;
+            string testEncoding = test != null ? test.Encoding : string.Empty;
+            return Compare(new Comparison(ComparisonType.XML_ENCODING,
+                                          control, null, controlEncoding,
+                                          test, null, testEncoding));
         }
 
         private ComparisonResult CompareElements(XmlElement control,
