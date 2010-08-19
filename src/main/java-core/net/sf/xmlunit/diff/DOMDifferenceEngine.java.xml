@@ -17,9 +17,12 @@
        summary="Difference engine based on DOM."
        extends="AbstractDifferenceEngine">
 
+  <import reference="java.util.HashSet"/>
+  <import reference="java.util.LinkedList"/>
   <import reference="java.util.List"/>
   <import reference="java.util.Set"/>
   <import reference="java.util.TreeSet"/>
+  <import reference="javax.xml.XMLConstants"/>
   <import reference="javax.xml.transform.Source"/>
   <import reference="net.sf.xmlunit.util.Convert"/>
   <import reference="net.sf.xmlunit.util.IterableNodeList"/>
@@ -180,51 +183,41 @@
   <lastResultDef/>
   <compare type="ELEMENT_TAG_NAME" property="getTagName()"/>
   <literal><![CDATA[
-        NamedNodeMap controlAttributes = control.getAttributes();
-        NamedNodeMap testAttributes = test.getAttributes();
-        final int controlAttrLen = controlAttributes.getLength();
-        final int testAttrLen = testAttributes.getLength();
+        Attributes controlAttributes = splitAttributes(control.getAttributes());
+        Attributes testAttributes = splitAttributes(test.getAttributes());
+        Set<Attr> foundTestAttributes = new HashSet<Attr>();
 ]]></literal>
   <compareExpr type="ELEMENT_NUM_ATTRIBUTES"
-               controlExpr="controlAttrLen"
-               testExpr="testAttrLen"/>
+               controlExpr="controlAttributes.remainingAttributes.size()"
+               testExpr="testAttributes.remainingAttributes.size()"/>
   <literal><![CDATA[
-        for (int i = 0; i < controlAttrLen; i++) {
-            final Attr controlAttr = (Attr) controlAttributes.item(i);
-            final Attr testAttr = findMatchingAttr(testAttributes, controlAttr);
+        for (Attr controlAttr : controlAttributes.remainingAttributes) {
+            final Attr testAttr =
+                findMatchingAttr(testAttributes.remainingAttributes,
+                                 controlAttr);
 ]]></literal>
   <compareExpr type="ATTR_NAME_LOOKUP"
                controlExpr="Boolean.TRUE"
                testExpr="Boolean.valueOf(testAttr != null)"/>
   <literal><![CDATA[
-        }
-]]></literal>
-  <literal><![CDATA[
-        for (int i = 0; i < testAttrLen; i++) {
-            final Attr testAttr = (Attr) testAttributes.item(i);
-            final Attr controlAttr = findMatchingAttr(controlAttributes,
-                                                      testAttr);
-]]></literal>
-  <compareExpr type="ATTR_NAME_LOOKUP"
-               controlExpr="Boolean.valueOf(controlAttr != null)"
-               testExpr="Boolean.TRUE"/>
-  <literal><![CDATA[
-        }
-]]></literal>
-  <literal><![CDATA[
-        for (int i = 0; i < controlAttrLen; i++) {
-            final Attr controlAttr = (Attr) controlAttributes.item(i);
-            final Attr testAttr = findMatchingAttr(testAttributes, controlAttr);
             if (testAttr != null) {
 ]]></literal>
   <compareMethodExpr method="compareNodes"
                      controlExpr="controlAttr"
                      testExpr="testAttr"/>
   <literal><![CDATA[
+                foundTestAttributes.add(testAttr);
             }
         }
 ]]></literal>
   <literal><![CDATA[
+        for (Attr testAttr : testAttributes.remainingAttributes) {
+]]></literal>
+  <compareExpr type="ATTR_NAME_LOOKUP"
+               controlExpr="Boolean.valueOf(foundTestAttributes.contains(testAttr))"
+               testExpr="Boolean.TRUE"/>
+  <literal><![CDATA[
+        }
         return lastResult;
     }
 
@@ -300,14 +293,58 @@
                                       test, null, test.getValue()));
     }
 
-    private static Attr findMatchingAttr(final NamedNodeMap map,
-                                         final Attr attrToMatch) {
-        if (attrToMatch.getNamespaceURI() == null) {
-            return (Attr) map.getNamedItem(attrToMatch.getName());
-        } else {
-            return (Attr) map.getNamedItemNS(attrToMatch.getNamespaceURI(),
-                                             attrToMatch.getLocalName());
+    private static Attributes splitAttributes(final NamedNodeMap map) {
+        Attr sLoc = (Attr) map.getNamedItemNS(XMLConstants
+                                              .W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                                              "schemaLocation");
+        Attr nNsLoc = (Attr) map.getNamedItemNS(XMLConstants
+                                                .W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                                                "noNamespaceSchemaLocation");
+        List<Attr> rest = new LinkedList<Attr>();
+        final int len = map.getLength();
+        for (int i = 0; i < len; i++) {
+            Attr a = (Attr) map.item(i);
+            if (!XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(a.getNamespaceURI())
+                &&
+               !XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI
+                 .equals(a.getNamespaceURI())) {
+                rest.add(a);
+            }
         }
+        return new Attributes(sLoc, nNsLoc, rest);
+    }
+
+    private static class Attributes {
+        private final Attr schemaLocation;
+        private final Attr noNamespaceSchemaLocation;
+        private final List<Attr> remainingAttributes;
+        private Attributes(Attr schemaLocation, Attr noNamespaceSchemaLocation,
+                           List<Attr> remainingAttributes) {
+            this.schemaLocation = schemaLocation;          
+            this.noNamespaceSchemaLocation = noNamespaceSchemaLocation;
+            this.remainingAttributes = remainingAttributes;     
+        }
+    }
+
+    private static Attr findMatchingAttr(final List<Attr> attrs,
+                                         final Attr attrToMatch) {
+        final boolean hasNs = attrToMatch.getNamespaceURI() != null;
+        final String nsToMatch = attrToMatch.getNamespaceURI();
+        final String nameToMatch = hasNs ? attrToMatch.getLocalName()
+            : attrToMatch.getName();
+        for (Attr a : attrs) {
+            if (((!hasNs && a.getNamespaceURI() == null)
+                 ||
+                 (hasNs && nsToMatch.equals(a.getNamespaceURI())))
+                &&
+                ((hasNs && nameToMatch.equals(a.getLocalName()))
+                 ||
+                 (!hasNs && nameToMatch.equals(a.getName())))
+               ) {
+                return a;
+            }
+        }
+        return null;
     }
 
     private Match findMatchingNode(final Node searchFor,

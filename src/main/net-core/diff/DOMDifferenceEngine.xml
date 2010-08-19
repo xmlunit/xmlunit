@@ -20,8 +20,11 @@
   <import reference="System"/>
   <import reference="System.Collections.Generic"/>
   <import reference="System.Xml"/>
+  <import reference="System.Xml.Schema"/>
 
   <literal><![CDATA[
+
+        private static readonly object DUMMY = new object();
 
         public override void Compare(ISource control, ISource test) {
             if (control == null) {
@@ -171,55 +174,46 @@
   <lastResultDef/>
   <compare type="ELEMENT_TAG_NAME" property="Name"/>
   <literal><![CDATA[
-        XmlAttributeCollection controlAttributes = control.Attributes;
-        XmlAttributeCollection testAttributes = test.Attributes;
-        int controlAttrLen = controlAttributes.Count;
-        int testAttrLen = testAttributes.Count;
+            Attributes controlAttributes = SplitAttributes(control.Attributes);
+            Attributes testAttributes = SplitAttributes(test.Attributes);
+            IDictionary<XmlAttribute, object> foundTestAttributes =
+                new Dictionary<XmlAttribute, object>();
 ]]></literal>
   <compareExpr type="ELEMENT_NUM_ATTRIBUTES"
-               controlExpr="controlAttrLen"
-               testExpr="testAttrLen"/>
+               controlExpr="controlAttributes.RemainingAttributes.Count"
+               testExpr="testAttributes.RemainingAttributes.Count"/>
   <literal><![CDATA[
-        for (int i = 0; i < controlAttrLen; i++) {
-            XmlAttribute controlAttr = controlAttributes[i];
-            XmlAttribute testAttr = FindMatchingAttr(testAttributes,
-                                                     controlAttr);
+            foreach (XmlAttribute controlAttr in controlAttributes.RemainingAttributes) {
+                XmlAttribute testAttr =
+                    FindMatchingAttr(testAttributes.RemainingAttributes,
+                                     controlAttr);
 ]]></literal>
   <compareExpr type="ATTR_NAME_LOOKUP"
                controlExpr="true"
                testExpr="testAttr != null"/>
   <literal><![CDATA[
-        }
-]]></literal>
-  <literal><![CDATA[
-        for (int i = 0; i < testAttrLen; i++) {
-            XmlAttribute testAttr = testAttributes[i];
-            XmlAttribute controlAttr = FindMatchingAttr(controlAttributes,
-                                                        testAttr);
-]]></literal>
-  <compareExpr type="ATTR_NAME_LOOKUP"
-               controlExpr="controlAttr != null"
-               testExpr="true"/>
-  <literal><![CDATA[
-        }
-]]></literal>
-  <literal><![CDATA[
-        for (int i = 0; i < controlAttrLen; i++) {
-            XmlAttribute controlAttr = controlAttributes[i];
-            XmlAttribute testAttr = FindMatchingAttr(testAttributes,
-                                                     controlAttr);
-            if (testAttr != null) {
+                if (testAttr != null) {
 ]]></literal>
   <compareMethodExpr method="CompareNodes"
                      controlExpr="controlAttr"
                      testExpr="testAttr"/>
   <literal><![CDATA[
+                    foundTestAttributes[testAttr] = DUMMY;
+                }
             }
-        }
 ]]></literal>
   <literal><![CDATA[
-        return lastResult;
-    }
+            foreach (XmlAttribute testAttr in testAttributes.RemainingAttributes) {
+]]></literal>
+  <compareExpr type="ATTR_NAME_LOOKUP"
+               controlExpr="foundTestAttributes.ContainsKey(testAttr)"
+               testExpr="true"/>
+  <literal><![CDATA[
+            }
+]]></literal>
+  <literal><![CDATA[
+            return lastResult;
+        }
 
         private ComparisonResult
             CompareProcessingInstructions(XmlProcessingInstruction control,
@@ -232,8 +226,6 @@
                                           control, null, control.Data,
                                           test, null, test.Data));
         }
-
-        private static readonly object DUMMY = new object();
 
         private ComparisonResult CompareNodeLists(XmlNodeList control,
                                                   XmlNodeList test) {
@@ -299,15 +291,56 @@
                                           test, null, test.Value));
         }
 
-        private static XmlAttribute FindMatchingAttr(XmlAttributeCollection map,
-                                                     XmlAttribute attrToMatch) {
-            if (attrToMatch.NamespaceURI == null) {
-                return map.GetNamedItem(attrToMatch.Name) as XmlAttribute;
-            } else {
-                return map.GetNamedItem(attrToMatch.LocalName,
-                                        attrToMatch.NamespaceURI)
-                     as XmlAttribute;
+        private static Attributes SplitAttributes(XmlAttributeCollection map) {
+            XmlAttribute sLoc = map.GetNamedItem("schemaLocation",
+                                                 XmlSchema.InstanceNamespace)
+                as XmlAttribute;
+            XmlAttribute nNsLoc = map.GetNamedItem("noNamespaceSchemaLocation",
+                                                   XmlSchema.InstanceNamespace)
+                as XmlAttribute;
+            List<XmlAttribute> rest = new List<XmlAttribute>();
+            foreach (XmlAttribute a in map) {
+                if (XmlSchema.InstanceNamespace != a.NamespaceURI
+                    &&
+                    "http://www.w3.org/2000/xmlns/" != a.NamespaceURI) {
+                    rest.Add(a);
+                }
             }
+            return new Attributes(sLoc, nNsLoc, rest);
+        }
+
+        internal class Attributes {
+            internal readonly XmlAttribute SchemaLocation;
+            internal readonly XmlAttribute NoNamespaceSchemaLocation;
+            internal readonly IList<XmlAttribute> RemainingAttributes;
+            internal Attributes(XmlAttribute schemaLocation,
+                               XmlAttribute noNamespaceSchemaLocation,
+                               IList<XmlAttribute> remainingAttributes) {
+                this.SchemaLocation = schemaLocation;          
+                this.NoNamespaceSchemaLocation = noNamespaceSchemaLocation;
+                this.RemainingAttributes = remainingAttributes;     
+            }
+        }
+
+        private static XmlAttribute FindMatchingAttr(IList<XmlAttribute> attrs,
+                                                     XmlAttribute attrToMatch) {
+            bool hasNs = !string.IsNullOrEmpty(attrToMatch.NamespaceURI);
+            string nsToMatch = attrToMatch.NamespaceURI;
+            string nameToMatch = hasNs ? attrToMatch.LocalName
+                : attrToMatch.Name;
+            foreach (XmlAttribute a in attrs) {
+                if (((!hasNs && string.IsNullOrEmpty(a.NamespaceURI))
+                     ||
+                     (hasNs && nsToMatch == a.NamespaceURI))
+                    &&
+                    ((hasNs && nameToMatch == a.LocalName)
+                     ||
+                     (!hasNs && nameToMatch == a.Name))
+                   ) {
+                    return a;
+                }
+            }
+            return null;
         }
 
         private Match FindMatchingNode(XmlNode searchFor,

@@ -423,7 +423,8 @@ namespace net.sf.xmlunit.diff {
                             + " with outcome " + r + " and values '"
                             + comp.ControlDetails.Value
                             + "' and '"
-                            + comp.TestDetails.Value + "'");
+                            + comp.TestDetails.Value + "'"
+                            + " on '" + comp.ControlDetails.Target + "'");
             };
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
