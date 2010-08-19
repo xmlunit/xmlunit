@@ -211,6 +211,14 @@
   <literal><![CDATA[
             }
 ]]></literal>
+  <compareExpr type="SCHEMA_LOCATION"
+               controlExpr="controlAttributes.SchemaLocation != null ? controlAttributes.SchemaLocation.Value : null"
+               testExpr="testAttributes.SchemaLocation != null ? testAttributes.SchemaLocation.Value : null"
+               />
+  <compareExpr type="NO_NAMESPACE_SCHEMA_LOCATION"
+               controlExpr="controlAttributes.NoNamespaceSchemaLocation != null ? controlAttributes.NoNamespaceSchemaLocation.Value : null"
+               testExpr="testAttributes.NoNamespaceSchemaLocation != null ? testAttributes.NoNamespaceSchemaLocation.Value : null"
+               />
   <literal><![CDATA[
             return lastResult;
         }
@@ -316,9 +324,9 @@
             internal Attributes(XmlAttribute schemaLocation,
                                XmlAttribute noNamespaceSchemaLocation,
                                IList<XmlAttribute> remainingAttributes) {
-                this.SchemaLocation = schemaLocation;          
+                this.SchemaLocation = schemaLocation;
                 this.NoNamespaceSchemaLocation = noNamespaceSchemaLocation;
-                this.RemainingAttributes = remainingAttributes;     
+                this.RemainingAttributes = remainingAttributes;
             }
         }
 

@@ -543,4 +543,53 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         assertEquals(ComparisonResult.CRITICAL, d.compareNodes(e1, e2));
         assertEquals(1, ex.invoked);
     }
+
+    @Test public void schemaLocationDifferences() {
+        Element e1 = doc.createElement("foo");
+        Element e2 = doc.createElement("foo");
+        e1.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance",
+                          "schemaLocation", "somewhere");
+        e2.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance",
+                          "schemaLocation", "somewhere else");
+
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.SCHEMA_LOCATION);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(new DifferenceEvaluator() {
+                public ComparisonResult evaluate(Comparison comparison,
+                                                 ComparisonResult outcome) {
+                    if (comparison.getType() == ComparisonType.SCHEMA_LOCATION) {
+                        assertEquals(ComparisonResult.DIFFERENT, outcome);
+                        return ComparisonResult.CRITICAL;
+                    }
+                    assertEquals(ComparisonResult.EQUAL, outcome);
+                    return ComparisonResult.EQUAL;
+                }
+            });
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(e1, e2));
+        assertEquals(1, ex.invoked);
+
+        e1 = doc.createElement("foo");
+        e2 = doc.createElement("foo");
+        e1.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance",
+                          "noNamespaceSchemaLocation", "somewhere");
+        e2.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance",
+                          "noNamespaceSchemaLocation", "somewhere else");
+        d = new DOMDifferenceEngine();
+        ex = new DiffExpecter(ComparisonType.NO_NAMESPACE_SCHEMA_LOCATION);
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(new DifferenceEvaluator() {
+                public ComparisonResult evaluate(Comparison comparison,
+                                                 ComparisonResult outcome) {
+                    if (comparison.getType() == ComparisonType.NO_NAMESPACE_SCHEMA_LOCATION) {
+                        assertEquals(ComparisonResult.DIFFERENT, outcome);
+                        return ComparisonResult.CRITICAL;
+                    }
+                    assertEquals(ComparisonResult.EQUAL, outcome);
+                    return ComparisonResult.EQUAL;
+                }
+            });
+        assertEquals(ComparisonResult.CRITICAL, d.compareNodes(e1, e2));
+        assertEquals(1, ex.invoked);
+    }
 }

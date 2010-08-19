@@ -218,6 +218,16 @@
                testExpr="Boolean.TRUE"/>
   <literal><![CDATA[
         }
+]]></literal>
+  <compareExpr type="SCHEMA_LOCATION"
+               controlExpr="controlAttributes.schemaLocation != null ? controlAttributes.schemaLocation.getValue() : null"
+               testExpr="testAttributes.schemaLocation != null ? testAttributes.schemaLocation.getValue() : null"
+               />
+  <compareExpr type="NO_NAMESPACE_SCHEMA_LOCATION"
+               controlExpr="controlAttributes.noNamespaceSchemaLocation != null ? controlAttributes.noNamespaceSchemaLocation.getValue() : null"
+               testExpr="testAttributes.noNamespaceSchemaLocation != null ? testAttributes.noNamespaceSchemaLocation.getValue() : null"
+               />
+  <literal><![CDATA[
         return lastResult;
     }
 
@@ -320,9 +330,9 @@
         private final List<Attr> remainingAttributes;
         private Attributes(Attr schemaLocation, Attr noNamespaceSchemaLocation,
                            List<Attr> remainingAttributes) {
-            this.schemaLocation = schemaLocation;          
+            this.schemaLocation = schemaLocation;
             this.noNamespaceSchemaLocation = noNamespaceSchemaLocation;
-            this.remainingAttributes = remainingAttributes;     
+            this.remainingAttributes = remainingAttributes;
         }
     }
 

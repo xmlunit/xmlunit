@@ -540,5 +540,55 @@ namespace net.sf.xmlunit.diff {
             Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
             Assert.AreEqual(1, ex.invoked);
         }
+
+        [Test]
+        public void SchemaLocationDifferences() {
+            XmlElement e1 = doc.CreateElement("foo");
+            XmlElement e2 = doc.CreateElement("foo");
+            e1.SetAttribute("schemaLocation",
+                            "http://www.w3.org/2001/XMLSchema-instance",
+                            "somewhere");
+            e2.SetAttribute("schemaLocation",
+                            "http://www.w3.org/2001/XMLSchema-instance",
+                            "somewhere else");
+
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.SCHEMA_LOCATION);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator = delegate(Comparison comparison,
+                                             ComparisonResult outcome) {
+                if (comparison.Type == ComparisonType.SCHEMA_LOCATION) {
+                    Assert.AreEqual(ComparisonResult.DIFFERENT, outcome);
+                    return ComparisonResult.CRITICAL;
+                }
+                Assert.AreEqual(ComparisonResult.EQUAL, outcome);
+                return ComparisonResult.EQUAL;
+            };
+            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(1, ex.invoked);
+
+            e1 = doc.CreateElement("foo");
+            e2 = doc.CreateElement("foo");
+            e1.SetAttribute("noNamespaceSchemaLocation",
+                            "http://www.w3.org/2001/XMLSchema-instance",
+                            "somewhere");
+            e2.SetAttribute("noNamespaceSchemaLocation",
+                            "http://www.w3.org/2001/XMLSchema-instance",
+                            "somewhere else");
+            d = new DOMDifferenceEngine();
+            ex = new DiffExpecter(ComparisonType.NO_NAMESPACE_SCHEMA_LOCATION);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator = delegate(Comparison comparison,
+                                             ComparisonResult outcome) {
+                if (comparison.Type == ComparisonType.NO_NAMESPACE_SCHEMA_LOCATION) {
+                    Assert.AreEqual(ComparisonResult.DIFFERENT, outcome);
+                    return ComparisonResult.CRITICAL;
+                }
+                Assert.AreEqual(ComparisonResult.EQUAL, outcome);
+                return ComparisonResult.EQUAL;
+            };
+            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(1, ex.invoked);
+        }
     }
 }
