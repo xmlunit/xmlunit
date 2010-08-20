@@ -12,7 +12,6 @@
   limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using net.sf.xmlunit.input;
@@ -72,12 +71,6 @@ namespace net.sf.xmlunit.util {
                 man.AddNamespace(kv.Key, kv.Value);
             }
             return man;
-        }
-
-        public static IEnumerable<T> Cast<T>(IEnumerable i) {
-            foreach (T t in i) {
-                yield return t;
-            }
         }
     }
 }

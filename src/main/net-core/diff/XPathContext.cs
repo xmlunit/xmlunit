@@ -95,20 +95,10 @@ namespace net.sf.xmlunit.diff {
         public string XPath {
             get {
                 StringBuilder sb = new StringBuilder();
-                bool first = true, second = false;
                 foreach (Level l in path) {
-                    if (!second) {
-                        sb.Append("/");
-                    }
-                    sb.Append(l.Expression);
-                    if (first) {
-                        second = true;
-                    } else {
-                        second = false;
-                    }
-                    first = false;
+                    sb.AppendFormat("/{0}", l.Expression);
                 }
-                return sb.ToString();
+                return sb.Replace("//", "/").ToString();
             }
         }
 

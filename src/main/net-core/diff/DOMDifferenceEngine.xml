@@ -21,6 +21,7 @@
   <import reference="System.Collections.Generic"/>
   <import reference="System.Xml"/>
   <import reference="System.Xml.Schema"/>
+  <import reference="net.sf.xmlunit.util"/>
 
   <literal><![CDATA[
 
@@ -266,11 +267,9 @@
         private ComparisonResult CompareNodeLists(XmlNodeList control,
                                                   XmlNodeList test) {
             IList<XmlNode> controlList =
-                new List<XmlNode>(net.sf.xmlunit.util.Convert
-                                  .Cast<XmlNode>(control));
+                new List<XmlNode>(Linqy.Cast<XmlNode>(control));
             IList<XmlNode> testList =
-                new List<XmlNode>(net.sf.xmlunit.util.Convert
-                                  .Cast<XmlNode>(test));
+                new List<XmlNode>(Linqy.Cast<XmlNode>(test));
             IDictionary<int, object> unmatchedTestIndexes =
                 new SortedDictionary<int, object>();
             for (int i = 0; i < testList.Count; i++) {

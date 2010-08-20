@@ -96,20 +96,10 @@ public class XPathContext {
 
     public String getXPath() {
         StringBuilder sb = new StringBuilder();
-        boolean first = true, second = false;
         for (Level l : path) {
-            if (!second) {
-                sb.append("/");
-            }
-            sb.append(l.expression);
-            if (first) {
-                second = true;
-            } else {
-                second = false;
-            }
-            first = false;
+            sb.append("/").append(l.expression);
         }
-        return sb.toString();
+        return sb.toString().replace("//", "/");
     }
 
     private String getName(QName name) {

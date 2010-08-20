@@ -13,7 +13,6 @@
 */
 package net.sf.xmlunit.util;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.w3c.dom.Node;
@@ -50,20 +49,9 @@ public final class IterableNodeList implements Iterable<Node> {
     }
 
     /**
-     * Turns the iterable into a list.
-     */
-    public static List<Node> asList(IterableNodeList l) {
-        ArrayList<Node> a = new ArrayList<Node>(l.length);
-        for (Node n : l) {
-            a.add(n);
-        }
-        return a;
-    }
-
-    /**
      * Turns the NodeList into a list.
      */
     public static List<Node> asList(NodeList l) {
-        return asList(new IterableNodeList(l));
+        return Linqy.asList(new IterableNodeList(l));
     }
 }

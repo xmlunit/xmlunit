@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using net.sf.xmlunit.util;
 using NUnit.Framework;
 
 namespace net.sf.xmlunit.diff {
@@ -71,17 +72,13 @@ namespace net.sf.xmlunit.diff {
         [Test]
         public void Attributes() {
             XPathContext ctx = new XPathContext();
-            ctx.RegisterChildren(Singleton(new Element("foo")));
+            ctx.RegisterChildren(Linqy.Singleton(new Element("foo")));
             ctx.NavigateToChild(0);
             List<XmlQualifiedName> l = new List<XmlQualifiedName>();
             l.Add(new XmlQualifiedName("bar"));
             ctx.RegisterAttributes(l);
             ctx.NavigateToAttribute(new XmlQualifiedName("bar"));
             Assert.AreEqual("/foo[1]/@bar", ctx.XPath);
-        }
-
-        private static IEnumerable<T> Singleton<T>(T t) {
-            yield return t;
         }
 
         [Test]
@@ -147,7 +144,8 @@ namespace net.sf.xmlunit.diff {
             Dictionary<string, string> m = new Dictionary<string, string>();
             m["urn:foo:bar"] = "bar";
             XPathContext ctx = new XPathContext(m);
-            ctx.RegisterChildren(Singleton(new Element("foo", "urn:foo:bar")));
+            ctx.RegisterChildren(Linqy.Singleton(new Element("foo",
+                                                             "urn:foo:bar")));
             ctx.NavigateToChild(0);
             List<XmlQualifiedName> l = new List<XmlQualifiedName>();
             l.Add(new XmlQualifiedName("baz"));
