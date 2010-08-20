@@ -12,6 +12,8 @@
   limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace net.sf.xmlunit.diff {
 
     /// <summary>
@@ -45,6 +47,17 @@ namespace net.sf.xmlunit.diff {
         /// difference has been found.
         /// </summary>
         DifferenceEvaluator DifferenceEvaluator { set; }
+
+        /// <summary>
+        /// Establish a namespace context mapping from URI to prefix
+        /// that will be used in Comparison.Detail.XPath.
+        /// </summary>
+        /// <remarks>
+        /// Without a namespace context (or with an empty context) the
+        /// XPath expressions will only use local names for elements and
+        /// attributes.
+        /// </remarks>
+        IDictionary<string, string> NamespaceContext { set; }
 
         /// <summary>
         /// Compares two pieces of XML and invokes the registered listeners.

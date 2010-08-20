@@ -13,6 +13,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace net.sf.xmlunit.diff {
 
@@ -52,6 +53,14 @@ namespace net.sf.xmlunit.diff {
         }
 
         public abstract void Compare(ISource control, ISource test);
+
+        private IDictionary<string, string> namespaceContext;
+
+        public IDictionary<string, string> NamespaceContext {
+            set {
+                namespaceContext = value;
+            }
+        }
 
         /// <summary>
         /// Compares the detail values for object equality, lets the

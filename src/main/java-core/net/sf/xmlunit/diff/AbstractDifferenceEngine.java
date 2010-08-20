@@ -13,6 +13,9 @@
 */
 package net.sf.xmlunit.diff;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * Useful base-implementation of some parts of the DifferenceEngine
  * interface.
@@ -22,6 +25,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         new ComparisonListenerSupport();
     private ElementSelector elementSelector = ElementSelectors.Default;
     private DifferenceEvaluator diffEvaluator = DifferenceEvaluators.Default;
+    private Map<String, String> uri2Prefix = Collections.emptyMap();
 
     public void addComparisonListener(ComparisonListener l) {
         if (l == null) {
@@ -66,6 +70,10 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
 
     public DifferenceEvaluator getDifferenceEvaluator() {
         return diffEvaluator;
+    }
+
+    public void setNamespaceContext(Map<String, String> uri2Prefix) {
+        this.uri2Prefix = Collections.unmodifiableMap(uri2Prefix);
     }
 
     /**
