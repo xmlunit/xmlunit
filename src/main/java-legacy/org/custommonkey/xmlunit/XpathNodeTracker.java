@@ -81,7 +81,7 @@ public class XpathNodeTracker implements XMLConstants {
     public XpathNodeTracker() {
         newLevel();
     }
-        
+
     /**
      * Clear state data.
      * Call if required to reuse an existing instance.
@@ -90,7 +90,7 @@ public class XpathNodeTracker implements XMLConstants {
         indentationList.clear();
         indent();
     }
-        
+
     /**
      * Call before examining child nodes one level of indentation into DOM
      *
@@ -140,7 +140,7 @@ public class XpathNodeTracker implements XMLConstants {
             currentEntry = (TrackingEntry) indentationList.get(last);
         }
     }
-        
+
     /**
      * Call when visiting a node whose xpath location needs tracking
      *
@@ -174,7 +174,7 @@ public class XpathNodeTracker implements XMLConstants {
             break;
         }
     }
-        
+
     /**
      * Invoked by {@link #visited visited} when visited is an element,
      * text, CDATA section, comment or processing instruction.
@@ -213,7 +213,7 @@ public class XpathNodeTracker implements XMLConstants {
     public void preloadNodeList(NodeList nodeList) {
         preloadChildren(new IterableNodeList(nodeList));
     }
-                
+
     /**
      * Preload the items in a List by visiting each in turn
      * Required for pieces of test XML whose node children can be visited
@@ -229,7 +229,7 @@ public class XpathNodeTracker implements XMLConstants {
         Iterable<Node> nodes = Linqy.cast(nodeList);
         preloadChildren(nodes);
     }
-                
+
     /**
      * @return the last visited node as an xpath-location String
      */ 
@@ -242,7 +242,7 @@ public class XpathNodeTracker implements XMLConstants {
         }
         return buf.toString();
     }
-        
+
     /**
      * extracts the local name of a node.
      */
@@ -279,24 +279,24 @@ public class XpathNodeTracker implements XMLConstants {
      */
     private static final class Int {
         private int value;
-                
+
         Int(int startAt) {
             value = startAt;
         }
-                
+
         void increment() {
             ++value;
         }
-                
+
         int getValue() {
             return value;
         }
-                
+
         Integer toInteger() {
             return Integer.valueOf(value);
         }
     }
-        
+
     /**
      * Holds node tracking details - one instance is used for each
      * level of indentation in a DOM
@@ -322,7 +322,7 @@ public class XpathNodeTracker implements XMLConstants {
 
         // index of current node obtained from nodeReferenceMap - if any.
         private Integer nodeReferenceLookup = null;
-                
+
         /**
          * Keep a reference to the current visited (non-attribute) node
          * @param visited the non-attribute node visited
@@ -346,7 +346,7 @@ public class XpathNodeTracker implements XMLConstants {
             currentValue = value;
             clearTrackedAttribute();
         }
-                
+
         /**
          * Keep a reference to the visited attribute at the current visited node
          * @param value the attribute visited
@@ -354,14 +354,14 @@ public class XpathNodeTracker implements XMLConstants {
         void trackAttribute(String visited) {
             currentAttribute = visited;
         }
-                                
+
         /**
-         * Clear any reference to the current visited attribute         
+         * Clear any reference to the current visited attribute
          */
         void clearTrackedAttribute() {
             currentAttribute = null;
         }
-                
+
         /**
          * Append the details of the current visited node to a StringBuilder
          * @param buf the StringBuilder to append to
@@ -371,17 +371,17 @@ public class XpathNodeTracker implements XMLConstants {
                 return;
             }
             buf.append(XPATH_SEPARATOR).append(currentValue);
-                        
+
             int value = nodeReferenceLookup == null
                 ? valueMap.get(currentValue).getValue() : nodeReferenceLookup.intValue();
             buf.append(XPATH_NODE_INDEX_START).append(value).append(XPATH_NODE_INDEX_END);
-                        
+
             if (currentAttribute != null) {
                 buf.append(XPATH_SEPARATOR).append(XPATH_ATTRIBUTE_IDENTIFIER)
                     .append(currentAttribute);
             }
         }
-                
+
         /**
          * whether the indices of subsequently tracked nodes should be tracked.
          */
