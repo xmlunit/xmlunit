@@ -16,6 +16,7 @@ package net.sf.xmlunit.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public final class Linqy {
     /**
@@ -37,6 +38,14 @@ public final class Linqy {
         };
     }
 
+    public static <E> Iterable<E> singleton(final E single) {
+        return new Iterable<E>() {
+            public Iterator<E> iterator() {
+                return new OnceOnlyIterator<E>(single);
+            }
+        };
+    }
+
     private static class CastingIterator<E> implements Iterator<E> {
         private final Iterator i;
         private CastingIterator(Iterator i) {
@@ -50,6 +59,27 @@ public final class Linqy {
         }
         public boolean hasNext() {
             return i.hasNext();
+        }
+    }
+
+    private static class OnceOnlyIterator<E> implements Iterator<E> {
+        private final E element;
+        private boolean iterated = false;
+        private OnceOnlyIterator(E element) {
+            this.element = element;
+        }
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+        public E next() {
+            if (iterated) {
+                throw new NoSuchElementException();
+            }
+            iterated = true;
+            return element;
+        }
+        public boolean hasNext() {
+            return !iterated;
         }
     }
 }

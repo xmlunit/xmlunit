@@ -14,9 +14,9 @@
 package net.sf.xmlunit.diff;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import javax.xml.namespace.QName;
+import net.sf.xmlunit.util.Linqy;
 import org.junit.Test;
 import org.w3c.dom.Node;
 
@@ -34,7 +34,30 @@ public class XPathContextTest {
         l.add(new Element("bar"));
         l.add(new Element("foo"));
         XPathContext ctx = new XPathContext();
-        ctx.registerChildren(l);
+        ctx.setChildren(l);
+        ctx.navigateToChild(0);
+        assertEquals("/foo[1]", ctx.getXPath());
+        ctx.navigateToParent();
+        ctx.navigateToChild(1);
+        assertEquals("/foo[2]", ctx.getXPath());
+        ctx.navigateToParent();
+        ctx.navigateToChild(2);
+        assertEquals("/bar[1]", ctx.getXPath());
+        ctx.navigateToParent();
+        ctx.navigateToChild(3);
+        assertEquals("/foo[3]", ctx.getXPath());
+    }
+
+    @Test public void appendChildren() {
+        ArrayList<Element> l = new ArrayList<Element>();
+        l.add(new Element("foo"));
+        l.add(new Element("foo"));
+        XPathContext ctx = new XPathContext();
+        ctx.setChildren(l);
+        l = new ArrayList<Element>();
+        l.add(new Element("bar"));
+        l.add(new Element("foo"));
+        ctx.appendChildren(l);
         ctx.navigateToChild(0);
         assertEquals("/foo[1]", ctx.getXPath());
         ctx.navigateToParent();
@@ -55,10 +78,10 @@ public class XPathContextTest {
         l.add(new Element("bar"));
         l.add(new Element("foo"));
         XPathContext ctx = new XPathContext();
-        ctx.registerChildren(l);
+        ctx.setChildren(l);
         ctx.navigateToChild(0);
         assertEquals("/foo[1]", ctx.getXPath());
-        ctx.registerChildren(l);
+        ctx.setChildren(l);
         ctx.navigateToChild(3);
         assertEquals("/foo[1]/foo[3]", ctx.getXPath());
         ctx.navigateToParent();
@@ -70,11 +93,11 @@ public class XPathContextTest {
 
     @Test public void attributes() {
         XPathContext ctx = new XPathContext();
-        ctx.registerChildren(Collections.singletonList(new Element("foo")));
+        ctx.setChildren(Linqy.singleton(new Element("foo")));
         ctx.navigateToChild(0);
         ArrayList<QName> l = new ArrayList<QName>();
         l.add(new QName("bar"));
-        ctx.registerAttributes(l);
+        ctx.addAttributes(l);
         ctx.navigateToAttribute(new QName("bar"));
         assertEquals("/foo[1]/@bar", ctx.getXPath());
     }
@@ -90,7 +113,7 @@ public class XPathContextTest {
         l.add(new PI());
         l.add(new Text());
         XPathContext ctx = new XPathContext();
-        ctx.registerChildren(l);
+        ctx.setChildren(l);
         ctx.navigateToChild(0);
         assertEquals("/text()[1]", ctx.getXPath());
         ctx.navigateToParent();
@@ -124,7 +147,7 @@ public class XPathContextTest {
         HashMap<String, String> m = new HashMap<String, String>();
         m.put("urn:foo:bar", "bar");
         XPathContext ctx = new XPathContext(m);
-        ctx.registerChildren(l);
+        ctx.setChildren(l);
         ctx.navigateToChild(0);
         assertEquals("/foo[1]", ctx.getXPath());
         ctx.navigateToParent();
@@ -139,14 +162,12 @@ public class XPathContextTest {
         HashMap<String, String> m = new HashMap<String, String>();
         m.put("urn:foo:bar", "bar");
         XPathContext ctx = new XPathContext(m);
-        ctx.registerChildren(Collections.singletonList(new Element("foo",
-                                                                   "urn:foo:bar"))
-                             );
+        ctx.setChildren(Linqy.singleton(new Element("foo", "urn:foo:bar")));
         ctx.navigateToChild(0);
         ArrayList<QName> l = new ArrayList<QName>();
         l.add(new QName("baz"));
         l.add(new QName("urn:foo:bar", "baz"));
-        ctx.registerAttributes(l);
+        ctx.addAttributes(l);
         ctx.navigateToAttribute(new QName("baz"));
         assertEquals("/bar:foo[1]/@baz", ctx.getXPath());
         ctx.navigateToParent();

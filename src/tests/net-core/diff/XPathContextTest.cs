@@ -27,6 +27,30 @@ namespace net.sf.xmlunit.diff {
         }
 
         [Test]
+        public void AppendChildren() {
+            List<Element> l = new List<Element>();
+            l.Add(new Element("foo"));
+            l.Add(new Element("foo"));
+            XPathContext ctx = new XPathContext();
+            ctx.SetChildren(l);
+            l = new List<Element>();
+            l.Add(new Element("bar"));
+            l.Add(new Element("foo"));
+            ctx.AppendChildren(l);
+            ctx.NavigateToChild(0);
+            Assert.AreEqual("/foo[1]", ctx.XPath);
+            ctx.NavigateToParent();
+            ctx.NavigateToChild(1);
+            Assert.AreEqual("/foo[2]", ctx.XPath);
+            ctx.NavigateToParent();
+            ctx.NavigateToChild(2);
+            Assert.AreEqual("/bar[1]", ctx.XPath);
+            ctx.NavigateToParent();
+            ctx.NavigateToChild(3);
+            Assert.AreEqual("/foo[3]", ctx.XPath);
+        }
+
+        [Test]
         public void OneLevelOfElements() {
             List<Element> l = new List<Element>();
             l.Add(new Element("foo"));
@@ -34,7 +58,7 @@ namespace net.sf.xmlunit.diff {
             l.Add(new Element("bar"));
             l.Add(new Element("foo"));
             XPathContext ctx = new XPathContext();
-            ctx.RegisterChildren(l);
+            ctx.SetChildren(l);
             ctx.NavigateToChild(0);
             Assert.AreEqual("/foo[1]", ctx.XPath);
             ctx.NavigateToParent();
@@ -56,10 +80,10 @@ namespace net.sf.xmlunit.diff {
             l.Add(new Element("bar"));
             l.Add(new Element("foo"));
             XPathContext ctx = new XPathContext();
-            ctx.RegisterChildren(l);
+            ctx.SetChildren(l);
             ctx.NavigateToChild(0);
             Assert.AreEqual("/foo[1]", ctx.XPath);
-            ctx.RegisterChildren(l);
+            ctx.SetChildren(l);
             ctx.NavigateToChild(3);
             Assert.AreEqual("/foo[1]/foo[3]", ctx.XPath);
             ctx.NavigateToParent();
@@ -72,11 +96,11 @@ namespace net.sf.xmlunit.diff {
         [Test]
         public void Attributes() {
             XPathContext ctx = new XPathContext();
-            ctx.RegisterChildren(Linqy.Singleton(new Element("foo")));
+            ctx.SetChildren(Linqy.Singleton(new Element("foo")));
             ctx.NavigateToChild(0);
             List<XmlQualifiedName> l = new List<XmlQualifiedName>();
             l.Add(new XmlQualifiedName("bar"));
-            ctx.RegisterAttributes(l);
+            ctx.AddAttributes(l);
             ctx.NavigateToAttribute(new XmlQualifiedName("bar"));
             Assert.AreEqual("/foo[1]/@bar", ctx.XPath);
         }
@@ -93,7 +117,7 @@ namespace net.sf.xmlunit.diff {
             l.Add(new PI());
             l.Add(new Text());
             XPathContext ctx = new XPathContext();
-            ctx.RegisterChildren(l);
+            ctx.SetChildren(l);
             ctx.NavigateToChild(0);
             Assert.AreEqual("/text()[1]", ctx.XPath);
             ctx.NavigateToParent();
@@ -128,7 +152,7 @@ namespace net.sf.xmlunit.diff {
             Dictionary<string, string> m = new Dictionary<string, string>();
             m["urn:foo:bar"] = "bar";
             XPathContext ctx = new XPathContext(m);
-            ctx.RegisterChildren(l);
+            ctx.SetChildren(l);
             ctx.NavigateToChild(0);
             Assert.AreEqual("/foo[1]", ctx.XPath);
             ctx.NavigateToParent();
@@ -144,13 +168,13 @@ namespace net.sf.xmlunit.diff {
             Dictionary<string, string> m = new Dictionary<string, string>();
             m["urn:foo:bar"] = "bar";
             XPathContext ctx = new XPathContext(m);
-            ctx.RegisterChildren(Linqy.Singleton(new Element("foo",
+            ctx.SetChildren(Linqy.Singleton(new Element("foo",
                                                              "urn:foo:bar")));
             ctx.NavigateToChild(0);
             List<XmlQualifiedName> l = new List<XmlQualifiedName>();
             l.Add(new XmlQualifiedName("baz"));
             l.Add(new XmlQualifiedName("baz", "urn:foo:bar"));
-            ctx.RegisterAttributes(l);
+            ctx.AddAttributes(l);
             ctx.NavigateToAttribute(new XmlQualifiedName("baz"));
             Assert.AreEqual("/bar:foo[1]/@baz", ctx.XPath);
             ctx.NavigateToParent();

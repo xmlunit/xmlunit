@@ -28,6 +28,15 @@ public class XPathContext {
     private final Deque<Level> path = new LinkedList<Level>();
     private final Map<String, String> uri2Prefix;
 
+    private static final String COMMENT = "comment()";
+    private static final String PI = "processing-instruction()";
+    private static final String TEXT = "text()";
+    private static final String OPEN = "[";
+    private static final String CLOSE = "]";
+    private static final String SEP = "/";
+    private static final String ATTR = "@";
+    private static final String EMPTY = "";
+
     public XPathContext() {
         this(null);
     }
@@ -38,7 +47,7 @@ public class XPathContext {
         } else {
             this.uri2Prefix = Collections.unmodifiableMap(uri2Prefix);
         }
-        path.addLast(new Level(""));
+        path.addLast(new Level(EMPTY));
     }
 
     public void navigateToChild(int index) {
@@ -53,42 +62,63 @@ public class XPathContext {
         path.removeLast();
     }
 
-    public void registerAttributes(Iterable<? extends QName> attributes) {
+    public void addAttributes(Iterable<? extends QName> attributes) {
         Level current = path.getLast();
         for (QName attribute : attributes) {
             current.attributes.put(attribute,
-                                   new Level("@" + getName(attribute)));
+                                   new Level(ATTR + getName(attribute)));
         }
     }
 
-    public void registerChildren(Iterable<? extends NodeInfo> children) {
+    public void setChildren(Iterable<? extends NodeInfo> children) {
+        Level current = path.getLast();
+        current.children.clear();
+        appendChildren(children);
+    }
+
+    public void appendChildren(Iterable<? extends NodeInfo> children) {
         Level current = path.getLast();
         int comments, pis, texts;
         comments = pis = texts = 0;
         Map<String, Integer> elements = new HashMap<String, Integer>();
+
+        for (Level l : current.children) {
+            String childName = l.expression;
+            if (childName.startsWith(COMMENT)) {
+                comments++;
+            } else if (childName.startsWith(PI)) {
+                pis++;
+            } else if (childName.startsWith(TEXT)) {
+                texts++;
+            } else {
+                childName = childName.substring(0, childName.indexOf(OPEN));
+                add1OrIncrement(childName, elements);
+            }
+        }
+
         for (NodeInfo child : children) {
             Level l = null;
             switch (child.getType()) {
             case Node.COMMENT_NODE:
-                l = new Level("comment()[" + (++comments) + "]");
+                l = new Level(COMMENT + OPEN + (++comments) + CLOSE);
                 break;
             case Node.PROCESSING_INSTRUCTION_NODE:
-                l = new Level("processing-instruction()[" + (++pis) + "]");
+                l = new Level(PI + OPEN + (++pis) + CLOSE);
                 break;
             case Node.CDATA_SECTION_NODE:
             case Node.TEXT_NODE:
-                l = new Level("text()[" + (++texts) + "]");
+                l = new Level(TEXT + OPEN + (++texts) + CLOSE);
                 break;
             case Node.ELEMENT_NODE:
                 String name = getName(child.getName());
-                Integer old = elements.get(name);
-                int index = old == null ? 0 : old.intValue();
-                l = new Level(name + "[" + (++index) + "]");
-                elements.put(name, Integer.valueOf(index));
+                l = new Level(name + OPEN + add1OrIncrement(name, elements)
+                              + CLOSE);
                 break;
             default:
-                throw new IllegalArgumentException("unknown node type " +
-                                                   child.getType());
+                // more or less ignore
+                // FIXME: is this a good thing?
+                l = new Level(EMPTY);
+                break;
             }
             current.children.add(l);
         }
@@ -97,9 +127,9 @@ public class XPathContext {
     public String getXPath() {
         StringBuilder sb = new StringBuilder();
         for (Level l : path) {
-            sb.append("/").append(l.expression);
+            sb.append(SEP).append(l.expression);
         }
-        return sb.toString().replace("//", "/");
+        return sb.toString().replace(SEP + SEP, SEP);
     }
 
     private String getName(QName name) {
@@ -108,7 +138,20 @@ public class XPathContext {
         if (ns != null) {
             p = uri2Prefix.get(ns);
         }
-        return (p == null ? "" : p + ":") + name.getLocalPart();
+        return (p == null ? EMPTY : p + ":") + name.getLocalPart();
+    }
+
+    /**
+     * Increments the value name maps to or adds 1 as value if name
+     * isn't present inside the map.
+     *
+     * @return the new mapping for name
+     */
+    private static int add1OrIncrement(String name, Map<String, Integer> map) {
+        Integer old = map.get(name);
+        int index = old == null ? 1 : (old.intValue() + 1);
+        map.put(name, Integer.valueOf(index));
+        return index;
     }
 
     private static class Level {

@@ -23,6 +23,14 @@ namespace net.sf.xmlunit.diff {
         private readonly LinkedList<Level> path = new LinkedList<Level>();
         private readonly IDictionary<string, string> uri2Prefix;
 
+        private const string COMMENT = "comment()";
+        private const string PI = "processing-instruction()";
+        private const string TEXT = "text()";
+        private const string OPEN = "[";
+        private const string CLOSE = "]";
+        private const string SEP = "/";
+        private const string ATTR = "@";
+
         public XPathContext() : this(null) {
         }
 
@@ -47,46 +55,66 @@ namespace net.sf.xmlunit.diff {
             path.RemoveLast();
         }
 
-        public void RegisterAttributes<Q>(IEnumerable<Q> attributes)
+        public void AddAttributes<Q>(IEnumerable<Q> attributes)
             where Q : XmlQualifiedName {
             Level current = path.Last.Value;
             foreach (XmlQualifiedName attribute in attributes) {
                 current.Attributes[attribute] =
-                    new Level("@" + GetName(attribute));
+                    new Level(ATTR + GetName(attribute));
             }
         }
 
-        public void RegisterChildren<N>(IEnumerable<N> children) 
+        public void SetChildren<N>(IEnumerable<N> children) 
+            where N : INodeInfo {
+            Level current = path.Last.Value;
+            current.Children.Clear();
+            AppendChildren(children);
+        }
+
+        public void AppendChildren<N>(IEnumerable<N> children) 
             where N : INodeInfo {
             Level current = path.Last.Value;
             int comments, pis, texts;
             comments = pis = texts = 0;
             IDictionary<string, int> elements = new Dictionary<string, int>();
+
+            foreach (Level l in current.Children) {
+                string childName = l.Expression;
+                if (childName.StartsWith(COMMENT)) {
+                    comments++;
+                } else if (childName.StartsWith(PI)) {
+                    pis++;
+                } else if (childName.StartsWith(TEXT)) {
+                    texts++;
+                } else {
+                    childName = childName.Substring(0, childName.IndexOf(OPEN));
+                    Add1OrIncrement(childName, elements);
+                }
+            }
+
             foreach (INodeInfo child in children) {
                 Level l = null;
                 switch (child.Type) {
                 case XmlNodeType.Comment:
-                    l = new Level("comment()[" + (++comments) + "]");
+                    l = new Level(COMMENT + OPEN + (++comments) + CLOSE);
                     break;
                 case XmlNodeType.ProcessingInstruction:
-                    l = new Level("processing-instruction()[" + (++pis) + "]");
+                    l = new Level(PI + OPEN + (++pis) + CLOSE);
                     break;
                 case XmlNodeType.CDATA:
                 case XmlNodeType.Text:
-                    l = new Level("text()[" + (++texts) + "]");
+                    l = new Level(TEXT + OPEN + (++texts) + CLOSE);
                     break;
                 case XmlNodeType.Element:
                     string name = GetName(child.Name);
-                    int old;
-                    if (!elements.TryGetValue(name, out old)) {
-                        old = 0;
-                    }
-                    l = new Level(name + "[" + (++old) + "]");
-                    elements[name] = old;
+                    l = new Level(name + OPEN + Add1OrIncrement(name, elements)
+                                  + CLOSE);
                     break;
                 default:
-                    throw new ArgumentException("unknown node type " +
-                                                child.Type);
+                    // more or less ignore
+                    // FIXME: is this a good thing?
+                    l = new Level(string.Empty);
+                    break;
                 }
                 current.Children.Add(l);
             }
@@ -96,9 +124,9 @@ namespace net.sf.xmlunit.diff {
             get {
                 StringBuilder sb = new StringBuilder();
                 foreach (Level l in path) {
-                    sb.AppendFormat("/{0}", l.Expression);
+                    sb.AppendFormat(SEP + "{0}", l.Expression);
                 }
-                return sb.Replace("//", "/").ToString();
+                return sb.Replace(SEP + SEP, SEP).ToString();
             }
         }
 
@@ -109,6 +137,19 @@ namespace net.sf.xmlunit.diff {
                 uri2Prefix.TryGetValue(ns, out p);
             }
             return (p == null ? "" : p + ":") + name.Name;
+        }
+
+        /// <summary>
+        /// Increments the value name maps to or adds 1 as value if name
+        /// isn't present inside the map.
+        /// </summary>
+        /// <returns>the new mapping for name</returns>
+        private static int Add1OrIncrement(string name,
+                                           IDictionary<string, int> map) {
+            int index = 0;
+            map.TryGetValue(name, out index);
+            map[name] = ++index;
+            return index;
         }
 
         internal class Level {
