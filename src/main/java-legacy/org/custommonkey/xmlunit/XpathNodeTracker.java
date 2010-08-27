@@ -35,12 +35,14 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 package org.custommonkey.xmlunit;
 
-import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.xml.namespace.QName;
 
+import net.sf.xmlunit.diff.XPathContext;
 import net.sf.xmlunit.util.IterableNodeList;
 import net.sf.xmlunit.util.Linqy;
 
@@ -72,13 +74,14 @@ import org.w3c.dom.NodeList;
  * @see Difference#getTestNodeDetail
  */
 public class XpathNodeTracker implements XMLConstants {
-    private final List indentationList = new ArrayList();
-    private TrackingEntry currentEntry;
+    private XPathContext ctx;
+    private final Deque<TrackingEntry> levels = new LinkedList<TrackingEntry>();
 
     /**
      * Simple constructor
      */ 
     public XpathNodeTracker() {
+        ctx = new XPathContext();
         newLevel();
     }
 
@@ -87,7 +90,8 @@ public class XpathNodeTracker implements XMLConstants {
      * Call if required to reuse an existing instance.
      */
     public void reset() {
-        indentationList.clear();
+        ctx = new XPathContext();
+        levels.clear();
         indent();
     }
 
@@ -102,15 +106,12 @@ public class XpathNodeTracker implements XMLConstants {
      * reset.</p>
      */
     public void indent() {
-        if (currentEntry != null) {
-            currentEntry.clearTrackedAttribute();
-        }
         newLevel();
     }
 
     private void newLevel() {
-        currentEntry = new TrackingEntry();
-        indentationList.add(currentEntry);
+        clearTrackedAttribute();
+        levels.add(new TrackingEntry());
     }
 
     /**
@@ -118,8 +119,8 @@ public class XpathNodeTracker implements XMLConstants {
      * compare the child nodes.
      */
     public void clearTrackedAttribute() {
-        if (currentEntry != null) {
-            currentEntry.clearTrackedAttribute();
+        if (levels.size() > 0) {
+            levels.getLast().clearTrackedAttribute();
         }
     }
 
@@ -133,11 +134,13 @@ public class XpathNodeTracker implements XMLConstants {
      * outdent}.</p>
      */ 
     public void outdent() {
-        int last = indentationList.size() - 1;
-        indentationList.remove(last);
-        --last;
-        if (last >= 0) {
-            currentEntry = (TrackingEntry) indentationList.get(last);
+        if (levels.size() < 2) {
+            reset();
+        } else {
+            if (levels.size() > 0) {
+                levels.getLast().reset();
+            }
+            levels.removeLast();
         }
     }
 
@@ -187,7 +190,7 @@ public class XpathNodeTracker implements XMLConstants {
      * identifier matching the type of node.
      */
     protected void visitedNode(Node visited, String value) {
-        currentEntry.trackNode(visited, value);
+        levels.getLast().trackNode(visited, value);
     }
 
     /**
@@ -196,7 +199,7 @@ public class XpathNodeTracker implements XMLConstants {
      * @param visited the local name of the attribute.
      */
     protected void visitedAttribute(String visited) {
-        currentEntry.trackAttribute(visited);
+        levels.getLast().trackAttribute(new QName(visited));
     }
 
     /**
@@ -234,13 +237,7 @@ public class XpathNodeTracker implements XMLConstants {
      * @return the last visited node as an xpath-location String
      */ 
     public String toXpathString() {
-        StringBuilder buf = new StringBuilder();
-        TrackingEntry nextEntry;
-        for (Iterator iter = indentationList.iterator(); iter.hasNext(); ) {
-            nextEntry = (TrackingEntry) iter.next();
-            nextEntry.appendEntryTo(buf);
-        }
-        return buf.toString();
+        return ctx.getXPath();
     }
 
     /**
@@ -266,35 +263,11 @@ public class XpathNodeTracker implements XMLConstants {
      * @param nodeList the items to preload
      */
     private void preloadChildren(Iterable<Node> nodeList) {
-        currentEntry.trackNodesAsWellAsValues(true);
+        levels.getLast().trackNodesAsWellAsValues(true);
         for (Node n : nodeList) {
             visited(n);
         }
-        currentEntry.trackNodesAsWellAsValues(false);
-    }
-
-    /**
-     * Wrapper class around a mutable <code>int</code> value
-     * Avoids creation of many immutable <code>Integer</code> objects
-     */
-    private static final class Int {
-        private int value;
-
-        Int(int startAt) {
-            value = startAt;
-        }
-
-        void increment() {
-            ++value;
-        }
-
-        int getValue() {
-            return value;
-        }
-
-        Integer toInteger() {
-            return Integer.valueOf(value);
-        }
+        levels.getLast().trackNodesAsWellAsValues(false);
     }
 
     /**
@@ -304,81 +277,93 @@ public class XpathNodeTracker implements XMLConstants {
      * Provides reference between a String-ified Node value and the
      * xpath index of that value
      */
-    private static final class TrackingEntry {
-        // how often has the key been seen at this level of tracking
-        // (including this occurence)?
-        private final Map<String, Int> valueMap = new HashMap<String, Int>();
-        // the current XPath expression for this level and the current
-        // attribute - if any
-        private String currentValue, currentAttribute;
+    private final class TrackingEntry {
+        // Is the XPathContext looking at an attribute?
+        private boolean atAttribute = false;
+
+        // Has the XPathContext walked down a child node?
+        private boolean atChild = false;
+
+        // the next index usable for a child node
+        private int nextIndex = 0;
 
         // may be used if children of this level have been preloaded,
-        // maps the Node instance to number of same-names XPath
-        // expression that have been seen at this level already.
-        private Map<Node, Integer> nodeReferenceMap;
+        // maps the Node instance to index of the Node in the parent's
+        // child list
+        private Map<Node, Integer> nodeReferenceMap = null;
 
         // node references are tracked while preloading child nodes
         private boolean trackNodeReferences = false;
-
-        // index of current node obtained from nodeReferenceMap - if any.
-        private Integer nodeReferenceLookup = null;
 
         /**
          * Keep a reference to the current visited (non-attribute) node
          * @param visited the non-attribute node visited
          * @param value the String-ified value of the non-attribute node visited
          */
-        void trackNode(Node visited, String value) {
-            if (nodeReferenceMap == null || trackNodeReferences) {
-                Int occurrence = valueMap.get(value);
-                if (occurrence == null) {
-                    occurrence = new Int(1);
-                    valueMap.put(value, occurrence);
-                } else {
-                    occurrence.increment();
-                }
-                if (trackNodeReferences) {
-                    nodeReferenceMap.put(visited, occurrence.toInteger());
-                }
-            } else {
-                nodeReferenceLookup = nodeReferenceMap.get(visited);
+        private void trackNode(final Node visited, final String value) {
+            if (trackNodeReferences && visited != null) {
+                nodeReferenceMap.put(visited, nextIndex++);
             }
-            currentValue = value;
-            clearTrackedAttribute();
+
+            int currentIndex = 0;
+            if (nodeReferenceMap == null || visited == null ||
+                !nodeReferenceMap.containsKey(visited)) {
+                currentIndex = nextIndex++;
+            } else {
+                currentIndex = nodeReferenceMap.get(visited).intValue();
+            }
+            reset();
+
+            if (trackNodeReferences || nodeReferenceMap == null) {
+                XPathContext.NodeInfo i = null;
+                if (visited != null) {
+                    i = new XPathContext.DOMNodeInfo(visited);
+                } else {
+                    // visited is only ever null when invoked from the
+                    // unit tests and in this case it is always
+                    // expected to be an element node
+                    i = new XPathContext.NodeInfo() {
+                            public short getType() { return Node.ELEMENT_NODE; }
+                            public QName getName() { return new QName(value); }
+                        };
+                }
+                ctx.appendChildren(Linqy.singleton(i));
+            }
+
+            if (!trackNodeReferences) {
+                ctx.navigateToChild(currentIndex);
+                atChild = true;
+            }
         }
 
         /**
          * Keep a reference to the visited attribute at the current visited node
          * @param value the attribute visited
          */
-        void trackAttribute(String visited) {
-            currentAttribute = visited;
+        private void trackAttribute(QName visited) {
+            if (atAttribute) {
+                ctx.navigateToParent();
+            }
+            ctx.addAttributes(Linqy.singleton(visited));
+            ctx.navigateToAttribute(visited);
+            atAttribute = true;
         }
 
         /**
          * Clear any reference to the current visited attribute
          */
         void clearTrackedAttribute() {
-            currentAttribute = null;
+            if (atAttribute) {
+                ctx.navigateToParent();
+                atAttribute = false;
+            }
         }
 
-        /**
-         * Append the details of the current visited node to a StringBuilder
-         * @param buf the StringBuilder to append to
-         */
-        void appendEntryTo(StringBuilder buf) {
-            if (currentValue == null) {
-                return;
-            }
-            buf.append(XPATH_SEPARATOR).append(currentValue);
-
-            int value = nodeReferenceLookup == null
-                ? valueMap.get(currentValue).getValue() : nodeReferenceLookup.intValue();
-            buf.append(XPATH_NODE_INDEX_START).append(value).append(XPATH_NODE_INDEX_END);
-
-            if (currentAttribute != null) {
-                buf.append(XPATH_SEPARATOR).append(XPATH_ATTRIBUTE_IDENTIFIER)
-                    .append(currentAttribute);
+        private void reset() {
+            clearTrackedAttribute();
+            if (atChild) {
+                ctx.navigateToParent();
+                atChild = false;
             }
         }
 
