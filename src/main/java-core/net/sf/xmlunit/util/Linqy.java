@@ -46,6 +46,19 @@ public final class Linqy {
         };
     }
 
+    public static <F, T> Iterable<T> map(final Iterable<F> from,
+                                         final Mapper<? super F, T> mapper) {
+        return new Iterable<T>() {
+            public Iterator<T> iterator() {
+                return new MappingIterator<F, T>(from.iterator(), mapper);
+            }
+        };
+    }
+
+    public interface Mapper<F, T> {
+        T map(F from);
+    }
+
     private static class CastingIterator<E> implements Iterator<E> {
         private final Iterator i;
         private CastingIterator(Iterator i) {
@@ -82,4 +95,23 @@ public final class Linqy {
             return !iterated;
         }
     }
+
+    private static class MappingIterator<F, T> implements Iterator<T> {
+        private final Iterator<F> i;
+        private final Mapper<? super F, T> mapper;
+        private MappingIterator(Iterator<F> i, Mapper<? super F, T> mapper) {
+            this.i = i;
+            this.mapper = mapper;
+        }
+        public void remove() {
+            i.remove();
+        }
+        public T next() {
+            return mapper.map(i.next());
+        }
+        public boolean hasNext() {
+            return i.hasNext();
+        }
+    }
+
 }

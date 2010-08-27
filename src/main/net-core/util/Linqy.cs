@@ -30,5 +30,13 @@ namespace net.sf.xmlunit.util {
             yield return t;
         }
 
+        public delegate T Mapper<F, T>(F from);
+
+        public static IEnumerable<T> Map<F, T>(IEnumerable<F> from,
+                                               Mapper<F, T> mapper) {
+            foreach (F f in from) {
+                yield return mapper(f);
+            }
+        }
     }
 }

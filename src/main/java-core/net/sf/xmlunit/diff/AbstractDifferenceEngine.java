@@ -93,4 +93,8 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         listeners.fireComparisonPerformed(comp, altered);
         return altered;
     }
+
+    protected static String getXPath(XPathContext ctx) {
+        return ctx == null ? null : ctx.getXPath();
+    }
 }

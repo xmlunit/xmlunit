@@ -95,6 +95,7 @@
       <param name="implements" expression="implements"/>
       <param name="summaryStart" expression="/** "/>
       <param name="summaryEnd" expression="*/"/>
+      <param name="getXPath" expression="getXPath"/>
 
       <param name="compareMethod" expression="compare"/>
     </xslt>

@@ -27,6 +27,7 @@
    <xsl:param name="implements"/>
    <xsl:param name="summaryStart"/>
    <xsl:param name="summaryEnd"/>
+   <xsl:param name="getXPath"/>
 
    <xsl:template match="class">
 /*
@@ -95,9 +96,9 @@
    <xsl:template match="compare">
         lastResult =
             <xsl:value-of select="$compareMethod"/>(new Comparison(ComparisonType.<xsl:value-of select="@type"/>,
-                                   control, null,
+                                   control, <xsl:value-of select="$getXPath"/>(controlContext),
                                    control.<xsl:value-of select="@property"/>,
-                                   test, null,
+                                   test, <xsl:value-of select="$getXPath"/>(testContext),
                                    test.<xsl:value-of select="@property"/>));
         <xsl:call-template name="if-return-boilerplate"/>
    </xsl:template>
@@ -105,20 +106,22 @@
    <xsl:template match="compareExpr">
         lastResult =
             <xsl:value-of select="$compareMethod"/>(new Comparison(ComparisonType.<xsl:value-of select="@type"/>,
-                                   control, null,
+                                   control, <xsl:value-of select="$getXPath"/>(controlContext),
                                    <xsl:value-of select="@controlExpr"/>,
-                                   test, null,
+                                   test, <xsl:value-of select="$getXPath"/>(testContext),
                                    <xsl:value-of select="@testExpr"/>));
         <xsl:call-template name="if-return-boilerplate"/>
    </xsl:template>
 
    <xsl:template match="compareMethod">
-        lastResult = <xsl:value-of select="@method"/>(control, test);
+        lastResult = <xsl:value-of select="@method"/>(control, controlContext,
+                                                      test, testContext);
         <xsl:call-template name="if-return-boilerplate"/>
    </xsl:template>
 
    <xsl:template match="compareMethodExpr">
-        lastResult = <xsl:value-of select="@method"/>(<xsl:value-of select="@controlExpr"/>, <xsl:value-of select="@testExpr"/>);
+        lastResult = <xsl:value-of select="@method"/>(<xsl:value-of select="@controlExpr"/>, controlContext,
+                                                      <xsl:value-of select="@testExpr"/>, testContext);
         <xsl:call-template name="if-return-boilerplate"/>
    </xsl:template>
 

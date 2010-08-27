@@ -90,6 +90,7 @@
         <parameter name="implements" value=":"/>
         <parameter name="summaryStart" value="/// &lt;summary&gt;"/>
         <parameter name="summaryEnd" value="/// &lt;/summary&gt;"/>
+        <parameter name="getXPath" value="GetXPath"/>
 
         <parameter name="compareMethod" value="Compare"/>
       </parameters>

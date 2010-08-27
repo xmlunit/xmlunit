@@ -31,10 +31,26 @@ namespace net.sf.xmlunit.diff {
             internal int invoked = 0;
             private readonly int expectedInvocations;
             private readonly ComparisonType type;
+            private readonly bool withXPath;
+            private readonly string controlXPath;
+            private readonly string testXPath;
             internal DiffExpecter(ComparisonType type) : this(type, 1) { }
-            internal DiffExpecter(ComparisonType type, int expected) {
+
+            internal DiffExpecter(ComparisonType type, int expected)
+                : this(type, expected, false, null, null) { }
+
+            internal DiffExpecter(ComparisonType type, string controlXPath,
+                                  string testXPath)
+                : this(type, 1, true, controlXPath, testXPath) { }
+            
+            private DiffExpecter(ComparisonType type, int expected,
+                                 bool withXPath, string controlXPath,
+                                 string testXPath) {
                 this.type = type;
                 this.expectedInvocations = expected;
+                this.withXPath = withXPath;
+                this.controlXPath = controlXPath;
+                this.testXPath = testXPath;
             }
             public void ComparisonPerformed(Comparison comparison,
                                             ComparisonResult outcome) {
@@ -42,6 +58,14 @@ namespace net.sf.xmlunit.diff {
                 invoked++;
                 Assert.AreEqual(type, comparison.Type);
                 Assert.AreEqual(ComparisonResult.CRITICAL, outcome);
+                if (withXPath) {
+                    Assert.AreEqual(controlXPath,
+                                    comparison.ControlDetails.XPath,
+                                    "Control XPath");
+                    Assert.AreEqual(testXPath,
+                                    comparison.TestDetails.XPath,
+                                    "Test XPath");
+                }
             }
         }
 
@@ -61,7 +85,9 @@ namespace net.sf.xmlunit.diff {
                 DifferenceEvaluators.DefaultStopWhenDifferent;
             Assert.AreEqual(ComparisonResult.CRITICAL,
                             d.CompareNodes(doc.CreateElement("x"),
-                                           doc.CreateComment("x")));
+                                           new XPathContext(),
+                                           doc.CreateComment("x"),
+                                           new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
         }
 
@@ -76,7 +102,9 @@ namespace net.sf.xmlunit.diff {
                 DifferenceEvaluators.DefaultStopWhenDifferent;
             Assert.AreEqual(ComparisonResult.EQUAL,
                             d.CompareNodes(doc.CreateElement("x"),
-                                           doc.CreateElement("x")));
+                                           new XPathContext(),
+                                           doc.CreateElement("x"),
+                                           new XPathContext()));
         }
 
         [Test]
@@ -88,7 +116,9 @@ namespace net.sf.xmlunit.diff {
                 DifferenceEvaluators.DefaultStopWhenDifferent;
             Assert.AreEqual(ComparisonResult.CRITICAL,
                             d.CompareNodes(doc.CreateElement("y", "x"),
-                                           doc.CreateElement("y", "z")));
+                                           new XPathContext(),
+                                           doc.CreateElement("y", "z"),
+                                           new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
         }
 
@@ -108,7 +138,9 @@ namespace net.sf.xmlunit.diff {
             };
             Assert.AreEqual(ComparisonResult.CRITICAL,
                             d.CompareNodes(doc.CreateElement("x:y", "x"),
-                                           doc.CreateElement("z:y", "x")));
+                                           new XPathContext(),
+                                           doc.CreateElement("z:y", "x"),
+                                           new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
         }
 
@@ -122,14 +154,22 @@ namespace net.sf.xmlunit.diff {
                 DifferenceEvaluators.DefaultStopWhenDifferent;
             XmlElement e1 = doc.CreateElement("x");
             XmlElement e2 = doc.CreateElement("x");
-            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
             e1.AppendChild(doc.CreateElement("x"));
-            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
             e2.AppendChild(doc.CreateElement("x"));
-            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
             e2.AppendChild(doc.CreateElement("x"));
-            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
             Assert.AreEqual(2, ex.invoked);
         }
 
@@ -161,42 +201,60 @@ namespace net.sf.xmlunit.diff {
             XmlCDataSection barCDataSection = doc.CreateCDataSection("bar");
 
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.CompareNodes(fooComment, fooComment));
+                            d.CompareNodes(fooComment, new XPathContext(),
+                                           fooComment, new XPathContext()));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(fooComment, barComment));
+                            d.CompareNodes(fooComment, new XPathContext(),
+                                           barComment, new XPathContext()));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.CompareNodes(fooText, fooText));
+                            d.CompareNodes(fooText, new XPathContext(),
+                                           fooText, new XPathContext()));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(fooText, barText));
+                            d.CompareNodes(fooText, new XPathContext(),
+                                           barText, new XPathContext()));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.CompareNodes(fooCDataSection, fooCDataSection));
+                            d.CompareNodes(fooCDataSection, new XPathContext(),
+                                           fooCDataSection, new XPathContext()));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(fooCDataSection, barCDataSection));
+                            d.CompareNodes(fooCDataSection, new XPathContext(),
+                                           barCDataSection, new XPathContext()));
 
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.CompareNodes(fooComment, fooText));
+                            d.CompareNodes(fooComment, new XPathContext(),
+                                           fooText, new XPathContext()));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(fooComment, barText));
+                            d.CompareNodes(fooComment, new XPathContext(),
+                                           barText, new XPathContext()));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.CompareNodes(fooComment, fooCDataSection));
+                            d.CompareNodes(fooComment, new XPathContext(),
+                                           fooCDataSection, new XPathContext()));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(fooComment, barCDataSection));
+                            d.CompareNodes(fooComment, new XPathContext(),
+                                           barCDataSection, new XPathContext()));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.CompareNodes(fooText, fooComment));
+                            d.CompareNodes(fooText, new XPathContext(),
+                                           fooComment, new XPathContext()));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(fooText, barComment));
+                            d.CompareNodes(fooText, new XPathContext(),
+                                           barComment, new XPathContext()));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.CompareNodes(fooText, fooCDataSection));
+                            d.CompareNodes(fooText, new XPathContext(),
+                                           fooCDataSection, new XPathContext()));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(fooText, barCDataSection));
+                            d.CompareNodes(fooText, new XPathContext(),
+                                           barCDataSection, new XPathContext()));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.CompareNodes(fooCDataSection, fooText));
+                            d.CompareNodes(fooCDataSection, new XPathContext(),
+                                           fooText, new XPathContext()));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(fooCDataSection, barText));
+                            d.CompareNodes(fooCDataSection, new XPathContext(),
+                                           barText, new XPathContext()));
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.CompareNodes(fooCDataSection, fooComment));
+                            d.CompareNodes(fooCDataSection, new XPathContext(),
+                                           fooComment, new XPathContext()));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(fooCDataSection, barComment));
+                            d.CompareNodes(fooCDataSection, new XPathContext(),
+                                           barComment, new XPathContext()));
             Assert.AreEqual(9, ex.invoked);
         }
 
@@ -214,9 +272,11 @@ namespace net.sf.xmlunit.diff {
             XmlProcessingInstruction bar1 = doc.CreateProcessingInstruction("bar",
                                                                             "1");
             Assert.AreEqual(ComparisonResult.EQUAL,
-                            d.CompareNodes(foo1, foo1));
+                            d.CompareNodes(foo1, new XPathContext(),
+                                           foo1, new XPathContext()));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(foo1, bar1));
+                            d.CompareNodes(foo1, new XPathContext(),
+                                           bar1, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 
             d = new DOMDifferenceEngine();
@@ -226,9 +286,12 @@ namespace net.sf.xmlunit.diff {
                 DifferenceEvaluators.DefaultStopWhenDifferent;
             XmlProcessingInstruction foo2 = doc.CreateProcessingInstruction("foo",
                                                                             "2");
-            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(foo1, foo1));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(foo1, new XPathContext(),
+                                           foo1, new XPathContext()));
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(foo1, foo2));
+                            d.CompareNodes(foo1, new XPathContext(),
+                                           foo2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
         }
 
@@ -261,7 +324,8 @@ namespace net.sf.xmlunit.diff {
                                              + "<Book/>")
                             .Build());
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(d1, d2));
+                            d.CompareNodes(d1, new XPathContext(),
+                                           d2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 #endif
 
@@ -281,7 +345,8 @@ namespace net.sf.xmlunit.diff {
                                              + " encoding=\"UTF-8\"?>"
                                              + "<Book/>").Build());
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(d1, d2));
+                            d.CompareNodes(d1, new XPathContext(),
+                                           d2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 #endif
 
@@ -300,7 +365,8 @@ namespace net.sf.xmlunit.diff {
                                              + " standalone=\"no\"?>"
                                              + "<Book/>").Build());
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(d1, d2));
+                            d.CompareNodes(d1, new XPathContext(),
+                                           d2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 
             d = new DOMDifferenceEngine();
@@ -325,7 +391,8 @@ namespace net.sf.xmlunit.diff {
                                              + " encoding=\"UTF-16\"?>"
                                              + "<Book/>").Build());
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(d1, d2));
+                            d.CompareNodes(d1, new XPathContext(),
+                                           d2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
         }
 
@@ -344,7 +411,8 @@ namespace net.sf.xmlunit.diff {
                                                          TestResources.BOOK_DTD,
                                                          null);
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(dt1, dt2));
+                            d.CompareNodes(dt1, new XPathContext(),
+                                           dt2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 
             d = new DOMDifferenceEngine();
@@ -355,7 +423,8 @@ namespace net.sf.xmlunit.diff {
             dt2 = doc.CreateDocumentType("name", "pub2",
                                          TestResources.BOOK_DTD, null);
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(dt1, dt2));
+                            d.CompareNodes(dt1, new XPathContext(),
+                                           dt2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 
             d = new DOMDifferenceEngine();
@@ -373,7 +442,8 @@ namespace net.sf.xmlunit.diff {
             dt2 = doc.CreateDocumentType("name", "pub",
                                          TestResources.TEST_DTD, null);
             Assert.AreEqual(ComparisonResult.CRITICAL,
-                            d.CompareNodes(dt1, dt2));
+                            d.CompareNodes(dt1, new XPathContext(),
+                                           dt2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
         }
 
@@ -388,8 +458,12 @@ namespace net.sf.xmlunit.diff {
             XmlElement e1 = doc.CreateElement("foo");
             XmlElement e2 = doc.CreateElement("foo");
             XmlElement e3 = doc.CreateElement("bar");
-            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
-            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e3));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e3, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 
             d = new DOMDifferenceEngine();
@@ -398,16 +472,21 @@ namespace net.sf.xmlunit.diff {
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
             e1.SetAttribute("attr1", "value1");
-            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 
             d = new DOMDifferenceEngine();
-            ex = new DiffExpecter(ComparisonType.ATTR_NAME_LOOKUP);
+            ex = new DiffExpecter(ComparisonType.ATTR_NAME_LOOKUP,
+                                  "/@attr1", "/");
             d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
             e2.SetAttribute("attr1", "urn:xmlunit:test", "value1");
-            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 
             d = new DOMDifferenceEngine();
@@ -424,7 +503,9 @@ namespace net.sf.xmlunit.diff {
                 DifferenceEvaluators.DefaultStopWhenDifferent;
             e1.SetAttribute("attr1", "urn:xmlunit:test", "value1");
             e2.SetAttribute("attr1", null, "value1");
-            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
         }
 
         [Test]
@@ -438,7 +519,9 @@ namespace net.sf.xmlunit.diff {
             d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator = DifferenceEvaluators.Accept;
             a2.Value = string.Empty;
-            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(a1, a2));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(a1, new XPathContext(),
+                                           a2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 #endif
 
@@ -451,8 +534,12 @@ namespace net.sf.xmlunit.diff {
             a1.Value = "foo";
             a2.Value = "foo";
             a3.Value = "bar";
-            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(a1, a2));
-            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(a1, a3));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(a1, new XPathContext(),
+                                           a2, new XPathContext()));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(a1, new XPathContext(),
+                                           a3, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
         }
 
@@ -463,7 +550,8 @@ namespace net.sf.xmlunit.diff {
             XmlElement c1 = doc.CreateElement("bar");
             e1.AppendChild(c1);
             DOMDifferenceEngine d = new DOMDifferenceEngine();
-            DiffExpecter ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP);
+            DiffExpecter ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP,
+                                               "/bar[1]", null);
             d.DifferenceListener += ex.ComparisonPerformed;
             DifferenceEvaluator ev = delegate(Comparison comparison,
                                               ComparisonResult outcome) {
@@ -474,15 +562,20 @@ namespace net.sf.xmlunit.diff {
                                                                      outcome);
             };
             d.DifferenceEvaluator = ev;
-            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 
             // symmetric?
             d = new DOMDifferenceEngine();
-            ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP);
+            ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP,
+                                  null, "/bar[1]");
             d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator = ev;
-            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e2, e1));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(e2, new XPathContext(),
+                                           e1, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 
             XmlElement c2 = doc.CreateElement("bar");
@@ -491,8 +584,12 @@ namespace net.sf.xmlunit.diff {
             ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP);
             d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator = ev;
-            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
-            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e2, e1));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(e2, new XPathContext(),
+                                           e1, new XPathContext()));
             Assert.AreEqual(0, ex.invoked);
         }
 
@@ -505,8 +602,12 @@ namespace net.sf.xmlunit.diff {
             XmlCDataSection fooCDATASection = doc.CreateCDataSection("foo");
             e2.AppendChild(fooCDATASection);
             DOMDifferenceEngine d = new DOMDifferenceEngine();
-            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e1, e2));
-            Assert.AreEqual(ComparisonResult.EQUAL, d.CompareNodes(e2, e1));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(e2, new XPathContext(),
+                                           e1, new XPathContext()));
         }
 
         [Test]
@@ -518,11 +619,14 @@ namespace net.sf.xmlunit.diff {
             XmlElement e4 = doc.CreateElement("baz");
             e2.AppendChild(e4);
             DOMDifferenceEngine d = new DOMDifferenceEngine();
-            DiffExpecter ex = new DiffExpecter(ComparisonType.ELEMENT_TAG_NAME);
+            DiffExpecter ex = new DiffExpecter(ComparisonType.ELEMENT_TAG_NAME,
+                                               "/bar[1]", "/baz[1]");
             d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
-            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 
             d = new DOMDifferenceEngine();
@@ -531,7 +635,9 @@ namespace net.sf.xmlunit.diff {
             d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
-            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
         }
 
@@ -558,7 +664,9 @@ namespace net.sf.xmlunit.diff {
                 Assert.AreEqual(ComparisonResult.EQUAL, outcome);
                 return ComparisonResult.EQUAL;
             };
-            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
 
             e1 = doc.CreateElement("foo");
@@ -581,7 +689,9 @@ namespace net.sf.xmlunit.diff {
                 Assert.AreEqual(ComparisonResult.EQUAL, outcome);
                 return ComparisonResult.EQUAL;
             };
-            Assert.AreEqual(ComparisonResult.CRITICAL, d.CompareNodes(e1, e2));
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
         }
     }

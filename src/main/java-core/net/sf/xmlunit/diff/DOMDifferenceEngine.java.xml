@@ -23,9 +23,12 @@
   <import reference="java.util.Set"/>
   <import reference="java.util.TreeSet"/>
   <import reference="javax.xml.XMLConstants"/>
+  <import reference="javax.xml.namespace.QName"/>
   <import reference="javax.xml.transform.Source"/>
   <import reference="net.sf.xmlunit.util.Convert"/>
   <import reference="net.sf.xmlunit.util.IterableNodeList"/>
+  <import reference="net.sf.xmlunit.util.Linqy"/>
+  <import reference="net.sf.xmlunit.util.Nodes"/>
   <import reference="org.w3c.dom.Attr"/>
   <import reference="org.w3c.dom.CharacterData"/>
   <import reference="org.w3c.dom.Document"/>
@@ -44,7 +47,8 @@
         if (test == null) {
             throw new IllegalArgumentException("test must not be null");
         }
-        compareNodes(Convert.toNode(control), Convert.toNode(test));
+        compareNodes(Convert.toNode(control), new XPathContext(),
+                     Convert.toNode(test), new XPathContext());
     }
 
     /**
@@ -59,7 +63,8 @@
      *
      * <p>package private to support tests.</p>
      */
-    ComparisonResult compareNodes(Node control, Node test) {
+    ComparisonResult compareNodes(Node control, XPathContext controlContext,
+                                  Node test, XPathContext testContext) {
 ]]></literal>
   <lastResultDef/>
   <compare type="NODE_TYPE" property="getNodeType()"/>
@@ -74,7 +79,14 @@
                testExpr="testChildren.getLength()"/>
   <compareMethod method="nodeTypeSpecificComparison"/>
   <literal><![CDATA[
-        return compareNodeLists(controlChildren, testChildren);
+        controlContext
+            .setChildren(Linqy.map(new IterableNodeList(controlChildren),
+                                   TO_NODE_INFO));
+        testContext
+            .setChildren(Linqy.map(new IterableNodeList(testChildren),
+                                   TO_NODE_INFO));
+        return compareNodeLists(controlChildren, controlContext,
+                                testChildren, testContext);
     }
 
     /**
@@ -84,45 +96,50 @@
      * <p>package private to support tests.</p>
      */
     private ComparisonResult nodeTypeSpecificComparison(Node control,
-                                                        Node test) {
+                                                        XPathContext controlContext,
+                                                        Node test,
+                                                        XPathContext testContext) {
         switch (control.getNodeType()) {
         case Node.CDATA_SECTION_NODE:
         case Node.COMMENT_NODE:
         case Node.TEXT_NODE:
             if (test instanceof CharacterData) {
                 return compareCharacterData((CharacterData) control,
-                                            (CharacterData) test);
+                                            controlContext,
+                                            (CharacterData) test, testContext);
             }
             break;
         case Node.DOCUMENT_NODE:
             if (test instanceof Document) {
-                return compareDocuments((Document) control,
-                                        (Document) test);
+                return compareDocuments((Document) control, controlContext,
+                                        (Document) test, testContext);
             }
             break;
         case Node.ELEMENT_NODE:
             if (test instanceof Element) {
-                return compareElements((Element) control,
-                                       (Element) test);
+                return compareElements((Element) control, controlContext,
+                                       (Element) test, testContext);
             }
             break;
         case Node.PROCESSING_INSTRUCTION_NODE:
             if (test instanceof ProcessingInstruction) {
                 return
                     compareProcessingInstructions((ProcessingInstruction) control,
-                                                  (ProcessingInstruction) test);
+                                                  controlContext,
+                                                  (ProcessingInstruction) test,
+                                                  testContext);
             }
             break;
         case Node.DOCUMENT_TYPE_NODE:
             if (test instanceof DocumentType) {
-                return compareDocTypes((DocumentType) control,
-                                       (DocumentType) test);
+                return compareDocTypes((DocumentType) control, controlContext,
+                                       (DocumentType) test, testContext);
             }
             break;
         case Node.ATTRIBUTE_NODE:
             if (test instanceof Attr) {
-                return compareAttributes((Attr) control,
-                                         (Attr) test);
+                return compareAttributes((Attr) control, controlContext,
+                                         (Attr) test, testContext);
             }
             break;
         }
@@ -133,14 +150,20 @@
      * Compares textual content.
      */
     private ComparisonResult compareCharacterData(CharacterData control,
-                                                  CharacterData test) {
+                                                  XPathContext controlContext,
+                                                  CharacterData test,
+                                                  XPathContext testContext) {
         return compare(new Comparison(ComparisonType.TEXT_VALUE, control,
-                                      null, control.getData(),
-                                      test, null, test.getData()));
+                                      getXPath(controlContext),
+                                      control.getData(),
+                                      test, getXPath(testContext),
+                                      test.getData()));
     }
 
     private ComparisonResult compareDocuments(Document control,
-                                              Document test) {
+                                              XPathContext controlContext,
+                                              Document test,
+                                              XPathContext testContext) {
         DocumentType controlDt = control.getDoctype();
         DocumentType testDt = test.getDoctype();
 ]]></literal>
@@ -161,12 +184,16 @@
   <compare type="XML_STANDALONE" property="getXmlStandalone()"/>
   <literal><![CDATA[
         return compare(new Comparison(ComparisonType.XML_ENCODING,
-                                      control, null, control.getXmlEncoding(),
-                                      test, null, test.getXmlEncoding()));
+                                      control, getXPath(controlContext),
+                                      control.getXmlEncoding(),
+                                      test, getXPath(testContext),
+                                      test.getXmlEncoding()));
     }
 
     private ComparisonResult compareDocTypes(DocumentType control,
-                                             DocumentType test) {
+                                             XPathContext controlContext,
+                                             DocumentType test,
+                                             XPathContext testContext) {
 ]]></literal>
   <lastResultDef/>
   <compare type="DOCTYPE_NAME" property="getName()"/>
@@ -178,13 +205,21 @@
     }
 
     private ComparisonResult compareElements(Element control,
-                                             Element test) {
+                                             XPathContext controlContext,
+                                             Element test,
+                                             XPathContext testContext) {
 ]]></literal>
   <lastResultDef/>
   <compare type="ELEMENT_TAG_NAME" property="getTagName()"/>
   <literal><![CDATA[
         Attributes controlAttributes = splitAttributes(control.getAttributes());
+        controlContext
+            .addAttributes(Linqy.map(controlAttributes.remainingAttributes,
+                                     QNAME_MAPPER));
         Attributes testAttributes = splitAttributes(test.getAttributes());
+        testContext
+            .addAttributes(Linqy.map(testAttributes.remainingAttributes,
+                                     QNAME_MAPPER));
         Set<Attr> foundTestAttributes = new HashSet<Attr>();
 ]]></literal>
   <compareExpr type="ELEMENT_NUM_ATTRIBUTES"
@@ -196,27 +231,42 @@
                 findMatchingAttr(testAttributes.remainingAttributes,
                                  controlAttr);
 ]]></literal>
+            controlContext.navigateToAttribute(Nodes.getQName(controlAttr));
+            try {
   <compareExpr type="ATTR_NAME_LOOKUP"
                controlExpr="Boolean.TRUE"
                testExpr="Boolean.valueOf(testAttr != null)"/>
   <literal><![CDATA[
-            if (testAttr != null) {
+                if (testAttr != null) {
+                    testContext.navigateToAttribute(Nodes.getQName(testAttr));
+                    try {
 ]]></literal>
   <compareMethodExpr method="compareNodes"
                      controlExpr="controlAttr"
                      testExpr="testAttr"/>
   <literal><![CDATA[
-                foundTestAttributes.add(testAttr);
+                        foundTestAttributes.add(testAttr);
+                    } finally {
+                        testContext.navigateToParent();
+                    }
+                }
+            } finally {
+                controlContext.navigateToParent();
             }
         }
 ]]></literal>
   <literal><![CDATA[
         for (Attr testAttr : testAttributes.remainingAttributes) {
+            testContext.navigateToAttribute(Nodes.getQName(testAttr));
+            try {
 ]]></literal>
   <compareExpr type="ATTR_NAME_LOOKUP"
                controlExpr="Boolean.valueOf(foundTestAttributes.contains(testAttr))"
                testExpr="Boolean.TRUE"/>
   <literal><![CDATA[
+            } finally {
+                testContext.navigateToParent();
+            }
         }
 ]]></literal>
   <compareExpr type="SCHEMA_LOCATION"
@@ -233,17 +283,24 @@
 
     private ComparisonResult
         compareProcessingInstructions(ProcessingInstruction control,
-                                      ProcessingInstruction test) {
+                                      XPathContext controlContext,
+                                      ProcessingInstruction test,
+                                      XPathContext testContext) {
 ]]></literal>
   <lastResultDef/>
   <compare type="PROCESSING_INSTRUCTION_TARGET" property="getTarget()"/>
   <literal><![CDATA[
         return compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_DATA,
-                                      control, null, control.getData(),
-                                      test, null, test.getData()));
+                                      control, getXPath(controlContext),
+                                      control.getData(),
+                                      test, getXPath(testContext),
+                                      test.getData()));
     }
 
-    private ComparisonResult compareNodeLists(NodeList control, NodeList test) {
+    private ComparisonResult compareNodeLists(NodeList control,
+                                              XPathContext controlContext,
+                                              NodeList test,
+                                              XPathContext testContext) {
         List<Node> controlList = IterableNodeList.asList(control);
         List<Node> testList = IterableNodeList.asList(test);
         final int testSize = testList.size();
@@ -259,48 +316,72 @@
         final int controlSize = controlList.size();
         Match lastMatch = new Match(null, -1);
         for (int i = 0; i < controlSize; i++) {
-            Match testMatch = findMatchingNode(controlList.get(i), testList,
-                                               lastMatch.index);
-            if (testMatch != null) {
+            controlContext.navigateToChild(i);
+            try {
+                Match testMatch = findMatchingNode(controlList.get(i), testList,
+                                                   lastMatch.index);
+                if (testMatch != null) {
 ]]></literal>
+                    testContext.navigateToChild(testMatch.index);
+                    try {
   <compareMethodExpr method="compareNodes"
                      controlExpr="controlList.get(i)"
                      testExpr="testMatch.node"/>
   <literal><![CDATA[
-                unmatchedTestIndexes.remove(Integer.valueOf(testMatch.index));
-                lastMatch = testMatch;
-            } else {
-                lastResult =
-                    compare(new Comparison(ComparisonType.CHILD_LOOKUP,
-                                           controlList.get(i), null,
-                                           controlList.get(i),
-                                           null, null, null));
+                        unmatchedTestIndexes
+                            .remove(Integer.valueOf(testMatch.index));
+                        lastMatch = testMatch;
+                    } finally {
+                        testContext.navigateToParent();
+                    }
+                } else {
+                    lastResult =
+                        compare(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                               controlList.get(i),
+                                               getXPath(controlContext),
+                                               controlList.get(i),
+                                               null, null, null));
 ]]></literal>
   <if-return-boilerplate/>
   <literal><![CDATA[
+                }
+            } finally {
+                controlContext.navigateToParent();
             }
         }
         for (Integer I : unmatchedTestIndexes) {
             int i = I.intValue();
-            lastResult =
-                compare(new Comparison(ComparisonType.CHILD_LOOKUP,
-                                       null, null, null,
-                                       testList.get(i), null, testList.get(i)));
+            testContext.navigateToChild(i);
+            try {
+                lastResult =
+                    compare(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                           null, null, null,
+                                           testList.get(i),
+                                           getXPath(testContext),
+                                           testList.get(i)));
 ]]></literal>
   <if-return-boilerplate/>
   <literal><![CDATA[
+            } finally {
+                testContext.navigateToParent();
+            }
         }
         return lastResult;
     }
 
-    private ComparisonResult compareAttributes(Attr control, Attr test) {
+    private ComparisonResult compareAttributes(Attr control,
+                                               XPathContext controlContext,
+                                               Attr test,
+                                               XPathContext testContext) {
 ]]></literal>
   <lastResultDef/>
   <compare type="ATTR_VALUE_EXPLICITLY_SPECIFIED" property="getSpecified()"/>
   <literal><![CDATA[
         return compare(new Comparison(ComparisonType.ATTR_VALUE,
-                                      control, null, control.getValue(),
-                                      test, null, test.getValue()));
+                                      control, getXPath(controlContext),
+                                      control.getValue(),
+                                      test, getXPath(testContext),
+                                      test.getValue()));
     }
 
     private static Attributes splitAttributes(final NamedNodeMap map) {
@@ -395,5 +476,16 @@
         }
     }
 
+    private static final Linqy.Mapper<Node, QName> QNAME_MAPPER =
+        new Linqy.Mapper<Node, QName>() {
+            public QName map(Node n) { return Nodes.getQName(n); }
+        };
+
+    private static final Linqy.Mapper<Node, XPathContext.NodeInfo> TO_NODE_INFO =
+        new Linqy.Mapper<Node, XPathContext.NodeInfo>() {
+            public XPathContext.NodeInfo map(Node n) {
+                return new XPathContext.DOMNodeInfo(n);
+            }
+        };
 ]]></literal>
 </class>

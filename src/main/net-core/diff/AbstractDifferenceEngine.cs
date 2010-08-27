@@ -91,5 +91,9 @@ namespace net.sf.xmlunit.diff {
                 DifferenceListener(comp, outcome);
             }
         }
+
+        protected static string GetXPath(XPathContext ctx) {
+            return ctx == null ? null : ctx.XPath;
+        }
     }
 }

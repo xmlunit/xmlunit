@@ -36,7 +36,9 @@
             }
 
             CompareNodes(net.sf.xmlunit.util.Convert.ToNode(control),
-                         net.sf.xmlunit.util.Convert.ToNode(test));
+                         new XPathContext(),
+                         net.sf.xmlunit.util.Convert.ToNode(test),
+                         new XPathContext());
         }
 
         /// <summary>
@@ -49,7 +51,10 @@
         ///
         /// Stops as soon as any comparison returns ComparisonResult.CRITICAL.
         /// </remarks>
-        internal ComparisonResult CompareNodes(XmlNode control, XmlNode test) {
+        internal ComparisonResult CompareNodes(XmlNode control,
+                                               XPathContext controlContext,
+                                               XmlNode test,
+                                               XPathContext testContext) {
 ]]></literal>
   <lastResultDef/>
   <compare type="NODE_TYPE" property="NodeType"/>
@@ -64,7 +69,18 @@
                testExpr="testChildren.Count"/>
   <compareMethod method="NodeTypeSpecificComparison"/>
   <literal><![CDATA[
-            return CompareNodeLists(controlChildren, testChildren);
+            IEnumerable<XmlNode> cc = Linqy.Cast<XmlNode>(controlChildren);
+            controlContext
+                .SetChildren(Linqy.Map<XmlNode,
+                                       XPathContext.INodeInfo>(cc,
+                                                               TO_NODE_INFO));
+            IEnumerable<XmlNode> tc = Linqy.Cast<XmlNode>(testChildren);
+            testContext
+                .SetChildren(Linqy.Map<XmlNode,
+                                       XPathContext.INodeInfo>(tc,
+                                                               TO_NODE_INFO));
+            return CompareNodeLists(controlChildren, controlContext,
+                                    testChildren, testContext);
         }
 
         /// <summary>
@@ -72,45 +88,56 @@
         /// defined for the given combination of nodes.
         /// </summary>
         private ComparisonResult NodeTypeSpecificComparison(XmlNode control,
-                                                            XmlNode test) {
+                                                            XPathContext controlContext,
+                                                            XmlNode test,
+                                                            XPathContext testContext) {
             switch (control.NodeType) {
             case XmlNodeType.CDATA:
             case XmlNodeType.Comment:
             case XmlNodeType.Text:
                 if (test is XmlCharacterData) {
                     return CompareCharacterData((XmlCharacterData) control,
-                                                (XmlCharacterData) test);
+                                                controlContext,
+                                                (XmlCharacterData) test,
+                                                testContext);
                 }
                 break;
             case XmlNodeType.Document:
                 if (test is XmlDocument) {
                     return CompareDocuments((XmlDocument) control,
-                                            (XmlDocument) test);
+                                            controlContext,
+                                            (XmlDocument) test, testContext);
                 }
                 break;
             case XmlNodeType.Element:
                 if (test is XmlElement) {
                     return CompareElements((XmlElement) control,
-                                           (XmlElement) test);
+                                           controlContext,
+                                           (XmlElement) test,
+                                           testContext);
                 }
                 break;
             case XmlNodeType.ProcessingInstruction:
                 if (test is XmlProcessingInstruction) {
                     return
                         CompareProcessingInstructions((XmlProcessingInstruction) control,
-                                                      (XmlProcessingInstruction) test);
+                                                      controlContext,
+                                                      (XmlProcessingInstruction) test,
+                                                      testContext);
                 }
                 break;
             case XmlNodeType.DocumentType:
                 if (test is XmlDocumentType) {
                     return CompareDocTypes((XmlDocumentType) control,
-                                           (XmlDocumentType) test);
+                                           controlContext,
+                                           (XmlDocumentType) test, testContext);
                 }
                 break;
             case XmlNodeType.Attribute:
                 if (test is XmlAttribute) {
                     return CompareAttributes((XmlAttribute) control,
-                                             (XmlAttribute) test);
+                                             controlContext,
+                                             (XmlAttribute) test, testContext);
                 }
                 break;
             }
@@ -121,14 +148,20 @@
         /// Compares textual content.
         /// </summary>
         private ComparisonResult CompareCharacterData(XmlCharacterData control,
-                                                      XmlCharacterData test) {
+                                                      XPathContext controlContext,
+                                                      XmlCharacterData test,
+                                                      XPathContext testContext) {
             return Compare(new Comparison(ComparisonType.TEXT_VALUE, control,
-                                          null, control.Data,
-                                          test, null, test.Data));
+                                          GetXPath(controlContext),
+                                          control.Data,
+                                          test, GetXPath(testContext),
+                                          test.Data));
         }
 
         private ComparisonResult CompareDocuments(XmlDocument control,
-                                                  XmlDocument test) {
+                                                  XPathContext controlContext,
+                                                  XmlDocument test,
+                                                  XPathContext testContext) {
             XmlDocumentType controlDt = control.DocumentType;
             XmlDocumentType testDt = test.DocumentType;
 ]]></literal>
@@ -155,19 +188,25 @@
         }
 
         private ComparisonResult CompareDocTypes(XmlDocumentType control,
-                                                 XmlDocumentType test) {
+                                                 XPathContext controlContext,
+                                                 XmlDocumentType test,
+                                                 XPathContext testContext) {
 ]]></literal>
   <lastResultDef/>
   <compare type="DOCTYPE_NAME" property="Name"/>
   <compare type="DOCTYPE_PUBLIC_ID" property="PublicId"/>
   <literal><![CDATA[
             return Compare(new Comparison(ComparisonType.DOCTYPE_SYSTEM_ID,
-                                          control, null, control.SystemId,
-                                          test, null, test.SystemId));
+                                          control, GetXPath(controlContext),
+                                          control.SystemId,
+                                          test, GetXPath(testContext),
+                                          test.SystemId));
         }
 
         private ComparisonResult CompareDeclarations(XmlDeclaration control,
-                                                     XmlDeclaration test) {
+                                                     XPathContext controlContext,
+                                                     XmlDeclaration test,
+                                                     XPathContext testContext) {
 ]]></literal>
   <lastResultDef/>
   <literal><![CDATA[
@@ -193,18 +232,32 @@
                 control != null ? control.Encoding : string.Empty;
             string testEncoding = test != null ? test.Encoding : string.Empty;
             return Compare(new Comparison(ComparisonType.XML_ENCODING,
-                                          control, null, controlEncoding,
-                                          test, null, testEncoding));
+                                          control, GetXPath(controlContext),
+                                          controlEncoding,
+                                          test, GetXPath(testContext),
+                                          testEncoding));
         }
 
         private ComparisonResult CompareElements(XmlElement control,
-                                                 XmlElement test) {
+                                                 XPathContext controlContext,
+                                                 XmlElement test,
+                                                 XPathContext testContext) {
 ]]></literal>
   <lastResultDef/>
   <compare type="ELEMENT_TAG_NAME" property="Name"/>
   <literal><![CDATA[
             Attributes controlAttributes = SplitAttributes(control.Attributes);
+            controlContext
+                .AddAttributes(Linqy.Map<XmlAttribute,
+                                         XmlQualifiedName>(controlAttributes
+                                                           .RemainingAttributes,
+                                                           Nodes.GetQName));
             Attributes testAttributes = SplitAttributes(test.Attributes);
+            testContext
+                .AddAttributes(Linqy.Map<XmlAttribute,
+                                         XmlQualifiedName>(testAttributes
+                                                           .RemainingAttributes,
+                                                           Nodes.GetQName));
             IDictionary<XmlAttribute, object> foundTestAttributes =
                 new Dictionary<XmlAttribute, object>();
 ]]></literal>
@@ -216,28 +269,44 @@
                 XmlAttribute testAttr =
                     FindMatchingAttr(testAttributes.RemainingAttributes,
                                      controlAttr);
+                controlContext.NavigateToAttribute(Nodes.GetQName(controlAttr));
+                try {
 ]]></literal>
   <compareExpr type="ATTR_NAME_LOOKUP"
                controlExpr="true"
                testExpr="testAttr != null"/>
   <literal><![CDATA[
-                if (testAttr != null) {
+                    if (testAttr != null) {
+                        testContext.NavigateToAttribute(Nodes
+                                                        .GetQName(testAttr));
+                        try {
 ]]></literal>
   <compareMethodExpr method="CompareNodes"
                      controlExpr="controlAttr"
                      testExpr="testAttr"/>
   <literal><![CDATA[
-                    foundTestAttributes[testAttr] = DUMMY;
+                            foundTestAttributes[testAttr] = DUMMY;
+                        } finally {
+                            testContext.NavigateToParent();
+                        }
+                    }
+                } finally {
+                    controlContext.NavigateToParent();
                 }
             }
 ]]></literal>
   <literal><![CDATA[
             foreach (XmlAttribute testAttr in testAttributes.RemainingAttributes) {
+                testContext.NavigateToAttribute(Nodes.GetQName(testAttr));
+                try {
 ]]></literal>
   <compareExpr type="ATTR_NAME_LOOKUP"
                controlExpr="foundTestAttributes.ContainsKey(testAttr)"
                testExpr="true"/>
   <literal><![CDATA[
+                } finally {
+                    testContext.NavigateToParent();
+                }
             }
 ]]></literal>
   <compareExpr type="SCHEMA_LOCATION"
@@ -254,18 +323,24 @@
 
         private ComparisonResult
             CompareProcessingInstructions(XmlProcessingInstruction control,
-                                          XmlProcessingInstruction test) {
+                                          XPathContext controlContext,
+                                          XmlProcessingInstruction test,
+                                          XPathContext testContext) {
 ]]></literal>
   <lastResultDef/>
   <compare type="PROCESSING_INSTRUCTION_TARGET" property="Target"/>
   <literal><![CDATA[
             return Compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_DATA,
-                                          control, null, control.Data,
-                                          test, null, test.Data));
+                                          control, GetXPath(controlContext),
+                                          control.Data,
+                                          test, GetXPath(testContext),
+                                          test.Data));
         }
 
         private ComparisonResult CompareNodeLists(XmlNodeList control,
-                                                  XmlNodeList test) {
+                                                  XPathContext controlContext,
+                                                  XmlNodeList test,
+                                                  XPathContext testContext) {
             IList<XmlNode> controlList =
                 new List<XmlNode>(Linqy.Cast<XmlNode>(control));
             IList<XmlNode> testList =
@@ -284,46 +359,67 @@
             for (int i = 0; i < controlList.Count; i++) {
                 Match testMatch = FindMatchingNode(controlList[i], testList,
                                                    lastMatch.Index);
-                if (testMatch != null) {
+                controlContext.NavigateToChild(i);
+                try {
+                    if (testMatch != null) {
+                        testContext.NavigateToChild(testMatch.Index);
+                        try {
 ]]></literal>
   <compareMethodExpr method="CompareNodes"
                      controlExpr="controlList[i]"
                      testExpr="testMatch.Node"/>
   <literal><![CDATA[
-                    unmatchedTestIndexes.Remove(testMatch.Index);
-                    lastMatch = testMatch;
-                } else {
-                    lastResult =
-                        Compare(new Comparison(ComparisonType.CHILD_LOOKUP,
-                                               controlList[i], null,
-                                               controlList[i],
-                                               null, null, null));
+                            unmatchedTestIndexes.Remove(testMatch.Index);
+                            lastMatch = testMatch;
+                        } finally {
+                            testContext.NavigateToParent();
+                        }
+                    } else {
+                        lastResult =
+                            Compare(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                                   controlList[i],
+                                                   GetXPath(controlContext),
+                                                   controlList[i],
+                                                   null, null, null));
 ]]></literal>
  <if-return-boilerplate/>
  <literal><![CDATA[
+                    }
+                } finally {
+                    controlContext.NavigateToParent();
                 }
             }
             foreach (int i in unmatchedTestIndexes.Keys) {
-                lastResult =
-                    Compare(new Comparison(ComparisonType.CHILD_LOOKUP,
-                                           null, null, null,
-                                           testList[i], null, testList[i]));
+                testContext.NavigateToChild(i);
+                try {
+                    lastResult =
+                        Compare(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                               null, null, null,
+                                               testList[i], GetXPath(testContext),
+                                               testList[i]));
 ]]></literal>
   <if-return-boilerplate/>
   <literal><![CDATA[
+                } finally {
+                    testContext.NavigateToParent();
+                }
             }
             return lastResult;
         }
 
         private ComparisonResult CompareAttributes(XmlAttribute control,
-                                                   XmlAttribute test) {
+                                                   XPathContext controlContext,
+                                                   XmlAttribute test,
+                                                   XPathContext testContext) {
 ]]></literal>
   <lastResultDef/>
   <compare type="ATTR_VALUE_EXPLICITLY_SPECIFIED" property="Specified"/>
   <literal><![CDATA[
             return Compare(new Comparison(ComparisonType.ATTR_VALUE,
-                                          control, null, control.Value,
-                                          test, null, test.Value));
+                                          control, GetXPath(controlContext),
+                                          control.Value,
+                                          test, GetXPath(testContext),
+                                          test.Value));
         }
 
         private static Attributes SplitAttributes(XmlAttributeCollection map) {
@@ -413,6 +509,10 @@
                 Node = match;
                 Index = index;
             }
+        }
+
+        private static XPathContext.INodeInfo TO_NODE_INFO(XmlNode n) {
+            return new XPathContext.DOMNodeInfo(n);
         }
 ]]></literal>
 </class>
