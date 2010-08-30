@@ -31,11 +31,11 @@ public final class Linqy {
     }
 
     public static <E> Iterable<E> cast(final Iterable i) {
-        return new Iterable<E>() {
-            public Iterator<E> iterator() {
-                return new CastingIterator<E>(i.iterator());
-            }
-        };
+        return map(i, new Mapper<Object, E>() {
+                public E map(Object o) {
+                    return (E) o;
+                }
+            });
     }
 
     public static <E> Iterable<E> singleton(final E single) {
@@ -57,22 +57,6 @@ public final class Linqy {
 
     public interface Mapper<F, T> {
         T map(F from);
-    }
-
-    private static class CastingIterator<E> implements Iterator<E> {
-        private final Iterator i;
-        private CastingIterator(Iterator i) {
-            this.i = i;
-        }
-        public void remove() {
-            i.remove();
-        }
-        public E next() {
-            return (E) i.next();
-        }
-        public boolean hasNext() {
-            return i.hasNext();
-        }
     }
 
     private static class OnceOnlyIterator<E> implements Iterator<E> {
