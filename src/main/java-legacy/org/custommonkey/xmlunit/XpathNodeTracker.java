@@ -137,9 +137,7 @@ public class XpathNodeTracker implements XMLConstants {
         if (levels.size() < 2) {
             reset();
         } else {
-            if (levels.size() > 0) {
-                levels.getLast().reset();
-            }
+            levels.getLast().reset();
             levels.removeLast();
         }
     }
