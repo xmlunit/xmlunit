@@ -365,6 +365,10 @@
                         testContext.NavigateToChild(testMatch.Index);
                         try {
 ]]></literal>
+  <compareExpr type="CHILD_NODELIST_SEQUENCE"
+               controlExpr="i"
+               testExpr="testMatch.Index"
+               />
   <compareMethodExpr method="CompareNodes"
                      controlExpr="controlList[i]"
                      testExpr="testMatch.Node"/>

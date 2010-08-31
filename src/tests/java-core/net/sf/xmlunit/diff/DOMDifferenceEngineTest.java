@@ -727,4 +727,41 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         assertEquals(0, ex.invoked);
     }
 
+    @Test public void childNodeListSequence() {
+        Element e1 = doc.createElement("foo");
+        Element e3 = doc.createElement("bar");
+        Element e4 = doc.createElement("baz");
+        e1.appendChild(e3);
+        e1.appendChild(e4);
+
+        Element e2 = doc.createElement("foo");
+        Element e5 = doc.createElement("bar");
+        Element e6 = doc.createElement("baz");
+        e2.appendChild(e6);
+        e2.appendChild(e5);
+
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.CHILD_NODELIST_SEQUENCE,
+                                           "/bar[1]", "/bar[1]");
+        d.addDifferenceListener(ex);
+        DifferenceEvaluator ev = new DifferenceEvaluator() {
+                public ComparisonResult evaluate(Comparison comparison,
+                                                 ComparisonResult outcome) {
+                    if (outcome != ComparisonResult.EQUAL
+                        && comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE) {
+                        return ComparisonResult.CRITICAL;
+                    }
+                    return DifferenceEvaluators.DefaultStopWhenDifferent
+                        .evaluate(comparison, outcome);
+                }
+            };
+        d.setDifferenceEvaluator(ev);
+        d.setElementSelector(ElementSelectors.byName);
+
+        assertEquals(ComparisonResult.CRITICAL,
+                     d.compareNodes(e1, new XPathContext(),
+                                    e2, new XPathContext()));
+        assertEquals(1, ex.invoked);
+    }
+
 }

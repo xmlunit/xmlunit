@@ -717,5 +717,41 @@ namespace net.sf.xmlunit.diff {
                                            e2, new XPathContext()));
             Assert.AreEqual(0, ex.invoked);
         }
+
+        [Test]
+        public void ChildNodeListSequence() {
+            XmlElement e1 = doc.CreateElement("foo");
+            XmlElement e3 = doc.CreateElement("bar");
+            XmlElement e4 = doc.CreateElement("baz");
+            e1.AppendChild(e3);
+            e1.AppendChild(e4);
+
+            XmlElement e2 = doc.CreateElement("foo");
+            XmlElement e5 = doc.CreateElement("bar");
+            XmlElement e6 = doc.CreateElement("baz");
+            e2.AppendChild(e6);
+            e2.AppendChild(e5);
+
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.CHILD_NODELIST_SEQUENCE,
+                                               "/bar[1]", "/bar[1]");
+            d.DifferenceListener += ex.ComparisonPerformed;
+            DifferenceEvaluator ev = delegate(Comparison comparison,
+                                              ComparisonResult outcome) {
+                if (outcome != ComparisonResult.EQUAL
+                    && comparison.Type == ComparisonType.CHILD_NODELIST_SEQUENCE) {
+                    return ComparisonResult.CRITICAL;
+                }
+                return DifferenceEvaluators.DefaultStopWhenDifferent(comparison,
+                                                                     outcome);
+            };
+            d.DifferenceEvaluator = ev;
+            d.ElementSelector = ElementSelectors.ByName;
+
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
+            Assert.AreEqual(1, ex.invoked);
+        }
     }
 }

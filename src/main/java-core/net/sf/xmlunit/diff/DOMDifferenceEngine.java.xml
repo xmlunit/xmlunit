@@ -326,12 +326,16 @@
 ]]></literal>
                     testContext.navigateToChild(testMatch.index);
                     try {
+                        Integer testIndex = Integer.valueOf(testMatch.index);
+  <compareExpr type="CHILD_NODELIST_SEQUENCE"
+               controlExpr="Integer.valueOf(i)"
+               testExpr="testIndex"
+               />
   <compareMethodExpr method="compareNodes"
                      controlExpr="controlList.get(i)"
                      testExpr="testMatch.node"/>
   <literal><![CDATA[
-                        unmatchedTestIndexes
-                            .remove(Integer.valueOf(testMatch.index));
+                        unmatchedTestIndexes.remove(testIndex);
                         lastMatch = testMatch;
                     } finally {
                         testContext.navigateToParent();
