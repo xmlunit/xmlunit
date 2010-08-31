@@ -694,5 +694,28 @@ namespace net.sf.xmlunit.diff {
                                            e2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
         }
+
+        [Test]
+        public void CompareElementsNS() {
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.ELEMENT_TAG_NAME);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            DifferenceEvaluator ev = delegate(Comparison comparison,
+                                              ComparisonResult outcome) {
+                if (comparison.Type == ComparisonType.NAMESPACE_PREFIX) {
+                    return ComparisonResult.EQUAL;
+                }
+                return DifferenceEvaluators.DefaultStopWhenDifferent(comparison,
+                                                                     outcome);
+            };
+            d.DifferenceEvaluator = ev;
+
+            XmlElement e1 = doc.CreateElement("p1", "foo", "urn:xmlunit:test");
+            XmlElement e2 = doc.CreateElement("p1", "foo", "urn:xmlunit:test");
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(e1, new XPathContext(),
+                                           e2, new XPathContext()));
+            Assert.AreEqual(0, ex.invoked);
+        }
     }
 }

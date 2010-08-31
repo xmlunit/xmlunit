@@ -210,7 +210,9 @@
                                              XPathContext testContext) {
 ]]></literal>
   <lastResultDef/>
-  <compare type="ELEMENT_TAG_NAME" property="getTagName()"/>
+  <compareExpr type="ELEMENT_TAG_NAME"
+               controlExpr="Nodes.getQName(control).getLocalPart()"
+               testExpr="Nodes.getQName(test).getLocalPart()"/>
   <literal><![CDATA[
         Attributes controlAttributes = splitAttributes(control.getAttributes());
         controlContext

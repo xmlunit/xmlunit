@@ -701,4 +701,30 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                                     e2, new XPathContext()));
         assertEquals(1, ex.invoked);
     }
+
+    @Test public void compareElementsNS() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.ELEMENT_TAG_NAME);
+        d.addDifferenceListener(ex);
+        DifferenceEvaluator ev = new DifferenceEvaluator() {
+                public ComparisonResult evaluate(Comparison comparison,
+                                                 ComparisonResult outcome) {
+                    if (comparison.getType() == ComparisonType.NAMESPACE_PREFIX) {
+                        return ComparisonResult.EQUAL;
+                    }
+                    return DifferenceEvaluators.DefaultStopWhenDifferent
+                        .evaluate(comparison, outcome);
+                }
+            };
+        d.setDifferenceEvaluator(ev);
+        Element e1 = doc.createElementNS("urn:xmlunit:test", "foo");
+        e1.setPrefix("p1");
+        Element e2 = doc.createElementNS("urn:xmlunit:test", "foo");
+        e2.setPrefix("p2");
+        assertEquals(ComparisonResult.EQUAL,
+                     d.compareNodes(e1, new XPathContext(),
+                                    e2, new XPathContext()));
+        assertEquals(0, ex.invoked);
+    }
+
 }
