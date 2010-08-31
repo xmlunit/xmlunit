@@ -80,7 +80,7 @@ public class Diff
     private boolean compared = false;
     private boolean haltComparison = false;
     private StringBuffer messages;
-    private DifferenceEngine differenceEngine;
+    private DifferenceEngineContract differenceEngine;
     private DifferenceListener  differenceListenerDelegate;
     private ElementQualifier elementQualifierDelegate;
     private MatchTracker matchTrackerDelegate;
@@ -106,7 +106,7 @@ public class Diff
      * Construct a Diff that compares the XML in two Documents
      */
     public Diff(Document controlDoc, Document testDoc) {
-        this(controlDoc, testDoc, (DifferenceEngine) null);
+        this(controlDoc, testDoc, (DifferenceEngineContract) null);
     }
 
     /**
@@ -141,7 +141,7 @@ public class Diff
      * DifferenceEngine
      */
     public Diff(Document controlDoc, Document testDoc,
-                DifferenceEngine comparator) {
+                DifferenceEngineContract comparator) {
         this(controlDoc, testDoc, comparator, new ElementNameQualifier());
     }
 
@@ -150,7 +150,7 @@ public class Diff
      * DifferenceEngine and ElementQualifier
      */
     public Diff(Document controlDoc, Document testDoc,
-                DifferenceEngine comparator, 
+                DifferenceEngineContract comparator, 
                 ElementQualifier elementQualifier) {
         this.controlDoc = getManipulatedDocument(controlDoc);
         this.testDoc = getManipulatedDocument(testDoc);
@@ -413,7 +413,7 @@ public class Diff
      * Lazily initializes the difference engine if it hasn't been set
      * via a constructor.
      */
-    private DifferenceEngine getDifferenceEngine() {
+    private DifferenceEngineContract getDifferenceEngine() {
         return differenceEngine == null
             ? new DifferenceEngine(this, matchTrackerDelegate)
             : differenceEngine;

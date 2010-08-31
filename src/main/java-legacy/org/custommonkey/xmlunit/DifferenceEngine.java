@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2009, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2010, Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,9 @@ import org.w3c.dom.Text;
  * sourceforge.net</a>
  * @see DifferenceListener#differenceFound(Difference)
  */
-public class DifferenceEngine implements DifferenceConstants {
+public class DifferenceEngine
+    implements DifferenceConstants, DifferenceEngineContract {
+
     private static final String NULL_NODE = "null";
     private static final String NOT_NULL_NODE = "not null";
     private static final String ATTRIBUTE_ABSENT = "[attribute absent]";

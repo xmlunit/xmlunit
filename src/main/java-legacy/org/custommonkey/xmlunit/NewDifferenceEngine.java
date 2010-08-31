@@ -64,7 +64,9 @@ import org.w3c.dom.Node;
  * sourceforge.net</a>
  * @see DifferenceListener#differenceFound(Difference)
  */
-public class NewDifferenceEngine implements DifferenceConstants {
+public class NewDifferenceEngine
+    implements DifferenceConstants, DifferenceEngineContract {
+
     private static final Integer ZERO = Integer.valueOf(0);
 
     private final ComparisonController controller;
