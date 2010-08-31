@@ -73,8 +73,8 @@
   <literal><![CDATA[
         NodeList controlChildren = control.getChildNodes();
         NodeList testChildren = test.getChildNodes();
-]]></literal>
         if (control.getNodeType() != Node.ATTRIBUTE_NODE) {
+]]></literal>
   <compareExpr type="CHILD_NODELIST_LENGTH"
                controlExpr="controlChildren.getLength()"
                testExpr="testChildren.getLength()"/>

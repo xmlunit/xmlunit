@@ -52,7 +52,6 @@ import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.Text;
 
 /**
  * Class that has responsibility for comparing Nodes and notifying a
