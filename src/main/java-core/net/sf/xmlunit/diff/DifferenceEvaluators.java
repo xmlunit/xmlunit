@@ -101,4 +101,24 @@ public final class DifferenceEvaluators {
             }
         };
     }
+
+    /**
+     * Combines multiple DifferenceEvaluators so that the first one
+     * that changes the outcome wins.
+     */
+    public static DifferenceEvaluator
+        first(final DifferenceEvaluator... evaluators) {
+        return new DifferenceEvaluator() {
+            public ComparisonResult evaluate(Comparison comparison,
+                                             ComparisonResult orig) {
+                for (DifferenceEvaluator ev : evaluators) {
+                    ComparisonResult evaluated = ev.evaluate(comparison, orig);
+                    if (evaluated != orig) {
+                        return evaluated;
+                    }
+                }
+                return orig;
+            }
+        };
+    }
 }

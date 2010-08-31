@@ -96,5 +96,22 @@ namespace net.sf.xmlunit.diff {
                     ? ComparisonResult.CRITICAL : r;
             };
         }
+
+        /// <summary>
+        /// Combines multiple DifferenceEvaluators so that the first
+        /// one that changes the outcome wins.
+        /// </summary>
+        public static DifferenceEvaluator
+            First(params DifferenceEvaluator[] evaluators) {
+            return delegate(Comparison comparison, ComparisonResult orig) {
+                foreach (DifferenceEvaluator ev in evaluators) {
+                    ComparisonResult evaluated = ev(comparison, orig);
+                    if (evaluated != orig) {
+                        return evaluated;
+                    }
+                }
+                return orig;
+            };
+        }
     }
 }
