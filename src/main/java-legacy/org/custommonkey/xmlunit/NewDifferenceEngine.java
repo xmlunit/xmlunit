@@ -52,6 +52,7 @@ import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 
 /**
  * Class that has responsibility for comparing Nodes and notifying a
@@ -192,8 +193,9 @@ public class NewDifferenceEngine
             } else if (comp.getControlDetails().getTarget()
                        instanceof Comment) {
                 proto = COMMENT_VALUE;
+            } else {
+                proto = TEXT_VALUE;
             }
-            proto = TEXT_VALUE;
             break;
         case PROCESSING_INSTRUCTION_TARGET:
             proto = PROCESSING_INSTRUCTION_TARGET;
