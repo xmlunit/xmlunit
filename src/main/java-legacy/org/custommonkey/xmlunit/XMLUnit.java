@@ -75,7 +75,7 @@ public final class XMLUnit {
     private static EntityResolver testEntityResolver = null;
     private static EntityResolver controlEntityResolver = null;
     private static NamespaceContext namespaceContext = null;
-    private static boolean ignoreDiffBetweenTextAndCDATA = false;
+    private static Boolean ignoreDiffBetweenTextAndCDATA = null;
     private static boolean ignoreComments = false;
     private static boolean normalize = false;
     private static boolean normalizeWhitespace = false;
@@ -685,7 +685,7 @@ public final class XMLUnit {
      * document.</p>
      */
     public static void setIgnoreDiffBetweenTextAndCDATA(boolean b) {
-        ignoreDiffBetweenTextAndCDATA = b;
+        ignoreDiffBetweenTextAndCDATA = Boolean.valueOf(b);
         getControlDocumentBuilderFactory().setCoalescing(b);
         getTestDocumentBuilderFactory().setCoalescing(b);
     }
@@ -693,10 +693,21 @@ public final class XMLUnit {
     /**
      * Whether CDATA sections and Text nodes should be considered the same.
      *
-     * <p>The default is false.</p>
+     * @return false by default
      */
     public static boolean getIgnoreDiffBetweenTextAndCDATA() {
-        return ignoreDiffBetweenTextAndCDATA;
+        return ignoreDiffBetweenTextAndCDATA == null ? false
+            : ignoreDiffBetweenTextAndCDATA.booleanValue();
+    }
+
+    /**
+     * Whether CDATA sections and Text nodes should be considered the same.
+     *
+     * @return true by default
+     */
+    public static boolean getExplicitIgnoreDiffBetweenTextAndCDATA() {
+        return ignoreDiffBetweenTextAndCDATA == null ? true
+            : ignoreDiffBetweenTextAndCDATA.booleanValue();
     }
 
     /**
