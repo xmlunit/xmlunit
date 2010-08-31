@@ -63,24 +63,34 @@
   <literal><![CDATA[
             XmlNodeList controlChildren = control.ChildNodes;
             XmlNodeList testChildren = test.ChildNodes;
+            if (control.NodeType != XmlNodeType.Attribute) {
 ]]></literal>
   <compareExpr type="CHILD_NODELIST_LENGTH"
                controlExpr="controlChildren.Count"
                testExpr="testChildren.Count"/>
+  <literal><![CDATA[
+             }
+]]></literal>
   <compareMethod method="NodeTypeSpecificComparison"/>
   <literal><![CDATA[
-            IEnumerable<XmlNode> cc = Linqy.Cast<XmlNode>(controlChildren);
-            controlContext
-                .SetChildren(Linqy.Map<XmlNode,
-                                       XPathContext.INodeInfo>(cc,
-                                                               TO_NODE_INFO));
-            IEnumerable<XmlNode> tc = Linqy.Cast<XmlNode>(testChildren);
-            testContext
-                .SetChildren(Linqy.Map<XmlNode,
-                                       XPathContext.INodeInfo>(tc,
-                                                               TO_NODE_INFO));
-            return CompareNodeLists(controlChildren, controlContext,
-                                    testChildren, testContext);
+            if (control.NodeType != XmlNodeType.Attribute) {
+                IEnumerable<XmlNode> cc = Linqy.Cast<XmlNode>(controlChildren);
+                controlContext
+                    .SetChildren(Linqy.Map<XmlNode,
+                                           XPathContext.INodeInfo>(cc,
+                                                                   TO_NODE_INFO));
+                IEnumerable<XmlNode> tc = Linqy.Cast<XmlNode>(testChildren);
+                testContext
+                    .SetChildren(Linqy.Map<XmlNode,
+                                           XPathContext.INodeInfo>(tc,
+                                                                   TO_NODE_INFO));
+]]></literal>
+  <compareMethodExpr method="CompareNodeLists"
+                     controlExpr="controlChildren"
+                     testExpr="testChildren"/>
+  <literal><![CDATA[
+            }
+            return lastResult;
         }
 
         /// <summary>

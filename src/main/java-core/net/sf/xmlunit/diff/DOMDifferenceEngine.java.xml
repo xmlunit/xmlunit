@@ -74,19 +74,29 @@
         NodeList controlChildren = control.getChildNodes();
         NodeList testChildren = test.getChildNodes();
 ]]></literal>
+        if (control.getNodeType() != Node.ATTRIBUTE_NODE) {
   <compareExpr type="CHILD_NODELIST_LENGTH"
                controlExpr="controlChildren.getLength()"
                testExpr="testChildren.getLength()"/>
+  <literal><![CDATA[
+         }
+]]></literal>
   <compareMethod method="nodeTypeSpecificComparison"/>
   <literal><![CDATA[
-        controlContext
-            .setChildren(Linqy.map(new IterableNodeList(controlChildren),
-                                   TO_NODE_INFO));
-        testContext
-            .setChildren(Linqy.map(new IterableNodeList(testChildren),
-                                   TO_NODE_INFO));
-        return compareNodeLists(controlChildren, controlContext,
-                                testChildren, testContext);
+        if (control.getNodeType() != Node.ATTRIBUTE_NODE) {
+            controlContext
+                .setChildren(Linqy.map(new IterableNodeList(controlChildren),
+                                       TO_NODE_INFO));
+            testContext
+                .setChildren(Linqy.map(new IterableNodeList(testChildren),
+                                       TO_NODE_INFO));
+]]></literal>
+  <compareMethodExpr method="compareNodeLists"
+                     controlExpr="controlChildren"
+                     testExpr="testChildren"/>
+  <literal><![CDATA[
+        }
+        return lastResult;
     }
 
     /**
