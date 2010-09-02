@@ -667,14 +667,14 @@ public class test_DifferenceEngine extends TestCase implements DifferenceConstan
     }
 
     public void testAttributeSequence() throws Exception {
-        testAttributeSequence(ATTR_SEQUENCE_ID);
-        resetListener();
-        XMLUnit.setIgnoreAttributeOrder(true);
+        XMLUnit.setIgnoreAttributeOrder(false);
         try {
-            testAttributeSequence(-1);
+            testAttributeSequence(ATTR_SEQUENCE_ID);
         } finally {
-            XMLUnit.setIgnoreAttributeOrder(false);
+            XMLUnit.setIgnoreAttributeOrder(true);
         }
+        resetListener();
+        testAttributeSequence(-1);
     }
 
     private void testAttributeSequence(int expected) throws Exception {
@@ -701,14 +701,14 @@ public class test_DifferenceEngine extends TestCase implements DifferenceConstan
     }
 
     public void testAttributeSequenceNS() throws Exception {
-        testAttributeSequenceNS(ATTR_SEQUENCE_ID);
-        resetListener();
-        XMLUnit.setIgnoreAttributeOrder(true);
+        XMLUnit.setIgnoreAttributeOrder(false);
         try {
-            testAttributeSequenceNS(-1);
+            testAttributeSequenceNS(ATTR_SEQUENCE_ID);
         } finally {
-            XMLUnit.setIgnoreAttributeOrder(false);
+            XMLUnit.setIgnoreAttributeOrder(true);
         }
+        resetListener();
+        testAttributeSequenceNS(-1);
     }
 
     private void testAttributeSequenceNS(int expected) throws Exception {

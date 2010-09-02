@@ -79,7 +79,7 @@ public final class XMLUnit {
     private static boolean ignoreComments = false;
     private static boolean normalize = false;
     private static boolean normalizeWhitespace = false;
-    private static boolean ignoreAttributeOrder = false;
+    private static boolean ignoreAttributeOrder = true;
     private static String xsltVersion = "1.0";
     private static String xpathFactoryName = null;
     private static boolean expandEntities = false;
@@ -785,12 +785,11 @@ public final class XMLUnit {
      * Whether to ignore the order of attributes on an element.
      *
      * <p>The order of attributes has never been relevant for XML
-     * documents, still XMLUnit will consider two pieces of XML
+     * documents, still XMLUnit can consider two pieces of XML
      * not-identical (but similar) if they differ in order of
-     * attributes.  Set this option to false to ignore the order.</p>
+     * attributes.  Set this option to true to compare the order.</p>
      *
-     * <p>The default value is false for backwards compatibility
-     * reasons.</p>
+     * <p>The default value is true</p>
      */
     public static void setIgnoreAttributeOrder(boolean b) {
         ignoreAttributeOrder = b;
@@ -800,12 +799,11 @@ public final class XMLUnit {
      * Whether to ignore the order of attributes on an element.
      *
      * <p>The order of attributes has never been relevant for XML
-     * documents, still XMLUnit will consider two pieces of XML
+     * documents, still XMLUnit can consider two pieces of XML
      * not-identical (but similar) if they differ in order of
-     * attributes.  Set this option to false to ignore the order.</p>
+     * attributes.  Set this option to true to compare the order.</p>
      *
-     * <p>The default value is false for backwards compatibility
-     * reasons.</p>
+     * <p>The default value is true</p>
      */
     public static boolean getIgnoreAttributeOrder() {
         return ignoreAttributeOrder;
@@ -890,6 +888,14 @@ public final class XMLUnit {
      */
     public static void setCompareUnmatched(boolean b) {
         compareUnmatched = Boolean.valueOf(b);
+    }
+
+    /**
+     * Reset whether to compare unmatched control nodes to unmatched
+     * test nodes to its default setting.
+     */
+    static void clearCompareUnmatched() {
+        compareUnmatched = null;
     }
 
     /**
