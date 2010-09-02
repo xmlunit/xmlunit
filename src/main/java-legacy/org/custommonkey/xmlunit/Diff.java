@@ -420,8 +420,11 @@ public class Diff
                 &&
                 XMLUnit.getIgnoreAttributeOrder()
                 &&
+                !XMLUnit.getNormalizeWhitespace()
+                &&
                 !XMLUnit.getIgnoreWhitespace()
-                && !usesUnknownElementQualifier()
+                &&
+                !usesUnknownElementQualifier()
                 ) {
                 return new NewDifferenceEngine(this, matchTrackerDelegate);
             }
