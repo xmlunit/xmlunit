@@ -42,6 +42,7 @@ import net.sf.xmlunit.builder.Input;
 import net.sf.xmlunit.diff.Comparison;
 import net.sf.xmlunit.diff.ComparisonListener;
 import net.sf.xmlunit.diff.ComparisonResult;
+import net.sf.xmlunit.diff.ComparisonType;
 import net.sf.xmlunit.diff.DOMDifferenceEngine;
 import net.sf.xmlunit.diff.DifferenceEvaluator;
 import net.sf.xmlunit.diff.DifferenceEvaluators;
@@ -292,6 +293,31 @@ public class NewDifferenceEngine
         }
     }
 
+    private static final Short TEXT_TYPE = Short.valueOf(Node.TEXT_NODE);
+    private static final Short CDATA_TYPE =
+        Short.valueOf(Node.CDATA_SECTION_NODE);
+
+    private static boolean swallowComparison(Comparison comparison,
+                                             ComparisonResult outcome) {
+        if (outcome == ComparisonResult.EQUAL) {
+            return true;
+        }
+        if (XMLUnit.getIgnoreDiffBetweenTextAndCDATA()
+            && comparison.getType() == ComparisonType.NODE_TYPE) {
+            return (
+                    TEXT_TYPE.equals(comparison.getControlDetails().getValue())
+                    ||
+                    CDATA_TYPE.equals(comparison.getControlDetails().getValue())
+                    )
+                && (
+                    TEXT_TYPE.equals(comparison.getTestDetails().getValue())
+                    ||
+                    CDATA_TYPE.equals(comparison.getTestDetails().getValue())
+                    );
+        }
+        return false;
+    }
+
     public static class ComparisonController2DifferenceEvaluator
         implements DifferenceEvaluator {
         private final ComparisonController cc;
@@ -301,13 +327,14 @@ public class NewDifferenceEngine
 
         public ComparisonResult evaluate(Comparison comparison,
                                          ComparisonResult outcome) {
-            if (outcome != ComparisonResult.EQUAL) {
+            if (!swallowComparison(comparison, outcome)) {
                 Difference diff = toDifference(comparison);
                 if (diff != null && cc.haltComparison(diff)) {
                     return ComparisonResult.CRITICAL;
                 }
+                return outcome;
             }
-            return outcome;
+            return ComparisonResult.EQUAL;
         }
     }
 
@@ -336,7 +363,7 @@ public class NewDifferenceEngine
 
         public ComparisonResult evaluate(Comparison comparison,
                                          ComparisonResult outcome) {
-            if (outcome != ComparisonResult.EQUAL) {
+            if (!swallowComparison(comparison, outcome)) {
                 Difference diff = toDifference(comparison);
                 if (diff != null) {
                     switch (dl.differenceFound(diff)) {
@@ -351,8 +378,9 @@ public class NewDifferenceEngine
                         return ComparisonResult.DIFFERENT;
                     }
                 }
+                return outcome;
             }
-            return outcome;
+            return ComparisonResult.EQUAL;
         }
     }
 }
