@@ -414,9 +414,26 @@ public class Diff
      * via a constructor.
      */
     private DifferenceEngineContract getDifferenceEngine() {
-        return differenceEngine == null
-            ? new DifferenceEngine(this, matchTrackerDelegate)
-            : differenceEngine;
+        if (differenceEngine == null) {
+            if (
+                !XMLUnit.getExplicitCompareUnmatched()
+                &&
+                XMLUnit.getIgnoreAttributeOrder()
+                &&
+                !XMLUnit.getIgnoreWhitespace()
+                && !usesUnknownElementQualifier()
+                ) {
+                return new NewDifferenceEngine(this, matchTrackerDelegate);
+            }
+            return new DifferenceEngine(this, matchTrackerDelegate);
+        }
+        return differenceEngine;
     }
 
+    private boolean usesUnknownElementQualifier() {
+        return elementQualifierDelegate != null
+            && !(elementQualifierDelegate instanceof ElementNameQualifier)
+            && !(elementQualifierDelegate instanceof ElementNameAndTextQualifier)
+            && !(elementQualifierDelegate instanceof ElementNameAndAttributeQualifier);
+    }
 }

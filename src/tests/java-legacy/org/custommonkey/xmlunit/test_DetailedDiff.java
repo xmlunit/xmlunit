@@ -65,15 +65,15 @@ public class test_DetailedDiff extends test_Diff {
                                                                DetailedDiff detailedDiff) {
         assertEquals("size: " + detailedDiff, 5, differences.size());
         assertEquals("first: " + detailedDiff,
-                     DifferenceConstants.ELEMENT_NUM_ATTRIBUTES, differences.get(0));
+                     DifferenceConstants.HAS_CHILD_NODES, differences.get(0));
         assertEquals("second: " + detailedDiff,
-                     DifferenceConstants.ATTR_NAME_NOT_FOUND, differences.get(1));
+                     DifferenceConstants.ELEMENT_NUM_ATTRIBUTES, differences.get(1));
         assertEquals("third: " + detailedDiff,
-                     DifferenceConstants.ATTR_VALUE, differences.get(2));
+                     DifferenceConstants.ATTR_NAME_NOT_FOUND, differences.get(2));
         assertEquals("fourth: " + detailedDiff,
-                     DifferenceConstants.ATTR_SEQUENCE, differences.get(3));
+                     DifferenceConstants.ATTR_VALUE, differences.get(3));
         assertEquals("fifth: " + detailedDiff,
-                     DifferenceConstants.HAS_CHILD_NODES, differences.get(4));
+                     DifferenceConstants.CHILD_NODE_NOT_FOUND, differences.get(4));
     }
 
     public void testAllDifferencesSecondForecastControl() throws Exception {
@@ -84,16 +84,16 @@ public class test_DetailedDiff extends test_Diff {
 
         assertEquals("size: " + detailedDiff, 5, differences.size());
         assertEquals("first: " + detailedDiff,
-                     DifferenceConstants.ELEMENT_NUM_ATTRIBUTES, differences.get(0));
+                     DifferenceConstants.HAS_CHILD_NODES, differences.get(0));
         assertEquals("second: " + detailedDiff,
-                     DifferenceConstants.ATTR_VALUE, differences.get(1));
+                     DifferenceConstants.ELEMENT_NUM_ATTRIBUTES, differences.get(1));
         assertEquals("third: " + detailedDiff,
-                     DifferenceConstants.ATTR_SEQUENCE, differences.get(2));
+                     DifferenceConstants.ATTR_VALUE, differences.get(2));
         assertEquals("forth: " + detailedDiff,
                      DifferenceConstants.ATTR_NAME_NOT_FOUND,
                      differences.get(3));
         assertEquals("fifth: " + detailedDiff,
-                     DifferenceConstants.HAS_CHILD_NODES, differences.get(4));
+                     DifferenceConstants.CHILD_NODE_NOT_FOUND, differences.get(4));
     }
 
     public void testPrototypeIsADetailedDiff() throws Exception {
@@ -111,6 +111,8 @@ public class test_DetailedDiff extends test_Diff {
         File test, control;
         control = new File(test_Constants.BASEDIR + "/src/tests/resources/controlDetail.xml");
         test = new File(test_Constants.BASEDIR + "/src/tests/resources/testDetail.xml");
+        try {
+            XMLUnit.setCompareUnmatched(true);
         DetailedDiff differencesWithWhitespace = new DetailedDiff(
                                                                   new Diff(new InputSource(new FileReader(control)), 
                                                                            new InputSource(new FileReader(test))) );
@@ -126,6 +128,9 @@ public class test_DetailedDiff extends test_Diff {
         
         assertEquals(1402 + unmatchedNodes,
                      differencesWithWhitespace.getAllDifferences().size()); 
+        } finally {
+            XMLUnit.clearCompareUnmatched();
+        }
 
         try {
             XMLUnit.setIgnoreWhitespace(true);
@@ -133,7 +138,7 @@ public class test_DetailedDiff extends test_Diff {
                 new Diff(new FileReader(control), new FileReader(test));
             DetailedDiff detailedDiff = new DetailedDiff(prototype);
             List differences = detailedDiff.getAllDifferences();
-            unmatchedNodes = 0;
+            int unmatchedNodes = 0;
             for (Iterator iter = differences.iterator(); iter.hasNext();) {
                 Difference d = (Difference) iter.next();
                 if (d.getId() == DifferenceConstants.CHILD_NODE_NOT_FOUND_ID) {
@@ -327,21 +332,26 @@ public class test_DetailedDiff extends test_Diff {
      * https://sourceforge.net/tracker/?func=detail&aid=2758280&group_id=23187&atid=377768
      */
     public void testCompareUnmatched() throws Exception {
-        String control = "<root><a>1</a>"
-            + "<b>1</b>"
-            + "<c>1</c>"
-            + "<d>1</d>"
-            + "<e>1</e></root>";
-        String test = "<root><a>1</a>"
-            + "<b>1</b>"
-            + "<z>1</z>"
-            + "<d>1</d>"
-            + "<e>1</e></root>";
-        DetailedDiff d = (DetailedDiff) buildDiff(control, test);
-        List l = d.getAllDifferences();
-        assertEquals(1, l.size());
-        Difference diff = (Difference) l.get(0);
-        assertEquals(DifferenceConstants.ELEMENT_TAG_NAME_ID, diff.getId());
+        try {
+            XMLUnit.setCompareUnmatched(true);
+            String control = "<root><a>1</a>"
+                + "<b>1</b>"
+                + "<c>1</c>"
+                + "<d>1</d>"
+                + "<e>1</e></root>";
+            String test = "<root><a>1</a>"
+                + "<b>1</b>"
+                + "<z>1</z>"
+                + "<d>1</d>"
+                + "<e>1</e></root>";
+            DetailedDiff d = (DetailedDiff) buildDiff(control, test);
+            List l = d.getAllDifferences();
+            assertEquals(1, l.size());
+            Difference diff = (Difference) l.get(0);
+            assertEquals(DifferenceConstants.ELEMENT_TAG_NAME_ID, diff.getId());
+        } finally {
+            XMLUnit.clearCompareUnmatched();
+        }
     }
 
     /**
