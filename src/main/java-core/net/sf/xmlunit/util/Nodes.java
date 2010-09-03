@@ -13,14 +13,18 @@
 */
 package net.sf.xmlunit.util;
 
-import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 
 /**
@@ -76,5 +80,47 @@ public final class Nodes {
             }
         }
         return map;
+    }
+
+    /**
+     * Creates a new Node (of the same type as the original node) that
+     * is similar to the orginal but doesn't contain any empty text or
+     * CDATA nodes and where all textual content including attribute
+     * values or comments are trimmed.
+     */
+    public static Node stripWhitespace(Node original) {
+        Node cloned = original.cloneNode(true);
+        cloned.normalize();
+        stripWsRec(cloned);
+        return cloned;
+    }
+
+    /**
+     * Trims textual content of this node, removes empty text and
+     * CDATA children, recurses into its child nodes.
+     */
+    private static void stripWsRec(Node n) {
+        if (n instanceof CharacterData || n instanceof ProcessingInstruction) {
+            n.setNodeValue(n.getNodeValue().trim());
+        }
+        List<Node> toRemove = new LinkedList<Node>();
+        for (Node child : new IterableNodeList(n.getChildNodes())) {
+            stripWsRec(child);
+            if (!(n instanceof Attr)
+                && (child instanceof Text || child instanceof CDATASection)
+                && child.getNodeValue().length() == 0) {
+                toRemove.add(child);
+            }
+        }
+        for (Node child : toRemove) {
+            n.removeChild(child);
+        }
+        NamedNodeMap attrs = n.getAttributes();
+        if (attrs != null) {
+            final int len = attrs.getLength();
+            for (int i = 0; i < len; i++) {
+                stripWsRec(attrs.item(i));
+            }
+        }
     }
 }

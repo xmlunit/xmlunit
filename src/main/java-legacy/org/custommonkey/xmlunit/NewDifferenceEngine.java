@@ -48,6 +48,7 @@ import net.sf.xmlunit.diff.DifferenceEvaluator;
 import net.sf.xmlunit.diff.DifferenceEvaluators;
 import net.sf.xmlunit.diff.ElementSelector;
 import net.sf.xmlunit.input.CommentLessSource;
+import net.sf.xmlunit.input.WhitespaceStrippedSource;
 
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
@@ -149,6 +150,10 @@ public class NewDifferenceEngine
         if (XMLUnit.getIgnoreComments()) {
             ctrlSource = new CommentLessSource(ctrlSource);
             tstSource = new CommentLessSource(tstSource);
+        }
+        if (XMLUnit.getIgnoreWhitespace()) {
+            ctrlSource = new WhitespaceStrippedSource(ctrlSource);
+            tstSource = new WhitespaceStrippedSource(tstSource);
         }
 
         engine.compare(ctrlSource, tstSource);

@@ -13,18 +13,24 @@
 */
 package net.sf.xmlunit.util;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import net.sf.xmlunit.builder.Input;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 
 import static org.junit.Assert.*;
@@ -137,5 +143,107 @@ public class NodesTest {
         assertEquals(1, m.size());
         assertEquals(BAR, m.get(new QName(SOME_URI, FOO)));
         assertEquals(BAR, m.get(new QName(SOME_URI, FOO, BAR)));
+    }
+
+    private Map.Entry<Document, Node> stripWsSetup() {
+        Document toTest = Convert.toDocument(Input.fromMemory(
+            "<root>\n"
+            + "<!-- trim me -->\n"
+            + "<child attr=' trim me ' attr2='not me'>\n"
+            + " trim me \n"
+            + "</child><![CDATA[ trim me ]]>\n"
+            + "<?target  trim me ?>\n"
+            + "<![CDATA[          ]]>\n"
+            + "</root>").build());
+        return new AbstractMap.SimpleImmutableEntry(toTest,
+                                                    Nodes.stripWhitespace(toTest));
+    }
+
+    @Test public void stripWhitespaceWorks() {
+        Map.Entry<Document, Node> s = stripWsSetup();
+        assertTrue(s.getValue() instanceof Document);
+        NodeList top = s.getValue().getChildNodes();
+        assertEquals(1, top.getLength());
+        assertTrue(top.item(0) instanceof Element);
+        assertEquals("root", top.item(0).getNodeName());
+        NodeList rootsChildren = top.item(0).getChildNodes();
+        assertEquals(4, rootsChildren.getLength());
+        assertTrue("should be comment, is " + rootsChildren.item(0).getClass(),
+                   rootsChildren.item(0) instanceof Comment);
+        assertEquals("trim me", ((Comment) rootsChildren.item(0)).getData());
+        assertTrue("should be element, is " + rootsChildren.item(1).getClass(),
+                   rootsChildren.item(1) instanceof Element);
+        assertEquals("child", rootsChildren.item(1).getNodeName());
+        assertTrue("should be cdata, is " + rootsChildren.item(2).getClass(),
+                   rootsChildren.item(2) instanceof CDATASection);
+        assertEquals("trim me",
+                     ((CDATASection) rootsChildren.item(2)).getData());
+        assertTrue("should be PI, is " + rootsChildren.item(3).getClass(),
+                   rootsChildren.item(3) instanceof ProcessingInstruction);
+        assertEquals("trim me",
+                     ((ProcessingInstruction) rootsChildren.item(3)).getData());
+        Node child = rootsChildren.item(1);
+        NodeList grandChildren = child.getChildNodes();
+        assertEquals(1, grandChildren.getLength());
+        assertTrue("should be text, is " + grandChildren.item(0).getClass(),
+                   grandChildren.item(0) instanceof Text);
+        assertEquals("trim me", ((Text) grandChildren.item(0)).getData());
+        NamedNodeMap attrs = child.getAttributes();
+        assertEquals(2, attrs.getLength());
+        Attr a = (Attr) attrs.getNamedItem("attr");
+        assertEquals("trim me", a.getValue());
+        Attr a2 = (Attr) attrs.getNamedItem("attr2");
+        assertEquals("not me", a2.getValue());
+    }
+
+    @Test public void stripWhitespaceDoesntAlterOriginal() {
+        Map.Entry<Document, Node> s = stripWsSetup();
+        NodeList top = s.getKey().getChildNodes();
+        assertEquals(1, top.getLength());
+        assertTrue(top.item(0) instanceof Element);
+        assertEquals("root", top.item(0).getNodeName());
+        NodeList rootsChildren = top.item(0).getChildNodes();
+        assertEquals(10, rootsChildren.getLength());
+        assertNewlineTextNode(rootsChildren.item(0));
+        assertTrue("should be comment, is " + rootsChildren.item(1).getClass(),
+                   rootsChildren.item(1) instanceof Comment);
+        assertEquals(" trim me ", ((Comment) rootsChildren.item(1)).getData());
+        assertNewlineTextNode(rootsChildren.item(2));
+        assertTrue("should be element, is " + rootsChildren.item(3).getClass(),
+                   rootsChildren.item(3) instanceof Element);
+        assertEquals("child", rootsChildren.item(3).getNodeName());
+        assertTrue("should be cdata, is " + rootsChildren.item(4).getClass(),
+                   rootsChildren.item(4) instanceof CDATASection);
+        assertEquals(" trim me ",
+                     ((CDATASection) rootsChildren.item(4)).getData());
+        assertNewlineTextNode(rootsChildren.item(5));
+        assertTrue("should be PI, is " + rootsChildren.item(6).getClass(),
+                   rootsChildren.item(6) instanceof ProcessingInstruction);
+        assertEquals("trim me ",
+                     ((ProcessingInstruction) rootsChildren.item(6)).getData());
+        assertNewlineTextNode(rootsChildren.item(7));
+        assertTrue("should be cdata, is " + rootsChildren.item(8).getClass(),
+                   rootsChildren.item(8) instanceof CDATASection);
+        assertEquals("          ",
+                     ((CDATASection) rootsChildren.item(8)).getData());
+        assertNewlineTextNode(rootsChildren.item(9));
+        Node child = rootsChildren.item(3);
+        NodeList grandChildren = child.getChildNodes();
+        assertEquals(1, grandChildren.getLength());
+        assertTrue("should be text, is " + grandChildren.item(0).getClass(),
+                   grandChildren.item(0) instanceof Text);
+        assertEquals("\n trim me \n", ((Text) grandChildren.item(0)).getData());
+        NamedNodeMap attrs = child.getAttributes();
+        assertEquals(2, attrs.getLength());
+        Attr a = (Attr) attrs.getNamedItem("attr");
+        assertEquals(" trim me ", a.getValue());
+        Attr a2 = (Attr) attrs.getNamedItem("attr2");
+        assertEquals("not me", a2.getValue());
+    }
+
+    private static void assertNewlineTextNode(Node n) {
+        assertTrue("should be text, is " + n.getClass(),
+                   n instanceof Text);
+        assertEquals("\n", ((Text) n).getData());
     }
 }
