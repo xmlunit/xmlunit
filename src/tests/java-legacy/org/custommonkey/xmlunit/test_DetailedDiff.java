@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2010 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -128,9 +128,6 @@ public class test_DetailedDiff extends test_Diff {
         
         assertEquals(1402 + unmatchedNodes,
                      differencesWithWhitespace.getAllDifferences().size()); 
-        } finally {
-            XMLUnit.clearCompareUnmatched();
-        }
 
         try {
             XMLUnit.setIgnoreWhitespace(true);
@@ -138,7 +135,7 @@ public class test_DetailedDiff extends test_Diff {
                 new Diff(new FileReader(control), new FileReader(test));
             DetailedDiff detailedDiff = new DetailedDiff(prototype);
             List differences = detailedDiff.getAllDifferences();
-            int unmatchedNodes = 0;
+            unmatchedNodes = 0;
             for (Iterator iter = differences.iterator(); iter.hasNext();) {
                 Difference d = (Difference) iter.next();
                 if (d.getId() == DifferenceConstants.CHILD_NODE_NOT_FOUND_ID) {
@@ -189,6 +186,9 @@ public class test_DetailedDiff extends test_Diff {
             throw e;
         } finally {
             XMLUnit.setIgnoreWhitespace(false);
+        }
+        } finally {
+            XMLUnit.clearCompareUnmatched();
         }
 
     }
@@ -317,7 +317,7 @@ public class test_DetailedDiff extends test_Diff {
     }
 
     protected Diff buildDiff(String control, String test,
-                             DifferenceEngine engine) throws Exception {
+                             DifferenceEngineContract engine) throws Exception {
         return new DetailedDiff(super.buildDiff(control, test, engine));
     }
 

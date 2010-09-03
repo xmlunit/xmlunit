@@ -488,7 +488,7 @@ public class test_Diff extends TestCase{
     }
 
     protected Diff buildDiff(String control, String test,
-                             DifferenceEngine engine) throws Exception {
+                             DifferenceEngineContract engine) throws Exception {
         return new Diff(XMLUnit.buildControlDocument(control),
                         XMLUnit.buildTestDocument(test), engine);
     }
@@ -792,7 +792,7 @@ public class test_Diff extends TestCase{
 
     public void testMatchTrackerSetViaEngine() throws Exception {
         final int[] count = new int[1];
-        DifferenceEngine engine =
+        DifferenceEngineContract engine =
             new DifferenceEngine(new ComparisonController() {
                     public boolean haltComparison(Difference afterDifference) {
                         fail("haltComparison invoked");
@@ -817,7 +817,7 @@ public class test_Diff extends TestCase{
     }
 
     public void testMatchTrackerSetViaOverrideOnEngine() throws Exception {
-        DifferenceEngine engine =
+        DifferenceEngineContract engine =
             new DifferenceEngine(new ComparisonController() {
                     public boolean haltComparison(Difference afterDifference) {
                         fail("haltComparison invoked");
@@ -841,6 +841,61 @@ public class test_Diff extends TestCase{
         // NAMESPACE_PREFIX(none), ELEMENT_TAG_NAME(foo),
         // ELEMENT_NUM_ATTRIBUTE(none), HAS_CHILD_NODES(false)
         assertEquals(12, count[0]);
+    }
+
+    public void testMatchTrackerSetViaNewEngine() throws Exception {
+        final int[] count = new int[1];
+        DifferenceEngineContract engine =
+            new NewDifferenceEngine(new ComparisonController() {
+                    public boolean haltComparison(Difference afterDifference) {
+                        fail("haltComparison invoked");
+                        // NOTREACHED
+                        return false;
+                    }
+                }, new MatchTracker() {
+                        public void matchFound(Difference d) {
+                            count[0]++;
+                        }
+                    });
+        Diff diff = buildDiff("<foo/>", "<foo/>", engine);
+        assertTrue(diff.identical());
+        // NODE_TYPE(Document), NAMESPACE_URI(none),
+        // NAMESPACE_PREFIX(none), NUMBER_OF_CHILDREN(1)
+        // HAS_DOCTYPE_DECLARATION(no), CHILD_NODE_SEQUENCE(0)
+        // 
+        // NODE_TYPE(Element), NAMESPACE_URI(none),
+        // NAMESPACE_PREFIX(none), HAS_CHILD_NODES(false),
+        // ELEMENT_TAG_NAME(foo), ELEMENT_NUM_ATTRIBUTE(none),
+        // SCHEMA_LOCATION(none), NO_NAMESPACE_SCHEMA_LOCATION(none)
+        assertEquals(14, count[0]);
+    }
+
+    public void testMatchTrackerSetViaOverrideOnNewEngine() throws Exception {
+        DifferenceEngineContract engine =
+            new NewDifferenceEngine(new ComparisonController() {
+                    public boolean haltComparison(Difference afterDifference) {
+                        fail("haltComparison invoked");
+                        // NOTREACHED
+                        return false;
+                    }
+                });
+        Diff diff = buildDiff("<foo/>", "<foo/>", engine);
+        final int[] count = new int[1];
+        diff.overrideMatchTracker(new MatchTracker() {
+                public void matchFound(Difference d) {
+                    count[0]++;
+                }
+            });
+        assertTrue(diff.identical());
+        // NODE_TYPE(Document), NAMESPACE_URI(none),
+        // NAMESPACE_PREFIX(none), NUMBER_OF_CHILDREN(1)
+        // HAS_DOCTYPE_DECLARATION(no), CHILD_NODE_SEQUENCE(0)
+        // 
+        // NODE_TYPE(Element), NAMESPACE_URI(none),
+        // NAMESPACE_PREFIX(none), HAS_CHILD_NODES(false),
+        // ELEMENT_TAG_NAME(foo), ELEMENT_NUM_ATTRIBUTE(none),
+        // SCHEMA_LOCATION(none), NO_NAMESPACE_SCHEMA_LOCATION(none)
+        assertEquals(14, count[0]);
     }
 
     public void testCDATAAndIgnoreWhitespace() throws Exception {
