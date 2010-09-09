@@ -13,7 +13,6 @@
 */
 package net.sf.xmlunit.util;
 
-import java.util.AbstractMap;
 import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -146,7 +145,7 @@ public class NodesTest {
     }
 
     private Map.Entry<Document, Node> stripWsSetup() {
-        Document toTest = Convert.toDocument(Input.fromMemory(
+        final Document toTest = Convert.toDocument(Input.fromMemory(
             "<root>\n"
             + "<!-- trim me -->\n"
             + "<child attr=' trim me ' attr2='not me'>\n"
@@ -155,8 +154,18 @@ public class NodesTest {
             + "<?target  trim me ?>\n"
             + "<![CDATA[          ]]>\n"
             + "</root>").build());
-        return new AbstractMap.SimpleImmutableEntry(toTest,
-                                                    Nodes.stripWhitespace(toTest));
+        final Node stripped = Nodes.stripWhitespace(toTest);
+        return new Map.Entry<Document, Node>() {
+            public Document getKey() {
+                return toTest;
+            }
+            public Node getValue() {
+                return stripped;
+            }
+            public Node setValue(Node n) {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 
     @Test public void stripWhitespaceWorks() {

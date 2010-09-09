@@ -149,6 +149,14 @@ public class InputTest {
     }
 
     private static String toFileUri(String fileName) {
-        return new File(fileName).toURI().toString();
+        String url = new File(fileName).toURI().toString();
+        if (url.startsWith("file:/") && !url.startsWith("file:///")
+            && "1.5".equals(System.getProperty("java.specification.version"))) {
+            // Java5's StreamSource creates a triple slash URL,
+            // Java6's sticks with only one - toURI uses only one
+            // slash in either version
+            url = "file:///" + url.substring(6);
+        }
+        return url;
     }
 }

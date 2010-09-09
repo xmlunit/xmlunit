@@ -15,7 +15,6 @@ package net.sf.xmlunit.diff;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +24,8 @@ import net.sf.xmlunit.util.Nodes;
 import org.w3c.dom.Node;
 
 public class XPathContext {
-    private final Deque<Level> path = new LinkedList<Level>();
+    // that would be Deque<Level> in Java 6+
+    private final LinkedList<Level> path = new LinkedList<Level>();
     private final Map<String, String> uri2Prefix;
 
     private static final String COMMENT = "comment()";

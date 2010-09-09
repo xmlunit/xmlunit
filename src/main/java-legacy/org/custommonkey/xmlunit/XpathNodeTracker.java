@@ -35,7 +35,6 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 package org.custommonkey.xmlunit;
 
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -75,7 +74,8 @@ import org.w3c.dom.NodeList;
  */
 public class XpathNodeTracker implements XMLConstants {
     private XPathContext ctx;
-    private final Deque<TrackingEntry> levels = new LinkedList<TrackingEntry>();
+    private final LinkedList<TrackingEntry> levels =
+        new LinkedList<TrackingEntry>();
 
     /**
      * Simple constructor
