@@ -36,6 +36,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit;
 
+import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
 import net.sf.xmlunit.builder.Input;
@@ -259,8 +260,13 @@ public class NewDifferenceEngine
     }
 
     public static NodeDetail toNodeDetail(Comparison.Detail detail) {
-        return new NodeDetail(String.valueOf(detail.getValue()),
-                              (Node) detail.getTarget(),
+        String value = String.valueOf(detail.getValue());
+        if (detail.getValue() instanceof QName) {
+            value = ((QName) detail.getValue()).getLocalPart();
+        } else if (detail.getValue() instanceof Node) {
+            value = ((Node) detail.getValue()).getNodeName();
+        }
+        return new NodeDetail(value, (Node) detail.getTarget(),
                               detail.getXPath());
     }
 

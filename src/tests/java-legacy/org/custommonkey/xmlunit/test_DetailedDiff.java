@@ -387,4 +387,68 @@ public class test_DetailedDiff extends test_Diff {
             XMLUnit.setCompareUnmatched(true);
         }
     }
+
+    /**
+     * @see https://sourceforge.net/tracker/index.php?func=detail&amp;aid=3062518&amp;group_id=23187&amp;atid=377768
+     */
+    public void testIssue3062518() throws Exception {
+        String control = "<Fruits>"
+            + "<Apple size=\"11\" color=\"green\"/>"
+            + "<Apple size=\"15\" color=\"green\"/>"
+            + "<Banana size=\"10\"/>"
+            + "</Fruits>";
+        String test = "<Fruits>"
+            + "<Apple size=\"11\" color=\"green\"/>"
+            + "<Banana size=\"11\"/>"
+            + "</Fruits>";
+        try {
+            XMLUnit.setCompareUnmatched(false);
+            DetailedDiff d = (DetailedDiff) buildDiff(control, test);
+            List l = d.getAllDifferences();
+            assertEquals(4, l.size());
+            // expected 3 children is 2
+            Difference diff = (Difference) l.get(0);
+            assertEquals(DifferenceConstants.CHILD_NODELIST_LENGTH_ID,
+                         diff.getId());
+            assertEquals("3", diff.getControlNodeDetail().getValue());
+            assertEquals("2", diff.getTestNodeDetail().getValue());
+            assertEquals("/Fruits[1]",
+                         diff.getControlNodeDetail().getXpathLocation());
+            assertEquals("/Fruits[1]",
+                         diff.getTestNodeDetail().getXpathLocation());
+
+            // didn't find the second Apple element
+            diff = (Difference) l.get(1);
+            assertEquals(DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
+                         diff.getId());
+            assertEquals("Apple", diff.getControlNodeDetail().getValue());
+            assertEquals("null", diff.getTestNodeDetail().getValue());
+            assertEquals("/Fruits[1]/Apple[2]",
+                         diff.getControlNodeDetail().getXpathLocation());
+            assertEquals(null,
+                         diff.getTestNodeDetail().getXpathLocation());
+
+            // Banana's size attribute doesn't match
+            diff = (Difference) l.get(3);
+            assertEquals(DifferenceConstants.ATTR_VALUE_ID,
+                         diff.getId());
+            assertEquals("10", diff.getControlNodeDetail().getValue());
+            assertEquals("11", diff.getTestNodeDetail().getValue());
+            assertEquals("/Fruits[1]/Banana[1]/@size",
+                         diff.getControlNodeDetail().getXpathLocation());
+            assertEquals("/Fruits[1]/Banana[1]/@size",
+                         diff.getTestNodeDetail().getXpathLocation());
+
+            // Banana is the third child in control but the second one in test
+            diff = (Difference) l.get(2);
+            assertEquals("2", diff.getControlNodeDetail().getValue());
+            assertEquals("1", diff.getTestNodeDetail().getValue());
+            assertEquals("/Fruits[1]/Banana[1]",
+                         diff.getControlNodeDetail().getXpathLocation());
+            assertEquals("/Fruits[1]/Banana[1]",
+                         diff.getTestNodeDetail().getXpathLocation());
+        } finally {
+            XMLUnit.setCompareUnmatched(true);
+        }
+    }
 }
