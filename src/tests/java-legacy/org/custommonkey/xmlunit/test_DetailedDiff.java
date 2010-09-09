@@ -384,7 +384,7 @@ public class test_DetailedDiff extends test_Diff {
             assertNull(diff.getControlNodeDetail().getNode());
             assertNotNull(diff.getTestNodeDetail().getNode());
         } finally {
-            XMLUnit.setCompareUnmatched(true);
+            XMLUnit.clearCompareUnmatched();
         }
     }
 
@@ -448,7 +448,7 @@ public class test_DetailedDiff extends test_Diff {
             assertEquals("/Fruits[1]/Banana[1]",
                          diff.getTestNodeDetail().getXpathLocation());
         } finally {
-            XMLUnit.setCompareUnmatched(true);
+            XMLUnit.clearCompareUnmatched();
         }
     }
 }
