@@ -61,28 +61,30 @@
   <compare type="NAMESPACE_URI" property="NamespaceURI"/>
   <compare type="NAMESPACE_PREFIX" property="Prefix"/>
   <literal><![CDATA[
-            XmlNodeList controlChildren = control.ChildNodes;
-            XmlNodeList testChildren = test.ChildNodes;
+            IEnumerable<XmlNode> controlChildren =
+                Linqy.Filter(Linqy.Cast<XmlNode>(control.ChildNodes),
+                             INTERESTING_NODES);
+            IEnumerable<XmlNode> testChildren =
+                Linqy.Filter(Linqy.Cast<XmlNode>(test.ChildNodes),
+                             INTERESTING_NODES);
             if (control.NodeType != XmlNodeType.Attribute) {
 ]]></literal>
   <compareExpr type="CHILD_NODELIST_LENGTH"
-               controlExpr="controlChildren.Count"
-               testExpr="testChildren.Count"/>
+               controlExpr="Linqy.Count(controlChildren)"
+               testExpr="Linqy.Count(testChildren)"/>
   <literal><![CDATA[
              }
 ]]></literal>
   <compareMethod method="NodeTypeSpecificComparison"/>
   <literal><![CDATA[
             if (control.NodeType != XmlNodeType.Attribute) {
-                IEnumerable<XmlNode> cc = Linqy.Cast<XmlNode>(controlChildren);
                 controlContext
                     .SetChildren(Linqy.Map<XmlNode,
-                                           XPathContext.INodeInfo>(cc,
+                                           XPathContext.INodeInfo>(controlChildren,
                                                                    TO_NODE_INFO));
-                IEnumerable<XmlNode> tc = Linqy.Cast<XmlNode>(testChildren);
                 testContext
                     .SetChildren(Linqy.Map<XmlNode,
-                                           XPathContext.INodeInfo>(tc,
+                                           XPathContext.INodeInfo>(testChildren,
                                                                    TO_NODE_INFO));
 ]]></literal>
   <compareMethodExpr method="CompareNodeLists"
@@ -347,14 +349,12 @@
                                           test.Data));
         }
 
-        private ComparisonResult CompareNodeLists(XmlNodeList control,
+        private ComparisonResult CompareNodeLists(IEnumerable<XmlNode> controlSeq,
                                                   XPathContext controlContext,
-                                                  XmlNodeList test,
+                                                  IEnumerable<XmlNode> testSeq,
                                                   XPathContext testContext) {
-            IList<XmlNode> controlList =
-                new List<XmlNode>(Linqy.Cast<XmlNode>(control));
-            IList<XmlNode> testList =
-                new List<XmlNode>(Linqy.Cast<XmlNode>(test));
+            IList<XmlNode> controlList = new List<XmlNode>(controlSeq);
+            IList<XmlNode> testList = new List<XmlNode>(testSeq);
             IDictionary<int, object> unmatchedTestIndexes =
                 new SortedDictionary<int, object>();
             for (int i = 0; i < testList.Count; i++) {
@@ -372,6 +372,8 @@
                 controlContext.NavigateToChild(i);
                 try {
                     if (testMatch != null) {
+                        XmlNode control = controlList[i];
+                        XmlNode test = testMatch.Node;
                         testContext.NavigateToChild(testMatch.Index);
                         try {
 ]]></literal>
@@ -380,8 +382,8 @@
                testExpr="testMatch.Index"
                />
   <compareMethodExpr method="CompareNodes"
-                     controlExpr="controlList[i]"
-                     testExpr="testMatch.Node"/>
+                     controlExpr="control"
+                     testExpr="test"/>
   <literal><![CDATA[
                             unmatchedTestIndexes.Remove(testMatch.Index);
                             lastMatch = testMatch;
@@ -527,6 +529,11 @@
 
         private static XPathContext.INodeInfo TO_NODE_INFO(XmlNode n) {
             return new XPathContext.DOMNodeInfo(n);
+        }
+
+        private static bool INTERESTING_NODES(XmlNode n) {
+            return n.NodeType != XmlNodeType.DocumentType
+                && n.NodeType != XmlNodeType.XmlDeclaration;
         }
 ]]></literal>
 </class>

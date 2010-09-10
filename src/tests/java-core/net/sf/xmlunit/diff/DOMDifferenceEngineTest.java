@@ -302,11 +302,6 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                 public ComparisonResult evaluate(Comparison comparison,
                                                  ComparisonResult outcome) {
                     if (comparison.getType()
-                        == ComparisonType.CHILD_NODELIST_LENGTH) {
-                        assertEquals(ComparisonResult.DIFFERENT, outcome);
-                        return ComparisonResult.EQUAL;
-                    }
-                    if (comparison.getType()
                         == ComparisonType.HAS_DOCTYPE_DECLARATION) {
                         assertEquals(ComparisonResult.DIFFERENT, outcome);
                         return ComparisonResult.CRITICAL;

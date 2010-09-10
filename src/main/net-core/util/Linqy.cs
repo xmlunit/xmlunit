@@ -38,5 +38,24 @@ namespace net.sf.xmlunit.util {
                 yield return mapper(f);
             }
         }
+
+        public delegate bool Predicate<T>(T toTest);
+
+        public static IEnumerable<T> Filter<T>(IEnumerable<T> sequence,
+                                               Predicate<T> filter) {
+            foreach (T t in sequence) {
+                if (filter(t)) {
+                    yield return t;
+                }
+            }
+        }
+
+        public static int Count(IEnumerable e) {
+            int c = 0;
+            foreach (object o in e) {
+                c++;
+            }
+            return c;
+        }
     }
 }

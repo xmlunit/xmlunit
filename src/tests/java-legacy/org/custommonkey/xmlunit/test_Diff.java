@@ -210,8 +210,7 @@ public class test_Diff extends TestCase{
                      diff.toString());
     }
     
-    public void NOtestXMLWithDTD() throws Exception {
-            XMLUnit.setCompareUnmatched(true);
+    public void testXMLWithDTD() throws Exception {
         String aDTDpart = "<!DOCTYPE test ["
             + "<!ELEMENT assertion EMPTY>"
             + "<!ATTLIST assertion result (pass|fail) \"fail\">"

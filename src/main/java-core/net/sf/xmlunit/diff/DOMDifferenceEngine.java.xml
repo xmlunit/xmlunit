@@ -71,13 +71,17 @@
   <compare type="NAMESPACE_URI" property="getNamespaceURI()"/>
   <compare type="NAMESPACE_PREFIX" property="getPrefix()"/>
   <literal><![CDATA[
-        NodeList controlChildren = control.getChildNodes();
-        NodeList testChildren = test.getChildNodes();
+        Iterable<Node> controlChildren =
+            Linqy.filter(new IterableNodeList(control.getChildNodes()),
+                         INTERESTING_NODES);
+        Iterable<Node> testChildren =
+            Linqy.filter(new IterableNodeList(test.getChildNodes()),
+                         INTERESTING_NODES);
         if (control.getNodeType() != Node.ATTRIBUTE_NODE) {
 ]]></literal>
   <compareExpr type="CHILD_NODELIST_LENGTH"
-               controlExpr="controlChildren.getLength()"
-               testExpr="testChildren.getLength()"/>
+               controlExpr="Linqy.count(controlChildren)"
+               testExpr="Linqy.count(testChildren)"/>
   <literal><![CDATA[
          }
 ]]></literal>
@@ -85,11 +89,9 @@
   <literal><![CDATA[
         if (control.getNodeType() != Node.ATTRIBUTE_NODE) {
             controlContext
-                .setChildren(Linqy.map(new IterableNodeList(controlChildren),
-                                       TO_NODE_INFO));
+                .setChildren(Linqy.map(controlChildren, TO_NODE_INFO));
             testContext
-                .setChildren(Linqy.map(new IterableNodeList(testChildren),
-                                       TO_NODE_INFO));
+                .setChildren(Linqy.map(testChildren, TO_NODE_INFO));
 ]]></literal>
   <compareMethodExpr method="compareNodeLists"
                      controlExpr="controlChildren"
@@ -309,12 +311,12 @@
                                       test.getData()));
     }
 
-    private ComparisonResult compareNodeLists(NodeList control,
+    private ComparisonResult compareNodeLists(Iterable<Node> controlSeq,
                                               XPathContext controlContext,
-                                              NodeList test,
+                                              Iterable<Node> testSeq,
                                               XPathContext testContext) {
-        List<Node> controlList = IterableNodeList.asList(control);
-        List<Node> testList = IterableNodeList.asList(test);
+        List<Node> controlList = Linqy.asList(controlSeq);
+        List<Node> testList = Linqy.asList(testSeq);
         final int testSize = testList.size();
         Set<Integer> unmatchedTestIndexes = new TreeSet<Integer>();
         for (int i = 0; i < testSize; i++) {
@@ -336,14 +338,16 @@
 ]]></literal>
                     testContext.navigateToChild(testMatch.index);
                     try {
+                        Node control = controlList.get(i);
+                        Node test = testMatch.node;
                         Integer testIndex = Integer.valueOf(testMatch.index);
   <compareExpr type="CHILD_NODELIST_SEQUENCE"
                controlExpr="Integer.valueOf(i)"
                testExpr="testIndex"
                />
   <compareMethodExpr method="compareNodes"
-                     controlExpr="controlList.get(i)"
-                     testExpr="testMatch.node"/>
+                     controlExpr="control"
+                     testExpr="test"/>
   <literal><![CDATA[
                         unmatchedTestIndexes.remove(testIndex);
                         lastMatch = testMatch;
@@ -501,6 +505,13 @@
         new Linqy.Mapper<Node, XPathContext.NodeInfo>() {
             public XPathContext.NodeInfo map(Node n) {
                 return new XPathContext.DOMNodeInfo(n);
+            }
+        };
+
+    private static final Linqy.Predicate<Node> INTERESTING_NODES =
+        new Linqy.Predicate<Node>() {
+            public boolean matches(Node n) {
+                return n.getNodeType() != Node.DOCUMENT_TYPE_NODE;
             }
         };
 ]]></literal>
