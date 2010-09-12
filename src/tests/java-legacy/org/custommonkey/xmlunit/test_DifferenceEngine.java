@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2010 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -925,9 +925,44 @@ public class test_DifferenceEngine extends TestCase implements DifferenceConstan
             + "</abc:XMLContent>"
             + "</abc:EventBody>"
             + "</abc:Message>";
-        listener.tracing = true;
         listenToDifferences(control, test);
         assertFalse(listener.different);
+    }
+
+    /**
+     * XMLUnit 1.3 jumps from the document node straight to the root
+     * element, ignoring any other children the document might have.
+     * Some people consider this a bug (Issue 2770386) others rely on
+     * it.
+     *
+     * <p>XMLUnit 2.x doesn't ignore differences in the prelude but we
+     * want to keep the behavior for the legacy code base.</p>
+     */
+    public void testIgnoresDifferencesBetweenDocAndRootElement()
+        throws Throwable {
+        String control =
+            "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+            + "<!-- some comment -->"
+            + "<?foo some PI ?>"
+            + "<bar/>";
+        String test = "<bar/>";
+        listenToDifferences(control, test);
+        assertFalse("unexpected difference: " + listener.comparingWhat,
+                    listener.different);
+        resetListener();
+        control =
+            "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+            + "<!-- some comment -->"
+            + "<?foo some PI ?>"
+            + "<bar/>";
+        test =
+            "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+            + "<?foo some other PI ?>"
+            + "<!-- some other comment -->"
+            + "<bar/>";
+        listenToDifferences(control, test);
+        assertFalse("unexpected difference: " + listener.comparingWhat,
+                    listener.different);
     }
 
     private void listenToDifferences(String control, String test)

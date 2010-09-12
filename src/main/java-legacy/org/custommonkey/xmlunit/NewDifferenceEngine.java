@@ -53,6 +53,7 @@ import net.sf.xmlunit.input.WhitespaceStrippedSource;
 
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -121,16 +122,22 @@ public class NewDifferenceEngine
     public void compare(Node control, Node test, DifferenceListener listener, 
                         ElementQualifier elementQualifier) {
         DOMDifferenceEngine engine = new DOMDifferenceEngine();
+
+        IsBetweenDocumentNodeAndRootElement checkPrelude =
+            new IsBetweenDocumentNodeAndRootElement();
+        engine.addComparisonListener(checkPrelude);
+
         if (matchTracker != null) {
             engine
                 .addMatchListener(new MatchTracker2ComparisonListener(matchTracker));
         }
 
         DifferenceEvaluator controllerAsEvaluator =
-            new ComparisonController2DifferenceEvaluator(controller);
+            new ComparisonController2DifferenceEvaluator(controller,
+                                                         checkPrelude);
         if (listener != null) {
             DifferenceEvaluator l = 
-                new DifferenceListener2DifferenceEvaluator(listener);
+                new DifferenceListener2DifferenceEvaluator(listener, checkPrelude);
             engine
                 .setDifferenceEvaluator(DifferenceEvaluators.first(l,
                                                                    controllerAsEvaluator));
@@ -309,8 +316,16 @@ public class NewDifferenceEngine
         Short.valueOf(Node.CDATA_SECTION_NODE);
 
     private static boolean swallowComparison(Comparison comparison,
-                                             ComparisonResult outcome) {
+                                             ComparisonResult outcome,
+                                             IsBetweenDocumentNodeAndRootElement
+                                             checkPrelude) {
         if (outcome == ComparisonResult.EQUAL) {
+            return true;
+        }
+        if ((comparison.getType() == ComparisonType.CHILD_NODELIST_LENGTH
+             && comparison.getControlDetails().getTarget() instanceof Document)
+            || checkPrelude.shouldSkip()
+            ) {
             return true;
         }
         if (XMLUnit.getIgnoreDiffBetweenTextAndCDATA()
@@ -332,13 +347,16 @@ public class NewDifferenceEngine
     public static class ComparisonController2DifferenceEvaluator
         implements DifferenceEvaluator {
         private final ComparisonController cc;
-        public ComparisonController2DifferenceEvaluator(ComparisonController c) {
+        private final IsBetweenDocumentNodeAndRootElement checkPrelude;
+        public ComparisonController2DifferenceEvaluator(ComparisonController c,
+                                                        IsBetweenDocumentNodeAndRootElement checkPrelude) {
             cc = c;
+            this.checkPrelude = checkPrelude;
         }
 
         public ComparisonResult evaluate(Comparison comparison,
                                          ComparisonResult outcome) {
-            if (!swallowComparison(comparison, outcome)) {
+            if (!swallowComparison(comparison, outcome, checkPrelude)) {
                 Difference diff = toDifference(comparison);
                 if (diff != null && cc.haltComparison(diff)) {
                     return ComparisonResult.CRITICAL;
@@ -367,14 +385,17 @@ public class NewDifferenceEngine
     public static class DifferenceListener2DifferenceEvaluator
         implements DifferenceEvaluator {
         private final DifferenceListener dl;
+        private final IsBetweenDocumentNodeAndRootElement checkPrelude;
 
-        public DifferenceListener2DifferenceEvaluator(DifferenceListener dl) {
+        public DifferenceListener2DifferenceEvaluator(DifferenceListener dl,
+                                                      IsBetweenDocumentNodeAndRootElement checkPrelude) {
             this.dl = dl;
+            this.checkPrelude = checkPrelude;
         }
 
         public ComparisonResult evaluate(Comparison comparison,
                                          ComparisonResult outcome) {
-            if (!swallowComparison(comparison, outcome)) {
+            if (!swallowComparison(comparison, outcome, checkPrelude)) {
                 Difference diff = toDifference(comparison);
                 if (diff != null) {
                     switch (dl.differenceFound(diff)) {
@@ -394,4 +415,50 @@ public class NewDifferenceEngine
             return ComparisonResult.EQUAL;
         }
     }
+
+    /**
+     * Tests whether the DifferenceEngine is currently processing
+     * comparisons of "things" between the document node and the
+     * document's root element (comments or PIs, mostly) since these
+     * must be ignored for backwards compatibility reasons.
+     *
+     * <p>Relies on the following assumptions:
+     * <ul>
+
+     *   <li>the last comparison DOMDifferenceEngine performs on the
+     *     document node is an XML_ENCODING comparison.</li>
+     *   <li>the first comparison DOMDifferenceEngine performs on matching
+     *     root elements is a NODE_TYPE comparison.  The control Node
+     *     is an Element Node.</li>
+     *   <li>the first comparison DOMDifferenceEngine performs if the
+     *     root elements don't match is a CHILD_LOOKUP comparison.
+     *     The control Node is an Element Node.</li>
+     * </ul>
+     * </p>
+     */
+    private static class IsBetweenDocumentNodeAndRootElement
+        implements ComparisonListener {
+
+        private boolean haveSeenXmlEncoding = false;
+        private boolean haveSeenElementNodeComparison = false;
+
+        public void comparisonPerformed(Comparison comparison,
+                                        ComparisonResult outcome) {
+            if (comparison.getType() == ComparisonType.XML_ENCODING) {
+                haveSeenXmlEncoding = true;
+            } else if (comparison.getControlDetails().getTarget()
+                          instanceof Element
+                       &&
+                       (comparison.getType() == ComparisonType.NODE_TYPE
+                        || comparison.getType() == ComparisonType.CHILD_LOOKUP)
+                       ) {
+                haveSeenElementNodeComparison = true;
+            }
+        }
+
+        private boolean shouldSkip() {
+            return haveSeenXmlEncoding && !haveSeenElementNodeComparison;
+        }
+    }
+
 }
