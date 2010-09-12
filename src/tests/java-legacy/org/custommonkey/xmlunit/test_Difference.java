@@ -99,7 +99,7 @@ public class test_Difference extends TestCase {
     }
     
     // bug 2386807
-    public void NOtestXpathOfMissingAttribute() throws Exception {
+    public void testXpathOfMissingAttribute() throws Exception {
         Diff d = new Diff("<foo><bar a=\"x\" y=\"z\"/></foo>",
                           "<foo><bar a=\"x\"/></foo>");
         DetailedDiff dd = new DetailedDiff(d);
@@ -115,7 +115,7 @@ public class test_Difference extends TestCase {
         Difference d2 = (Difference) diffs.get(1);
         assertEquals(DifferenceConstants.ATTR_NAME_NOT_FOUND_ID,
                      d2.getId());
-        assertEquals("/foo[1]/bar[1]",
+        assertEquals("/foo[1]/bar[1]/@y",
                      d2.getControlNodeDetail().getXpathLocation());
         assertEquals("/foo[1]/bar[1]",
                      d2.getTestNodeDetail().getXpathLocation());
