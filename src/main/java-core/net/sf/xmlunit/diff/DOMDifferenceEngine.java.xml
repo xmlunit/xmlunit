@@ -481,9 +481,9 @@
                 .canBeCompared((Element) n1, (Element) n2);
         }
         ComparisonResult r =
-            compare(new Comparison(ComparisonType.NODE_TYPE,
-                                   n1, null, n1.getNodeType(),
-                                   n2, null, n2.getNodeType()));
+            compareDontFire(new Comparison(ComparisonType.NODE_TYPE,
+                                           n1, null, n1.getNodeType(),
+                                           n2, null, n2.getNodeType()));
         return r != ComparisonResult.CRITICAL;
     }
 

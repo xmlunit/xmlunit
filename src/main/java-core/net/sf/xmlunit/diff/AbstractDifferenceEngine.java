@@ -82,16 +82,23 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
      * listeners and returns the outcome.
      */
     protected final ComparisonResult compare(Comparison comp) {
+        ComparisonResult altered = compareDontFire(comp);
+        listeners.fireComparisonPerformed(comp, altered);
+        return altered;
+    }
+
+    /**
+     * Compares the detail values for object equality, lets the
+     * difference evaluator evaluate the result
+     */
+    protected final ComparisonResult compareDontFire(Comparison comp) {
         Object controlValue = comp.getControlDetails().getValue();
         Object testValue = comp.getTestDetails().getValue();
         boolean equal = controlValue == null
             ? testValue == null : controlValue.equals(testValue);
         ComparisonResult initial =
             equal ? ComparisonResult.EQUAL : ComparisonResult.DIFFERENT;
-        ComparisonResult altered =
-            getDifferenceEvaluator().evaluate(comp, initial);
-        listeners.fireComparisonPerformed(comp, altered);
-        return altered;
+        return getDifferenceEvaluator().evaluate(comp, initial);
     }
 
     protected static String getXPath(XPathContext ctx) {
