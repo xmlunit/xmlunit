@@ -72,7 +72,7 @@ import org.xml.sax.SAXException;
  * <br />Examples and more at <a href="http://xmlunit.sourceforge.net"/>xmlunit.sourceforge.net</a>
  */
 public class Diff 
-    implements DifferenceListener, ComparisonController {
+    implements DifferenceEvaluator, DifferenceListener, ComparisonController {
     private final Document controlDoc;
     private final Document testDoc;
     private boolean similar = true;
@@ -287,10 +287,7 @@ public class Diff
      * Always RETURN_ACCEPT_DIFFERENCE if the call is not delegated.
      */
     public int differenceFound(Difference difference) {
-        int returnValue = RETURN_ACCEPT_DIFFERENCE;    
-        if (differenceListenerDelegate != null) {
-            returnValue = differenceListenerDelegate.differenceFound(difference);
-        } 
+        int returnValue = evaluate(difference);    
 
         switch (returnValue) {
         case RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL:
@@ -322,6 +319,14 @@ public class Diff
             messages.append("\n[not identical]");
         }
         appendDifference(messages, difference);
+        return returnValue;
+    }
+
+    public int evaluate(Difference difference) {
+        int returnValue = RETURN_ACCEPT_DIFFERENCE;    
+        if (differenceListenerDelegate != null) {
+            returnValue = differenceListenerDelegate.differenceFound(difference);
+        }
         return returnValue;
     }
 
@@ -421,6 +426,8 @@ public class Diff
                 XMLUnit.getIgnoreAttributeOrder()
                 &&
                 !XMLUnit.getNormalizeWhitespace()
+                &&
+                differenceListenerDelegate == null
                 &&
                 !usesUnknownElementQualifier()
                 ) {
