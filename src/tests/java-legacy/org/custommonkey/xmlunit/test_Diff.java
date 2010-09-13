@@ -770,8 +770,8 @@ public class test_Diff extends TestCase{
         assertFalse(diff.toString(), diff.identical());
         assertFalse(diff.toString(), diff.similar());
     }
-
-    public void NOtestMatchTrackerSetViaOverride() throws Exception {
+    
+    public void testMatchTrackerSetViaOverride() throws Exception {
         Diff diff = buildDiff("<foo/>", "<foo/>");
         final int[] count = new int[1];
         diff.overrideMatchTracker(new MatchTracker() {
@@ -780,14 +780,18 @@ public class test_Diff extends TestCase{
                 }
             });
         assertTrue(diff.identical());
-        // NODE_TYPE (not null), NODE_TYPE(Document), NAMESPACE_URI(none),
-        // NAMESPACE_PREFIX(none), HAS_DOCTYPE_DECLARATION(no),
-        // HAS_CHILD_NODES(true)
+
+        // uses new engine
+
+        // NODE_TYPE(Document), NAMESPACE_URI(none),
+        // NAMESPACE_PREFIX(none), NUMBER_OF_CHILDREN(1)
+        // HAS_DOCTYPE_DECLARATION(no), CHILD_NODE_SEQUENCE(0)
         // 
         // NODE_TYPE(Element), NAMESPACE_URI(none),
-        // NAMESPACE_PREFIX(none), ELEMENT_TAG_NAME(foo),
-        // ELEMENT_NUM_ATTRIBUTE(none), HAS_CHILD_NODES(false)
-        assertEquals(12, count[0]);
+        // NAMESPACE_PREFIX(none), HAS_CHILD_NODES(false),
+        // ELEMENT_TAG_NAME(foo), ELEMENT_NUM_ATTRIBUTE(none),
+        // SCHEMA_LOCATION(none), NO_NAMESPACE_SCHEMA_LOCATION(none)
+        assertEquals(14, count[0]);
     }
 
     public void testMatchTrackerSetViaEngine() throws Exception {
