@@ -484,7 +484,7 @@
             compareDontFire(new Comparison(ComparisonType.NODE_TYPE,
                                            n1, null, n1.getNodeType(),
                                            n2, null, n2.getNodeType()));
-        return r != ComparisonResult.CRITICAL;
+        return r != ComparisonResult.CRITICAL && r != ComparisonResult.DIFFERENT;
     }
 
     private class Match {
