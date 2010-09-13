@@ -313,21 +313,18 @@ namespace net.sf.xmlunit.diff {
 
             XmlDocument d1, d2;
 
-#if false // ProhibitDtd needs to be handled at a lower level
             d1 = net.sf.xmlunit.util.Convert
                 .ToDocument(Input.FromMemory("<Book/>").Build());
-            d2 = net.sf.xmlunit.util.Convert
-                .ToDocument(Input.FromMemory("<!DOCTYPE Book PUBLIC "
-                                             + "\"XMLUNIT/TEST/PUB\" "
-                                             + "\"" + TestResources.BOOK_DTD
-                                             + "\">"
-                                             + "<Book/>")
-                            .Build());
+            d2 = new XmlDocument();
+            d2.LoadXml("<!DOCTYPE Book PUBLIC "
+                       + "\"XMLUNIT/TEST/PUB\" "
+                       + "\"" + TestResources.BOOK_DTD
+                       + "\">"
+                       + "<Book/>");
             Assert.AreEqual(ComparisonResult.CRITICAL,
                             d.CompareNodes(d1, new XPathContext(),
                                            d2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
-#endif
 
 #if false // .NET doesn't like XML 1.1 anyway
             d = new DOMDifferenceEngine();
