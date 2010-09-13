@@ -368,7 +368,8 @@
             Match lastMatch = new Match(null, -1);
             for (int i = 0; i < controlList.Count; i++) {
                 Match testMatch = FindMatchingNode(controlList[i], testList,
-                                                   lastMatch.Index);
+                                                   lastMatch.Index,
+                                                   unmatchedTestIndexes);
                 controlContext.NavigateToChild(i);
                 try {
                     if (testMatch != null) {
@@ -492,14 +493,22 @@
 
         private Match FindMatchingNode(XmlNode searchFor,
                                        IList<XmlNode> searchIn,
-                                       int indexOfLastMatch) {
+                                       int indexOfLastMatch,
+                                       IDictionary<int, object>
+                                       availableIndexes) {
             int searchSize = searchIn.Count;
             for (int i = indexOfLastMatch + 1; i < searchSize; i++) {
+                if (!availableIndexes.ContainsKey(i)) {
+                    continue;
+                }
                 if (NodesMatch(searchFor, searchIn[i])) {
                     return new Match(searchIn[i], i);
                 }
             }
             for (int i = 0; i < indexOfLastMatch; i++) {
+                if (!availableIndexes.ContainsKey(i)) {
+                    continue;
+                }
                 if (NodesMatch(searchFor, searchIn[i])) {
                     return new Match(searchIn[i], i);
                 }

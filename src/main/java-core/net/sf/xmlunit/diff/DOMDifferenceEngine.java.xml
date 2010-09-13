@@ -333,7 +333,8 @@
             controlContext.navigateToChild(i);
             try {
                 Match testMatch = findMatchingNode(controlList.get(i), testList,
-                                                   lastMatch.index);
+                                                   lastMatch.index,
+                                                   unmatchedTestIndexes);
                 if (testMatch != null) {
 ]]></literal>
                     testContext.navigateToChild(testMatch.index);
@@ -460,14 +461,21 @@
 
     private Match findMatchingNode(final Node searchFor,
                                    final List<Node> searchIn,
-                                   final int indexOfLastMatch) {
+                                   final int indexOfLastMatch,
+                                   final Set<Integer> availableIndexes) {
         final int searchSize = searchIn.size();
         for (int i = indexOfLastMatch + 1; i < searchSize; i++) {
+            if (!availableIndexes.contains(Integer.valueOf(i))) {
+                continue;
+            }
             if (nodesMatch(searchFor, searchIn.get(i))) {
                 return new Match(searchIn.get(i), i);
             }
         }
         for (int i = 0; i < indexOfLastMatch; i++) {
+            if (!availableIndexes.contains(Integer.valueOf(i))) {
+                continue;
+            }
             if (nodesMatch(searchFor, searchIn.get(i))) {
                 return new Match(searchIn.get(i), i);
             }

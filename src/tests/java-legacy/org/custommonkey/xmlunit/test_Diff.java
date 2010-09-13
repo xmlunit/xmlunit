@@ -941,7 +941,7 @@ public class test_Diff extends TestCase{
     /**
      * @see https://sourceforge.net/tracker/?func=detail&aid=2807167&group_id=23187&atid=377768
      */
-    public void NOtestIssue2807167() throws Exception {
+    public void testIssue2807167() throws Exception {
         String test = "<tag>" +
             "<child amount=\"100\" />" +
             "<child amount=\"100\" />" +
