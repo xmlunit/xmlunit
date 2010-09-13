@@ -438,7 +438,7 @@ public class test_Diff extends TestCase{
         assertFalse("should not be similar: " + diff.toString(), diff.similar());
     }
 
-    public void NOtestRepeatedElementNamesWithNamespacedAttributeQualification() throws Exception {
+    public void testRepeatedElementNamesWithNamespacedAttributeQualification() throws Exception {
         Diff diff = buildDiff("<root xmlns:a=\"http://a.com\" xmlns:b=\"http://b.com\">"
                               + "<node id=\"1\" a:val=\"a\" b:val=\"b\"/><node id=\"2\" a:val=\"a2\" b:val=\"b2\"/></root>",
                               "<root xmlns:c=\"http://a.com\" xmlns:d=\"http://b.com\">"

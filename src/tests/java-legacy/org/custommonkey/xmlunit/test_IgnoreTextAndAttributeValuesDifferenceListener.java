@@ -120,7 +120,7 @@ public class test_IgnoreTextAndAttributeValuesDifferenceListener
                      listener.differenceFound(difference));
     }
     
-    public void NOtestClassInUse() throws Exception {
+    public void testClassInUse() throws Exception {
         String control = "<clouds><cloud name=\"cumulus\" rain=\"maybe\">fluffy</cloud></clouds>";
         String similarTest = "<clouds><cloud name=\"cirrus\" rain=\"no\">wispy</cloud></clouds>";
         
@@ -160,7 +160,7 @@ public class test_IgnoreTextAndAttributeValuesDifferenceListener
                      1, recoverable);
     }
 
-    public void NOtestIssue771839() throws Exception {
+    public void testIssue771839() throws Exception {
         String xmlString1 = "<location>"
             + "<street-address>22 any street</street-address>"
             + "<postcode id='3'>XY0099Z</postcode>"
