@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2010 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -962,6 +962,20 @@ public class test_Diff extends TestCase{
         diff.overrideElementQualifier(new
                                         ElementNameAndAttributeQualifier());
         assertTrue(diff.toString(), diff.similar());
+    }
+
+    public void testCocoonXmlTestCase() throws Exception {
+        Document control =
+            XMLUnit.buildTestDocument("<!DOCTYPE skinconfig []>"
+                                      + "<!--abcd--><root></root>");
+        Document test =
+            XMLUnit.buildControlDocument("<!DOCTYPE skinconfig [<!--abcd-->]>"
+                                         + "<root></root>");
+        Diff diff = new Diff(control, test);
+        assertTrue(diff.toString(), diff.identical());
+
+        diff = new Diff(test, control);
+        assertTrue(diff.toString(), diff.identical());
     }
 }
 

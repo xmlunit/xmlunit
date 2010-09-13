@@ -348,6 +348,12 @@ public class NewDifferenceEngine
         }
         if ((comparison.getType() == ComparisonType.CHILD_NODELIST_LENGTH
              && comparison.getControlDetails().getTarget() instanceof Document)
+            ||
+            (comparison.getType() == ComparisonType.CHILD_LOOKUP
+             && comparison.getTestDetails() != null
+             && comparison.getTestDetails().getTarget() instanceof Node
+             && ((Node) comparison.getTestDetails().getTarget()).getParentNode()
+                instanceof Document)
             || checkPrelude.shouldSkip()
             ) {
             return true;
