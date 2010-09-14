@@ -547,12 +547,11 @@ public class NewDifferenceEngine
             for (Node n : controlNodes) {
                 if (map.containsKey(n)) {
                     result.add(new Entry(n, map.get(n)));
-                } else if (n instanceof Element) {
+                } else {
                     Iterable<Node> unmatchedTestElements =
                         Linqy.filter(testNodes, new Linqy.Predicate<Node>() {
                                 public boolean matches(Node t) {
-                                    return t instanceof Element
-                                        && !map.containsValue(t);
+                                    return !map.containsValue(t);
                                 }
                             });
                     Iterator<Node> it = unmatchedTestElements.iterator();

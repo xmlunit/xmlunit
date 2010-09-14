@@ -205,9 +205,8 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
         listenToDifferences(control, test);
         assertEquals("11th control xpath", "/stuff[1]/list[1]/item[1]", 
                      listener.controlXpath);
-        // this is different from DifferenceEngine - the test node is null
-        // if there is no match
-        assertNull("11th test xpath", listener.testXpath);
+        assertEquals("11th test xpath", "/stuff[1]/list[1]/text()[1]", 
+                     listener.testXpath);       
     }
 
     public void testXpathLocation12() throws Exception {
@@ -227,13 +226,13 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
         String control = "<stuff><item id=\"1\"/><item id=\"2\"/></stuff>";
         String test = "<stuff><?item data?></stuff>";
         listenToDifferences(control, test);
-        // mutiple Differences, we only see the last one, missing PI in test
+        // mutiple Differences, we only see the last one, missing second element
         assertEquals("13 difference type",
                      DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
                      listener.comparingWhat);
-        assertNull("13th control xpath", listener.controlXpath);
-        assertEquals("13th test xpath", "/stuff[1]/processing-instruction()[1]", 
-                     listener.testXpath);
+        assertEquals("13th control xpath", "/stuff[1]/item[2]", 
+                     listener.controlXpath);
+        assertNull("13th test xpath", listener.testXpath);       
     }
 
     public void testXpathLocation14() throws Exception {
