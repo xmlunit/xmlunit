@@ -42,7 +42,7 @@ namespace net.sf.xmlunit.diff {
             internal DiffExpecter(ComparisonType type, string controlXPath,
                                   string testXPath)
                 : this(type, 1, true, controlXPath, testXPath) { }
-            
+
             private DiffExpecter(ComparisonType type, int expected,
                                  bool withXPath, string controlXPath,
                                  string testXPath) {

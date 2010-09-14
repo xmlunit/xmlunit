@@ -97,7 +97,7 @@ public interface DifferenceConstants {
      * attribute at all.
      */
     int NO_NAMESPACE_SCHEMA_LOCATION_ID = 24;
-        
+
     /** Comparing an implied attribute value against an explicit value */
     public static final Difference ATTR_VALUE_EXPLICITLY_SPECIFIED =
         new Difference(ATTR_VALUE_EXPLICITLY_SPECIFIED_ID, 
@@ -181,7 +181,7 @@ public interface DifferenceConstants {
     public static final Difference CHILD_NODELIST_SEQUENCE =
         new Difference(CHILD_NODELIST_SEQUENCE_ID, 
                        "sequence of child nodes", true);
-    
+
     /** Comparing 2 Documents only one of which has a doctype */
     public static final Difference HAS_DOCTYPE_DECLARATION = 
         new Difference(HAS_DOCTYPE_DECLARATION_ID, 

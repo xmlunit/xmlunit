@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Xml;
 
 namespace net.sf.xmlunit.diff {
-    
+
     /// <summary>
     /// Strategy that matches control and tests nodes for comparison.
     /// </summary>

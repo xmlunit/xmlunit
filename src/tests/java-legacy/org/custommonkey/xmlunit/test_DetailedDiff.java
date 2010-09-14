@@ -125,7 +125,7 @@ public class test_DetailedDiff extends test_Diff {
                 unmatchedNodes++;
             }
         }
-        
+
         assertEquals(1402 + unmatchedNodes,
                      differencesWithWhitespace.getAllDifferences().size()); 
 
@@ -169,7 +169,7 @@ public class test_DetailedDiff extends test_Diff {
                         assertEquals(i + " control " + aDifference.toString(),
                                      value, aDifference.getControlNodeDetail().getValue());
                     }
-        
+
                     expr = aDifference.getTestNodeDetail().getXpathLocation();
                     if (expr == null || expr.length()==0) {
                         System.out.println(aDifference);
@@ -219,7 +219,7 @@ public class test_DetailedDiff extends test_Diff {
         // sequence of nodes
         assertEquals(3, l.size());
     }
-     
+
     /**
      * @see http://sourceforge.net/forum/forum.php?thread_id=1691528&forum_id=73274
      */
@@ -241,7 +241,7 @@ public class test_DetailedDiff extends test_Diff {
             + "<td>Newsitem 1</td>"
             + "</tr>"
             + "</table>";
-        
+
         DetailedDiff diff = new DetailedDiff(new Diff(control, test));
         List changes = diff.getAllDifferences();
         // number of children, text of first child, unexpected second
