@@ -50,6 +50,7 @@ import net.sf.xmlunit.diff.ComparisonResult;
 import net.sf.xmlunit.diff.ComparisonType;
 import net.sf.xmlunit.diff.DOMDifferenceEngine;
 import net.sf.xmlunit.diff.DefaultNodeMatcher;
+import net.sf.xmlunit.diff.DifferenceEvaluator;
 import net.sf.xmlunit.diff.DifferenceEvaluators;
 import net.sf.xmlunit.diff.ElementSelector;
 import net.sf.xmlunit.diff.NodeMatcher;
@@ -138,34 +139,19 @@ public class NewDifferenceEngine
                 .addMatchListener(new MatchTracker2ComparisonListener(matchTracker));
         }
 
-        net.sf.xmlunit.diff.DifferenceEvaluator controllerAsEvaluator =
+        DifferenceEvaluator controllerAsEvaluator =
             new ComparisonController2DifferenceEvaluator(controller);
-        net.sf.xmlunit.diff.DifferenceEvaluator ev = null;
+        DifferenceEvaluator ev = null;
         if (listener != null) {
-            net.sf.xmlunit.diff.DifferenceEvaluator e = null;
-            if (listener instanceof org.custommonkey.xmlunit.DifferenceEvaluator) {
-                e = new DifferenceEvaluatorAdapter((DifferenceEvaluator) listener);
-                final ComparisonListener l = new DifferenceListener2ComparisonListener(listener);
-                engine
-                    .addDifferenceListener(new ComparisonListener() {
-                            public void comparisonPerformed(Comparison comparison,
-                                                            ComparisonResult outcome) {
-                                if (!swallowComparison(comparison, outcome,
-                                                       checkPrelude)) {
-                                    l.comparisonPerformed(comparison, outcome);
-                                }
-                            }
-                        });
-            } else {
-                e = new DifferenceListener2DifferenceEvaluator(listener);
-            }
-            ev = DifferenceEvaluators.first(e, controllerAsEvaluator);
+            ev = DifferenceEvaluators
+                .first(new DifferenceListener2DifferenceEvaluator(listener),
+                       controllerAsEvaluator);
         } else  {
             ev = controllerAsEvaluator;
         }
         final net.sf.xmlunit.diff.DifferenceEvaluator evaluator = ev;
         engine
-            .setDifferenceEvaluator(new net.sf.xmlunit.diff.DifferenceEvaluator() {
+            .setDifferenceEvaluator(new DifferenceEvaluator() {
                     public ComparisonResult evaluate(Comparison comparison,
                                                      ComparisonResult outcome) {
                         if (!swallowComparison(comparison, outcome,
@@ -394,7 +380,7 @@ public class NewDifferenceEngine
     }
 
     public static class ComparisonController2DifferenceEvaluator
-        implements net.sf.xmlunit.diff.DifferenceEvaluator {
+        implements DifferenceEvaluator {
         private final ComparisonController cc;
         public ComparisonController2DifferenceEvaluator(ComparisonController c) {
             cc = c;
@@ -405,33 +391,6 @@ public class NewDifferenceEngine
             Difference diff = toDifference(comparison);
             if (diff != null && cc.haltComparison(diff)) {
                 return ComparisonResult.CRITICAL;
-            }
-            return outcome;
-        }
-    }
-
-    public static class DifferenceEvaluatorAdapter
-        implements net.sf.xmlunit.diff.DifferenceEvaluator {
-        private final DifferenceEvaluator de;
-        public DifferenceEvaluatorAdapter(DifferenceEvaluator d) {
-            de = d;
-        }
-
-        public ComparisonResult evaluate(Comparison comparison,
-                                         ComparisonResult outcome) {
-            Difference diff = toDifference(comparison);
-            if (diff != null) {
-                switch (de.evaluate(diff)) {
-                case DifferenceListener
-                    .RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL:
-                    return ComparisonResult.EQUAL;
-                case DifferenceListener
-                    .RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR:
-                    return ComparisonResult.SIMILAR;
-                case DifferenceListener
-                    .RETURN_UPGRADE_DIFFERENCE_NODES_DIFFERENT:
-                    return ComparisonResult.DIFFERENT;
-                }
             }
             return outcome;
         }
@@ -453,7 +412,7 @@ public class NewDifferenceEngine
     }
 
     public static class DifferenceListener2DifferenceEvaluator
-        implements net.sf.xmlunit.diff.DifferenceEvaluator {
+        implements DifferenceEvaluator {
         private final DifferenceListener dl;
 
         public DifferenceListener2DifferenceEvaluator(DifferenceListener dl) {

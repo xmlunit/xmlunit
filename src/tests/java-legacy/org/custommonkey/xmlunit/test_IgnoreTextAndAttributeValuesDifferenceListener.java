@@ -146,9 +146,9 @@ public class test_IgnoreTextAndAttributeValuesDifferenceListener
                                                                new Diff(control, dissimilarTest));
         dissimilarDetailedDiff.overrideDifferenceListener(listener);
         List differences = dissimilarDetailedDiff.getAllDifferences();
-        assertEquals("wrong number of attributes, missing attribute, different attribute value, and missing text node. "
+        assertEquals("has children, wrong number of attributes, missing attribute, different attribute value, and missing text node. "
                      + dissimilarDetailedDiff.toString(), 
-                     4, differences.size());
+                     5, differences.size());
         int recoverable = 0;
         for (Iterator iter = differences.iterator(); iter.hasNext(); ) {
             Difference aDifference = (Difference) iter.next();

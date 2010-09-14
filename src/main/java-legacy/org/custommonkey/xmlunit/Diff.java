@@ -72,7 +72,7 @@ import org.xml.sax.SAXException;
  * <br />Examples and more at <a href="http://xmlunit.sourceforge.net"/>xmlunit.sourceforge.net</a>
  */
 public class Diff 
-    implements DifferenceEvaluator, DifferenceListener, ComparisonController {
+    implements DifferenceListener, ComparisonController {
     private final Document controlDoc;
     private final Document testDoc;
     private boolean similar = true;
@@ -424,8 +424,6 @@ public class Diff
                 XMLUnit.getIgnoreAttributeOrder()
                 &&
                 !XMLUnit.getNormalizeWhitespace()
-                &&
-                differenceListenerDelegate == null
                 &&
                 (!usesUnknownElementQualifier()
                  || XMLUnit.getCompareUnmatched())
