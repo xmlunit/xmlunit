@@ -111,23 +111,6 @@ public class test_DetailedDiff extends test_Diff {
         File test, control;
         control = new File(test_Constants.BASEDIR + "/src/tests/resources/controlDetail.xml");
         test = new File(test_Constants.BASEDIR + "/src/tests/resources/testDetail.xml");
-        try {
-            XMLUnit.setCompareUnmatched(true);
-        DetailedDiff differencesWithWhitespace = new DetailedDiff(
-                                                                  new Diff(new InputSource(new FileReader(control)), 
-                                                                           new InputSource(new FileReader(test))) );
-
-        List l = differencesWithWhitespace.getAllDifferences();
-        int unmatchedNodes = 0;
-        for (Iterator iter = l.iterator(); iter.hasNext();) {
-            Difference d = (Difference) iter.next();
-            if (d.getId() == DifferenceConstants.CHILD_NODE_NOT_FOUND_ID) {
-                unmatchedNodes++;
-            }
-        }
-
-        assertEquals(1402 + unmatchedNodes,
-                     differencesWithWhitespace.getAllDifferences().size()); 
 
         try {
             XMLUnit.setIgnoreWhitespace(true);
@@ -135,14 +118,6 @@ public class test_DetailedDiff extends test_Diff {
                 new Diff(new FileReader(control), new FileReader(test));
             DetailedDiff detailedDiff = new DetailedDiff(prototype);
             List differences = detailedDiff.getAllDifferences();
-            unmatchedNodes = 0;
-            for (Iterator iter = differences.iterator(); iter.hasNext();) {
-                Difference d = (Difference) iter.next();
-                if (d.getId() == DifferenceConstants.CHILD_NODE_NOT_FOUND_ID) {
-                    unmatchedNodes++;
-                }
-            }
-            assertEquals(40 + unmatchedNodes, differences.size()); 
 
             SimpleXpathEngine xpathEngine = new SimpleXpathEngine();
             Document controlDoc =
@@ -187,10 +162,6 @@ public class test_DetailedDiff extends test_Diff {
         } finally {
             XMLUnit.setIgnoreWhitespace(false);
         }
-        } finally {
-            XMLUnit.clearCompareUnmatched();
-        }
-
     }
 
     public void testSeeAllDifferencesEvenIfDiffWouldSayHaltComparison() throws Exception {
@@ -276,8 +247,8 @@ public class test_DetailedDiff extends test_Diff {
             DetailedDiff dd = new DetailedDiff(diff); 
             List l = dd.getAllDifferences();
             assertEquals(3, l.size());
-            // (0) number of children, (1) node not found, (2) order different
-            Difference d = (Difference) l.get(1);
+            // (0) number of children, (1) order different, (2) node not found
+            Difference d = (Difference) l.get(2);
             assertEquals(DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
                          d.getId());
             assertEquals("/books[1]/book[1]",
@@ -332,26 +303,21 @@ public class test_DetailedDiff extends test_Diff {
      * https://sourceforge.net/tracker/?func=detail&aid=2758280&group_id=23187&atid=377768
      */
     public void testCompareUnmatched() throws Exception {
-        try {
-            XMLUnit.setCompareUnmatched(true);
-            String control = "<root><a>1</a>"
-                + "<b>1</b>"
-                + "<c>1</c>"
-                + "<d>1</d>"
-                + "<e>1</e></root>";
-            String test = "<root><a>1</a>"
-                + "<b>1</b>"
-                + "<z>1</z>"
-                + "<d>1</d>"
-                + "<e>1</e></root>";
-            DetailedDiff d = (DetailedDiff) buildDiff(control, test);
-            List l = d.getAllDifferences();
-            assertEquals(1, l.size());
-            Difference diff = (Difference) l.get(0);
-            assertEquals(DifferenceConstants.ELEMENT_TAG_NAME_ID, diff.getId());
-        } finally {
-            XMLUnit.clearCompareUnmatched();
-        }
+        String control = "<root><a>1</a>"
+            + "<b>1</b>"
+            + "<c>1</c>"
+            + "<d>1</d>"
+            + "<e>1</e></root>";
+        String test = "<root><a>1</a>"
+            + "<b>1</b>"
+            + "<z>1</z>"
+            + "<d>1</d>"
+            + "<e>1</e></root>";
+        DetailedDiff d = (DetailedDiff) buildDiff(control, test);
+        List l = d.getAllDifferences();
+        assertEquals(1, l.size());
+        Difference diff = (Difference) l.get(0);
+        assertEquals(DifferenceConstants.ELEMENT_TAG_NAME_ID, diff.getId());
     }
 
     /**
@@ -384,7 +350,7 @@ public class test_DetailedDiff extends test_Diff {
             assertNull(diff.getControlNodeDetail().getNode());
             assertNotNull(diff.getTestNodeDetail().getNode());
         } finally {
-            XMLUnit.clearCompareUnmatched();
+            XMLUnit.setCompareUnmatched(true);
         }
     }
 
@@ -449,7 +415,7 @@ public class test_DetailedDiff extends test_Diff {
                          diff.getTestNodeDetail().getXpathLocation());
 
         } finally {
-            XMLUnit.clearCompareUnmatched();
+            XMLUnit.setCompareUnmatched(true);
         }
     }
 }

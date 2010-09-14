@@ -36,6 +36,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
@@ -48,8 +52,10 @@ import net.sf.xmlunit.diff.DOMDifferenceEngine;
 import net.sf.xmlunit.diff.DefaultNodeMatcher;
 import net.sf.xmlunit.diff.DifferenceEvaluators;
 import net.sf.xmlunit.diff.ElementSelector;
+import net.sf.xmlunit.diff.NodeMatcher;
 import net.sf.xmlunit.input.CommentLessSource;
 import net.sf.xmlunit.input.WhitespaceStrippedSource;
+import net.sf.xmlunit.util.Linqy;
 
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
@@ -170,8 +176,14 @@ public class NewDifferenceEngine
                     }
                 });
 
+        NodeMatcher m = new DefaultNodeMatcher();
         if (elementQualifier != null) {
-            engine.setNodeMatcher(new DefaultNodeMatcher(new ElementQualifier2ElementSelector(elementQualifier)));
+            m = new DefaultNodeMatcher(new ElementQualifier2ElementSelector(elementQualifier));
+        }
+        if (!XMLUnit.getCompareUnmatched()) {
+            engine.setNodeMatcher(m);
+        } else {
+            engine.setNodeMatcher(new CompareUnmatchedNodeMatcher(m));
         }
 
         Input.Builder ctrlBuilder = Input.fromNode(control);
@@ -510,6 +522,62 @@ public class NewDifferenceEngine
 
         private boolean shouldSkip() {
             return haveSeenXmlEncoding && !haveSeenElementNodeComparison;
+        }
+    }
+
+    private static class CompareUnmatchedNodeMatcher
+        implements NodeMatcher {
+        private final NodeMatcher nestedMatcher;
+        private CompareUnmatchedNodeMatcher(NodeMatcher nested) {
+            nestedMatcher = nested;
+        }
+
+        public Iterable<Map.Entry<Node, Node>>
+            match(Iterable<Node> controlNodes,
+                  Iterable<Node> testNodes) {
+            final Map<Node, Node> map = new HashMap<Node, Node>();
+            for (Map.Entry<Node, Node> e 
+                     : nestedMatcher.match(controlNodes, testNodes)) {
+                map.put(e.getKey(), e.getValue());
+            }
+
+            final LinkedList<Map.Entry<Node, Node>> result =
+                new LinkedList<Map.Entry<Node, Node>>();
+
+            for (Node n : controlNodes) {
+                if (map.containsKey(n)) {
+                    result.add(new Entry(n, map.get(n)));
+                } else if (n instanceof Element) {
+                    Iterable<Node> unmatchedTestElements =
+                        Linqy.filter(testNodes, new Linqy.Predicate<Node>() {
+                                public boolean matches(Node t) {
+                                    return t instanceof Element
+                                        && !map.containsValue(t);
+                                }
+                            });
+                    Iterator<Node> it = unmatchedTestElements.iterator();
+                    if (it.hasNext()) {
+                        Node t = it.next();
+                        map.put(n, t);
+                        result.add(new Entry(n, t));
+                    }
+                }
+            }
+            return result;
+        }
+
+        private static class Entry implements Map.Entry<Node, Node> {
+            private final Node key;
+            private final Node value;
+            private Entry(Node k, Node v) {
+                key = k;
+                value = v;
+            }
+            public Node getKey() { return key; }
+            public Node getValue() { return value; }
+            public Node setValue(Node v) {
+                throw new UnsupportedOperationException();
+            }
         }
     }
 

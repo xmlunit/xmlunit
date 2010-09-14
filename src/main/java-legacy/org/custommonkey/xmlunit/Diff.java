@@ -421,15 +421,14 @@ public class Diff
     private DifferenceEngineContract getDifferenceEngine() {
         if (differenceEngine == null) {
             if (
-                !XMLUnit.getExplicitCompareUnmatched()
-                &&
                 XMLUnit.getIgnoreAttributeOrder()
                 &&
                 !XMLUnit.getNormalizeWhitespace()
                 &&
                 differenceListenerDelegate == null
                 &&
-                !usesUnknownElementQualifier()
+                (!usesUnknownElementQualifier()
+                 || XMLUnit.getCompareUnmatched())
                 ) {
                 return new NewDifferenceEngine(this, matchTrackerDelegate);
             }

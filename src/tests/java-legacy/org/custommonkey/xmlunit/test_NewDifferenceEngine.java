@@ -241,14 +241,13 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
         String control = "<stuff><thing id=\"1\"/><item id=\"2\"/></stuff>";
         String test = "<stuff><item id=\"2\"/><item id=\"1\"/></stuff>";
         listenToDifferences(control, test);
-        // DifferenceEngine matches test node //item[2] with control
-        // node //item[1] and then generates a difference of attribute
-        // vales by default.
-        // NewDifferenceEngine has a "no match" for test node
-        // //item[2] as last comparison
-        assertNull("14th control xpath", listener.controlXpath);
-        assertEquals("14th test xpath", "/stuff[1]/item[2]", 
-                     listener.testXpath);
+        assertEquals("14th difference type",
+                     NewDifferenceEngine.CHILD_NODELIST_SEQUENCE_ID,
+                     listener.comparingWhat);
+        assertEquals("14th control xpath", "/stuff[1]/item[1]", 
+                     listener.controlXpath);
+        assertEquals("14th test xpath", "/stuff[1]/item[1]", 
+                     listener.testXpath);       
     }
 
     public void testIssue1027863() throws Exception {
