@@ -68,23 +68,15 @@ namespace net.sf.xmlunit.diff {
         /// listeners and returns the outcome.
         /// </summary>
         protected internal ComparisonResult Compare(Comparison comp) {
-            ComparisonResult altered = CompareDontFire(comp);
-            FireComparisonPerformed(comp, altered);
-            return altered;
-        }
-
-        /// <summary>
-        /// Compares the detail values for object equality, lets the
-        /// difference evaluator evaluate the result.
-        /// </summary>
-        protected internal ComparisonResult CompareDontFire(Comparison comp) {
             object controlValue = comp.ControlDetails.Value;
             object testValue = comp.TestDetails.Value;
             bool equal = controlValue == null
                 ? testValue == null : controlValue.Equals(testValue);
             ComparisonResult initial =
                 equal ? ComparisonResult.EQUAL : ComparisonResult.DIFFERENT;
-            return DifferenceEvaluator(comp, initial);
+            ComparisonResult altered = DifferenceEvaluator(comp, initial);
+            FireComparisonPerformed(comp, altered);
+            return altered;
         }
 
         private void FireComparisonPerformed(Comparison comp,
