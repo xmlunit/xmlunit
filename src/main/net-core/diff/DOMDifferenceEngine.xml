@@ -353,45 +353,48 @@
                                                   XPathContext controlContext,
                                                   IEnumerable<XmlNode> testSeq,
                                                   XPathContext testContext) {
-            IList<XmlNode> controlList = new List<XmlNode>(controlSeq);
-            IList<XmlNode> testList = new List<XmlNode>(testSeq);
-            IDictionary<int, object> unmatchedTestIndexes =
-                new SortedDictionary<int, object>();
-            for (int i = 0; i < testList.Count; i++) {
-                unmatchedTestIndexes.Add(i, DUMMY);
-            }
 ]]></literal>
   <lastResultDef/>
   <literal><![CDATA[
             // if there are no children on either Node, the result is equal
             lastResult = ComparisonResult.EQUAL;
-            Match lastMatch = new Match(null, -1);
-            for (int i = 0; i < controlList.Count; i++) {
-                Match testMatch = FindMatchingNode(controlList[i], testList,
-                                                   lastMatch.Index,
-                                                   unmatchedTestIndexes);
-                controlContext.NavigateToChild(i);
+
+            IEnumerable<KeyValuePair<XmlNode, XmlNode>> matches =
+                NodeMatcher.Match(controlSeq, testSeq);
+            IList<XmlNode> controlList = new List<XmlNode>(controlSeq);
+            IList<XmlNode> testList = new List<XmlNode>(testSeq);
+            IDictionary<XmlNode, object> seen =
+                new Dictionary<XmlNode, object>();
+            foreach (KeyValuePair<XmlNode, XmlNode> pair in matches) {
+                XmlNode control = pair.Key;
+                seen[control] = DUMMY;
+                XmlNode test = pair.Value;
+                seen[test] = DUMMY;
+                int controlIndex = controlList.IndexOf(control);
+                int testIndex = testList.IndexOf(test);
+                controlContext.NavigateToChild(controlIndex);
+                testContext.NavigateToChild(testIndex);
                 try {
-                    if (testMatch != null) {
-                        XmlNode control = controlList[i];
-                        XmlNode test = testMatch.Node;
-                        testContext.NavigateToChild(testMatch.Index);
-                        try {
 ]]></literal>
   <compareExpr type="CHILD_NODELIST_SEQUENCE"
-               controlExpr="i"
-               testExpr="testMatch.Index"
+               controlExpr="controlIndex"
+               testExpr="testIndex"
                />
   <compareMethodExpr method="CompareNodes"
                      controlExpr="control"
                      testExpr="test"/>
   <literal><![CDATA[
-                            unmatchedTestIndexes.Remove(testMatch.Index);
-                            lastMatch = testMatch;
-                        } finally {
-                            testContext.NavigateToParent();
-                        }
-                    } else {
+                } finally {
+                    testContext.NavigateToParent();
+                    controlContext.NavigateToParent();
+                }
+            }
+
+            int controlSize = controlList.Count;
+            for (int i = 0; i < controlSize; i++) {
+                if (!seen.ContainsKey(controlList[i])) {
+                    controlContext.NavigateToChild(i);
+                    try {
                         lastResult =
                             Compare(new Comparison(ComparisonType.CHILD_LOOKUP,
                                                    controlList[i],
@@ -399,26 +402,30 @@
                                                    controlList[i],
                                                    null, null, null));
 ]]></literal>
- <if-return-boilerplate/>
- <literal><![CDATA[
+  <if-return-boilerplate/>
+  <literal><![CDATA[
+                    } finally {
+                        controlContext.NavigateToParent();
                     }
-                } finally {
-                    controlContext.NavigateToParent();
                 }
             }
-            foreach (int i in unmatchedTestIndexes.Keys) {
-                testContext.NavigateToChild(i);
-                try {
-                    lastResult =
-                        Compare(new Comparison(ComparisonType.CHILD_LOOKUP,
-                                               null, null, null,
-                                               testList[i], GetXPath(testContext),
-                                               testList[i]));
+            int testSize = testList.Count;
+            for (int i = 0; i < testSize; i++) {
+                if (!seen.ContainsKey(testList[i])) {
+                    testContext.NavigateToChild(i);
+                    try {
+                        lastResult =
+                            Compare(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                                   null, null, null,
+                                                   testList[i],
+                                                   GetXPath(testContext),
+                                                   testList[i]));
 ]]></literal>
   <if-return-boilerplate/>
   <literal><![CDATA[
-                } finally {
-                    testContext.NavigateToParent();
+                    } finally {
+                        testContext.NavigateToParent();
+                    }
                 }
             }
             return lastResult;
@@ -489,52 +496,6 @@
                 }
             }
             return null;
-        }
-
-        private Match FindMatchingNode(XmlNode searchFor,
-                                       IList<XmlNode> searchIn,
-                                       int indexOfLastMatch,
-                                       IDictionary<int, object>
-                                       availableIndexes) {
-            int searchSize = searchIn.Count;
-            for (int i = indexOfLastMatch + 1; i < searchSize; i++) {
-                if (!availableIndexes.ContainsKey(i)) {
-                    continue;
-                }
-                if (NodesMatch(searchFor, searchIn[i])) {
-                    return new Match(searchIn[i], i);
-                }
-            }
-            for (int i = 0; i < indexOfLastMatch; i++) {
-                if (!availableIndexes.ContainsKey(i)) {
-                    continue;
-                }
-                if (NodesMatch(searchFor, searchIn[i])) {
-                    return new Match(searchIn[i], i);
-                }
-            }
-            return null;
-        }
-
-        private bool NodesMatch(XmlNode n1, XmlNode n2) {
-            if (n1 is XmlElement && n2 is XmlElement) {
-                return ElementSelector(n1 as XmlElement, n2 as XmlElement);
-            }
-            ComparisonResult r =
-                CompareDontFire(new Comparison(ComparisonType.NODE_TYPE,
-                                               n1, null, n1.NodeType,
-                                               n2, null, n2.NodeType));
-            return r != ComparisonResult.CRITICAL
-                && r != ComparisonResult.DIFFERENT;
-        }
-
-        internal class Match {
-            internal readonly XmlNode Node;
-            internal readonly int Index;
-            internal Match(XmlNode match, int index) {
-                Node = match;
-                Index = index;
-            }
         }
 
         private static XPathContext.INodeInfo TO_NODE_INFO(XmlNode n) {

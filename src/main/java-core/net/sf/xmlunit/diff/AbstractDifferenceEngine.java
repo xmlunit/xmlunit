@@ -23,7 +23,7 @@ import java.util.Map;
 public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     private final ComparisonListenerSupport listeners =
         new ComparisonListenerSupport();
-    private ElementSelector elementSelector = ElementSelectors.Default;
+    private NodeMatcher nodeMatcher = new DefaultNodeMatcher();
     private DifferenceEvaluator diffEvaluator = DifferenceEvaluators.Default;
     private Map<String, String> uri2Prefix = Collections.emptyMap();
 
@@ -48,16 +48,16 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         listeners.addDifferenceListener(l);
     }
 
-    public void setElementSelector(ElementSelector s) {
-        if (s == null) {
-            throw new IllegalArgumentException("element selector must"
+    public void setNodeMatcher(NodeMatcher n) {
+        if (n == null) {
+            throw new IllegalArgumentException("node matcher must"
                                                + " not be null");
         }
-        elementSelector = s;
+        nodeMatcher = n;
     }
 
-    public ElementSelector getElementSelector() {
-        return elementSelector;
+    public NodeMatcher getNodeMatcher() {
+        return nodeMatcher;
     }
 
     public void setDifferenceEvaluator(DifferenceEvaluator e) {

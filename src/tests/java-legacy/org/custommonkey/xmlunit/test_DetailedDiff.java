@@ -418,7 +418,7 @@ public class test_DetailedDiff extends test_Diff {
                          diff.getTestNodeDetail().getXpathLocation());
 
             // didn't find the second Apple element
-            diff = (Difference) l.get(1);
+            diff = (Difference) l.get(3);
             assertEquals(DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
                          diff.getId());
             assertEquals("Apple", diff.getControlNodeDetail().getValue());
@@ -429,7 +429,7 @@ public class test_DetailedDiff extends test_Diff {
                          diff.getTestNodeDetail().getXpathLocation());
 
             // Banana's size attribute doesn't match
-            diff = (Difference) l.get(3);
+            diff = (Difference) l.get(2);
             assertEquals(DifferenceConstants.ATTR_VALUE_ID,
                          diff.getId());
             assertEquals("10", diff.getControlNodeDetail().getValue());
@@ -440,7 +440,7 @@ public class test_DetailedDiff extends test_Diff {
                          diff.getTestNodeDetail().getXpathLocation());
 
             // Banana is the third child in control but the second one in test
-            diff = (Difference) l.get(2);
+            diff = (Difference) l.get(1);
             assertEquals("2", diff.getControlNodeDetail().getValue());
             assertEquals("1", diff.getTestNodeDetail().getValue());
             assertEquals("/Fruits[1]/Banana[1]",

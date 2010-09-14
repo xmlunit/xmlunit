@@ -20,6 +20,7 @@
   <import reference="java.util.HashSet"/>
   <import reference="java.util.LinkedList"/>
   <import reference="java.util.List"/>
+  <import reference="java.util.Map"/>
   <import reference="java.util.Set"/>
   <import reference="java.util.TreeSet"/>
   <import reference="javax.xml.XMLConstants"/>
@@ -315,47 +316,46 @@
                                               XPathContext controlContext,
                                               Iterable<Node> testSeq,
                                               XPathContext testContext) {
-        List<Node> controlList = Linqy.asList(controlSeq);
-        List<Node> testList = Linqy.asList(testSeq);
-        final int testSize = testList.size();
-        Set<Integer> unmatchedTestIndexes = new TreeSet<Integer>();
-        for (int i = 0; i < testSize; i++) {
-            unmatchedTestIndexes.add(Integer.valueOf(i));
-        }
 ]]></literal>
   <lastResultDef/>
   <literal><![CDATA[
         // if there are no children on either Node, the result is equal
         lastResult = ComparisonResult.EQUAL;
-        final int controlSize = controlList.size();
-        Match lastMatch = new Match(null, -1);
-        for (int i = 0; i < controlSize; i++) {
-            controlContext.navigateToChild(i);
+
+        Iterable<Map.Entry<Node, Node>> matches =
+            getNodeMatcher().match(controlSeq, testSeq);
+        List<Node> controlList = Linqy.asList(controlSeq);
+        List<Node> testList = Linqy.asList(testSeq);
+        Set<Node> seen = new HashSet<Node>();
+        for (Map.Entry<Node, Node> pair : matches) {
+            Node control = pair.getKey();
+            seen.add(control);
+            Node test = pair.getValue();
+            seen.add(test);
+            int controlIndex = controlList.indexOf(control);
+            int testIndex = testList.indexOf(test);
+            controlContext.navigateToChild(controlIndex);
+            testContext.navigateToChild(testIndex);
             try {
-                Match testMatch = findMatchingNode(controlList.get(i), testList,
-                                                   lastMatch.index,
-                                                   unmatchedTestIndexes);
-                if (testMatch != null) {
 ]]></literal>
-                    testContext.navigateToChild(testMatch.index);
-                    try {
-                        Node control = controlList.get(i);
-                        Node test = testMatch.node;
-                        Integer testIndex = Integer.valueOf(testMatch.index);
   <compareExpr type="CHILD_NODELIST_SEQUENCE"
-               controlExpr="Integer.valueOf(i)"
-               testExpr="testIndex"
+               controlExpr="Integer.valueOf(controlIndex)"
+               testExpr="Integer.valueOf(testIndex)"
                />
   <compareMethodExpr method="compareNodes"
                      controlExpr="control"
                      testExpr="test"/>
   <literal><![CDATA[
-                        unmatchedTestIndexes.remove(testIndex);
-                        lastMatch = testMatch;
-                    } finally {
-                        testContext.navigateToParent();
-                    }
-                } else {
+            } finally {
+                testContext.navigateToParent();
+                controlContext.navigateToParent();
+            }
+        }
+        final int controlSize = controlList.size();
+        for (int i = 0; i < controlSize; i++) {
+            if (!seen.contains(controlList.get(i))) {
+                controlContext.navigateToChild(i);
+                try {
                     lastResult =
                         compare(new Comparison(ComparisonType.CHILD_LOOKUP,
                                                controlList.get(i),
@@ -365,26 +365,28 @@
 ]]></literal>
   <if-return-boilerplate/>
   <literal><![CDATA[
+                } finally {
+                    controlContext.navigateToParent();
                 }
-            } finally {
-                controlContext.navigateToParent();
             }
         }
-        for (Integer I : unmatchedTestIndexes) {
-            int i = I.intValue();
-            testContext.navigateToChild(i);
-            try {
-                lastResult =
-                    compare(new Comparison(ComparisonType.CHILD_LOOKUP,
-                                           null, null, null,
-                                           testList.get(i),
-                                           getXPath(testContext),
-                                           testList.get(i)));
+        final int testSize = testList.size();
+        for (int i = 0; i < testSize; i++) {
+            if (!seen.contains(testList.get(i))) {
+                testContext.navigateToChild(i);
+                try {
+                    lastResult =
+                        compare(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                               null, null, null,
+                                               testList.get(i),
+                                               getXPath(testContext),
+                                               testList.get(i)));
 ]]></literal>
   <if-return-boilerplate/>
   <literal><![CDATA[
-            } finally {
-                testContext.navigateToParent();
+                } finally {
+                    testContext.navigateToParent();
+                }
             }
         }
         return lastResult;
@@ -457,51 +459,6 @@
             }
         }
         return null;
-    }
-
-    private Match findMatchingNode(final Node searchFor,
-                                   final List<Node> searchIn,
-                                   final int indexOfLastMatch,
-                                   final Set<Integer> availableIndexes) {
-        final int searchSize = searchIn.size();
-        for (int i = indexOfLastMatch + 1; i < searchSize; i++) {
-            if (!availableIndexes.contains(Integer.valueOf(i))) {
-                continue;
-            }
-            if (nodesMatch(searchFor, searchIn.get(i))) {
-                return new Match(searchIn.get(i), i);
-            }
-        }
-        for (int i = 0; i < indexOfLastMatch; i++) {
-            if (!availableIndexes.contains(Integer.valueOf(i))) {
-                continue;
-            }
-            if (nodesMatch(searchFor, searchIn.get(i))) {
-                return new Match(searchIn.get(i), i);
-            }
-        }
-        return null;
-    }
-
-    private boolean nodesMatch(final Node n1, final Node n2) {
-        if (n1 instanceof Element && n2 instanceof Element) {
-            return getElementSelector()
-                .canBeCompared((Element) n1, (Element) n2);
-        }
-        ComparisonResult r =
-            compareDontFire(new Comparison(ComparisonType.NODE_TYPE,
-                                           n1, null, n1.getNodeType(),
-                                           n2, null, n2.getNodeType()));
-        return r != ComparisonResult.CRITICAL && r != ComparisonResult.DIFFERENT;
-    }
-
-    private class Match {
-        private final Node node;
-        private final int index;
-        private Match(Node match, int index) {
-            this.node = match;
-            this.index = index;
-        }
     }
 
     private static final Linqy.Mapper<Node, QName> QNAME_MAPPER =

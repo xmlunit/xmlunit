@@ -38,9 +38,9 @@ public interface DifferenceEngine {
     void addDifferenceListener(ComparisonListener l);
 
     /**
-     * Sets the strategy for selecting elements to compare.
+     * Sets the strategy for selecting nodes to compare.
      */
-    void setElementSelector(ElementSelector s);
+    void setNodeMatcher(NodeMatcher n);
 
     /**
      * Determines whether the comparison should stop after given

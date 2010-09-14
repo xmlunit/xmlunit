@@ -634,7 +634,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         assertEquals(1, ex.invoked);
 
         d = new DOMDifferenceEngine();
-        d.setElementSelector(ElementSelectors.byName);
+        d.setNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byName));
         ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP, "/bar[1]", null);
         d.addDifferenceListener(ex);
         d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
@@ -751,7 +751,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                 }
             };
         d.setDifferenceEvaluator(ev);
-        d.setElementSelector(ElementSelectors.byName);
+        d.setNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byName));
 
         assertEquals(ComparisonResult.CRITICAL,
                      d.compareNodes(e1, new XPathContext(),

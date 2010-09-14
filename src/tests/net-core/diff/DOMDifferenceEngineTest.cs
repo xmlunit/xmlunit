@@ -627,7 +627,7 @@ namespace net.sf.xmlunit.diff {
             Assert.AreEqual(1, ex.invoked);
 
             d = new DOMDifferenceEngine();
-            d.ElementSelector = ElementSelectors.ByName;
+            d.NodeMatcher = new DefaultNodeMatcher(ElementSelectors.ByName);
             ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP);
             d.DifferenceListener += ex.ComparisonPerformed;
             d.DifferenceEvaluator =
@@ -743,7 +743,7 @@ namespace net.sf.xmlunit.diff {
                                                                      outcome);
             };
             d.DifferenceEvaluator = ev;
-            d.ElementSelector = ElementSelectors.ByName;
+            d.NodeMatcher = new DefaultNodeMatcher(ElementSelectors.ByName);
 
             Assert.AreEqual(ComparisonResult.CRITICAL,
                             d.CompareNodes(e1, new XPathContext(),

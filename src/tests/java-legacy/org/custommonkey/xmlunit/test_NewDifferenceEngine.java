@@ -487,6 +487,10 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
         assertFalse("unexpected difference: " + listener.comparingWhat,
                     listener.different);
         resetListener();
+        listenToDifferences(test, control);
+        assertFalse("unexpected difference: " + listener.comparingWhat,
+                    listener.different);
+        resetListener();
         control =
             "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
             + "<!-- some comment -->"
@@ -498,6 +502,10 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
             + "<!-- some other comment -->"
             + "<bar/>";
         listenToDifferences(control, test);
+        assertFalse("unexpected difference: " + listener.comparingWhat,
+                    listener.different);
+        resetListener();
+        listenToDifferences(test, control);
         assertFalse("unexpected difference: " + listener.comparingWhat,
                     listener.different);
     }

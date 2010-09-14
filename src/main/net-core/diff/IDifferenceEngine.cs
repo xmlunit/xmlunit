@@ -38,9 +38,9 @@ namespace net.sf.xmlunit.diff {
         event ComparisonListener DifferenceListener;
 
         /// <summary>
-        /// Sets the strategy for selecting elements to compare.
+        /// Sets the strategy for selecting nodes to compare.
         /// </summary>
-        ElementSelector ElementSelector { set; }
+        INodeMatcher NodeMatcher { set; }
 
         /// <summary>
         /// Determines whether the comparison should stop after given

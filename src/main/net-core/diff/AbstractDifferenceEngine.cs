@@ -26,16 +26,17 @@ namespace net.sf.xmlunit.diff {
         public event ComparisonListener MatchListener;
         public event ComparisonListener DifferenceListener;
 
-        private ElementSelector elementSelector = ElementSelectors.Default;
-        public virtual ElementSelector ElementSelector {
+        private INodeMatcher nodeMatcher =
+            new DefaultNodeMatcher(ElementSelectors.Default);
+        public virtual INodeMatcher NodeMatcher {
             set {
                 if (value == null) {
-                    throw new ArgumentNullException("element selector");
+                    throw new ArgumentNullException("node matcher");
                 }
-                elementSelector = value;
+                nodeMatcher = value;
             }
             get {
-                return elementSelector;
+                return nodeMatcher;
             }
         }
 

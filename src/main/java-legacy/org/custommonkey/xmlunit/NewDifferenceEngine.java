@@ -45,6 +45,7 @@ import net.sf.xmlunit.diff.ComparisonListener;
 import net.sf.xmlunit.diff.ComparisonResult;
 import net.sf.xmlunit.diff.ComparisonType;
 import net.sf.xmlunit.diff.DOMDifferenceEngine;
+import net.sf.xmlunit.diff.DefaultNodeMatcher;
 import net.sf.xmlunit.diff.DifferenceEvaluators;
 import net.sf.xmlunit.diff.ElementSelector;
 import net.sf.xmlunit.input.CommentLessSource;
@@ -170,8 +171,7 @@ public class NewDifferenceEngine
                 });
 
         if (elementQualifier != null) {
-            engine
-                .setElementSelector(new ElementQualifier2ElementSelector(elementQualifier));
+            engine.setNodeMatcher(new DefaultNodeMatcher(new ElementQualifier2ElementSelector(elementQualifier)));
         }
 
         Input.Builder ctrlBuilder = Input.fromNode(control);
@@ -349,11 +349,12 @@ public class NewDifferenceEngine
         if ((comparison.getType() == ComparisonType.CHILD_NODELIST_LENGTH
              && comparison.getControlDetails().getTarget() instanceof Document)
             ||
-            (comparison.getType() == ComparisonType.CHILD_LOOKUP
-             && comparison.getTestDetails() != null
-             && comparison.getTestDetails().getTarget() instanceof Node
-             && ((Node) comparison.getTestDetails().getTarget()).getParentNode()
-                instanceof Document)
+            (
+             comparison.getType() == ComparisonType.CHILD_LOOKUP
+             && 
+             (isNonElementDocumentChild(comparison.getControlDetails())
+              || isNonElementDocumentChild(comparison.getTestDetails()))
+             )
             || checkPrelude.shouldSkip()
             ) {
             return true;
@@ -372,6 +373,12 @@ public class NewDifferenceEngine
                     );
         }
         return false;
+    }
+
+    private static boolean isNonElementDocumentChild(Comparison.Detail detail) {
+        return detail != null && detail.getTarget() instanceof Node
+            && !(detail.getTarget() instanceof Element)
+            && ((Node) detail.getTarget()).getParentNode() instanceof Document;
     }
 
     public static class ComparisonController2DifferenceEvaluator
