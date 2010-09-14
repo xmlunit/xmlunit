@@ -417,15 +417,13 @@ public class test_DetailedDiff extends test_Diff {
             assertEquals("/Fruits[1]",
                          diff.getTestNodeDetail().getXpathLocation());
 
-            // didn't find the second Apple element
-            diff = (Difference) l.get(3);
-            assertEquals(DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
-                         diff.getId());
-            assertEquals("Apple", diff.getControlNodeDetail().getValue());
-            assertEquals("null", diff.getTestNodeDetail().getValue());
-            assertEquals("/Fruits[1]/Apple[2]",
+            // Banana is the third child in control but the second one in test
+            diff = (Difference) l.get(1);
+            assertEquals("2", diff.getControlNodeDetail().getValue());
+            assertEquals("1", diff.getTestNodeDetail().getValue());
+            assertEquals("/Fruits[1]/Banana[1]",
                          diff.getControlNodeDetail().getXpathLocation());
-            assertEquals(null,
+            assertEquals("/Fruits[1]/Banana[1]",
                          diff.getTestNodeDetail().getXpathLocation());
 
             // Banana's size attribute doesn't match
@@ -439,14 +437,17 @@ public class test_DetailedDiff extends test_Diff {
             assertEquals("/Fruits[1]/Banana[1]/@size",
                          diff.getTestNodeDetail().getXpathLocation());
 
-            // Banana is the third child in control but the second one in test
-            diff = (Difference) l.get(1);
-            assertEquals("2", diff.getControlNodeDetail().getValue());
-            assertEquals("1", diff.getTestNodeDetail().getValue());
-            assertEquals("/Fruits[1]/Banana[1]",
+            // didn't find the second Apple element
+            diff = (Difference) l.get(3);
+            assertEquals(DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
+                         diff.getId());
+            assertEquals("Apple", diff.getControlNodeDetail().getValue());
+            assertEquals("null", diff.getTestNodeDetail().getValue());
+            assertEquals("/Fruits[1]/Apple[2]",
                          diff.getControlNodeDetail().getXpathLocation());
-            assertEquals("/Fruits[1]/Banana[1]",
+            assertEquals(null,
                          diff.getTestNodeDetail().getXpathLocation());
+
         } finally {
             XMLUnit.clearCompareUnmatched();
         }
