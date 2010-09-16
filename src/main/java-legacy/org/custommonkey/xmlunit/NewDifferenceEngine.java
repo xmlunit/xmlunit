@@ -36,6 +36,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -53,10 +54,12 @@ import net.sf.xmlunit.diff.DefaultNodeMatcher;
 import net.sf.xmlunit.diff.DifferenceEvaluator;
 import net.sf.xmlunit.diff.DifferenceEvaluators;
 import net.sf.xmlunit.diff.ElementSelector;
+import net.sf.xmlunit.diff.ElementSelectors;
 import net.sf.xmlunit.diff.NodeMatcher;
 import net.sf.xmlunit.input.CommentLessSource;
 import net.sf.xmlunit.input.WhitespaceStrippedSource;
 import net.sf.xmlunit.util.Linqy;
+import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
 
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
@@ -79,6 +82,17 @@ public class NewDifferenceEngine
     implements DifferenceConstants, DifferenceEngineContract {
 
     private static final Integer ZERO = Integer.valueOf(0);
+    private static final Map<Class<?>, ElementSelector> KNOWN_SELECTORS;
+    static {
+        Map<Class<?>, ElementSelector> m =
+            new HashMap<Class<?>, ElementSelector>();
+        m.put(ElementNameAndTextQualifier.class,
+              ElementSelectors.byNameAndText);
+        m.put(ElementQualifier.class, ElementSelectors.byName);
+        m.put(RecursiveElementNameAndTextQualifier.class,
+              ElementSelectors.byNameAndTextRec);
+        KNOWN_SELECTORS = Collections.unmodifiableMap(m);
+    }
 
     private final ComparisonController controller;
     private MatchTracker matchTracker;
@@ -164,7 +178,12 @@ public class NewDifferenceEngine
 
         NodeMatcher m = new DefaultNodeMatcher();
         if (elementQualifier != null) {
-            m = new DefaultNodeMatcher(new ElementQualifier2ElementSelector(elementQualifier));
+            Class<?> c = elementQualifier.getClass();
+            if (KNOWN_SELECTORS.containsKey(c)) {
+                m = new DefaultNodeMatcher(KNOWN_SELECTORS.get(c));
+            } else {
+                m = new DefaultNodeMatcher(new ElementQualifier2ElementSelector(elementQualifier));
+            }
         }
         if (!XMLUnit.getCompareUnmatched()) {
             engine.setNodeMatcher(m);
