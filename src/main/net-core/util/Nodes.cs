@@ -74,7 +74,25 @@ namespace net.sf.xmlunit.util {
         public static XmlNode StripWhitespace(XmlNode original) {
             XmlNode cloned = original.CloneNode(true);
             cloned.Normalize();
-            StripWsRec(cloned);
+            HandleWsRec(cloned, false);
+            return cloned;
+        }
+
+        /// <summary>
+        /// Creates a new Node (of the same type as the original node)
+        /// that is similar to the orginal but doesn't contain any
+        /// empty text or CDATA nodes and where all textual content
+        /// including attribute values or comments are normalized.
+        /// </summary>
+        /// <remarks>
+        /// "normalized" in this context means all whitespace
+        /// characters are replaced by space characters and
+        /// consecutive whitespace characaters are collapsed.
+        /// </remarks>
+        public static XmlNode NormalizeWhitespace(XmlNode original) {
+            XmlNode cloned = original.CloneNode(true);
+            cloned.Normalize();
+            HandleWsRec(cloned, true);
             return cloned;
         }
 
@@ -82,13 +100,19 @@ namespace net.sf.xmlunit.util {
         /// Trims textual content of this node, removes empty text and
         /// CDATA children, recurses into its child nodes.
         /// </summary>
-        private static void StripWsRec(XmlNode n) {
+        /// <parameter name="normalize">whether to normalize
+        /// whitespace as well</parameter>
+        private static void HandleWsRec(XmlNode n, bool normalize) {
             if (n is XmlCharacterData || n is XmlProcessingInstruction) {
-                n.Value = n.Value.Trim();
+                string s = n.Value.Trim();
+                if (normalize) {
+                    s = Normalize(s);
+                }
+                n.Value = s;
             }
             LinkedList<XmlNode> toRemove = new LinkedList<XmlNode>();
             foreach (XmlNode child in n.ChildNodes) {
-                StripWsRec(child);
+                HandleWsRec(child, normalize);
                 if (!(n is XmlAttribute)
                     && (child is XmlText || child is XmlCDataSection)
                     && child.Value.Length == 0) {
@@ -101,10 +125,40 @@ namespace net.sf.xmlunit.util {
             XmlNamedNodeMap attrs = n.Attributes;
             if (attrs != null) {
                 foreach (XmlAttribute a in attrs) {
-                    StripWsRec(a);
+                    HandleWsRec(a, normalize);
                 }
             }
         }
 
+        private const char SPACE = ' ';
+
+        /// <summary>
+        /// Normalize a string.
+        /// <summary>
+        /// <remarks>
+        /// "normalized" in this context means all whitespace
+        /// characters are replaced by space characters and
+        /// consecutive whitespace characaters are collapsed.
+        /// </remarks>
+        internal static string Normalize(string s) {
+            StringBuilder sb = new StringBuilder();
+            bool changed = false;
+            bool lastCharWasWS = false;
+            foreach (char c in s) {
+                if (char.IsWhiteSpace(c)) {
+                    if (!lastCharWasWS) {
+                        sb.Append(SPACE);
+                        changed |= (c != SPACE);
+                    } else {
+                        changed = true;
+                    }
+                    lastCharWasWS = true;
+                } else {
+                    sb.Append(c);
+                    lastCharWasWS = false;
+                }
+            }
+            return changed ? sb.ToString() : s;
+        }
     }
 }

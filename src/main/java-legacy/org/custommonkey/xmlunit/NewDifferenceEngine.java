@@ -57,6 +57,7 @@ import net.sf.xmlunit.diff.ElementSelector;
 import net.sf.xmlunit.diff.ElementSelectors;
 import net.sf.xmlunit.diff.NodeMatcher;
 import net.sf.xmlunit.input.CommentLessSource;
+import net.sf.xmlunit.input.WhitespaceNormalizedSource;
 import net.sf.xmlunit.input.WhitespaceStrippedSource;
 import net.sf.xmlunit.util.Linqy;
 import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
@@ -200,7 +201,10 @@ public class NewDifferenceEngine
             ctrlSource = new CommentLessSource(ctrlSource);
             tstSource = new CommentLessSource(tstSource);
         }
-        if (XMLUnit.getIgnoreWhitespace()) {
+        if (XMLUnit.getNormalizeWhitespace()) {
+            ctrlSource = new WhitespaceNormalizedSource(ctrlSource);
+            tstSource = new WhitespaceNormalizedSource(tstSource);
+        } else if (XMLUnit.getIgnoreWhitespace()) {
             ctrlSource = new WhitespaceStrippedSource(ctrlSource);
             tstSource = new WhitespaceStrippedSource(tstSource);
         }

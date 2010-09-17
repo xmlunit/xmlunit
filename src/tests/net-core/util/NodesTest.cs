@@ -123,23 +123,42 @@ namespace net.sf.xmlunit.util {
             Assert.AreEqual(BAR, m[new XmlQualifiedName(FOO, SOME_URI)]);
         }
 
-        private KeyValuePair<XmlDocument, XmlNode> StripWsSetup() {
-            XmlDocument toTest = Convert.ToDocument(Input.FromMemory(
+        private XmlDocument HandleWsSetup() {
+            return Convert.ToDocument(Input.FromMemory(
                 "<root>\n"
-                + "<!-- trim me -->\n"
+                + "<!-- trim\tme -->\n"
                 + "<child attr=' trim me ' attr2='not me'>\n"
                 + " trim me \n"
                 + "</child><![CDATA[ trim me ]]>\n"
                 + "<?target  trim me ?>\n"
                 + "<![CDATA[          ]]>\n"
                 + "</root>").Build());
+        }
+
+        private KeyValuePair<XmlDocument, XmlNode> StripWsSetup() {
+            XmlDocument toTest = HandleWsSetup();
             return new KeyValuePair<XmlDocument,
                 XmlNode>(toTest, Nodes.StripWhitespace(toTest));
         }
 
+        private KeyValuePair<XmlDocument, XmlNode> NormalizeWsSetup() {
+            XmlDocument toTest = HandleWsSetup();
+            return new KeyValuePair<XmlDocument,
+                XmlNode>(toTest, Nodes.NormalizeWhitespace(toTest));
+        }
+
         [Test]
         public void StripWhitespaceWorks() {
-            KeyValuePair<XmlDocument, XmlNode> s = StripWsSetup();
+            HandleWsWorks(StripWsSetup(), "trim\tme");
+        }
+
+        [Test]
+        public void NormalizeWhitespaceWorks() {
+            HandleWsWorks(NormalizeWsSetup(), "trim me");
+        }
+
+        private void HandleWsWorks(KeyValuePair<XmlDocument, XmlNode> s,
+                                   string commentContent) {
             Assert.IsTrue(s.Value is XmlDocument);
             XmlNodeList top = s.Value.ChildNodes;
             Assert.AreEqual(1, top.Count);
@@ -149,7 +168,7 @@ namespace net.sf.xmlunit.util {
             Assert.AreEqual(4, rootsChildren.Count);
             Assert.IsTrue(rootsChildren[0] is XmlComment,
                           "should be comment, is " + rootsChildren[0].GetType());
-            Assert.AreEqual("trim me",
+            Assert.AreEqual(commentContent,
                             ((XmlComment) rootsChildren[0]).Data);
             Assert.IsTrue(rootsChildren[1] is XmlElement,
                           "should be element, is " + rootsChildren[1].GetType());
@@ -178,7 +197,16 @@ namespace net.sf.xmlunit.util {
 
         [Test]
         public void StripWhitespaceDoesntAlterOriginal() {
-            KeyValuePair<XmlDocument, XmlNode> s = StripWsSetup();
+            HandleWsDoesntAlterOriginal(StripWsSetup());
+        }
+
+        [Test]
+        public void NormalizeWhitespaceDoesntAlterOriginal() {
+            HandleWsDoesntAlterOriginal(NormalizeWsSetup());
+        }
+
+        private void HandleWsDoesntAlterOriginal(KeyValuePair<XmlDocument,
+                                                 XmlNode> s) {
             XmlNodeList top = s.Key.ChildNodes;
             Assert.AreEqual(1, top.Count);
             Assert.IsTrue(top[0] is XmlElement);
@@ -187,7 +215,7 @@ namespace net.sf.xmlunit.util {
             Assert.AreEqual(5, rootsChildren.Count);
             Assert.IsTrue(rootsChildren[0] is XmlComment,
                           "should be comment, is " + rootsChildren[0].GetType());
-            Assert.AreEqual(" trim me ",
+            Assert.AreEqual(" trim\tme ",
                             ((XmlComment) rootsChildren[0]).Data);
             Assert.IsTrue(rootsChildren[1] is XmlElement,
                           "should be element, is " + rootsChildren[1].GetType());
@@ -216,6 +244,14 @@ namespace net.sf.xmlunit.util {
             Assert.AreEqual(" trim me ", a.Value);
             XmlAttribute a2 = (XmlAttribute) attrs.GetNamedItem("attr2");
             Assert.AreEqual("not me", a2.Value);
+        }
+
+        [Test]
+        public void Normalize() {
+            Assert.AreSame("foo", Nodes.Normalize("foo"));
+            Assert.AreSame("foo bar", Nodes.Normalize("foo bar"));
+            Assert.AreEqual("foo bar", Nodes.Normalize("foo\nbar"));
+            Assert.AreEqual("foo bar", Nodes.Normalize("foo  \r\n\t bar"));
         }
     }
 }

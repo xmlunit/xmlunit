@@ -91,21 +91,43 @@ public final class Nodes {
     public static Node stripWhitespace(Node original) {
         Node cloned = original.cloneNode(true);
         cloned.normalize();
-        stripWsRec(cloned);
+        handleWsRec(cloned, false);
+        return cloned;
+    }
+
+    /**
+     * Creates a new Node (of the same type as the original node) that
+     * is similar to the orginal but doesn't contain any empty text or
+     * CDATA nodes and where all textual content including attribute
+     * values or comments are trimmed and normalized.
+     *
+     * <p>"normalized" in this context means all whitespace characters
+     * are replaced by space characters and consecutive whitespace
+     * characaters are collapsed.</p>
+     */
+    public static Node normalizeWhitespace(Node original) {
+        Node cloned = original.cloneNode(true);
+        cloned.normalize();
+        handleWsRec(cloned, true);
         return cloned;
     }
 
     /**
      * Trims textual content of this node, removes empty text and
      * CDATA children, recurses into its child nodes.
+     * @param normalize whether to normalize whitespace as well
      */
-    private static void stripWsRec(Node n) {
+    private static void handleWsRec(Node n, boolean normalize) {
         if (n instanceof CharacterData || n instanceof ProcessingInstruction) {
-            n.setNodeValue(n.getNodeValue().trim());
+            String s = n.getNodeValue().trim();
+            if (normalize) {
+                s = normalize(s);
+            }
+            n.setNodeValue(s);
         }
         List<Node> toRemove = new LinkedList<Node>();
         for (Node child : new IterableNodeList(n.getChildNodes())) {
-            stripWsRec(child);
+            handleWsRec(child, normalize);
             if (!(n instanceof Attr)
                 && (child instanceof Text || child instanceof CDATASection)
                 && child.getNodeValue().length() == 0) {
@@ -119,8 +141,40 @@ public final class Nodes {
         if (attrs != null) {
             final int len = attrs.getLength();
             for (int i = 0; i < len; i++) {
-                stripWsRec(attrs.item(i));
+                handleWsRec(attrs.item(i), normalize);
             }
         }
+    }
+
+    private static final char SPACE = ' ';
+
+    /**
+     * Normalize a string.
+     *
+     * <p>"normalized" in this context means all whitespace characters
+     * are replaced by space characters and consecutive whitespace
+     * characaters are collapsed.</p>
+     */
+    static String normalize(String s) {
+        StringBuilder sb = new StringBuilder();
+        boolean changed = false;
+        boolean lastCharWasWS = false;
+        final int len = s.length();
+        for (int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            if (Character.isWhitespace(c)) {
+                if (!lastCharWasWS) {
+                    sb.append(SPACE);
+                    changed |= (c != SPACE);
+                } else {
+                    changed = true;
+                }
+                lastCharWasWS = true;
+            } else {
+                sb.append(c);
+                lastCharWasWS = false;
+            }
+        }
+        return changed ? sb.toString() : s;
     }
 }

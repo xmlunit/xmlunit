@@ -423,8 +423,6 @@ public class Diff
             if (
                 XMLUnit.getIgnoreAttributeOrder()
                 &&
-                !XMLUnit.getNormalizeWhitespace()
-                &&
                 (!usesUnknownElementQualifier()
                  || XMLUnit.getCompareUnmatched())
                 ) {

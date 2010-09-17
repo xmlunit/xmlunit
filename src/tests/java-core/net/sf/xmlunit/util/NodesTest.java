@@ -144,16 +144,20 @@ public class NodesTest {
         assertEquals(BAR, m.get(new QName(SOME_URI, FOO, BAR)));
     }
 
-    private Map.Entry<Document, Node> stripWsSetup() {
-        final Document toTest = Convert.toDocument(Input.fromMemory(
+    private Document handleWsSetup() {
+        return Convert.toDocument(Input.fromMemory(
             "<root>\n"
-            + "<!-- trim me -->\n"
+            + "<!-- trim\tme -->\n"
             + "<child attr=' trim me ' attr2='not me'>\n"
             + " trim me \n"
             + "</child><![CDATA[ trim me ]]>\n"
             + "<?target  trim me ?>\n"
             + "<![CDATA[          ]]>\n"
             + "</root>").build());
+    }
+
+    private Map.Entry<Document, Node> stripWsSetup() {
+        final Document toTest = handleWsSetup();
         final Node stripped = Nodes.stripWhitespace(toTest);
         return new Map.Entry<Document, Node>() {
             public Document getKey() {
@@ -168,8 +172,32 @@ public class NodesTest {
         };
     }
 
+    private Map.Entry<Document, Node> normalizeWsSetup() {
+        final Document toTest = handleWsSetup();
+        final Node stripped = Nodes.normalizeWhitespace(toTest);
+        return new Map.Entry<Document, Node>() {
+            public Document getKey() {
+                return toTest;
+            }
+            public Node getValue() {
+                return stripped;
+            }
+            public Node setValue(Node n) {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
     @Test public void stripWhitespaceWorks() {
-        Map.Entry<Document, Node> s = stripWsSetup();
+        handleWsWorks(stripWsSetup(), "trim\tme");
+    }
+
+    @Test public void normalizeWhitespaceWorks() {
+        handleWsWorks(normalizeWsSetup(), "trim me");
+    }
+
+    private void handleWsWorks(Map.Entry<Document, Node> s,
+                               String commentContent) {
         assertTrue(s.getValue() instanceof Document);
         NodeList top = s.getValue().getChildNodes();
         assertEquals(1, top.getLength());
@@ -179,7 +207,8 @@ public class NodesTest {
         assertEquals(4, rootsChildren.getLength());
         assertTrue("should be comment, is " + rootsChildren.item(0).getClass(),
                    rootsChildren.item(0) instanceof Comment);
-        assertEquals("trim me", ((Comment) rootsChildren.item(0)).getData());
+        assertEquals(commentContent,
+                     ((Comment) rootsChildren.item(0)).getData());
         assertTrue("should be element, is " + rootsChildren.item(1).getClass(),
                    rootsChildren.item(1) instanceof Element);
         assertEquals("child", rootsChildren.item(1).getNodeName());
@@ -206,7 +235,14 @@ public class NodesTest {
     }
 
     @Test public void stripWhitespaceDoesntAlterOriginal() {
-        Map.Entry<Document, Node> s = stripWsSetup();
+        handleWsDoesntAlterOriginal(stripWsSetup());
+    }
+
+    @Test public void normalizeWhitespaceDoesntAlterOriginal() {
+        handleWsDoesntAlterOriginal(normalizeWsSetup());
+    }
+
+    private void handleWsDoesntAlterOriginal(Map.Entry<Document, Node> s) {
         NodeList top = s.getKey().getChildNodes();
         assertEquals(1, top.getLength());
         assertTrue(top.item(0) instanceof Element);
@@ -216,7 +252,7 @@ public class NodesTest {
         assertNewlineTextNode(rootsChildren.item(0));
         assertTrue("should be comment, is " + rootsChildren.item(1).getClass(),
                    rootsChildren.item(1) instanceof Comment);
-        assertEquals(" trim me ", ((Comment) rootsChildren.item(1)).getData());
+        assertEquals(" trim\tme ", ((Comment) rootsChildren.item(1)).getData());
         assertNewlineTextNode(rootsChildren.item(2));
         assertTrue("should be element, is " + rootsChildren.item(3).getClass(),
                    rootsChildren.item(3) instanceof Element);
@@ -254,5 +290,12 @@ public class NodesTest {
         assertTrue("should be text, is " + n.getClass(),
                    n instanceof Text);
         assertEquals("\n", ((Text) n).getData());
+    }
+
+    @Test public void normalize() {
+        assertSame("foo", Nodes.normalize("foo"));
+        assertSame("foo bar", Nodes.normalize("foo bar"));
+        assertEquals("foo bar", Nodes.normalize("foo\nbar"));
+        assertEquals("foo bar", Nodes.normalize("foo  \r\n\t bar"));
     }
 }
