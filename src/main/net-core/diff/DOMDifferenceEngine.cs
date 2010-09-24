@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;
+using net.sf.xmlunit.exceptions;
 using net.sf.xmlunit.util;
 
 namespace net.sf.xmlunit.diff{
@@ -34,11 +35,15 @@ namespace net.sf.xmlunit.diff{
             if (test == null) {
                 throw new ArgumentNullException("test");
             }
-
-            CompareNodes(net.sf.xmlunit.util.Convert.ToNode(control),
-                         new XPathContext(),
-                         net.sf.xmlunit.util.Convert.ToNode(test),
-                         new XPathContext());
+            try {
+                CompareNodes(net.sf.xmlunit.util.Convert.ToNode(control),
+                             new XPathContext(),
+                             net.sf.xmlunit.util.Convert.ToNode(test),
+                             new XPathContext());
+            } catch (Exception ex) {
+                throw new XMLUnitException("Caught exception during comparison",
+                                           ex);
+            }
         }
 
         /// <summary>

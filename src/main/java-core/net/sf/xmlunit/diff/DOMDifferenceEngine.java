@@ -23,6 +23,7 @@ import java.util.TreeSet;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
+import net.sf.xmlunit.exceptions.XMLUnitException;
 import net.sf.xmlunit.util.Convert;
 import net.sf.xmlunit.util.IterableNodeList;
 import net.sf.xmlunit.util.Linqy;
@@ -37,6 +38,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
+
 /**
  * Difference engine based on DOM.
  */
@@ -49,8 +51,13 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         if (test == null) {
             throw new IllegalArgumentException("test must not be null");
         }
-        compareNodes(Convert.toNode(control), new XPathContext(),
-                     Convert.toNode(test), new XPathContext());
+        try {
+            compareNodes(Convert.toNode(control), new XPathContext(),
+                         Convert.toNode(test), new XPathContext());
+        } catch (Exception ex) {
+            throw new XMLUnitException("Caught exception during comparison",
+                                       ex);
+        }
     }
 
     /**
