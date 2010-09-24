@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+/*
   This file is licensed to You under the Apache License, Version 2.0
   (the "License"); you may not use this file except in compliance with
   the License.  You may obtain a copy of the License at
@@ -11,37 +10,38 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
--->
-<class ns="net.sf.xmlunit.diff" qualifiers="public final"
-       name="DOMDifferenceEngine"
-       summary="Difference engine based on DOM."
-       extends="AbstractDifferenceEngine">
+*/
 
-  <import reference="java.util.HashSet"/>
-  <import reference="java.util.LinkedList"/>
-  <import reference="java.util.List"/>
-  <import reference="java.util.Map"/>
-  <import reference="java.util.Set"/>
-  <import reference="java.util.TreeSet"/>
-  <import reference="javax.xml.XMLConstants"/>
-  <import reference="javax.xml.namespace.QName"/>
-  <import reference="javax.xml.transform.Source"/>
-  <import reference="net.sf.xmlunit.util.Convert"/>
-  <import reference="net.sf.xmlunit.util.IterableNodeList"/>
-  <import reference="net.sf.xmlunit.util.Linqy"/>
-  <import reference="net.sf.xmlunit.util.Nodes"/>
-  <import reference="net.sf.xmlunit.util.Predicate"/>
-  <import reference="org.w3c.dom.Attr"/>
-  <import reference="org.w3c.dom.CharacterData"/>
-  <import reference="org.w3c.dom.Document"/>
-  <import reference="org.w3c.dom.DocumentType"/>
-  <import reference="org.w3c.dom.Element"/>
-  <import reference="org.w3c.dom.NamedNodeMap"/>
-  <import reference="org.w3c.dom.Node"/>
-  <import reference="org.w3c.dom.NodeList"/>
-  <import reference="org.w3c.dom.ProcessingInstruction"/>
+package net.sf.xmlunit.diff;
 
-  <literal><![CDATA[
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
+import net.sf.xmlunit.util.Convert;
+import net.sf.xmlunit.util.IterableNodeList;
+import net.sf.xmlunit.util.Linqy;
+import net.sf.xmlunit.util.Nodes;
+import net.sf.xmlunit.util.Predicate;
+import org.w3c.dom.Attr;
+import org.w3c.dom.CharacterData;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.ProcessingInstruction;
+/**
+ * Difference engine based on DOM.
+ */
+public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
+
     public void compare(Source control, Source test) {
         if (control == null) {
             throw new IllegalArgumentException("control must not be null");
@@ -56,8 +56,8 @@
     /**
      * Recursively compares two XML nodes.
      *
-     * <p>Performs comparisons common to all node types, the performs
-     * the node type specific comparisons and finally recures into
+     * <p>Performs comparisons common to all node types, then performs
+     * the node type specific comparisons and finally recurses into
      * the node's child lists.</p>
      *
      * <p>Stops as soon as any comparison returns
@@ -67,12 +67,38 @@
      */
     ComparisonResult compareNodes(Node control, XPathContext controlContext,
                                   Node test, XPathContext testContext) {
-]]></literal>
-  <lastResultDef/>
-  <compare type="NODE_TYPE" property="getNodeType()"/>
-  <compare type="NAMESPACE_URI" property="getNamespaceURI()"/>
-  <compare type="NAMESPACE_PREFIX" property="getPrefix()"/>
-  <literal><![CDATA[
+        ComparisonResult lastResult =
+            compare(new Comparison(ComparisonType.NODE_TYPE,
+                                   control, getXPath(controlContext),
+                                   control.getNodeType(),
+                                   test, getXPath(testContext),
+                                   test.getNodeType()));
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
+
+        lastResult =
+            compare(new Comparison(ComparisonType.NAMESPACE_URI,
+                                   control, getXPath(controlContext),
+                                   control.getNamespaceURI(),
+                                   test, getXPath(testContext),
+                                   test.getNamespaceURI()));
+
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
+
+        lastResult =
+            compare(new Comparison(ComparisonType.NAMESPACE_PREFIX,
+                                   control, getXPath(controlContext),
+                                   control.getPrefix(),
+                                   test, getXPath(testContext),
+                                   test.getPrefix()));
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
+
+
         Iterable<Node> controlChildren =
             Linqy.filter(new IterableNodeList(control.getChildNodes()),
                          INTERESTING_NODES);
@@ -80,25 +106,34 @@
             Linqy.filter(new IterableNodeList(test.getChildNodes()),
                          INTERESTING_NODES);
         if (control.getNodeType() != Node.ATTRIBUTE_NODE) {
-]]></literal>
-  <compareExpr type="CHILD_NODELIST_LENGTH"
-               controlExpr="Linqy.count(controlChildren)"
-               testExpr="Linqy.count(testChildren)"/>
-  <literal><![CDATA[
-         }
-]]></literal>
-  <compareMethod method="nodeTypeSpecificComparison"/>
-  <literal><![CDATA[
+            lastResult =
+                compare(new Comparison(ComparisonType.CHILD_NODELIST_LENGTH,
+                                       control, getXPath(controlContext),
+                                       Linqy.count(controlChildren),
+                                       test, getXPath(testContext),
+                                       Linqy.count(testChildren)));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+        }
+
+        lastResult = nodeTypeSpecificComparison(control, controlContext,
+                                                test, testContext);
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
+
         if (control.getNodeType() != Node.ATTRIBUTE_NODE) {
             controlContext
                 .setChildren(Linqy.map(controlChildren, TO_NODE_INFO));
             testContext
                 .setChildren(Linqy.map(testChildren, TO_NODE_INFO));
-]]></literal>
-  <compareMethodExpr method="compareNodeLists"
-                     controlExpr="controlChildren"
-                     testExpr="testChildren"/>
-  <literal><![CDATA[
+
+            lastResult = compareNodeLists(controlChildren, controlContext,
+                                          testChildren, testContext);
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
         }
         return lastResult;
     }
@@ -106,13 +141,11 @@
     /**
      * Dispatches to the node type specific comparison if one is
      * defined for the given combination of nodes.
-     *
-     * <p>package private to support tests.</p>
      */
-    private ComparisonResult nodeTypeSpecificComparison(Node control,
-                                                        XPathContext controlContext,
-                                                        Node test,
-                                                        XPathContext testContext) {
+    private ComparisonResult
+        nodeTypeSpecificComparison(Node control,
+                                   XPathContext controlContext,
+                                   Node test, XPathContext testContext) {
         switch (control.getNodeType()) {
         case Node.CDATA_SECTION_NODE:
         case Node.COMMENT_NODE:
@@ -174,29 +207,55 @@
                                       test.getData()));
     }
 
+    /**
+     * Compares document node, doctype and XML declaration properties
+     */
     private ComparisonResult compareDocuments(Document control,
                                               XPathContext controlContext,
                                               Document test,
                                               XPathContext testContext) {
         DocumentType controlDt = control.getDoctype();
         DocumentType testDt = test.getDoctype();
-]]></literal>
-  <lastResultDef/>
-  <compareExpr type="HAS_DOCTYPE_DECLARATION"
-               controlExpr="Boolean.valueOf(controlDt != null)"
-               testExpr="Boolean.valueOf(testDt != null)"/>
-  <literal><![CDATA[
-        if (controlDt != null && testDt != null) {
-]]></literal>
-  <compareMethodExpr method="compareNodes"
-                     controlExpr="controlDt"
-                     testExpr="testDt"/>
-  <literal><![CDATA[
+
+        ComparisonResult lastResult =
+            compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
+                                   control, getXPath(controlContext),
+                                   Boolean.valueOf(controlDt != null),
+                                   test, getXPath(testContext),
+                                   Boolean.valueOf(testDt != null)));
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
         }
-]]></literal>
-  <compare type="XML_VERSION" property="getXmlVersion()"/>
-  <compare type="XML_STANDALONE" property="getXmlStandalone()"/>
-  <literal><![CDATA[
+
+        if (controlDt != null && testDt != null) {
+            lastResult = compareNodes(controlDt, controlContext,
+                                      testDt, testContext);
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+        }
+
+        lastResult =
+            compare(new Comparison(ComparisonType.XML_VERSION,
+                                   control, getXPath(controlContext),
+                                   control.getXmlVersion(),
+                                   test, getXPath(testContext),
+                                   test.getXmlVersion()));
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
+
+
+        lastResult =
+            compare(new Comparison(ComparisonType.XML_STANDALONE,
+                                   control, getXPath(controlContext),
+                                   control.getXmlStandalone(),
+                                   test, getXPath(testContext),
+                                   test.getXmlStandalone()));
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
+
         return compare(new Comparison(ComparisonType.XML_ENCODING,
                                       control, getXPath(controlContext),
                                       control.getXmlEncoding(),
@@ -204,30 +263,56 @@
                                       test.getXmlEncoding()));
     }
 
+    /**
+     * Compares properties of the doctype declaration.
+     */
     private ComparisonResult compareDocTypes(DocumentType control,
                                              XPathContext controlContext,
                                              DocumentType test,
                                              XPathContext testContext) {
-]]></literal>
-  <lastResultDef/>
-  <compare type="DOCTYPE_NAME" property="getName()"/>
-  <compare type="DOCTYPE_PUBLIC_ID" property="getPublicId()"/>
-  <literal><![CDATA[
+        ComparisonResult lastResult =
+            compare(new Comparison(ComparisonType.DOCTYPE_NAME,
+                                   control, getXPath(controlContext),
+                                   control.getName(),
+                                   test, getXPath(testContext),
+                                   test.getName()));
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
+
+        lastResult =
+            compare(new Comparison(ComparisonType.DOCTYPE_PUBLIC_ID,
+                                   control, getXPath(controlContext),
+                                   control.getPublicId(),
+                                   test, getXPath(testContext),
+                                   test.getPublicId()));
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
+
         return compare(new Comparison(ComparisonType.DOCTYPE_SYSTEM_ID,
                                       control, null, control.getSystemId(),
                                       test, null, test.getSystemId()));
     }
 
+    /**
+     * Compares elements node properties, in particular the element's
+     * name and its attributes.
+     */
     private ComparisonResult compareElements(Element control,
                                              XPathContext controlContext,
                                              Element test,
                                              XPathContext testContext) {
-]]></literal>
-  <lastResultDef/>
-  <compareExpr type="ELEMENT_TAG_NAME"
-               controlExpr="Nodes.getQName(control).getLocalPart()"
-               testExpr="Nodes.getQName(test).getLocalPart()"/>
-  <literal><![CDATA[
+        ComparisonResult lastResult =
+            compare(new Comparison(ComparisonType.ELEMENT_TAG_NAME,
+                                   control, getXPath(controlContext),
+                                   Nodes.getQName(control).getLocalPart(),
+                                   test, getXPath(testContext),
+                                   Nodes.getQName(test).getLocalPart()));
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
+
         Attributes controlAttributes = splitAttributes(control.getAttributes());
         controlContext
             .addAttributes(Linqy.map(controlAttributes.remainingAttributes,
@@ -237,30 +322,43 @@
             .addAttributes(Linqy.map(testAttributes.remainingAttributes,
                                      QNAME_MAPPER));
         Set<Attr> foundTestAttributes = new HashSet<Attr>();
-]]></literal>
-  <compareExpr type="ELEMENT_NUM_ATTRIBUTES"
-               controlExpr="controlAttributes.remainingAttributes.size()"
-               testExpr="testAttributes.remainingAttributes.size()"/>
-  <literal><![CDATA[
+
+        lastResult =
+            compare(new Comparison(ComparisonType.ELEMENT_NUM_ATTRIBUTES,
+                                   control, getXPath(controlContext),
+                                   controlAttributes.remainingAttributes.size(),
+                                   test, getXPath(testContext),
+                                   testAttributes.remainingAttributes.size()));
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
+
         for (Attr controlAttr : controlAttributes.remainingAttributes) {
             final Attr testAttr =
                 findMatchingAttr(testAttributes.remainingAttributes,
                                  controlAttr);
-]]></literal>
+
             controlContext.navigateToAttribute(Nodes.getQName(controlAttr));
             try {
-  <compareExpr type="ATTR_NAME_LOOKUP"
-               controlExpr="Boolean.TRUE"
-               testExpr="Boolean.valueOf(testAttr != null)"/>
-  <literal><![CDATA[
+                lastResult =
+                    compare(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
+                                           control, getXPath(controlContext),
+                                           Boolean.TRUE,
+                                           test, getXPath(testContext),
+                                           Boolean.valueOf(testAttr != null)));
+                if (lastResult == ComparisonResult.CRITICAL) {
+                    return lastResult;
+                }
+
                 if (testAttr != null) {
                     testContext.navigateToAttribute(Nodes.getQName(testAttr));
                     try {
-]]></literal>
-  <compareMethodExpr method="compareNodes"
-                     controlExpr="controlAttr"
-                     testExpr="testAttr"/>
-  <literal><![CDATA[
+                        lastResult = compareNodes(controlAttr, controlContext,
+                                                  testAttr, testContext);
+                        if (lastResult == ComparisonResult.CRITICAL) {
+                            return lastResult;
+                        }
+
                         foundTestAttributes.add(testAttr);
                     } finally {
                         testContext.navigateToParent();
@@ -270,42 +368,68 @@
                 controlContext.navigateToParent();
             }
         }
-]]></literal>
-  <literal><![CDATA[
+
         for (Attr testAttr : testAttributes.remainingAttributes) {
             testContext.navigateToAttribute(Nodes.getQName(testAttr));
             try {
-]]></literal>
-  <compareExpr type="ATTR_NAME_LOOKUP"
-               controlExpr="Boolean.valueOf(foundTestAttributes.contains(testAttr))"
-               testExpr="Boolean.TRUE"/>
-  <literal><![CDATA[
+                lastResult =
+                    compare(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
+                                           control, getXPath(controlContext),
+                                           Boolean.valueOf(foundTestAttributes.contains(testAttr)),
+                                           test, getXPath(testContext),
+                                           Boolean.TRUE));
+                if (lastResult == ComparisonResult.CRITICAL) {
+                    return lastResult;
+                }
             } finally {
                 testContext.navigateToParent();
             }
         }
-]]></literal>
-  <compareExpr type="SCHEMA_LOCATION"
-               controlExpr="controlAttributes.schemaLocation != null ? controlAttributes.schemaLocation.getValue() : null"
-               testExpr="testAttributes.schemaLocation != null ? testAttributes.schemaLocation.getValue() : null"
-               />
-  <compareExpr type="NO_NAMESPACE_SCHEMA_LOCATION"
-               controlExpr="controlAttributes.noNamespaceSchemaLocation != null ? controlAttributes.noNamespaceSchemaLocation.getValue() : null"
-               testExpr="testAttributes.noNamespaceSchemaLocation != null ? testAttributes.noNamespaceSchemaLocation.getValue() : null"
-               />
-  <literal><![CDATA[
-        return lastResult;
+
+        lastResult =
+            compare(new Comparison(ComparisonType.SCHEMA_LOCATION,
+                                   control, getXPath(controlContext),
+                                   controlAttributes.schemaLocation != null
+                                   ? controlAttributes.schemaLocation.getValue()
+                                   : null,
+                                   test, getXPath(testContext),
+                                   testAttributes.schemaLocation != null
+                                   ? testAttributes.schemaLocation.getValue()
+                                   : null));
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
+
+        return
+            compare(new Comparison(ComparisonType.NO_NAMESPACE_SCHEMA_LOCATION,
+                                   control, getXPath(controlContext),
+                                   controlAttributes.noNamespaceSchemaLocation != null ?
+                                   controlAttributes.noNamespaceSchemaLocation.getValue()
+                                   : null,
+                                   test, getXPath(testContext),
+                                   testAttributes.noNamespaceSchemaLocation != null
+                                   ? testAttributes.noNamespaceSchemaLocation.getValue()
+                                   : null));
     }
 
+    /**
+     * Compares properties of a processing instruction.
+     */
     private ComparisonResult
         compareProcessingInstructions(ProcessingInstruction control,
                                       XPathContext controlContext,
                                       ProcessingInstruction test,
                                       XPathContext testContext) {
-]]></literal>
-  <lastResultDef/>
-  <compare type="PROCESSING_INSTRUCTION_TARGET" property="getTarget()"/>
-  <literal><![CDATA[
+        ComparisonResult lastResult =
+            compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_TARGET,
+                                   control, getXPath(controlContext),
+                                   control.getTarget(),
+                                   test, getXPath(testContext),
+                                   test.getTarget()));
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
+
         return compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_DATA,
                                       control, getXPath(controlContext),
                                       control.getData(),
@@ -313,15 +437,18 @@
                                       test.getData()));
     }
 
+    /**
+     * Matches nodes of two node lists and invokes compareNode on each pair.
+     *
+     * <p>Also performs CHILD_LOOKUP comparisons for each node that
+     * couldn't be matched to one of the "other" list.</p>
+     */
     private ComparisonResult compareNodeLists(Iterable<Node> controlSeq,
                                               XPathContext controlContext,
                                               Iterable<Node> testSeq,
                                               XPathContext testContext) {
-]]></literal>
-  <lastResultDef/>
-  <literal><![CDATA[
         // if there are no children on either Node, the result is equal
-        lastResult = ComparisonResult.EQUAL;
+        ComparisonResult lastResult = ComparisonResult.EQUAL;
 
         Iterable<Map.Entry<Node, Node>> matches =
             getNodeMatcher().match(controlSeq, testSeq);
@@ -335,23 +462,31 @@
             seen.add(test);
             int controlIndex = controlList.indexOf(control);
             int testIndex = testList.indexOf(test);
+
             controlContext.navigateToChild(controlIndex);
             testContext.navigateToChild(testIndex);
             try {
-]]></literal>
-  <compareExpr type="CHILD_NODELIST_SEQUENCE"
-               controlExpr="Integer.valueOf(controlIndex)"
-               testExpr="Integer.valueOf(testIndex)"
-               />
-  <compareMethodExpr method="compareNodes"
-                     controlExpr="control"
-                     testExpr="test"/>
-  <literal><![CDATA[
+                lastResult =
+                    compare(new Comparison(ComparisonType.CHILD_NODELIST_SEQUENCE,
+                                           control, getXPath(controlContext),
+                                           Integer.valueOf(controlIndex),
+                                           test, getXPath(testContext),
+                                           Integer.valueOf(testIndex)));
+                if (lastResult == ComparisonResult.CRITICAL) {
+                    return lastResult;
+                }
+
+                lastResult = compareNodes(control, controlContext,
+                                          test, testContext);
+                if (lastResult == ComparisonResult.CRITICAL) {
+                    return lastResult;
+                }
             } finally {
                 testContext.navigateToParent();
                 controlContext.navigateToParent();
             }
         }
+
         final int controlSize = controlList.size();
         for (int i = 0; i < controlSize; i++) {
             if (!seen.contains(controlList.get(i))) {
@@ -363,14 +498,15 @@
                                                getXPath(controlContext),
                                                controlList.get(i),
                                                null, null, null));
-]]></literal>
-  <if-return-boilerplate/>
-  <literal><![CDATA[
+                    if (lastResult == ComparisonResult.CRITICAL) {
+                        return lastResult;
+                    }
                 } finally {
                     controlContext.navigateToParent();
                 }
             }
         }
+
         final int testSize = testList.size();
         for (int i = 0; i < testSize; i++) {
             if (!seen.contains(testList.get(i))) {
@@ -382,9 +518,9 @@
                                                testList.get(i),
                                                getXPath(testContext),
                                                testList.get(i)));
-]]></literal>
-  <if-return-boilerplate/>
-  <literal><![CDATA[
+                    if (lastResult == ComparisonResult.CRITICAL) {
+                        return lastResult;
+                    }
                 } finally {
                     testContext.navigateToParent();
                 }
@@ -393,14 +529,23 @@
         return lastResult;
     }
 
+    /**
+     * Compares properties of an attribute.
+     */
     private ComparisonResult compareAttributes(Attr control,
                                                XPathContext controlContext,
                                                Attr test,
                                                XPathContext testContext) {
-]]></literal>
-  <lastResultDef/>
-  <compare type="ATTR_VALUE_EXPLICITLY_SPECIFIED" property="getSpecified()"/>
-  <literal><![CDATA[
+        ComparisonResult lastResult =
+            compare(new Comparison(ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED,
+                                   control, getXPath(controlContext),
+                                   control.getSpecified(),
+                                   test, getXPath(testContext),
+                                   test.getSpecified()));
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
+        }
+
         return compare(new Comparison(ComparisonType.ATTR_VALUE,
                                       control, getXPath(controlContext),
                                       control.getValue(),
@@ -408,6 +553,9 @@
                                       test.getValue()));
     }
 
+    /**
+     * Separates XML namespace related attributes from "normal" attributes.xb
+     */
     private static Attributes splitAttributes(final NamedNodeMap map) {
         Attr sLoc = (Attr) map.getNamedItemNS(XMLConstants
                                               .W3C_XML_SCHEMA_INSTANCE_NS_URI,
@@ -421,8 +569,8 @@
             Attr a = (Attr) map.item(i);
             if (!XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(a.getNamespaceURI())
                 &&
-               !XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI
-                 .equals(a.getNamespaceURI())) {
+                !XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI
+                .equals(a.getNamespaceURI())) {
                 rest.add(a);
             }
         }
@@ -441,6 +589,10 @@
         }
     }
 
+    /**
+     * Find the attribute with the same namespace and local name as a
+     * given attribute in a list of attributes.
+     */
     private static Attr findMatchingAttr(final List<Attr> attrs,
                                          final Attr attrToMatch) {
         final boolean hasNs = attrToMatch.getNamespaceURI() != null;
@@ -455,30 +607,39 @@
                 ((hasNs && nameToMatch.equals(a.getLocalName()))
                  ||
                  (!hasNs && nameToMatch.equals(a.getName())))
-               ) {
+                ) {
                 return a;
             }
         }
         return null;
     }
 
+    /**
+     * Maps Nodes to their QNames.
+     */
     private static final Linqy.Mapper<Node, QName> QNAME_MAPPER =
         new Linqy.Mapper<Node, QName>() {
-            public QName map(Node n) { return Nodes.getQName(n); }
-        };
+        public QName map(Node n) { return Nodes.getQName(n); }
+    };
 
+    /**
+     * Maps Nodes to their NodeInfo equivalent.
+     */
     private static final Linqy.Mapper<Node, XPathContext.NodeInfo> TO_NODE_INFO =
         new Linqy.Mapper<Node, XPathContext.NodeInfo>() {
-            public XPathContext.NodeInfo map(Node n) {
-                return new XPathContext.DOMNodeInfo(n);
-            }
-        };
+        public XPathContext.NodeInfo map(Node n) {
+            return new XPathContext.DOMNodeInfo(n);
+        }
+    };
 
+    /**
+     * Suppresses document-type nodes.
+     */
     private static final Predicate<Node> INTERESTING_NODES =
         new Predicate<Node>() {
-            public boolean matches(Node n) {
-                return n.getNodeType() != Node.DOCUMENT_TYPE_NODE;
-            }
-        };
-]]></literal>
-</class>
+        public boolean matches(Node n) {
+            return n.getNodeType() != Node.DOCUMENT_TYPE_NODE;
+        }
+    };
+
+}

@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+/*
   This file is licensed to You under the Apache License, Version 2.0
   (the "License"); you may not use this file except in compliance with
   the License.  You may obtain a copy of the License at
@@ -11,19 +10,20 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
--->
-<class ns="net.sf.xmlunit.diff" qualifiers="public sealed"
-       name="DOMDifferenceEngine"
-       summary="Difference engine based on DOM."
-       extends="AbstractDifferenceEngine">
+*/
 
-  <import reference="System"/>
-  <import reference="System.Collections.Generic"/>
-  <import reference="System.Xml"/>
-  <import reference="System.Xml.Schema"/>
-  <import reference="net.sf.xmlunit.util"/>
+using System;
+using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Schema;
+using net.sf.xmlunit.util;
 
-  <literal><![CDATA[
+namespace net.sf.xmlunit.diff{
+
+    /// <summary>
+    /// Difference engine based on DOM.
+    /// </summary>
+    public sealed class DOMDifferenceEngine : AbstractDifferenceEngine {
 
         private static readonly object DUMMY = new object();
 
@@ -45,8 +45,8 @@
         /// Recursively compares two XML nodes.
         /// </summary>
         /// <remarks>
-        /// Performs comparisons common to all node types, the performs
-        /// the node type specific comparisons and finally recures into
+        /// Performs comparisons common to all node types, then performs
+        /// the node type specific comparisons and finally recurses into
         /// the node's child lists.
         ///
         /// Stops as soon as any comparison returns ComparisonResult.CRITICAL.
@@ -55,42 +55,76 @@
                                                XPathContext controlContext,
                                                XmlNode test,
                                                XPathContext testContext) {
-]]></literal>
-  <lastResultDef/>
-  <compare type="NODE_TYPE" property="NodeType"/>
-  <compare type="NAMESPACE_URI" property="NamespaceURI"/>
-  <compare type="NAMESPACE_PREFIX" property="Prefix"/>
-  <literal><![CDATA[
+            ComparisonResult lastResult =
+                Compare(new Comparison(ComparisonType.NODE_TYPE,
+                                       control, GetXPath(controlContext),
+                                       control.NodeType,
+                                       test, GetXPath(testContext),
+                                       test.NodeType));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
+            lastResult =
+                Compare(new Comparison(ComparisonType.NAMESPACE_URI,
+                                       control, GetXPath(controlContext),
+                                       control.NamespaceURI,
+                                       test, GetXPath(testContext),
+                                       test.NamespaceURI));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
+            lastResult =
+                Compare(new Comparison(ComparisonType.NAMESPACE_PREFIX,
+                                       control, GetXPath(controlContext),
+                                       control.Prefix,
+                                       test, GetXPath(testContext),
+                                       test.Prefix));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
             IEnumerable<XmlNode> controlChildren =
                 Linqy.Filter(Linqy.Cast<XmlNode>(control.ChildNodes),
                              INTERESTING_NODES);
             IEnumerable<XmlNode> testChildren =
                 Linqy.Filter(Linqy.Cast<XmlNode>(test.ChildNodes),
                              INTERESTING_NODES);
+
             if (control.NodeType != XmlNodeType.Attribute) {
-]]></literal>
-  <compareExpr type="CHILD_NODELIST_LENGTH"
-               controlExpr="Linqy.Count(controlChildren)"
-               testExpr="Linqy.Count(testChildren)"/>
-  <literal><![CDATA[
-             }
-]]></literal>
-  <compareMethod method="NodeTypeSpecificComparison"/>
-  <literal><![CDATA[
+                lastResult =
+                    Compare(new Comparison(ComparisonType.CHILD_NODELIST_LENGTH,
+                                           control, GetXPath(controlContext),
+                                           Linqy.Count(controlChildren),
+                                           test, GetXPath(testContext),
+                                           Linqy.Count(testChildren)));
+                if (lastResult == ComparisonResult.CRITICAL) {
+                    return lastResult;
+                }
+            }
+
+            lastResult = NodeTypeSpecificComparison(control, controlContext,
+                                                    test, testContext);
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
             if (control.NodeType != XmlNodeType.Attribute) {
                 controlContext
                     .SetChildren(Linqy.Map<XmlNode,
-                                           XPathContext.INodeInfo>(controlChildren,
-                                                                   TO_NODE_INFO));
+                                 XPathContext.INodeInfo>(controlChildren,
+                                                         TO_NODE_INFO));
                 testContext
                     .SetChildren(Linqy.Map<XmlNode,
-                                           XPathContext.INodeInfo>(testChildren,
-                                                                   TO_NODE_INFO));
-]]></literal>
-  <compareMethodExpr method="CompareNodeLists"
-                     controlExpr="controlChildren"
-                     testExpr="testChildren"/>
-  <literal><![CDATA[
+                                 XPathContext.INodeInfo>(testChildren,
+                                                         TO_NODE_INFO));
+
+                lastResult = CompareNodeLists(controlChildren, controlContext,
+                                              testChildren, testContext);
+                if (lastResult == ComparisonResult.CRITICAL) {
+                    return lastResult;
+                }
             }
             return lastResult;
         }
@@ -99,10 +133,10 @@
         /// Dispatches to the node type specific comparison if one is
         /// defined for the given combination of nodes.
         /// </summary>
-        private ComparisonResult NodeTypeSpecificComparison(XmlNode control,
-                                                            XPathContext controlContext,
-                                                            XmlNode test,
-                                                            XPathContext testContext) {
+        private ComparisonResult
+            NodeTypeSpecificComparison(XmlNode control,
+                                       XPathContext controlContext,
+                                       XmlNode test, XPathContext testContext) {
             switch (control.NodeType) {
             case XmlNodeType.CDATA:
             case XmlNodeType.Comment:
@@ -170,44 +204,68 @@
                                           test.Data));
         }
 
+        /// <summary>
+        /// Compares document node, doctype and XML declaration properties
+        /// </summary>
         private ComparisonResult CompareDocuments(XmlDocument control,
                                                   XPathContext controlContext,
                                                   XmlDocument test,
                                                   XPathContext testContext) {
             XmlDocumentType controlDt = control.DocumentType;
             XmlDocumentType testDt = test.DocumentType;
-]]></literal>
-  <lastResultDef/>
-  <compareExpr type="HAS_DOCTYPE_DECLARATION"
-               controlExpr="controlDt != null"
-               testExpr="testDt != null"/>
-  <literal><![CDATA[
-            if (controlDt != null && testDt != null) {
-]]></literal>
-  <compareMethodExpr method="CompareNodes"
-                     controlExpr="controlDt"
-                     testExpr="testDt"/>
-  <literal><![CDATA[
+
+            ComparisonResult lastResult =
+                Compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
+                                       control, GetXPath(controlContext),
+                                       controlDt != null,
+                                       test, GetXPath(testContext),
+                                       testDt != null));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
             }
+
+            if (controlDt != null && testDt != null) {
+                lastResult = CompareNodes(controlDt, controlContext,
+                                          testDt, testContext);
+                if (lastResult == ComparisonResult.CRITICAL) {
+                    return lastResult;
+                }
+            }
+
             XmlDeclaration controlDecl = control.FirstChild as XmlDeclaration;
             XmlDeclaration testDecl = test.FirstChild as XmlDeclaration;
-]]></literal>
-  <compareMethodExpr method="CompareDeclarations"
-                     controlExpr="controlDecl"
-                     testExpr="testDecl"/>
-  <literal><![CDATA[
-            return lastResult;
+
+            return CompareDeclarations(controlDecl, controlContext,
+                                       testDecl, testContext);
         }
 
+        /// <summary>
+        /// Compares properties of the doctype declaration.
+        /// </summary>
         private ComparisonResult CompareDocTypes(XmlDocumentType control,
                                                  XPathContext controlContext,
                                                  XmlDocumentType test,
                                                  XPathContext testContext) {
-]]></literal>
-  <lastResultDef/>
-  <compare type="DOCTYPE_NAME" property="Name"/>
-  <compare type="DOCTYPE_PUBLIC_ID" property="PublicId"/>
-  <literal><![CDATA[
+            ComparisonResult lastResult =
+                Compare(new Comparison(ComparisonType.DOCTYPE_NAME,
+                                       control, GetXPath(controlContext),
+                                       control.Name,
+                                       test, GetXPath(testContext),
+                                       test.Name));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
+            lastResult =
+                Compare(new Comparison(ComparisonType.DOCTYPE_PUBLIC_ID,
+                                       control, GetXPath(controlContext),
+                                       control.PublicId,
+                                       test, GetXPath(testContext),
+                                       test.PublicId));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
             return Compare(new Comparison(ComparisonType.DOCTYPE_SYSTEM_ID,
                                           control, GetXPath(controlContext),
                                           control.SystemId,
@@ -215,31 +273,43 @@
                                           test.SystemId));
         }
 
+        /// <summary>
+        /// Compares properties of XML declaration.
+        /// </summary>
         private ComparisonResult CompareDeclarations(XmlDeclaration control,
                                                      XPathContext controlContext,
                                                      XmlDeclaration test,
                                                      XPathContext testContext) {
-]]></literal>
-  <lastResultDef/>
-  <literal><![CDATA[
             string controlVersion =
                 control == null ? "1.0" : control.Version;
             string testVersion =
                 test == null ? "1.0" : test.Version;
-]]></literal>
-  <compareExpr type="XML_VERSION"
-               controlExpr="controlVersion"
-               testExpr="testVersion"/>
-  <literal><![CDATA[
+
+            ComparisonResult lastResult =
+                Compare(new Comparison(ComparisonType.XML_VERSION,
+                                       control, GetXPath(controlContext),
+                                       controlVersion,
+                                       test, GetXPath(testContext),
+                                       testVersion));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
             string controlStandalone =
                 control == null ? string.Empty : control.Standalone;
             string testStandalone =
                 test == null ? string.Empty : test.Standalone;
-]]></literal>
-  <compareExpr type="XML_STANDALONE"
-               controlExpr="controlStandalone"
-               testExpr="testStandalone"/>
-  <literal><![CDATA[
+
+            lastResult =
+                Compare(new Comparison(ComparisonType.XML_STANDALONE,
+                                       control, GetXPath(controlContext),
+                                       controlStandalone,
+                                       test, GetXPath(testContext),
+                                       testStandalone));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
             string controlEncoding =
                 control != null ? control.Encoding : string.Empty;
             string testEncoding = test != null ? test.Encoding : string.Empty;
@@ -250,53 +320,77 @@
                                           testEncoding));
         }
 
+        /// <summary>
+        /// Compares elements node properties, in particular the
+        /// element's name and its attributes.
+        /// </summary>
         private ComparisonResult CompareElements(XmlElement control,
                                                  XPathContext controlContext,
                                                  XmlElement test,
                                                  XPathContext testContext) {
-]]></literal>
-  <lastResultDef/>
-  <compare type="ELEMENT_TAG_NAME" property="Name"/>
-  <literal><![CDATA[
+
+            ComparisonResult lastResult =
+                Compare(new Comparison(ComparisonType.ELEMENT_TAG_NAME,
+                                       control, GetXPath(controlContext),
+                                       control.Name,
+                                       test, GetXPath(testContext),
+                                       test.Name));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
             Attributes controlAttributes = SplitAttributes(control.Attributes);
             controlContext
                 .AddAttributes(Linqy.Map<XmlAttribute,
-                                         XmlQualifiedName>(controlAttributes
-                                                           .RemainingAttributes,
-                                                           Nodes.GetQName));
+                               XmlQualifiedName>(controlAttributes
+                                                 .RemainingAttributes,
+                                                 Nodes.GetQName));
             Attributes testAttributes = SplitAttributes(test.Attributes);
             testContext
                 .AddAttributes(Linqy.Map<XmlAttribute,
-                                         XmlQualifiedName>(testAttributes
-                                                           .RemainingAttributes,
-                                                           Nodes.GetQName));
+                               XmlQualifiedName>(testAttributes
+                                                 .RemainingAttributes,
+                                                 Nodes.GetQName));
             IDictionary<XmlAttribute, object> foundTestAttributes =
                 new Dictionary<XmlAttribute, object>();
-]]></literal>
-  <compareExpr type="ELEMENT_NUM_ATTRIBUTES"
-               controlExpr="controlAttributes.RemainingAttributes.Count"
-               testExpr="testAttributes.RemainingAttributes.Count"/>
-  <literal><![CDATA[
-            foreach (XmlAttribute controlAttr in controlAttributes.RemainingAttributes) {
+
+            lastResult =
+                Compare(new Comparison(ComparisonType.ELEMENT_NUM_ATTRIBUTES,
+                                       control, GetXPath(controlContext),
+                                       controlAttributes.RemainingAttributes.Count,
+                                       test, GetXPath(testContext),
+                                       testAttributes.RemainingAttributes.Count));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
+            foreach (XmlAttribute controlAttr
+                     in controlAttributes.RemainingAttributes) {
                 XmlAttribute testAttr =
                     FindMatchingAttr(testAttributes.RemainingAttributes,
                                      controlAttr);
                 controlContext.NavigateToAttribute(Nodes.GetQName(controlAttr));
                 try {
-]]></literal>
-  <compareExpr type="ATTR_NAME_LOOKUP"
-               controlExpr="true"
-               testExpr="testAttr != null"/>
-  <literal><![CDATA[
+                    lastResult =
+                        Compare(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
+                                               control, GetXPath(controlContext),
+                                               true,
+                                               test, GetXPath(testContext),
+                                               testAttr != null));
+                    if (lastResult == ComparisonResult.CRITICAL) {
+                        return lastResult;
+                    }
+
                     if (testAttr != null) {
                         testContext.NavigateToAttribute(Nodes
                                                         .GetQName(testAttr));
                         try {
-]]></literal>
-  <compareMethodExpr method="CompareNodes"
-                     controlExpr="controlAttr"
-                     testExpr="testAttr"/>
-  <literal><![CDATA[
+                            lastResult = CompareNodes(controlAttr, controlContext,
+                                                      testAttr, testContext);
+                            if (lastResult == ComparisonResult.CRITICAL) {
+                                return lastResult;
+                            }
+
                             foundTestAttributes[testAttr] = DUMMY;
                         } finally {
                             testContext.NavigateToParent();
@@ -306,42 +400,70 @@
                     controlContext.NavigateToParent();
                 }
             }
-]]></literal>
-  <literal><![CDATA[
-            foreach (XmlAttribute testAttr in testAttributes.RemainingAttributes) {
+
+            foreach (XmlAttribute testAttr
+                     in testAttributes.RemainingAttributes) {
                 testContext.NavigateToAttribute(Nodes.GetQName(testAttr));
                 try {
-]]></literal>
-  <compareExpr type="ATTR_NAME_LOOKUP"
-               controlExpr="foundTestAttributes.ContainsKey(testAttr)"
-               testExpr="true"/>
-  <literal><![CDATA[
+                    lastResult =
+                        Compare(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
+                                               control, GetXPath(controlContext),
+                                               foundTestAttributes.ContainsKey(testAttr),
+                                               test, GetXPath(testContext),
+                                               true));
+                    if (lastResult == ComparisonResult.CRITICAL) {
+                        return lastResult;
+                    }
                 } finally {
                     testContext.NavigateToParent();
                 }
             }
-]]></literal>
-  <compareExpr type="SCHEMA_LOCATION"
-               controlExpr="controlAttributes.SchemaLocation != null ? controlAttributes.SchemaLocation.Value : null"
-               testExpr="testAttributes.SchemaLocation != null ? testAttributes.SchemaLocation.Value : null"
-               />
-  <compareExpr type="NO_NAMESPACE_SCHEMA_LOCATION"
-               controlExpr="controlAttributes.NoNamespaceSchemaLocation != null ? controlAttributes.NoNamespaceSchemaLocation.Value : null"
-               testExpr="testAttributes.NoNamespaceSchemaLocation != null ? testAttributes.NoNamespaceSchemaLocation.Value : null"
-               />
-  <literal><![CDATA[
-            return lastResult;
+
+            lastResult =
+                Compare(new Comparison(ComparisonType.SCHEMA_LOCATION,
+                                       control, GetXPath(controlContext),
+                                       controlAttributes.SchemaLocation != null 
+                                       ? controlAttributes.SchemaLocation.Value 
+                                       : null,
+                                       test, GetXPath(testContext),
+                                       testAttributes.SchemaLocation != null ?
+                                       testAttributes.SchemaLocation.Value
+                                       : null));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
+            return
+                Compare(new Comparison(ComparisonType.NO_NAMESPACE_SCHEMA_LOCATION,
+                                       control, GetXPath(controlContext),
+                                       controlAttributes.NoNamespaceSchemaLocation != null
+                                       ? controlAttributes.NoNamespaceSchemaLocation.Value
+                                       : null,
+                                       test, GetXPath(testContext),
+                                       testAttributes.NoNamespaceSchemaLocation != null
+                                       ? testAttributes.NoNamespaceSchemaLocation.Value
+                                       : null));
         }
 
+        /// <summary>
+        /// Compares properties of a processing instruction.
+        /// </summary>
         private ComparisonResult
             CompareProcessingInstructions(XmlProcessingInstruction control,
                                           XPathContext controlContext,
                                           XmlProcessingInstruction test,
                                           XPathContext testContext) {
-]]></literal>
-  <lastResultDef/>
-  <compare type="PROCESSING_INSTRUCTION_TARGET" property="Target"/>
-  <literal><![CDATA[
+
+            ComparisonResult lastResult =
+                Compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_TARGET,
+                                       control, GetXPath(controlContext),
+                                       control.Target,
+                                       test, GetXPath(testContext),
+                                       test.Target));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
             return Compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_DATA,
                                           control, GetXPath(controlContext),
                                           control.Data,
@@ -349,15 +471,21 @@
                                           test.Data));
         }
 
+        /// <summary>
+        /// Matches nodes of two node lists and invokes compareNode on
+        /// each pair.
+        /// </summary>
+        /// <remarks>
+        /// Also performs CHILD_LOOKUP comparisons for each node that
+        /// couldn't be matched to one of the "other" list.
+        /// </remarks>
         private ComparisonResult CompareNodeLists(IEnumerable<XmlNode> controlSeq,
                                                   XPathContext controlContext,
                                                   IEnumerable<XmlNode> testSeq,
                                                   XPathContext testContext) {
-]]></literal>
-  <lastResultDef/>
-  <literal><![CDATA[
+
             // if there are no children on either Node, the result is equal
-            lastResult = ComparisonResult.EQUAL;
+            ComparisonResult lastResult = ComparisonResult.EQUAL;
 
             IEnumerable<KeyValuePair<XmlNode, XmlNode>> matches =
                 NodeMatcher.Match(controlSeq, testSeq);
@@ -375,15 +503,21 @@
                 controlContext.NavigateToChild(controlIndex);
                 testContext.NavigateToChild(testIndex);
                 try {
-]]></literal>
-  <compareExpr type="CHILD_NODELIST_SEQUENCE"
-               controlExpr="controlIndex"
-               testExpr="testIndex"
-               />
-  <compareMethodExpr method="CompareNodes"
-                     controlExpr="control"
-                     testExpr="test"/>
-  <literal><![CDATA[
+                    lastResult =
+                        Compare(new Comparison(ComparisonType.CHILD_NODELIST_SEQUENCE,
+                                               control, GetXPath(controlContext),
+                                               controlIndex,
+                                               test, GetXPath(testContext),
+                                               testIndex));
+                    if (lastResult == ComparisonResult.CRITICAL) {
+                        return lastResult;
+                    }
+
+                    lastResult = CompareNodes(control, controlContext,
+                                              test, testContext);
+                    if (lastResult == ComparisonResult.CRITICAL) {
+                        return lastResult;
+                    }
                 } finally {
                     testContext.NavigateToParent();
                     controlContext.NavigateToParent();
@@ -401,14 +535,15 @@
                                                    GetXPath(controlContext),
                                                    controlList[i],
                                                    null, null, null));
-]]></literal>
-  <if-return-boilerplate/>
-  <literal><![CDATA[
+                        if (lastResult == ComparisonResult.CRITICAL) {
+                            return lastResult;
+                        }
                     } finally {
                         controlContext.NavigateToParent();
                     }
                 }
             }
+
             int testSize = testList.Count;
             for (int i = 0; i < testSize; i++) {
                 if (!seen.ContainsKey(testList[i])) {
@@ -420,9 +555,9 @@
                                                    testList[i],
                                                    GetXPath(testContext),
                                                    testList[i]));
-]]></literal>
-  <if-return-boilerplate/>
-  <literal><![CDATA[
+                        if (lastResult == ComparisonResult.CRITICAL) {
+                            return lastResult;
+                        }
                     } finally {
                         testContext.NavigateToParent();
                     }
@@ -431,14 +566,25 @@
             return lastResult;
         }
 
+        /// <summary>
+        /// Compares properties of an attribute.
+        /// </summary>
         private ComparisonResult CompareAttributes(XmlAttribute control,
                                                    XPathContext controlContext,
                                                    XmlAttribute test,
                                                    XPathContext testContext) {
-]]></literal>
-  <lastResultDef/>
-  <compare type="ATTR_VALUE_EXPLICITLY_SPECIFIED" property="Specified"/>
-  <literal><![CDATA[
+
+            ComparisonResult lastResult =
+                Compare(new Comparison(ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED,
+                                       control, GetXPath(controlContext),
+                                       control.Specified,
+                                       test, GetXPath(testContext),
+                                       test.Specified));
+
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
             return Compare(new Comparison(ComparisonType.ATTR_VALUE,
                                           control, GetXPath(controlContext),
                                           control.Value,
@@ -446,6 +592,10 @@
                                           test.Value));
         }
 
+        /// <summary>
+        /// Separates XML namespace related attributes from "normal"
+        /// attributes.
+        /// </summary>
         private static Attributes SplitAttributes(XmlAttributeCollection map) {
             XmlAttribute sLoc = map.GetNamedItem("schemaLocation",
                                                  XmlSchema.InstanceNamespace)
@@ -469,14 +619,18 @@
             internal readonly XmlAttribute NoNamespaceSchemaLocation;
             internal readonly IList<XmlAttribute> RemainingAttributes;
             internal Attributes(XmlAttribute schemaLocation,
-                               XmlAttribute noNamespaceSchemaLocation,
-                               IList<XmlAttribute> remainingAttributes) {
+                                XmlAttribute noNamespaceSchemaLocation,
+                                IList<XmlAttribute> remainingAttributes) {
                 this.SchemaLocation = schemaLocation;
                 this.NoNamespaceSchemaLocation = noNamespaceSchemaLocation;
                 this.RemainingAttributes = remainingAttributes;
             }
         }
 
+        /// <summary>
+        /// Find the attribute with the same namespace and local name
+        /// as a given attribute in a list of attributes.
+        /// </summary>
         private static XmlAttribute FindMatchingAttr(IList<XmlAttribute> attrs,
                                                      XmlAttribute attrToMatch) {
             bool hasNs = !string.IsNullOrEmpty(attrToMatch.NamespaceURI);
@@ -491,20 +645,27 @@
                     ((hasNs && nameToMatch == a.LocalName)
                      ||
                      (!hasNs && nameToMatch == a.Name))
-                   ) {
+                    ) {
                     return a;
                 }
             }
             return null;
         }
 
+        /// <summary>
+        /// Maps Nodes to their NodeInfo equivalent.
+        /// </summary>
         private static XPathContext.INodeInfo TO_NODE_INFO(XmlNode n) {
             return new XPathContext.DOMNodeInfo(n);
         }
 
+        /// <summary>
+        /// Suppresses document-type and XML declaration nodes.
+        /// </summary>
         private static bool INTERESTING_NODES(XmlNode n) {
             return n.NodeType != XmlNodeType.DocumentType
                 && n.NodeType != XmlNodeType.XmlDeclaration;
         }
-]]></literal>
-</class>
+
+    }
+}

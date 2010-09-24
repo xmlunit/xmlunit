@@ -80,28 +80,7 @@
     </delete> 
   </target>
 
-  <target name="-generate-sources" depends="-init">
-    <xslt destdir="${gen.src.dir}"
-          useImplicitFileset="false"
-          style="src/buildtools/codegen.xslt">
-      <fileset dir="${src.dir}/java-core" includes="**/*.java.xml"/>
-      <globmapper from="*.java.xml" to="*.java"/>
-
-      <param name="nsQualifier" expression="package"/>
-      <param name="nsStart" expression=";"/>
-      <param name="nsEnd" expression=""/>
-      <param name="import" expression="import"/>
-      <param name="extends" expression="extends"/>
-      <param name="implements" expression="implements"/>
-      <param name="summaryStart" expression="/** "/>
-      <param name="summaryEnd" expression="*/"/>
-      <param name="getXPath" expression="getXPath"/>
-
-      <param name="compareMethod" expression="compare"/>
-    </xslt>
-  </target>
-
-  <target name="compile-core" depends="-init,-generate-sources"
+  <target name="compile-core" depends="-init"
           description="compiles core sources">
     <javac srcdir="${src.dir}/java-core:${gen.src.dir}"
            destdir="${core.out.dir}"
