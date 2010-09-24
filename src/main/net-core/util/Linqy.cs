@@ -17,21 +17,30 @@ using System.Collections.Generic;
 
 namespace net.sf.xmlunit.util {
     /// <summary>
-    /// Conversion methods.
+    /// A couple of (functional) sequence processing constructs.
     /// </summary>
     public sealed class Linqy {
+
+        /// <summary>
+        /// Turns an enumerable into its type-safe cousin.
+        /// </summary>
         public static IEnumerable<T> Cast<T>(IEnumerable i) {
             foreach (T t in i) {
                 yield return t;
             }
         }
 
+        /// <summary>
+        /// An enumerable containing a single element.
+        /// </summary>
         public static IEnumerable<T> Singleton<T>(T t) {
             yield return t;
         }
 
-        public delegate T Mapper<F, T>(F from);
-
+        /// <summary>
+        /// Create a new enumerable by applying a mapper function to
+        /// each element of a given sequence.
+        /// </summary>
         public static IEnumerable<T> Map<F, T>(IEnumerable<F> from,
                                                Mapper<F, T> mapper) {
             foreach (F f in from) {
@@ -39,8 +48,15 @@ namespace net.sf.xmlunit.util {
             }
         }
 
-        public delegate bool Predicate<T>(T toTest);
+        /// <summary>
+        /// A function mapping from one type to another.
+        /// </summary>
+        public delegate T Mapper<F, T>(F from);
 
+        /// <summary>
+        /// Exclude all elements from an enumerable that don't match a
+        /// given predicate.
+        /// </summary>
         public static IEnumerable<T> Filter<T>(IEnumerable<T> sequence,
                                                Predicate<T> filter) {
             foreach (T t in sequence) {
@@ -50,6 +66,14 @@ namespace net.sf.xmlunit.util {
             }
         }
 
+        /// <summary>
+        /// A function that tests an object for a property.
+        /// </summary>
+        public delegate bool Predicate<T>(T toTest);
+
+        /// <summary>
+        /// Count the number of elements in a sequence.
+        /// </summary>
         public static int Count(IEnumerable e) {
             int c = 0;
             foreach (object o in e) {

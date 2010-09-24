@@ -18,6 +18,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * A couple of (functional) sequence processing constructs.
+ */
 public final class Linqy {
     /**
      * Turns the iterable into a list.
@@ -30,6 +33,9 @@ public final class Linqy {
         return a;
     }
 
+    /**
+     * Turns an iterable into its type-safe cousin.
+     */
     public static <E> Iterable<E> cast(final Iterable i) {
         return map(i, new Mapper<Object, E>() {
                 public E map(Object o) {
@@ -38,6 +44,9 @@ public final class Linqy {
             });
     }
 
+    /**
+     * An iterable containing a single element.
+     */
     public static <E> Iterable<E> singleton(final E single) {
         return new Iterable<E>() {
             public Iterator<E> iterator() {
@@ -46,6 +55,10 @@ public final class Linqy {
         };
     }
 
+    /**
+     * Create a new iterable by applying a mapper function to each
+     * element of a given sequence.
+     */
     public static <F, T> Iterable<T> map(final Iterable<F> from,
                                          final Mapper<? super F, T> mapper) {
         return new Iterable<T>() {
@@ -55,10 +68,17 @@ public final class Linqy {
         };
     }
 
+    /**
+     * A function mapping from one type to another.
+     */
     public interface Mapper<F, T> {
         T map(F from);
     }
 
+    /**
+     * Exclude all elements from an iterable that don't match a given
+     * predicate.
+     */
     public static <T> Iterable<T> filter(final Iterable<T> sequence,
                                          final Predicate<? super T> filter) {
         return new Iterable<T>() {
@@ -68,10 +88,16 @@ public final class Linqy {
         };
     }
 
+    /**
+     * A function that tests an object for a property.
+     */
     public interface Predicate<T> {
         boolean matches(T toTest);
     }
 
+    /**
+     * Count the number of elements in a sequence.
+     */
     public static int count(Iterable seq) {
         int c = 0;
         Iterator it = seq.iterator();
