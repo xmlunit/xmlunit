@@ -89,13 +89,6 @@ public final class Linqy {
     }
 
     /**
-     * A function that tests an object for a property.
-     */
-    public interface Predicate<T> {
-        boolean matches(T toTest);
-    }
-
-    /**
      * Count the number of elements in a sequence.
      */
     public static int count(Iterable seq) {

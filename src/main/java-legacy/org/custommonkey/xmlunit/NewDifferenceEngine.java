@@ -60,6 +60,7 @@ import net.sf.xmlunit.input.CommentLessSource;
 import net.sf.xmlunit.input.WhitespaceNormalizedSource;
 import net.sf.xmlunit.input.WhitespaceStrippedSource;
 import net.sf.xmlunit.util.Linqy;
+import net.sf.xmlunit.util.Predicate;
 import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
 
 import org.w3c.dom.CDATASection;
@@ -531,7 +532,7 @@ public class NewDifferenceEngine
                     result.add(new Entry(n, map.get(n)));
                 } else {
                     Iterable<Node> unmatchedTestElements =
-                        Linqy.filter(testNodes, new Linqy.Predicate<Node>() {
+                        Linqy.filter(testNodes, new Predicate<Node>() {
                                 public boolean matches(Node t) {
                                     return !map.containsValue(t);
                                 }

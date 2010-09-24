@@ -67,11 +67,6 @@ namespace net.sf.xmlunit.util {
         }
 
         /// <summary>
-        /// A function that tests an object for a property.
-        /// </summary>
-        public delegate bool Predicate<T>(T toTest);
-
-        /// <summary>
         /// Count the number of elements in a sequence.
         /// </summary>
         public static int Count(IEnumerable e) {

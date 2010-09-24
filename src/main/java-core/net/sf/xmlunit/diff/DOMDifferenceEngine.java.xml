@@ -30,6 +30,7 @@
   <import reference="net.sf.xmlunit.util.IterableNodeList"/>
   <import reference="net.sf.xmlunit.util.Linqy"/>
   <import reference="net.sf.xmlunit.util.Nodes"/>
+  <import reference="net.sf.xmlunit.util.Predicate"/>
   <import reference="org.w3c.dom.Attr"/>
   <import reference="org.w3c.dom.CharacterData"/>
   <import reference="org.w3c.dom.Document"/>
@@ -473,8 +474,8 @@
             }
         };
 
-    private static final Linqy.Predicate<Node> INTERESTING_NODES =
-        new Linqy.Predicate<Node>() {
+    private static final Predicate<Node> INTERESTING_NODES =
+        new Predicate<Node>() {
             public boolean matches(Node n) {
                 return n.getNodeType() != Node.DOCUMENT_TYPE_NODE;
             }
