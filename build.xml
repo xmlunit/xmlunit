@@ -243,8 +243,6 @@
     </copy>
   </target>
 
-  <target name="Gump" depends="test,jar"/>
-
   <target name="bindist" depends="jar,test,docs">
     <zip zipfile="${dist.dir}/xmlunit-${xmlunit.version}-bin.zip">
       <zipfileset prefix="xmlunit-${xmlunit.version}/lib"
