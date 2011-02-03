@@ -41,8 +41,10 @@ import java.io.FileReader;
 
 import org.custommonkey.xmlunit.exceptions.ConfigurationException;
 
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -138,6 +140,23 @@ public class test_Transform extends TestCase{
                 + "<xsl:include href=\"urn:bar\"/>"
                 + test_Constants.XSLT_END;
             try {
+                XMLUnit.getTransformerFactory()
+                    .setErrorListener(new ErrorListener() {
+                            public void error(TransformerException ex) {
+                                log("error", ex);
+                            }
+                            public void fatalError(TransformerException ex) {
+                                log("fatalError", ex);
+                            }
+                            public void warning(TransformerException ex) {
+                                log("warning", ex);
+                            }
+                            private void log(String m, TransformerException ex) {
+                                System.err.println("method " + m
+                                                   + " received exception: "
+                                                   + ex.getMessage());
+                            }
+                        });
                 Transform transform = new Transform(s, xsl);
                 transform.getResultString();
                 fail("should fail because of unknown include URI");
@@ -147,6 +166,7 @@ public class test_Transform extends TestCase{
             assertTrue("URIResolver has been called", tr.called);
         } finally {
             XMLUnit.setURIResolver(null);
+            XMLUnit.getTransformerFactory().setErrorListener(null);
         }
     }
 
@@ -178,6 +198,8 @@ public class test_Transform extends TestCase{
         private boolean called = false;
 
         public Source resolve(String h, String b) {
+            System.err.println("TestResolver called with parameters "
+                               + h + " and " + b);
             called = true;
             return null;
         }
