@@ -22,6 +22,7 @@ import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
+import javax.xml.transform.TransformerFactory;
 import org.w3c.dom.Document;
 import net.sf.xmlunit.TestResources;
 import net.sf.xmlunit.util.Convert;
@@ -151,12 +152,25 @@ public class InputTest {
     private static String toFileUri(String fileName) {
         String url = new File(fileName).toURI().toString();
         if (url.startsWith("file:/") && !url.startsWith("file:///")
-            && "1.5".equals(System.getProperty("java.specification.version"))) {
-            // Java5's StreamSource creates a triple slash URL,
+            && ("1.5".equals(System.getProperty("java.specification.version"))
+                || transformerIsApacheXalan())
+            ) {
+            // Java5's StreamSource as well as the one used by apache
+            // Xalan create a triple slash URLs,
             // Java6's sticks with only one - toURI uses only one
             // slash in either version
             url = "file:///" + url.substring(6);
         }
         return url;
+    }
+
+    private static boolean transformerIsApacheXalan() {
+        try {
+            TransformerFactory fac = TransformerFactory.newInstance();
+            return fac.getClass().getName()
+                .equals("org.apache.xalan.processor.TransformerFactoryImpl");
+        } catch (Exception ex) {
+            return false;
+        }
     }
 }
