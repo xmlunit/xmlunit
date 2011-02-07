@@ -132,6 +132,7 @@ public class test_Transform extends TestCase{
      */
     public void testURIResolverForStylesheet() throws Exception {
         TestResolver tr = new TestResolver();
+        ErrorListener def = XMLUnit.getTransformerFactory().getErrorListener();
         try {
             XMLUnit.setURIResolver(tr);
             String s = "<foo/>";
@@ -166,7 +167,7 @@ public class test_Transform extends TestCase{
             assertTrue("URIResolver has been called", tr.called);
         } finally {
             XMLUnit.setURIResolver(null);
-            XMLUnit.getTransformerFactory().setErrorListener(null);
+            XMLUnit.getTransformerFactory().setErrorListener(def);
         }
     }
 
