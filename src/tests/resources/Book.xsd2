@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<foo:schema xmlns:foo="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.publishing.org"
+            xmlns="http://www.publishing.org"
+            version="1.0"
+            elementFormDefault="qualified">
+	
+  <foo:element name="Book" type="BookType"/>
+
+  <foo:complexType name="BookType">
+    <foo:sequence>
+      <foo:element name="Title" type="foo:string" minOccurs="1" maxOccurs="1"/>
+      <foo:element name="Author" type="foo:string" minOccurs="1" maxOccurs="unbounded"/>
+      <foo:element name="Date" type="foo:string" minOccurs="1" maxOccurs="1"/>
+      <foo:element name="ISBN" type="foo:string" minOccurs="1" maxOccurs="1"/>
+      <foo:element name="Publisher" type="foo:string" minOccurs="1" maxOccurs="1"/>
+    </foo:sequence>
+  </foo:complexType>
+</foo:schema>
+

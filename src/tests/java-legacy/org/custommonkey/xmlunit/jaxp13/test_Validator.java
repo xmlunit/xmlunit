@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2008, Jeff Martin, Tim Bacon
+Copyright (c) 2008,2011, Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -55,6 +55,13 @@ public class test_Validator extends TestCase {
         Validator v = new Validator();
         v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
                                                     + "/src/tests/resources/Book.xsd")));
+        assertTrue(v.isSchemaValid());
+    }
+
+    public void testGoodSchemaIsValidWithCustomPrefix() throws Exception {
+        Validator v = new Validator();
+        v.addSchemaSource(new StreamSource(new File(test_Constants.BASEDIR 
+                                                    + "/src/tests/resources/Book.xsd2")));
         assertTrue(v.isSchemaValid());
     }
 
