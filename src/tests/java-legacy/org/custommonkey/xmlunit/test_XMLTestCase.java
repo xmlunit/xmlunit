@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 200, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2011, Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ import org.w3c.dom.Node;
 /**
  * Test case used to test the XMLTestCase
  */
-public class test_XMLTestCase extends XMLTestCase{
+public class test_XMLTestCase extends XMLTestCase {
     private static final String PREFIX = "foo";
     private static final String TEST_NS = "urn:org.example";
     private static final NamespaceContext NS_CONTEXT;
@@ -570,6 +570,16 @@ public class test_XMLTestCase extends XMLTestCase{
     public void testAssertXpathExistsFails() throws Exception {
         String xmlDocument = "<axrtable> <schema name=\"emptySchema\"><relation name=\"\"></relation></schema></axrtable>";
         assertXpathExists("/axrtable/schema", xmlDocument);
+    }
+
+    // bug 3290264
+    public void testAssertXpathEqualsAndAttributes() throws Exception {
+        assertXpathsNotEqual("/foo/Bar/@a", "/foo/Bar",
+                             "<foo><Bar a=\"1\" /></foo>");
+        assertXpathsNotEqual("/foo/Bar/@a", "/foo/Bar/@b",
+                             "<foo><Bar a=\"1\" b=\"1\"/></foo>");
+        assertXpathsEqual("/foo/Bar/@a", "/foo/Bar/@a",
+                          "<foo><Bar a=\"1\" b=\"2\"/></foo>");
     }
 
     public test_XMLTestCase(String name) {

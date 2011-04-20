@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2011 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -46,8 +46,10 @@ import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilder;
 
 import junit.framework.Assert;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -1114,7 +1116,12 @@ public class XMLAssert extends Assert implements XSLTConstants {
         d.appendChild(root);
         final int length = nodes.getLength();
         for (int i = 0; i < length; i++) {
-            root.appendChild(d.importNode(nodes.item(i), true));
+            Node n = d.importNode(nodes.item(i), true);
+            if (n instanceof Attr) {
+                root.setAttributeNodeNS((Attr) n);
+            } else {
+                root.appendChild(n);
+            }
         }
         return d;
     }
