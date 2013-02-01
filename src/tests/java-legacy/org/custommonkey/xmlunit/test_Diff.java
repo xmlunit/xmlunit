@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008,2010 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2013, Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -981,5 +981,35 @@ public class test_Diff extends TestCase{
         diff = new Diff(test, control);
         assertTrue(diff.toString(), diff.identical());
     }
+
+    /**
+     * @see http://sourceforge.net/tracker/?func=detail&atid=377768&aid=3602981&group_id=23187
+     */
+    public void testXsiTypeSpecialCase() throws Exception {
+        String test = "<ns1:Square xsi:type=\"ns1:Shape\" "
+            + "xmlns:ns1=\"http://example.com/\" "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
+
+        String control = "<ns2:Square xsi:type=\"ns2:Shape\" "
+            + "xmlns:ns2=\"http://example.com/\" "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
+        Diff diff = new Diff(control, test);
+        assertTrue(diff.toString(), diff.similar());
+    }
+
+    public void XtestXsiTypeSpecialCaseDoesntIgnorePrefix() throws Exception {
+        String test = "<ns1:Square xsi:type=\"ns1:Shape\" "
+            + "xmlns:ns1=\"http://example.com/\" "
+            + "xmlns:ns2=\"http://example.com/another-uri/\" "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
+
+        String control = "<ns1:Square xsi:type=\"ns2:Shape\" "
+            + "xmlns:ns1=\"http://example.com/\" "
+            + "xmlns:ns2=\"http://example.com/another-uri/\" "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
+        Diff diff = new Diff(control, test);
+        assertFalse(diff.toString(), diff.similar());
+    }
+
 }
 
