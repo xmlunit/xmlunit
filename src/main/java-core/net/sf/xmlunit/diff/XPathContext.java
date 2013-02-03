@@ -70,6 +70,12 @@ public class XPathContext {
         }
     }
 
+    public void addAttribute(QName attribute) {
+        Level current = path.getLast();
+        current.attributes.put(attribute,
+                               new Level(ATTR + getName(attribute)));
+    }
+
     public void setChildren(Iterable<? extends NodeInfo> children) {
         Level current = path.getLast();
         current.children.clear();

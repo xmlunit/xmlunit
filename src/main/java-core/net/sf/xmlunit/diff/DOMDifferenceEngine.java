@@ -328,7 +328,6 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         testContext
             .addAttributes(Linqy.map(testAttributes.remainingAttributes,
                                      QNAME_MAPPER));
-        Set<Attr> foundTestAttributes = new HashSet<Attr>();
 
         lastResult =
             compare(new Comparison(ComparisonType.ELEMENT_NUM_ATTRIBUTES,
@@ -340,6 +339,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             return lastResult;
         }
 
+        Set<Attr> foundTestAttributes = new HashSet<Attr>();
         for (Attr controlAttr : controlAttributes.remainingAttributes) {
             final Attr testAttr =
                 findMatchingAttr(testAttributes.remainingAttributes,
@@ -391,6 +391,12 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             } finally {
                 testContext.navigateToParent();
             }
+        }
+
+        lastResult = compareXsiType(controlAttributes.type, controlContext,
+                                    testAttributes.type, testContext);
+        if (lastResult == ComparisonResult.CRITICAL) {
+            return lastResult;
         }
 
         lastResult =
@@ -537,6 +543,68 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     }
 
     /**
+     * Compares xsi:type attribute values
+     */
+    private ComparisonResult compareXsiType(Attr controlAttr,
+                                            XPathContext controlContext,
+                                            Attr testAttr,
+                                            XPathContext testContext) {
+        boolean mustChangeControlContext = controlAttr != null;
+        boolean mustChangeTestContext = testAttr != null;
+        if (!mustChangeControlContext && !mustChangeTestContext) {
+            return ComparisonResult.EQUAL;
+        }
+
+        try {
+            if (mustChangeControlContext) {
+                QName q = Nodes.getQName(controlAttr);
+                controlContext.addAttribute(q);
+                controlContext.navigateToAttribute(q);
+            }
+            if (mustChangeTestContext) {
+                QName q = Nodes.getQName(testAttr);
+                testContext.addAttribute(q);
+                testContext.navigateToAttribute(q);
+            }
+            ComparisonResult lastResult =
+                compare(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
+                                       controlAttr, getXPath(controlContext),
+                                       mustChangeControlContext,
+                                       testAttr, getXPath(testContext),
+                                       mustChangeTestContext));
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+            if (mustChangeControlContext && mustChangeTestContext) {
+                lastResult =
+                    compareAttributeExplicitness(controlAttr, controlContext,
+                                                 testAttr, testContext);
+                if (lastResult == ComparisonResult.CRITICAL) {
+                    return lastResult;
+                }
+                QName controlQName = valueAsQName(controlAttr);
+                QName testQName = valueAsQName(testAttr);
+                lastResult =
+                    compare(new Comparison(ComparisonType.ATTR_VALUE,
+                                           controlAttr,
+                                           getXPath(controlContext),
+                                           controlQName.toString(),
+                                           testAttr,
+                                           getXPath(testContext),
+                                           testQName.toString()));
+            }
+            return lastResult;
+        } finally {
+            if (mustChangeControlContext) {
+                controlContext.navigateToParent();
+            }
+            if (mustChangeTestContext) {
+                testContext.navigateToParent();
+            }
+        }
+    }
+
+    /**
      * Compares properties of an attribute.
      */
     private ComparisonResult compareAttributes(Attr control,
@@ -544,11 +612,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                Attr test,
                                                XPathContext testContext) {
         ComparisonResult lastResult =
-            compare(new Comparison(ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED,
-                                   control, getXPath(controlContext),
-                                   control.getSpecified(),
-                                   test, getXPath(testContext),
-                                   test.getSpecified()));
+            compareAttributeExplicitness(control, controlContext, test,
+                                         testContext);
         if (lastResult == ComparisonResult.CRITICAL) {
             return lastResult;
         }
@@ -561,6 +626,20 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     }
 
     /**
+     * Compares whether two attributes are specified explicitly.
+     */
+    private ComparisonResult
+        compareAttributeExplicitness(Attr control, XPathContext controlContext,
+                                     Attr test, XPathContext testContext) {
+        return
+            compare(new Comparison(ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED,
+                                   control, getXPath(controlContext),
+                                   control.getSpecified(),
+                                   test, getXPath(testContext),
+                                   test.getSpecified()));
+    }
+
+    /**
      * Separates XML namespace related attributes from "normal" attributes.xb
      */
     private static Attributes splitAttributes(final NamedNodeMap map) {
@@ -570,28 +649,45 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         Attr nNsLoc = (Attr) map.getNamedItemNS(XMLConstants
                                                 .W3C_XML_SCHEMA_INSTANCE_NS_URI,
                                                 "noNamespaceSchemaLocation");
+        Attr type = (Attr) map.getNamedItemNS(XMLConstants
+                                                .W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                                                "type");
         List<Attr> rest = new LinkedList<Attr>();
         final int len = map.getLength();
         for (int i = 0; i < len; i++) {
             Attr a = (Attr) map.item(i);
             if (!XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(a.getNamespaceURI())
-                &&
-                !XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI
-                .equals(a.getNamespaceURI())) {
+                && a != sLoc && a != nNsLoc && a != type) {
                 rest.add(a);
             }
         }
-        return new Attributes(sLoc, nNsLoc, rest);
+        return new Attributes(sLoc, nNsLoc, type, rest);
+    }
+
+    private static QName valueAsQName(Attr attribute) {
+        String[] pieces = attribute.getValue().split(":");
+        if (pieces.length < 2) {
+            pieces = new String[] { "", pieces[0] };
+        } else if (pieces.length > 2) {
+            pieces = new String[] {
+                pieces[0],
+                attribute.getValue().substring(pieces[0].length() + 1)
+            };
+        }
+        return new QName(Nodes.findNamespaceURIForPrefix(attribute, pieces[0]),
+                         pieces[1], pieces[0]);
     }
 
     private static class Attributes {
         private final Attr schemaLocation;
         private final Attr noNamespaceSchemaLocation;
+        private final Attr type;
         private final List<Attr> remainingAttributes;
         private Attributes(Attr schemaLocation, Attr noNamespaceSchemaLocation,
-                           List<Attr> remainingAttributes) {
+                           Attr type, List<Attr> remainingAttributes) {
             this.schemaLocation = schemaLocation;
             this.noNamespaceSchemaLocation = noNamespaceSchemaLocation;
+            this.type = type;
             this.remainingAttributes = remainingAttributes;
         }
     }

@@ -997,7 +997,45 @@ public class test_Diff extends TestCase{
         assertTrue(diff.toString(), diff.similar());
     }
 
-    public void XtestXsiTypeSpecialCaseDoesntIgnorePrefix() throws Exception {
+    public void testXsiTypeSpecialCaseShortLocalName() throws Exception {
+        String test = "<ns1:Square xsi:type=\"ns1:a\" "
+            + "xmlns:ns1=\"http://example.com/\" "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
+
+        String control = "<ns2:Square xsi:type=\"ns2:a\" "
+            + "xmlns:ns2=\"http://example.com/\" "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
+        Diff diff = new Diff(control, test);
+        assertTrue(diff.toString(), diff.similar());
+    }
+
+    public void testXsiTypeSpecialCaseWorksWithDefaultNs() throws Exception {
+        String test = "<Square xsi:type=\"Shape\" "
+            + "xmlns=\"http://example.com/\" "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
+
+        String control = "<ns2:Square xsi:type=\"ns2:Shape\" "
+            + "xmlns:ns2=\"http://example.com/\" "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
+        Diff diff = new Diff(control, test);
+        assertTrue(diff.toString(), diff.similar());
+    }
+
+    public void testXsiTypeSpecialCaseInheritsParentNs() throws Exception {
+        String test = "<ns1:Shapes xmlns:ns1=\"http://example.com/\">"
+            + "<ns1:Square xsi:type=\"ns1:Shape\" "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>"
+            + "</ns1:Shapes>";
+
+        String control = "<ns2:Shapes xmlns:ns2=\"http://example.com/\">"
+            + "<ns2:Square xsi:type=\"ns2:Shape\" "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>"
+            + "</ns2:Shapes>";
+        Diff diff = new Diff(control, test);
+        assertTrue(diff.toString(), diff.similar());
+    }
+
+    public void testXsiTypeSpecialCaseDoesntIgnorePrefix() throws Exception {
         String test = "<ns1:Square xsi:type=\"ns1:Shape\" "
             + "xmlns:ns1=\"http://example.com/\" "
             + "xmlns:ns2=\"http://example.com/another-uri/\" "

@@ -113,6 +113,35 @@ public final class Nodes {
     }
 
     /**
+     * Looks up the namespace URI associated with a given prefix on a given node.
+     * @param onNode the reference node
+     * @param prefix the prefix to look for
+     * @return the URI or null of it cannot be found
+     */
+    public static String findNamespaceURIForPrefix(Node onNode, String prefix) {
+        if (onNode != null && onNode instanceof Attr) {
+            onNode = ((Attr) onNode).getOwnerElement();
+        }
+        while (onNode != null && onNode.getNodeType() != Node.ELEMENT_NODE) {
+            onNode = onNode.getParentNode();
+        }
+        if (onNode == null) {
+            return null;
+        }
+
+        if (prefix == null || "".equals(prefix)) {
+            prefix = XMLConstants.XMLNS_ATTRIBUTE;
+        }
+        Map<QName, String> attrs = getAttributes(onNode);
+        String uri = attrs.get(new QName(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+                                         prefix));
+        if (uri != null) {
+            return uri;
+        }
+        return findNamespaceURIForPrefix(onNode.getParentNode(), prefix);
+    }
+
+    /**
      * Trims textual content of this node, removes empty text and
      * CDATA children, recurses into its child nodes.
      * @param normalize whether to normalize whitespace as well
