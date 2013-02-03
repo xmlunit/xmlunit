@@ -750,5 +750,141 @@ namespace net.sf.xmlunit.diff {
                                            e2, new XPathContext()));
             Assert.AreEqual(1, ex.invoked);
         }
+
+        [Test]
+        public void XsiTypesWithDifferentPrefixes() {
+            XmlDocument d1 =
+                DocumentForString("<foo xsi:type='p1:Foo'"
+                                  + " xmlns:p1='urn:xmlunit:test'"
+                                  + " xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                                  + "/>");
+            XmlDocument d2 =
+                DocumentForString("<foo xsi:type='p2:Foo'"
+                                  + " xmlns:p2='urn:xmlunit:test'"
+                                  + " xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                                  + "/>");
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.ATTR_VALUE);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(d1, new XPathContext(),
+                                           d2, new XPathContext()));
+        }
+
+        [Test]
+        public void XsiTypesWithDefaultNamespace() {
+            XmlDocument d1 =
+                DocumentForString("<a:foo xsi:type='Foo'"
+                                  + " xmlns='urn:xmlunit:test'"
+                                  + " xmlns:a='urn:xmlunit:test2'"
+                                  + " xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                                  + "/>");
+            XmlDocument d2 =
+                DocumentForString("<a:foo xsi:type='p2:Foo'"
+                                  + " xmlns:p2='urn:xmlunit:test'"
+                                  + " xmlns:a='urn:xmlunit:test2'"
+                                  + " xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                                  + "/>");
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.ATTR_VALUE);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(d1, new XPathContext(),
+                                           d2, new XPathContext()));
+        }
+
+        [Test]
+        public void XsiTypesWithDifferentLocalNames() {
+            XmlDocument d1 =
+                DocumentForString("<foo xsi:type='p1:Bar'"
+                                  + " xmlns:p1='urn:xmlunit:test'"
+                                  + " xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                                  + "/>");
+            XmlDocument d2 =
+                DocumentForString("<foo xsi:type='p1:Foo'"
+                                  + " xmlns:p1='urn:xmlunit:test'"
+                                  + " xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                                  + "/>");
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.ATTR_VALUE);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(d1, new XPathContext(),
+                                           d2, new XPathContext()));
+        }
+
+        [Test]
+        public void XsiTypesWithDifferentNamespaceURIs() {
+            XmlDocument d1 =
+                DocumentForString("<foo xsi:type='p1:Foo'"
+                                  + " xmlns:p1='urn:xmlunit:test'"
+                                  + " xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                                  + "/>");
+            XmlDocument d2 =
+                DocumentForString("<foo xsi:type='p1:Foo'"
+                                  + " xmlns:p1='urn:xmlunit:test2'"
+                                  + " xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                                  + "/>");
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.ATTR_VALUE);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(d1, new XPathContext(),
+                                           d2, new XPathContext()));
+        }
+
+        [Test]
+        public void XsiTypesWithNamespaceDeclarationOnDifferentLevels() {
+            XmlDocument d1 =
+                DocumentForString("<bar xmlns:p1='urn:xmlunit:test'>"
+                                  + "<foo xsi:type='p1:Foo'"
+                                  + " xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                                  + "/></bar>");
+            XmlDocument d2 =
+                DocumentForString("<bar><foo xsi:type='p1:Foo'"
+                                  + " xmlns:p1='urn:xmlunit:test'"
+                                  + " xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                                  + "/></bar>");
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.ATTR_VALUE);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            Assert.AreEqual(ComparisonResult.EQUAL,
+                            d.CompareNodes(d1, new XPathContext(),
+                                           d2, new XPathContext()));
+        }
+
+        [Test]
+        public void XsiNil() {
+            XmlDocument d1 =
+                DocumentForString("<foo xsi:nil='true'"
+                                  + " xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                                  + "/>");
+            XmlDocument d2 =
+                DocumentForString("<foo xsi:nil='false'"
+                                  + " xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                                  + "/>");
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.ATTR_VALUE);
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            Assert.AreEqual(ComparisonResult.CRITICAL,
+                            d.CompareNodes(d1, new XPathContext(),
+                                           d2, new XPathContext()));
+        }
+
+        private XmlDocument DocumentForString(string s) {
+            return net.sf.xmlunit.util.Convert.ToDocument(Input.FromMemory(s).Build());
+        }
     }
 }

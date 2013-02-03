@@ -424,6 +424,12 @@ namespace net.sf.xmlunit.diff{
                 }
             }
 
+            lastResult = CompareXsiType(controlAttributes.Type, controlContext,
+                                        testAttributes.Type, testContext);
+            if (lastResult == ComparisonResult.CRITICAL) {
+                return lastResult;
+            }
+
             lastResult =
                 Compare(new Comparison(ComparisonType.SCHEMA_LOCATION,
                                        control, GetXPath(controlContext),
@@ -571,6 +577,68 @@ namespace net.sf.xmlunit.diff{
             return lastResult;
         }
 
+
+        /// <summary>
+        /// Compares xsi:type attribute values
+        /// </summary>
+        private ComparisonResult CompareXsiType(XmlAttribute control,
+                                                XPathContext controlContext,
+                                                XmlAttribute test,
+                                                XPathContext testContext) {
+            bool mustChangeControlContext = control != null;
+            bool mustChangeTestContext = test != null;
+            if (!mustChangeControlContext && !mustChangeTestContext) {
+                return ComparisonResult.EQUAL;
+            }
+
+            try {
+                if (mustChangeControlContext) {
+                    XmlQualifiedName q = Nodes.GetQName(control);
+                    controlContext.AddAttribute(q);
+                    controlContext.NavigateToAttribute(q);
+                }
+                if (mustChangeTestContext) {
+                    XmlQualifiedName q = Nodes.GetQName(test);
+                    testContext.AddAttribute(q);
+                    testContext.NavigateToAttribute(q);
+                }
+                ComparisonResult lastResult =
+                    Compare(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
+                                           control, GetXPath(controlContext),
+                                           mustChangeControlContext,
+                                           test, GetXPath(testContext),
+                                           mustChangeTestContext));
+                if (lastResult == ComparisonResult.CRITICAL) {
+                    return lastResult;
+                }
+                if (mustChangeControlContext && mustChangeTestContext) {
+                    lastResult =
+                        CompareAttributeExplicitness(control, controlContext,
+                                                     test, testContext);
+                    if (lastResult == ComparisonResult.CRITICAL) {
+                        return lastResult;
+                    }
+                    XmlQualifiedName controlQName = ValueAsQName(control);
+                    XmlQualifiedName testQName = ValueAsQName(test);
+                    lastResult =
+                        Compare(new Comparison(ComparisonType.ATTR_VALUE,
+                                               control,
+                                               GetXPath(controlContext),
+                                               controlQName.ToString(),
+                                               test, GetXPath(testContext),
+                                               testQName.ToString()));
+                }
+                return lastResult;
+            } finally {
+                if (mustChangeControlContext) {
+                    controlContext.NavigateToParent();
+                }
+                if (mustChangeTestContext) {
+                    testContext.NavigateToParent();
+                }
+            }
+        }
+
         /// <summary>
         /// Compares properties of an attribute.
         /// </summary>
@@ -580,11 +648,8 @@ namespace net.sf.xmlunit.diff{
                                                    XPathContext testContext) {
 
             ComparisonResult lastResult =
-                Compare(new Comparison(ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED,
-                                       control, GetXPath(controlContext),
-                                       control.Specified,
-                                       test, GetXPath(testContext),
-                                       test.Specified));
+                CompareAttributeExplicitness(control, controlContext,
+                                             test, testContext);
 
             if (lastResult == ComparisonResult.CRITICAL) {
                 return lastResult;
@@ -598,6 +663,22 @@ namespace net.sf.xmlunit.diff{
         }
 
         /// <summary>
+        // Compares whether two attributes are specified explicitly.
+        /// </summary>
+        private ComparisonResult
+            CompareAttributeExplicitness(XmlAttribute control,
+                                         XPathContext controlContext,
+                                         XmlAttribute test,
+                                         XPathContext testContext) {
+            return
+                Compare(new Comparison(ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED,
+                                       control, GetXPath(controlContext),
+                                       control.Specified,
+                                       test, GetXPath(testContext),
+                                       test.Specified));
+        }
+
+        /// <summary>
         /// Separates XML namespace related attributes from "normal"
         /// attributes.
         /// </summary>
@@ -608,26 +689,49 @@ namespace net.sf.xmlunit.diff{
             XmlAttribute nNsLoc = map.GetNamedItem("noNamespaceSchemaLocation",
                                                    XmlSchema.InstanceNamespace)
                 as XmlAttribute;
+            XmlAttribute type = map.GetNamedItem("type",
+                                                   XmlSchema.InstanceNamespace)
+                as XmlAttribute;
             List<XmlAttribute> rest = new List<XmlAttribute>();
             foreach (XmlAttribute a in map) {
-                if (XmlSchema.InstanceNamespace != a.NamespaceURI
-                    &&
-                    "http://www.w3.org/2000/xmlns/" != a.NamespaceURI) {
+                if ("http://www.w3.org/2000/xmlns/" != a.NamespaceURI
+                    && a != sLoc && a != nNsLoc && a != type) {
                     rest.Add(a);
                 }
             }
-            return new Attributes(sLoc, nNsLoc, rest);
+            return new Attributes(sLoc, nNsLoc, type, rest);
+        }
+
+        private static XmlQualifiedName ValueAsQName(XmlAttribute attribute) {
+            // split QName into prefix and local name
+            string[] pieces = attribute.Value.Split(':');
+            if (pieces.Length < 2) {
+                // unprefixed name
+                pieces = new string[] { string.Empty, pieces[0] };
+            } else if (pieces.Length > 2) {
+                // actually, this is not a valid QName - be lenient
+                pieces = new string[] {
+                    pieces[0],
+                    attribute.Value.Substring(pieces[0].Length + 1)
+                };
+            }
+            return new XmlQualifiedName(pieces[1] ?? string.Empty,
+                                        attribute
+                                        .GetNamespaceOfPrefix(pieces[0]));
         }
 
         internal class Attributes {
             internal readonly XmlAttribute SchemaLocation;
             internal readonly XmlAttribute NoNamespaceSchemaLocation;
+            internal readonly XmlAttribute Type;
             internal readonly IList<XmlAttribute> RemainingAttributes;
             internal Attributes(XmlAttribute schemaLocation,
                                 XmlAttribute noNamespaceSchemaLocation,
+                                XmlAttribute type,
                                 IList<XmlAttribute> remainingAttributes) {
                 this.SchemaLocation = schemaLocation;
                 this.NoNamespaceSchemaLocation = noNamespaceSchemaLocation;
+                this.Type = type;
                 this.RemainingAttributes = remainingAttributes;
             }
         }

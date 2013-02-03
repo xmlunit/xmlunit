@@ -106,6 +106,16 @@ namespace net.sf.xmlunit.diff {
         }
 
         [Test]
+        public void singleAttribute() {
+            XPathContext ctx = new XPathContext();
+            ctx.SetChildren(Linqy.Singleton(new Element("foo")));
+            ctx.NavigateToChild(0);
+            ctx.AddAttribute(new XmlQualifiedName("bar"));
+            ctx.NavigateToAttribute(new XmlQualifiedName("bar"));
+            Assert.AreEqual("/foo[1]/@bar", ctx.XPath);
+        }
+
+        [Test]
         public void Mixed() {
             List<XPathContext.INodeInfo> l = new List<XPathContext.INodeInfo>();
             l.Add(new Text());

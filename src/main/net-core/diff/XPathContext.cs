@@ -64,6 +64,12 @@ namespace net.sf.xmlunit.diff {
             }
         }
 
+        public void AddAttribute(XmlQualifiedName attribute) {
+            Level current = path.Last.Value;
+            current.Attributes[attribute] =
+                new Level(ATTR + GetName(attribute));
+        }
+
         public void SetChildren<N>(IEnumerable<N> children) 
             where N : INodeInfo {
             Level current = path.Last.Value;
