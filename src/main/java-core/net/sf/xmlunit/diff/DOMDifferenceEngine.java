@@ -665,10 +665,13 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     }
 
     private static QName valueAsQName(Attr attribute) {
+        // split QName into prefix and local name
         String[] pieces = attribute.getValue().split(":");
         if (pieces.length < 2) {
+            // unprefixed name
             pieces = new String[] { null, pieces[0] };
         } else if (pieces.length > 2) {
+            // actually, this is not a valid QName - be lenient
             pieces = new String[] {
                 pieces[0],
                 attribute.getValue().substring(pieces[0].length() + 1)

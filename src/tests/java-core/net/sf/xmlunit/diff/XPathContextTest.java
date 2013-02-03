@@ -102,6 +102,15 @@ public class XPathContextTest {
         assertEquals("/foo[1]/@bar", ctx.getXPath());
     }
 
+    @Test public void singleAttribute() {
+        XPathContext ctx = new XPathContext();
+        ctx.setChildren(Linqy.singleton(new Element("foo")));
+        ctx.navigateToChild(0);
+        ctx.addAttribute(new QName("bar"));
+        ctx.navigateToAttribute(new QName("bar"));
+        assertEquals("/foo[1]/@bar", ctx.getXPath());
+    }
+
     @Test public void mixed() {
         ArrayList<XPathContext.NodeInfo> l = new ArrayList<XPathContext.NodeInfo>();
         l.add(new Text());
