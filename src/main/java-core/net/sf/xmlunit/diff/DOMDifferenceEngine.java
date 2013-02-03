@@ -667,15 +667,17 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     private static QName valueAsQName(Attr attribute) {
         String[] pieces = attribute.getValue().split(":");
         if (pieces.length < 2) {
-            pieces = new String[] { "", pieces[0] };
+            pieces = new String[] { null, pieces[0] };
         } else if (pieces.length > 2) {
             pieces = new String[] {
                 pieces[0],
                 attribute.getValue().substring(pieces[0].length() + 1)
             };
         }
-        return new QName(Nodes.findNamespaceURIForPrefix(attribute, pieces[0]),
-                         pieces[1], pieces[0]);
+        if ("".equals(pieces[0])) {
+            pieces[0] = null;
+        }
+        return new QName(attribute.lookupNamespaceURI(pieces[0]), pieces[1]);
     }
 
     private static class Attributes {
