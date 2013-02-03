@@ -1049,5 +1049,14 @@ public class test_Diff extends TestCase{
         assertFalse(diff.toString(), diff.similar());
     }
 
+    public void testXsiNil() throws Exception {
+        String test = "<foo xsi:nil=\"true\" "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
+
+        String control = "<foo xsi:nil=\"false\" "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
+        Diff diff = new Diff(control, test);
+        assertFalse(diff.toString(), diff.similar());
+    }
 }
 
