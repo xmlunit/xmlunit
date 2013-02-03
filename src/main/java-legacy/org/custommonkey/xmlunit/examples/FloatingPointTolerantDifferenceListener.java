@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2008, Jeff Martin, Tim Bacon
+Copyright (c) 2008,2013 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ public class FloatingPointTolerantDifferenceListener
             try {
                 double controlVal = Double.parseDouble(control);
                 double testVal = Double.parseDouble(test);
-                return Math.abs(controlVal - testVal) < tolerance
+                return Math.abs(controlVal - testVal) <= tolerance
                     ? DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL
                     : DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
             } catch (NumberFormatException nfe) {
