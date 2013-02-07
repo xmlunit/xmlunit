@@ -1,3 +1,35 @@
+<!--
+Copyright (c) 2001-2013, Jeff Martin, Tim Bacon
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above
+      copyright notice, this list of conditions and the following
+      disclaimer in the documentation and/or other materials provided
+      with the distribution.
+    * Neither the name of the xmlunit.sourceforge.net nor the names
+      of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written
+      permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+-->
 <project>
   <!-- allow overrides -->
   <property file="docbook.properties"/>
@@ -5,6 +37,7 @@
   <!-- location of Docbook Stylesheets and dblatex -->
   <property name="db5.xsl" location="../../docbook/docbook5-xsl-1.72.0"/>
   <property name="dblatex" value="/usr/bin/dblatex"/>
+  <property name="xsltproc" value="/usr/bin/xsltproc"/>
 
   <property name="html.dir" location="${userguide.docs.dir}/html"/>
   <property name="user.guide" value="XMLUnit-Java"/>
@@ -20,11 +53,36 @@
       targetfile="${html.dir}/index.html"/>
   </target>
 
-  <target name="users-guide-html" depends="-html-needs-refresh?"
-    unless="HTML is up-to-date"
-    description="Creates HTML version of the User's Guide">
+  <target name="-xsltproc-available?" depends="-html-needs-refresh?">
+    <available property="xsltproc available"
+               file="${xsltproc}"/>
+    <condition property="run TraX">
+      <not>
+        <or>
+          <isset property="xsltproc available"/>
+          <isset property="HTML is up-to-date"/>
+        </or>
+      </not>
+    </condition>
+    <condition property="run xsltproc">
+      <and>
+          <isset property="xsltproc available"/>
+          <not>
+            <isset property="HTML is up-to-date"/>
+          </not>
+      </and>
+    </condition>
+  </target>
+
+  <target name="-users-guide-html-pre" depends="-html-needs-refresh?"
+          unless="HTML is up-to-date">
     <delete dir="${html.dir}" quiet="true"/>
     <mkdir dir="${html.dir}"/>
+  </target>
+
+  <target name="-users-guide-html-trax"
+          depends="-xsltproc-available?,-users-guide-html-pre"
+          if="run TraX">
     <xslt
       basedir="${src.userguide.dir}"
       destdir="${html.dir}"
@@ -34,8 +92,31 @@
       <param name="section.autolabel" expression="1"/>
       <param name="section.label.includes.component.label" expression="1"/>
     </xslt>
-    <copy file="${src.dir}/site/xmlunit.png" toDir="${html.dir}"/>
     <delete file="${html.dir}/${user.guide}.html" quiet="true"/>
+  </target>
+
+  <target name="-users-guide-html-xsltproc"
+          depends="-xsltproc-available?,-users-guide-html-pre"
+          if="run xsltproc">
+    <exec executable="${xsltproc}" failonerror="true">
+      <arg value="-o"/>
+      <!-- xsltproc needs the trailing slash to work properly -->
+      <arg value="${html.dir}/"/>
+      <arg value="--param"/>
+      <arg value="section.autolabel"/>
+      <arg value="1"/>
+      <arg value="--param"/>
+      <arg value="section.label.includes.component.label"/>
+      <arg value="1"/>
+      <arg file="${db5.xsl}/html/chunk.xsl"/>
+      <arg file="${src.userguide.dir}/${user.guide}.xml"/>
+    </exec>
+  </target>
+
+  <target name="users-guide-html"
+          depends="-users-guide-html-trax,-users-guide-html-xsltproc"
+          unless="HTML is up-to-date"
+          description="Creates HTML version of the User's Guide">
   </target>
 
   <target name="-check-os">

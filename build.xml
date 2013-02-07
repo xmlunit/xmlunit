@@ -227,7 +227,6 @@
       <fileset dir="${src.dir}/etc">
         <include name="xmlunit.pom"/>
         <include name="xmlunit-ivy.xml"/>
-        <include name="xmlunit-maven-metadata.xml"/>
       </fileset>
       <mapper type="glob" from="xmlunit*" to="xmlunit-${xmlunit.version}*"/>
       <filterset>
@@ -276,6 +275,12 @@
   <target name="dist"
     depends="clean,bindist,srcdist,compile-userguide-examples"
     description="creates the distribution files">
+    <jar jarfile="${lib.dir}/xmlunit-${xmlunit.version}-sources.jar"
+       basedir="${src.dir}/java"
+    />
+    <jar jarfile="${lib.dir}/xmlunit-${xmlunit.version}-javadoc.jar"
+       basedir="${docs.dir}/api"
+    />
     <checksum algorithm="md5">
       <fileset dir="${dist.dir}">
         <include name="*.zip"/>
@@ -284,6 +289,14 @@
     <checksum algorithm="sha1">
       <fileset dir="${dist.dir}">
         <include name="*.zip"/>
+      </fileset>
+    </checksum>
+    <checksum algorithm="md5">
+      <fileset dir="${lib.dir}"/>
+    </checksum>
+    <checksum algorithm="sha1">
+      <fileset dir="${lib.dir}">
+        <exclude name="*.md5"/>
       </fileset>
     </checksum>
   </target>
