@@ -128,12 +128,21 @@ namespace net.sf.xmlunit.diff {
 
         public string XPath {
             get {
-                StringBuilder sb = new StringBuilder();
-                foreach (Level l in path) {
-                    sb.AppendFormat(SEP + "{0}", l.Expression);
-                }
-                return sb.Replace(SEP + SEP, SEP).ToString();
+                String xpath = EnsureXPathsAreSetOnLevels(path.Last);
+                return xpath.Replace(SEP + SEP, SEP);
             }
+        }
+
+        private static String EnsureXPathsAreSetOnLevels(LinkedListNode<Level> l) {
+            if (l == null) {
+                return string.Empty;
+            }
+            Level level = l.Value;
+            if (null == level.XPath) {
+                level.XPath = EnsureXPathsAreSetOnLevels(l.Previous)
+                    + SEP + level.Expression;
+            }
+            return level.XPath;
         }
 
         private string GetName(XmlQualifiedName name) {
@@ -159,10 +168,15 @@ namespace net.sf.xmlunit.diff {
         }
 
         internal class Level {
+            private string xpath;
             internal readonly string Expression;
             internal readonly IList<Level> Children = new List<Level>();
             internal readonly IDictionary<XmlQualifiedName, Level> Attributes =
                 new Dictionary<XmlQualifiedName, Level>();
+            internal string XPath {
+                get { return xpath; }
+                set { xpath = value; }
+            }
             internal Level(string expression) {
                 this.Expression = expression;
             }

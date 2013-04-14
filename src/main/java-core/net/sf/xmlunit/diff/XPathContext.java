@@ -16,11 +16,15 @@ package net.sf.xmlunit.diff;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.namespace.QName;
+
 import net.sf.xmlunit.util.Nodes;
+
 import org.w3c.dom.Node;
 
 public class XPathContext {
@@ -131,12 +135,21 @@ public class XPathContext {
     }
 
     public String getXPath() {
-        StringBuilder sb = new StringBuilder();
-        for (Level l : path) {
-            sb.append(SEP).append(l.expression);
-        }
-        return sb.toString().replace(SEP + SEP, SEP);
+        String xpath = getXPath(path.descendingIterator());
+        return xpath.replace(SEP + SEP, SEP);
     }
+
+    public String getXPath(Iterator<Level> dIterator) {
+        if (!dIterator.hasNext()) {
+            return "";
+        }
+        Level l = dIterator.next();
+        if (null == l.xpath) {
+            l.xpath = getXPath(dIterator) + SEP + l.expression;
+        }
+        return l.xpath;
+    }
+
 
     private String getName(QName name) {
         String ns = name.getNamespaceURI();
@@ -164,6 +177,7 @@ public class XPathContext {
         private final String expression;
         private List<Level> children = new ArrayList<Level>();
         private Map<QName, Level> attributes = new HashMap<QName, Level>();
+        private String xpath;
         private Level(String expression) {
             this.expression = expression;
         }
