@@ -139,7 +139,7 @@ public class XPathContext {
         return xpath.replace(SEP + SEP, SEP);
     }
 
-    public String getXPath(Iterator<Level> dIterator) {
+    private String getXPath(Iterator<Level> dIterator) {
         if (!dIterator.hasNext()) {
             return "";
         }

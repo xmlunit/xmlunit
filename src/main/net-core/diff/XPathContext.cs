@@ -128,18 +128,18 @@ namespace net.sf.xmlunit.diff {
 
         public string XPath {
             get {
-                String xpath = EnsureXPathsAreSetOnLevels(path.Last);
+                String xpath = GetXPath(path.Last);
                 return xpath.Replace(SEP + SEP, SEP);
             }
         }
 
-        private static String EnsureXPathsAreSetOnLevels(LinkedListNode<Level> l) {
+        private static string GetXPath(LinkedListNode<Level> l) {
             if (l == null) {
                 return string.Empty;
             }
             Level level = l.Value;
             if (null == level.XPath) {
-                level.XPath = EnsureXPathsAreSetOnLevels(l.Previous)
+                level.XPath = GetXPath(l.Previous)
                     + SEP + level.Expression;
             }
             return level.XPath;
