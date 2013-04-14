@@ -3695,6 +3695,46 @@ class MyNodeTester implements NodeTester {
       </section>
     </section>
 
+    <section id="Changes 1.5">
+      <title>Changes from XMLUnit 1.4 to 1.5</title>
+
+      <section id="Breaking Changes 1.5">
+        <title>Breaking Changes</title>
+
+        <itemizedlist>
+          <listitem>
+            If one node in the comparison has children while the other
+            one has not, XMLUnit 1.5 will signal a
+            <literal>CHILD_NODELIST_LENGTH</literal> difference and
+            <literal>CHILD_NODE_NOT_FOUND</literal>
+            differences for each child node of the node that has
+            children in addition to a <literal>HAS_CHILD_NODES</literal> difference.
+            <ulink
+            href="https://sourceforge.net/p/xmlunit/bugs/60/">Issue
+            60</ulink>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section id="New Features 1.5">
+        <title>New Features</title>
+
+        <itemizedlist>
+          <listitem>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section id="Bugfixes 1.5">
+        <title>Important Bug Fixes</title>
+
+        <itemizedlist>
+          <listitem>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+
   </appendix>
 
 </article>

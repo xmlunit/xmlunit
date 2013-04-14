@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008,2010 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2010,2013 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -63,17 +63,19 @@ public class test_DetailedDiff extends test_Diff {
 
     private void assertExpectedDifferencesFirstForecastControl(List differences,
                                                                DetailedDiff detailedDiff) {
-        assertEquals("size: " + detailedDiff, 5, differences.size());
+        assertEquals("size: " + detailedDiff, 6, differences.size());
         assertEquals("first: " + detailedDiff,
                      DifferenceConstants.HAS_CHILD_NODES, differences.get(0));
         assertEquals("second: " + detailedDiff,
-                     DifferenceConstants.ELEMENT_NUM_ATTRIBUTES, differences.get(1));
+                     DifferenceConstants.CHILD_NODELIST_LENGTH, differences.get(1));
         assertEquals("third: " + detailedDiff,
-                     DifferenceConstants.ATTR_NAME_NOT_FOUND, differences.get(2));
-        assertEquals("fourth: " + detailedDiff,
-                     DifferenceConstants.ATTR_VALUE, differences.get(3));
+                     DifferenceConstants.ELEMENT_NUM_ATTRIBUTES, differences.get(2));
+        assertEquals("forth: " + detailedDiff,
+                     DifferenceConstants.ATTR_NAME_NOT_FOUND, differences.get(3));
         assertEquals("fifth: " + detailedDiff,
-                     DifferenceConstants.CHILD_NODE_NOT_FOUND, differences.get(4));
+                     DifferenceConstants.ATTR_VALUE, differences.get(4));
+        assertEquals("sixth: " + detailedDiff,
+                     DifferenceConstants.CHILD_NODE_NOT_FOUND, differences.get(5));
     }
 
     public void testAllDifferencesSecondForecastControl() throws Exception {
@@ -82,18 +84,20 @@ public class test_DetailedDiff extends test_Diff {
 
         List differences = detailedDiff.getAllDifferences();
 
-        assertEquals("size: " + detailedDiff, 5, differences.size());
+        assertEquals("size: " + detailedDiff, 6, differences.size());
         assertEquals("first: " + detailedDiff,
                      DifferenceConstants.HAS_CHILD_NODES, differences.get(0));
         assertEquals("second: " + detailedDiff,
-                     DifferenceConstants.ELEMENT_NUM_ATTRIBUTES, differences.get(1));
+                     DifferenceConstants.CHILD_NODELIST_LENGTH, differences.get(1));
         assertEquals("third: " + detailedDiff,
-                     DifferenceConstants.ATTR_VALUE, differences.get(2));
+                     DifferenceConstants.ELEMENT_NUM_ATTRIBUTES, differences.get(2));
         assertEquals("forth: " + detailedDiff,
-                     DifferenceConstants.ATTR_NAME_NOT_FOUND,
-                     differences.get(3));
+                     DifferenceConstants.ATTR_VALUE, differences.get(3));
         assertEquals("fifth: " + detailedDiff,
-                     DifferenceConstants.CHILD_NODE_NOT_FOUND, differences.get(4));
+                     DifferenceConstants.ATTR_NAME_NOT_FOUND,
+                     differences.get(4));
+        assertEquals("sixth: " + detailedDiff,
+                     DifferenceConstants.CHILD_NODE_NOT_FOUND, differences.get(5));
     }
 
     public void testPrototypeIsADetailedDiff() throws Exception {

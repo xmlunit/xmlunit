@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2010, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2010,2013 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -322,16 +322,28 @@ public class DifferenceEngine
     protected void compareNodeChildren(Node control, Node test,
                                        DifferenceListener listener, ElementQualifier elementQualifier) 
         throws DifferenceFoundException {
-        if (control.hasChildNodes() && test.hasChildNodes()) {
-            List controlChildren = nodeList2List(control.getChildNodes());
-            List testChildren = nodeList2List(test.getChildNodes());
 
-            Integer controlLength = new Integer(controlChildren.size());
-            Integer testLength = new Integer(testChildren.size());
-            compare(controlLength, testLength, control, test, listener,
-                    CHILD_NODELIST_LENGTH);
-            compareNodeList(controlChildren, testChildren,
-                            controlLength.intValue(), listener, elementQualifier);
+        List controlChildren = nodeList2List(control.getChildNodes());
+        List testChildren = nodeList2List(test.getChildNodes());
+
+        Integer controlLength = new Integer(controlChildren.size());
+        Integer testLength = new Integer(testChildren.size());
+        compare(controlLength, testLength, control, test, listener,
+                CHILD_NODELIST_LENGTH);
+
+        if (control.hasChildNodes() || test.hasChildNodes()) {
+            if (!control.hasChildNodes()) {
+                for (Iterator iter = testChildren.iterator(); iter.hasNext();) {
+                    missingNode(null, (Node) iter.next(), listener);
+                }
+            } else if (!test.hasChildNodes()) {
+                for (Iterator iter = controlChildren.iterator(); iter.hasNext();) {
+                    missingNode((Node) iter.next(), null, listener);
+                }
+             } else {
+                compareNodeList(controlChildren, testChildren,
+                                controlLength.intValue(), listener, elementQualifier);
+            }
         }
     }
 

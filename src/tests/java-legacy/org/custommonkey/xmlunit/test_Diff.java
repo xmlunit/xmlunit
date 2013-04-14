@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2013, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2013 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -789,9 +789,10 @@ public class test_Diff extends TestCase{
         // 
         // NODE_TYPE(Element), NAMESPACE_URI(none),
         // NAMESPACE_PREFIX(none), HAS_CHILD_NODES(false),
+        // CHILD_NODELIST_LENGTH(0),
         // ELEMENT_TAG_NAME(foo), ELEMENT_NUM_ATTRIBUTE(none),
         // SCHEMA_LOCATION(none), NO_NAMESPACE_SCHEMA_LOCATION(none)
-        assertEquals(14, count[0]);
+        assertEquals(15, count[0]);
     }
 
     public void testMatchTrackerSetViaEngine() throws Exception {
@@ -816,8 +817,9 @@ public class test_Diff extends TestCase{
         // 
         // NODE_TYPE(Element), NAMESPACE_URI(none),
         // NAMESPACE_PREFIX(none), ELEMENT_TAG_NAME(foo),
-        // ELEMENT_NUM_ATTRIBUTE(none), HAS_CHILD_NODES(false)
-        assertEquals(12, count[0]);
+        // ELEMENT_NUM_ATTRIBUTE(none), HAS_CHILD_NODES(false),
+        // CHILD_NODELIST_LENGTH(0)
+        assertEquals(13, count[0]);
     }
 
     public void testMatchTrackerSetViaOverrideOnEngine() throws Exception {
@@ -843,8 +845,9 @@ public class test_Diff extends TestCase{
         // 
         // NODE_TYPE(Element), NAMESPACE_URI(none),
         // NAMESPACE_PREFIX(none), ELEMENT_TAG_NAME(foo),
-        // ELEMENT_NUM_ATTRIBUTE(none), HAS_CHILD_NODES(false)
-        assertEquals(12, count[0]);
+        // ELEMENT_NUM_ATTRIBUTE(none), HAS_CHILD_NODES(false),
+        // CHILD_NODELIST_LENGTH(0)
+        assertEquals(13, count[0]);
     }
 
     public void testMatchTrackerSetViaNewEngine() throws Exception {
@@ -869,9 +872,10 @@ public class test_Diff extends TestCase{
         // 
         // NODE_TYPE(Element), NAMESPACE_URI(none),
         // NAMESPACE_PREFIX(none), HAS_CHILD_NODES(false),
+        // CHILD_NODELIST_LENGTH(0),
         // ELEMENT_TAG_NAME(foo), ELEMENT_NUM_ATTRIBUTE(none),
         // SCHEMA_LOCATION(none), NO_NAMESPACE_SCHEMA_LOCATION(none)
-        assertEquals(14, count[0]);
+        assertEquals(15, count[0]);
     }
 
     public void testMatchTrackerSetViaOverrideOnNewEngine() throws Exception {
@@ -897,9 +901,10 @@ public class test_Diff extends TestCase{
         // 
         // NODE_TYPE(Element), NAMESPACE_URI(none),
         // NAMESPACE_PREFIX(none), HAS_CHILD_NODES(false),
+        // CHILD_NODELIST_LENGTH(0),
         // ELEMENT_TAG_NAME(foo), ELEMENT_NUM_ATTRIBUTE(none),
         // SCHEMA_LOCATION(none), NO_NAMESPACE_SCHEMA_LOCATION(none)
-        assertEquals(14, count[0]);
+        assertEquals(15, count[0]);
     }
 
     public void testCDATAAndIgnoreWhitespace() throws Exception {

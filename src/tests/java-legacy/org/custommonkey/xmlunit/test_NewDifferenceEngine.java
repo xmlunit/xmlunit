@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008,2010 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2010,2013 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -255,11 +255,11 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
         String test = "<stuff><item id=\"2\"/></stuff>";
         listenToDifferences(control, test);
         assertEquals("15th difference type",
-                     NewDifferenceEngine.HAS_CHILD_NODES_ID,
+                     NewDifferenceEngine.CHILD_NODELIST_LENGTH_ID,
                      listener.comparingWhat);
-        assertEquals("15th difference control value", "true",
+        assertEquals("15th difference control value", "1",
                      listener.expected);
-        assertEquals("15th difference test value", "false",
+        assertEquals("15th difference test value", "0",
                      listener.actual);
         assertEquals("15th control xpath", "/stuff[1]/item[1]", 
                      listener.controlXpath);
@@ -390,9 +390,10 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
         d.compare(control, test, listener, null);
         // NODE_TYPE(Element), NAMESPACE_URI(none),
         // NAMESPACE_PREFIX(none), HAS_CHILD_NODES(false),
+        // CHILD_NODELIST_LENGTH(0),
         // ELEMENT_TAG_NAME(foo), ELEMENT_NUM_ATTRIBUTE(none),
         // SCHEMA_LOCATION(none), NO_NAMESPACE_SCHEMA_LOCATION(none)
-        assertEquals(8, count[0]);
+        assertEquals(9, count[0]);
     }
 
     public void testMatchTrackerSetViaSetter() throws Exception {
@@ -407,9 +408,10 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
         engine.compare(control, test, listener, null);
         // NODE_TYPE(Element), NAMESPACE_URI(none),
         // NAMESPACE_PREFIX(none), HAS_CHILD_NODES(false),
+        // CHILD_NODELIST_LENGTH(0)
         // ELEMENT_TAG_NAME(foo), ELEMENT_NUM_ATTRIBUTE(none),
         // SCHEMA_LOCATION(none), NO_NAMESPACE_SCHEMA_LOCATION(none)
-        assertEquals(8, count[0]);
+        assertEquals(9, count[0]);
     }
 
     /**

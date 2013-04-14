@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 200, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2013 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -146,9 +146,9 @@ public class test_IgnoreTextAndAttributeValuesDifferenceListener
                                                                new Diff(control, dissimilarTest));
         dissimilarDetailedDiff.overrideDifferenceListener(listener);
         List differences = dissimilarDetailedDiff.getAllDifferences();
-        assertEquals("has children, wrong number of attributes, missing attribute, different attribute value, and missing text node. "
+        assertEquals("has children, wrong number of attributes, missing attribute, different attribute value, number of children and missing text node. "
                      + dissimilarDetailedDiff.toString(), 
-                     5, differences.size());
+                     6, differences.size());
         int recoverable = 0;
         for (Iterator iter = differences.iterator(); iter.hasNext(); ) {
             Difference aDifference = (Difference) iter.next();

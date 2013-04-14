@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2010, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2010,2013 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
@@ -213,7 +214,8 @@ public class NewDifferenceEngine
         engine.compare(ctrlSource, tstSource);
     }
 
-    public static Difference toDifference(Comparison comp) {
+    public static Iterable<Difference> toDifference(Comparison comp) {
+        List<Difference> diffs = new LinkedList<Difference>();
         Difference proto = null;
         switch (comp.getType()) {
         case ATTR_VALUE_EXPLICITLY_SPECIFIED:
@@ -276,19 +278,19 @@ public class NewDifferenceEngine
             Comparison.Detail td = comp.getTestDetails();
             if (ZERO.equals(cd.getValue())
                 || ZERO.equals(td.getValue())) {
-                return new Difference(HAS_CHILD_NODES,
-                                      new NodeDetail(String
-                                                     .valueOf(!ZERO
-                                                              .equals(cd
-                                                                      .getValue())),
-                                                     (Node) cd.getTarget(),
-                                                     cd.getXPath()),
-                                      new NodeDetail(String
-                                                     .valueOf(!ZERO
-                                                              .equals(td
-                                                                      .getValue())),
-                                                     (Node) td.getTarget(),
-                                                     td.getXPath()));
+                diffs.add(new Difference(HAS_CHILD_NODES,
+                                         new NodeDetail(String
+                                                        .valueOf(!ZERO
+                                                                 .equals(cd
+                                                                         .getValue())),
+                                                        (Node) cd.getTarget(),
+                                                        cd.getXPath()),
+                                         new NodeDetail(String
+                                                        .valueOf(!ZERO
+                                                                 .equals(td
+                                                                         .getValue())),
+                                                        (Node) td.getTarget(),
+                                                        td.getXPath())));
             }
             proto = CHILD_NODELIST_LENGTH;
             break;
@@ -306,10 +308,10 @@ public class NewDifferenceEngine
             break;
         }
         if (proto != null) {
-            return new Difference(proto, toNodeDetail(comp.getControlDetails()),
-                                  toNodeDetail(comp.getTestDetails()));
+            diffs.add(new Difference(proto, toNodeDetail(comp.getControlDetails()),
+                                     toNodeDetail(comp.getTestDetails())));
         }
-        return null;
+        return diffs;
     }
 
     public static NodeDetail toNodeDetail(Comparison.Detail detail) {
@@ -333,8 +335,7 @@ public class NewDifferenceEngine
 
         public void comparisonPerformed(Comparison comparison,
                                         ComparisonResult outcome) {
-            Difference diff = toDifference(comparison);
-            if (diff != null) {
+            for (Difference diff : toDifference(comparison)) {
                 mt.matchFound(diff);
             }
         }
@@ -350,8 +351,7 @@ public class NewDifferenceEngine
 
         public void comparisonPerformed(Comparison comparison,
                                         ComparisonResult outcome) {
-            Difference diff = toDifference(comparison);
-            if (diff != null) {
+            for (Difference diff : toDifference(comparison)) {
                 dl.differenceFound(diff);
             }
         }
@@ -412,9 +412,10 @@ public class NewDifferenceEngine
 
         public ComparisonResult evaluate(Comparison comparison,
                                          ComparisonResult outcome) {
-            Difference diff = toDifference(comparison);
-            if (diff != null && cc.haltComparison(diff)) {
-                return ComparisonResult.CRITICAL;
+            for (Difference diff : toDifference(comparison)) {
+                if (cc.haltComparison(diff)) {
+                    return ComparisonResult.CRITICAL;
+                }
             }
             return outcome;
         }
@@ -445,21 +446,31 @@ public class NewDifferenceEngine
 
         public ComparisonResult evaluate(Comparison comparison,
                                          ComparisonResult outcome) {
-            Difference diff = toDifference(comparison);
-            if (diff != null) {
+            ComparisonResult max = outcome;
+            for (Difference diff : toDifference(comparison)) {
+                ComparisonResult curr = null;
                 switch (dl.differenceFound(diff)) {
                 case DifferenceListener
                     .RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL:
-                    return ComparisonResult.EQUAL;
+                    curr = ComparisonResult.EQUAL;
+                    break;
                 case DifferenceListener
                     .RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR:
-                    return ComparisonResult.SIMILAR;
+                    curr = ComparisonResult.SIMILAR;
+                    break;
                 case DifferenceListener
                     .RETURN_UPGRADE_DIFFERENCE_NODES_DIFFERENT:
-                    return ComparisonResult.DIFFERENT;
+                    curr = ComparisonResult.DIFFERENT;
+                    break;
+                default:
+                    // unknown result, ignore it
+                    break;
+                }
+                if (curr != null && curr.compareTo(max) > 0) {
+                    max = curr;
                 }
             }
-            return outcome;
+            return max;
         }
     }
 
