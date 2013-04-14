@@ -135,17 +135,20 @@ public class XPathContext {
     }
 
     public String getXPath() {
-        String xpath = getXPath(path.descendingIterator());
-        return xpath.replace(SEP + SEP, SEP);
+        return getXPath(path.descendingIterator());
     }
 
     private String getXPath(Iterator<Level> dIterator) {
         if (!dIterator.hasNext()) {
-            return "";
+            return EMPTY;
         }
         Level l = dIterator.next();
         if (null == l.xpath) {
-            l.xpath = getXPath(dIterator) + SEP + l.expression;
+            String previous = getXPath(dIterator);
+            if (!SEP.equals(previous)) {
+                previous += SEP;
+            }
+            l.xpath = previous + l.expression;
         }
         return l.xpath;
     }

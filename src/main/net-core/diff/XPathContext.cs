@@ -40,7 +40,7 @@ namespace net.sf.xmlunit.diff {
             } else {
                 this.uri2Prefix = new Dictionary<string, string>(uri2Prefix);
             }
-            path.AddLast(new Level(""));
+            path.AddLast(new Level(string.Empty));
         }
 
         public void NavigateToChild(int index) {
@@ -128,8 +128,7 @@ namespace net.sf.xmlunit.diff {
 
         public string XPath {
             get {
-                String xpath = GetXPath(path.Last);
-                return xpath.Replace(SEP + SEP, SEP);
+                return GetXPath(path.Last);
             }
         }
 
@@ -139,8 +138,11 @@ namespace net.sf.xmlunit.diff {
             }
             Level level = l.Value;
             if (null == level.XPath) {
-                level.XPath = GetXPath(l.Previous)
-                    + SEP + level.Expression;
+                string previous = GetXPath(l.Previous);
+                if (previous != SEP) {
+                    previous += SEP;
+                }
+                level.XPath = previous + level.Expression;
             }
             return level.XPath;
         }
@@ -151,7 +153,7 @@ namespace net.sf.xmlunit.diff {
             if (ns != null) {
                 uri2Prefix.TryGetValue(ns, out p);
             }
-            return (p == null ? "" : p + ":") + name.Name;
+            return (p == null ? string.Empty : p + ":") + name.Name;
         }
 
         /// <summary>
