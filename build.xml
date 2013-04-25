@@ -28,8 +28,10 @@
   <property name="lib.dir" value="${build.dir}/lib"/>
   <property name="core.out.dir" value="${build.dir}/core-classes"/>
   <property name="legacy.out.dir" value="${build.dir}/legacy-classes"/>
+  <property name="hamcrest.out.dir" value="${build.dir}/hamcrest-classes"/>
   <property name="coretest.out.dir" value="${build.dir}/core-test-classes"/>
   <property name="legacytest.out.dir" value="${build.dir}/legacy-test-classes"/>
+  <property name="hamcresttest.out.dir" value="${build.dir}/hamcrest-test-classes"/>
   <property name="userguide.out.dir" value="${build.dir}/ug-classes"/>
   <property name="test.report.dir" value="${build.dir}/test-report"/>
   <property name="dist.dir" value="${build.dir}/dist"/>
@@ -55,8 +57,10 @@
     <mkdir dir="${lib.dir}"/>
     <mkdir dir="${core.out.dir}"/>
     <mkdir dir="${legacy.out.dir}"/>
+    <mkdir dir="${hamcrest.out.dir}"/>
     <mkdir dir="${coretest.out.dir}"/>
     <mkdir dir="${legacytest.out.dir}"/>
+    <mkdir dir="${hamcresttest.out.dir}"/>
     <mkdir dir="${test.report.dir}"/>
     <mkdir dir="${dist.dir}"/>
     <mkdir dir="${docs.dir}"/>
@@ -70,8 +74,10 @@
       <fileset dir="${lib.dir}"/>
       <fileset dir="${core.out.dir}"/>
       <fileset dir="${legacy.out.dir}"/>
+      <fileset dir="${hamcrest.out.dir}"/>
       <fileset dir="${coretest.out.dir}"/>
       <fileset dir="${legacytest.out.dir}"/>
+      <fileset dir="${hamcresttest.out.dir}"/>
       <fileset dir="${test.report.dir}"/>
       <fileset dir="${dist.dir}"/>
       <fileset dir="${docs.dir}"/>
@@ -133,9 +139,36 @@
     </javac>
   </target>
 
-  <target name="compile" depends="compile-core,compile-legacy"/>
+  <target name="compile-hamcrest" depends="compile-core"
+    description="compiles hamcrest matchers">
+    <javac srcdir="${src.dir}/java-hamcrest" destdir="${hamcrest.out.dir}"
+           includeantruntime="false" debug="${javac.debug}"
+           target="${javac.target}" source="${javac.source}">
+      <classpath>
+        <pathelement location="${core.out.dir}"/>
+        <pathelement path="${java.class.path}"/>
+        <fileset dir="lib" includes="junit-4*.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="compile-hamcrest-tests" depends="compile-hamcrest"
+          description="Compiles the tests for hamcrest matchers">
+    <javac srcdir="${test.dir}/java-hamcrest" destdir="${hamcresttest.out.dir}"
+           includeantruntime="false" debug="${javac.debug}"
+           target="${javac.target}" source="${javac.source}">
+      <classpath>
+        <pathelement location="${core.out.dir}"/>
+        <pathelement location="${hamcrest.out.dir}"/>
+        <pathelement path="${java.class.path}"/>
+        <fileset dir="lib" includes="junit-4*.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="compile" depends="compile-core,compile-legacy,compile-hamcrest"/>
   <target name="compile-tests"
-          depends="compile-core-tests,compile-legacy-tests"/>
+          depends="compile-core-tests,compile-legacy-tests,compile-hamcrest-tests"/>
 
   <target name="test" depends="compile-tests" description="runs the tests">
     <junit printsummary="yes" haltonfailure="no" fork="${junit.fork}"
@@ -145,8 +178,10 @@
       <classpath>
         <pathelement location="${core.out.dir}"/>
         <pathelement location="${legacy.out.dir}"/>
+        <pathelement location="${hamcrest.out.dir}"/>
         <pathelement location="${legacytest.out.dir}"/>
         <pathelement location="${coretest.out.dir}"/>
+        <pathelement location="${hamcresttest.out.dir}"/>
         <pathelement path="${java.class.path}"/>
         <fileset dir="lib" includes="junit-4*.jar"/>
       </classpath>
@@ -158,6 +193,9 @@
         <fileset dir="${test.dir}/java-core">
           <include name="**/*Test.java"/>
           <exclude name="**/Abstract*.java"/>
+        </fileset>
+        <fileset dir="${test.dir}/java-hamcrest">
+          <include name="**/*Test.java"/>
         </fileset>
       </batchtest>
     </junit>
@@ -214,9 +252,13 @@
     <jar jarfile="${lib.dir}/xmlunit-legacy-${xmlunit.version}.jar"
        basedir="${legacy.out.dir}"
     />
+    <jar jarfile="${lib.dir}/xmlunit-hamcrest-${xmlunit.version}.jar"
+       basedir="${hamcrest.out.dir}"
+    />
     <jar jarfile="${lib.dir}/xmlunit-sumo-${xmlunit.version}.jar">
       <fileset dir="${core.out.dir}"/>
       <fileset dir="${legacy.out.dir}"/>
+      <fileset dir="${hamcrest.out.dir}"/>
     </jar>
 
     <tstamp> 	 
