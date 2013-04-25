@@ -135,6 +135,7 @@
         <pathelement location="${core.out.dir}"/>
         <pathelement path="${java.class.path}"/>
         <fileset dir="lib" includes="junit-4*.jar"/>
+        <fileset dir="lib" includes="hamcrest-core-*.jar"/>
       </classpath>
     </javac>
   </target>
@@ -147,7 +148,7 @@
       <classpath>
         <pathelement location="${core.out.dir}"/>
         <pathelement path="${java.class.path}"/>
-        <fileset dir="lib" includes="junit-4*.jar"/>
+        <fileset dir="lib" includes="hamcrest-core-*.jar"/>
       </classpath>
     </javac>
   </target>
@@ -162,6 +163,7 @@
         <pathelement location="${hamcrest.out.dir}"/>
         <pathelement path="${java.class.path}"/>
         <fileset dir="lib" includes="junit-4*.jar"/>
+        <fileset dir="lib" includes="hamcrest-core-*.jar"/>
       </classpath>
     </javac>
   </target>
@@ -184,6 +186,7 @@
         <pathelement location="${hamcresttest.out.dir}"/>
         <pathelement path="${java.class.path}"/>
         <fileset dir="lib" includes="junit-4*.jar"/>
+        <fileset dir="lib" includes="hamcrest-core-*.jar"/>
       </classpath>
       <formatter type="xml"/>
       <batchtest todir="${test.report.dir}">
