@@ -63,6 +63,20 @@ public class ValidationProblem {
         return message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ValidationProblem { ");
+        sb.append("line=").append(line);
+        sb.append(", column=").append(column);
+        sb.append(", type=").append(type);
+        sb.append(", message='").append(message).append('\'');
+        sb.append(" }");
+        return sb.toString();
+    }
+
     static ValidationProblem fromException(SAXParseException e,
                                            ProblemType type) {
         return new ValidationProblem(e.getMessage(),
