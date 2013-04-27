@@ -120,6 +120,10 @@
       <sources basedir="${gen.constraints.dir}">
         <include name="**/*.cs"/>
       </sources>
+      <references basedir="${bin.dir}">
+        <include name="${project::get-name()}-core.dll"/>
+        <include name="${nunit.v2.assembly}"/>
+      </references>
     </csc>
   </target>
     
@@ -140,19 +144,21 @@
     </csc>
   </target>
   
-  <target name="compile-constraints-tests" depends="compile-constraints">
-    <!--csc target="library"
+  <target name="compile-constraints-tests"
+          depends="compile-constraints,compile-core-tests">
+    <csc target="library"
       output="${bin.dir}/${project::get-name()}-constraints.tests.dll"
       debug="true" verbose="${csc.verbose}" keyfile="xmlunit.snk">
       <references basedir="${bin.dir}">
         <include name="${project::get-name()}-core.dll"/>
         <include name="${project::get-name()}-constraints.dll"/>
+        <include name="${project::get-name()}-core.tests.dll"/>
         <include name="${nunit.v2.assembly}"/>
       </references>
       <sources basedir="${constraints.tests.src.dir}">
         <include name="**/*.cs"/>
       </sources>
-    </csc-->
+    </csc>
   </target>
   
   <target name="compile-tests"
@@ -163,7 +169,7 @@
       <formatter type="Plain"/>
       <formatter type="Xml" usefile="true" outputdir="${test.report.dir}"/>
       <test assemblyname="${bin.dir}/${project::get-name()}-core.tests.dll"/>
-      <!--test assemblyname="${bin.dir}/${project::get-name()}-constraints.tests.dll"/-->
+      <test assemblyname="${bin.dir}/${project::get-name()}-constraints.tests.dll"/>
     </nunit2>
   </target>
   

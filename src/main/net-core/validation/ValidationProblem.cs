@@ -76,5 +76,10 @@ namespace net.sf.xmlunit.validation {
                                          ex == null ? UNKNOWN : ex.LinePosition,
                                          e.Severity);
         }
+
+        public override string ToString() {
+            return string.Format("ValidationProblem {{ line={0}, column={1}, type={2},"
+                                 + " message=\'{3}'\' }}", Line, Column, Type, Message);
+        }
     }
 }
