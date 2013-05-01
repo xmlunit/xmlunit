@@ -57,8 +57,10 @@ namespace net.sf.xmlunit.constraints {
         }
 
         private string GrabSystemIds() {
-            return string.Join("\n", Linqy.Map<ISource,
-                               string>(validator.SchemaSources, GrabSystemId));
+            return string.Join("\n", Linqy.ToArray(Linqy.Map<ISource,
+                                                   string>(validator
+                                                           .SchemaSources,
+                                                           GrabSystemId)));
         }
 
         private string GrabActual() {
@@ -72,8 +74,9 @@ namespace net.sf.xmlunit.constraints {
         }
 
         private string GrabProblems() {
-            return string.Join(", ", Linqy.Map<ValidationProblem,
-                               string>(result.Problems, ProblemToString));
+            return string.Join(", ", Linqy.ToArray(Linqy.Map<ValidationProblem,
+                                                   string>(result.Problems,
+                                                           ProblemToString)));
         }
 
         private string ProblemToString(ValidationProblem problem) {

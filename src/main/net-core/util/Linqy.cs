@@ -76,5 +76,12 @@ namespace net.sf.xmlunit.util {
             }
             return c;
         }
+
+        /// <summary>
+        /// Collects the elements of a sequence into an array.
+        /// </summary>
+        public static T[] ToArray<T>(IEnumerable<T> e) {
+            return new List<T>(e).ToArray();
+        }
     }
 }
