@@ -3730,6 +3730,11 @@ class MyNodeTester implements NodeTester {
 
         <itemizedlist>
           <listitem>
+            <literal>RecursiveElementNameAndTextQualifier</literal> had some indices
+            reversed leading to wrong results in some cases.
+            <ulink
+            href="https://sourceforge.net/p/xmlunit/bugs/62/">Issue
+            62</ulink>
           </listitem>
         </itemizedlist>
       </section>

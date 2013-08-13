@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2008-2009, Jeff Martin, Tim Bacon
+Copyright (c) 2008-2009,2013 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -165,6 +165,25 @@ public class test_RecursiveElementNameAndTextQualifier extends TestCase {
         Diff d = new Diff(control, test);
         d.overrideElementQualifier(new RecursiveElementNameAndTextQualifier());
         assertTrue(d.toString(), d.similar());
+    }
+
+    /**
+     * @see "http://sourceforge.net/p/xmlunit/bugs/62/"
+     */
+    public void testMultipleTextValuesWithAdditionalElement() throws Exception {
+        ElementQualifier qualifier =
+            new RecursiveElementNameAndTextQualifier();
+
+        Element control = document.createElement(TAG_NAME);
+        control.appendChild(document.createTextNode(TEXT_A));
+        control.appendChild(document.createTextNode(TEXT_B));
+        control.appendChild(document.createElement(TAG_NAME));
+
+        Element test = document.createElement(TAG_NAME);
+        test.appendChild(document.createTextNode(TEXT_A + TEXT_B));
+        test.appendChild(document.createElement(TAG_NAME));
+        assertTrue("denormalised control text comparable to normalised test text",
+                   qualifier.qualifyForComparison(control, test));
     }
 
     public void setUp() throws Exception {
