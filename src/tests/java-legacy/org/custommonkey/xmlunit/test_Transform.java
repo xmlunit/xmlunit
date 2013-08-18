@@ -159,8 +159,9 @@ public class test_Transform extends TestCase{
                             }
                         });
                 Transform transform = new Transform(s, xsl);
-                transform.getResultString();
-                fail("should fail because of unknown include URI");
+                String transformResult = transform.getResultString();
+                fail("should fail because of unknown include URI but transform"
+                     + " yielded '" + transformResult + "' instead");
             } catch (ConfigurationException tce) {
                 // expected exception
             }
