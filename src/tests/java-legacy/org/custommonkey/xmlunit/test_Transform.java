@@ -140,6 +140,7 @@ public class test_Transform extends TestCase{
                 + test_Constants.XSLT_START
                 + "<xsl:include href=\"urn:bar\"/>"
                 + test_Constants.XSLT_END;
+            assertEquals(tr, XMLUnit.getTransformerFactory().getURIResolver());
             try {
                 XMLUnit.getTransformerFactory()
                     .setErrorListener(new ErrorListener() {
