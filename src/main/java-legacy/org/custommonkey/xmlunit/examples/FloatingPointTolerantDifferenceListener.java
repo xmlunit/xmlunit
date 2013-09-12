@@ -41,6 +41,10 @@ import org.custommonkey.xmlunit.DifferenceListener;
 /**
  * Expects texts to be floating point numbers and treats them as
  * identical if they only differ by a given tolerance value (or less).
+ *
+ * <p>This implementation uses an absolute tolerance value value for
+ * all numbers encountered, calculating a difference relative to one
+ * of the numbers compared might be more appropriate in general.</p>
  */
 public class FloatingPointTolerantDifferenceListener
     extends TextDifferenceListenerBase {
