@@ -76,6 +76,11 @@ POSSIBILITY OF SUCH DAMAGE.
         <date>February 2013</date>
         <revremark>Documentation for XMLUnit Java 1.4</revremark>
       </revision>
+      <revision>
+        <revnumber>1.5</revnumber>
+        <date>September 2013</date>
+        <revremark>Documentation for XMLUnit Java 1.5</revremark>
+      </revision>
     </revhistory>
   </articleinfo>
 
@@ -3735,6 +3740,37 @@ class MyNodeTester implements NodeTester {
             <ulink
             href="https://sourceforge.net/p/xmlunit/bugs/62/">Issue
             62</ulink>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+
+    <section id="Changes 1.6">
+      <title>Changes from XMLUnit 1.5 to 1.6</title>
+
+      <section id="Breaking Changes 1.6">
+        <title>Breaking Changes</title>
+
+        <itemizedlist>
+          <listitem>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section id="New Features 1.6">
+        <title>New Features</title>
+
+        <itemizedlist>
+          <listitem>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section id="Bugfixes 1.6">
+        <title>Important Bug Fixes</title>
+
+        <itemizedlist>
+          <listitem>
           </listitem>
         </itemizedlist>
       </section>
