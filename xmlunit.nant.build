@@ -167,8 +167,8 @@
   
   <target name="deploy" description="zip all code for deployment"
     depends="test">
-    <delete file="${deploy.file}" failonerror="false"/>
-    <zip zipfile="${deploy.file}">
+    <delete file="${build.dir}/${deploy.file}" failonerror="false"/>
+    <zip zipfile="${build.dir}/${deploy.file}">
       <fileset basedir="${base.dir}">
         <include name="LICENSE.txt"/> 
         <include name="NUnit.ReadMe"/> 
