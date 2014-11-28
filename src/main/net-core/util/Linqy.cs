@@ -12,23 +12,13 @@
   limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
 
 namespace net.sf.xmlunit.util {
     /// <summary>
-    /// A couple of (functional) sequence processing constructs.
+    /// Sequence processing constructs not present in System.Linq.
     /// </summary>
     public sealed class Linqy {
-
-        /// <summary>
-        /// Turns an enumerable into its type-safe cousin.
-        /// </summary>
-        public static IEnumerable<T> Cast<T>(IEnumerable i) {
-            foreach (T t in i) {
-                yield return t;
-            }
-        }
 
         /// <summary>
         /// An enumerable containing a single element.
@@ -37,51 +27,5 @@ namespace net.sf.xmlunit.util {
             yield return t;
         }
 
-        /// <summary>
-        /// Create a new enumerable by applying a mapper function to
-        /// each element of a given sequence.
-        /// </summary>
-        public static IEnumerable<T> Map<F, T>(IEnumerable<F> from,
-                                               Mapper<F, T> mapper) {
-            foreach (F f in from) {
-                yield return mapper(f);
-            }
-        }
-
-        /// <summary>
-        /// A function mapping from one type to another.
-        /// </summary>
-        public delegate T Mapper<F, T>(F from);
-
-        /// <summary>
-        /// Exclude all elements from an enumerable that don't match a
-        /// given predicate.
-        /// </summary>
-        public static IEnumerable<T> Filter<T>(IEnumerable<T> sequence,
-                                               Predicate<T> filter) {
-            foreach (T t in sequence) {
-                if (filter(t)) {
-                    yield return t;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Count the number of elements in a sequence.
-        /// </summary>
-        public static int Count(IEnumerable e) {
-            int c = 0;
-            foreach (object o in e) {
-                c++;
-            }
-            return c;
-        }
-
-        /// <summary>
-        /// Collects the elements of a sequence into an array.
-        /// </summary>
-        public static T[] ToArray<T>(IEnumerable<T> e) {
-            return new List<T>(e).ToArray();
-        }
     }
 }

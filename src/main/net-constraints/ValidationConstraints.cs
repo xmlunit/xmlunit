@@ -12,8 +12,9 @@
   limitations under the License.
 */
 
+using System.Linq;
+using System.Text;
 using NUnit.Framework.Constraints;
-using net.sf.xmlunit.util;
 using net.sf.xmlunit.validation;
 
 namespace net.sf.xmlunit.constraints {
@@ -57,10 +58,10 @@ namespace net.sf.xmlunit.constraints {
         }
 
         private string GrabSystemIds() {
-            return string.Join("\n", Linqy.ToArray(Linqy.Map<ISource,
-                                                   string>(validator
-                                                           .SchemaSources,
-                                                           GrabSystemId)));
+            return validator.SchemaSources.Select(GrabSystemId)
+                .Aggregate(new StringBuilder(),
+                           (sb, systemId) => sb.AppendLine(systemId),
+                           sb => sb.Remove(sb.Length - 1, 1).ToString());
         }
 
         private string GrabActual() {
@@ -74,9 +75,10 @@ namespace net.sf.xmlunit.constraints {
         }
 
         private string GrabProblems() {
-            return string.Join(", ", Linqy.ToArray(Linqy.Map<ValidationProblem,
-                                                   string>(result.Problems,
-                                                           ProblemToString)));
+            return result.Problems
+                .Aggregate(new StringBuilder(),
+                           (sb, p) => sb.AppendFormat("{0}, ", p),
+                           sb => sb.Remove(sb.Length - 2, 2).ToString());
         }
 
         private string ProblemToString(ValidationProblem problem) {

@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using net.sf.xmlunit.exceptions;
@@ -91,19 +92,17 @@ namespace net.sf.xmlunit.diff{
             }
 
             IEnumerable<XmlNode> controlChildren =
-                Linqy.Filter(Linqy.Cast<XmlNode>(control.ChildNodes),
-                             INTERESTING_NODES);
+                control.ChildNodes.Cast<XmlNode>().Where(INTERESTING_NODES);
             IEnumerable<XmlNode> testChildren =
-                Linqy.Filter(Linqy.Cast<XmlNode>(test.ChildNodes),
-                             INTERESTING_NODES);
+                test.ChildNodes.Cast<XmlNode>().Where(INTERESTING_NODES);
 
             if (control.NodeType != XmlNodeType.Attribute) {
                 lastResult =
                     Compare(new Comparison(ComparisonType.CHILD_NODELIST_LENGTH,
                                            control, GetXPath(controlContext),
-                                           Linqy.Count(controlChildren),
+                                           controlChildren.Count(),
                                            test, GetXPath(testContext),
-                                           Linqy.Count(testChildren)));
+                                           testChildren.Count()));
                 if (lastResult == ComparisonResult.CRITICAL) {
                     return lastResult;
                 }
@@ -117,13 +116,9 @@ namespace net.sf.xmlunit.diff{
 
             if (control.NodeType != XmlNodeType.Attribute) {
                 controlContext
-                    .SetChildren(Linqy.Map<XmlNode,
-                                 XPathContext.INodeInfo>(controlChildren,
-                                                         TO_NODE_INFO));
+                    .SetChildren(controlChildren.Select(TO_NODE_INFO));
                 testContext
-                    .SetChildren(Linqy.Map<XmlNode,
-                                 XPathContext.INodeInfo>(testChildren,
-                                                         TO_NODE_INFO));
+                    .SetChildren(testChildren.Select(TO_NODE_INFO));
 
                 lastResult = CompareNodeLists(controlChildren, controlContext,
                                               testChildren, testContext);
@@ -346,16 +341,12 @@ namespace net.sf.xmlunit.diff{
 
             Attributes controlAttributes = SplitAttributes(control.Attributes);
             controlContext
-                .AddAttributes(Linqy.Map<XmlAttribute,
-                               XmlQualifiedName>(controlAttributes
-                                                 .RemainingAttributes,
-                                                 Nodes.GetQName));
+                .AddAttributes(controlAttributes.RemainingAttributes
+                               .Select(Nodes.GetQName));
             Attributes testAttributes = SplitAttributes(test.Attributes);
             testContext
-                .AddAttributes(Linqy.Map<XmlAttribute,
-                               XmlQualifiedName>(testAttributes
-                                                 .RemainingAttributes,
-                                                 Nodes.GetQName));
+                .AddAttributes(testAttributes.RemainingAttributes
+                               .Select(Nodes.GetQName));
             IDictionary<XmlAttribute, object> foundTestAttributes =
                 new Dictionary<XmlAttribute, object>();
 
