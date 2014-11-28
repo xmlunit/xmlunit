@@ -12,7 +12,9 @@
   limitations under the License.
 */
 
+using System.Linq;
 using System.Xml;
+using net.sf.xmlunit.util;
 
 namespace net.sf.xmlunit.diff {
 
@@ -90,7 +92,7 @@ namespace net.sf.xmlunit.diff {
         /// the documents in a similar state.</param>
         public static DifferenceEvaluator
             StopWhenDifferent(DifferenceEvaluator nestedEvaluator) {
-            return delegate(Comparison comparison, ComparisonResult outcome) {
+            return (comparison, outcome) => {
                 ComparisonResult r = nestedEvaluator(comparison, outcome);
                 return r == ComparisonResult.DIFFERENT
                     ? ComparisonResult.CRITICAL : r;
@@ -103,15 +105,12 @@ namespace net.sf.xmlunit.diff {
         /// </summary>
         public static DifferenceEvaluator
             First(params DifferenceEvaluator[] evaluators) {
-            return delegate(Comparison comparison, ComparisonResult orig) {
-                foreach (DifferenceEvaluator ev in evaluators) {
-                    ComparisonResult evaluated = ev(comparison, orig);
-                    if (evaluated != orig) {
-                        return evaluated;
-                    }
-                }
-                return orig;
-            };
+            return (comparison, orig) =>
+                Linqy
+                    .FirstOrDefaultValue(evaluators
+                                            .Select(ev => ev(comparison, orig)),
+                                         evaluated => evaluated != orig,
+                                         orig);
         }
     }
 }

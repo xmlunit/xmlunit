@@ -12,6 +12,8 @@
   limitations under the License.
 */
 
+using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace net.sf.xmlunit.util {
@@ -25,6 +27,29 @@ namespace net.sf.xmlunit.util {
         /// </summary>
         public static IEnumerable<T> Singleton<T>(T t) {
             yield return t;
+        }
+
+        /// <summary>
+        /// Like Enumerable.FirstOrDefault but with a configurable default value.
+        /// </summary>
+        public static T FirstOrDefault<T>(IEnumerable<T> enumerable,
+                                          Func<T, bool> predicate,
+                                          T defaultValue)
+            where T : class {
+            return enumerable.FirstOrDefault(predicate) ?? defaultValue;
+        }
+
+        /// <summary>
+        /// Like Enumerable.FirstOrDefault but with a configurable default value.
+        /// </summary>
+        public static T FirstOrDefaultValue<T>(IEnumerable<T> enumerable,
+                                               Func<T, bool> predicate,
+                                               T defaultValue)
+            where T : struct {
+            return enumerable.SkipWhile(t => !predicate(t))
+                .Take(1)
+                .DefaultIfEmpty(defaultValue)
+                .Single();
         }
 
     }

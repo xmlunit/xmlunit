@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using net.sf.xmlunit.util;
 
@@ -72,11 +73,9 @@ namespace net.sf.xmlunit.diff {
             if (attribs == null) {
                 throw new ArgumentNullException("attribs");
             }
-            XmlQualifiedName[] qs = new XmlQualifiedName[attribs.Length];
-            for (int i = 0; i < attribs.Length; i++) {
-                qs[i] = new XmlQualifiedName(attribs[i]);
-            }
-            return ByNameAndAttributes(qs);
+            return ByNameAndAttributes(attribs
+                                       .Select(a => new XmlQualifiedName(a))
+                                       .ToArray());
         }
 
         /// <summary>
@@ -91,14 +90,11 @@ namespace net.sf.xmlunit.diff {
             }
             XmlQualifiedName[] qs = new XmlQualifiedName[attribs.Length];
             Array.Copy(attribs, 0, qs, 0, qs.Length);
-            return delegate(XmlElement controlElement, XmlElement testElement) {
-                if (!ByName(controlElement, testElement)) {
-                    return false;
-                }
-                return MapsEqualForKeys(Nodes.GetAttributes(controlElement),
-                                        Nodes.GetAttributes(testElement),
-                                        qs);
-            };
+            return (controlElement, testElement) =>
+                   ByName(controlElement, testElement) &&
+                   MapsEqualForKeys(Nodes.GetAttributes(controlElement),
+                                    Nodes.GetAttributes(testElement),
+                                    qs);
         }
 
         /// <summary>
@@ -117,7 +113,7 @@ namespace net.sf.xmlunit.diff {
                 throw new ArgumentNullException("attribs");
             }
             List<string> ats = new List<string>(attribs);
-            return delegate(XmlElement controlElement, XmlElement testElement) {
+            return (controlElement, testElement) => {
                 if (!ByName(controlElement, testElement)) {
                     return false;
                 }
@@ -243,16 +239,11 @@ namespace net.sf.xmlunit.diff {
             MapsEqualForKeys(IDictionary<XmlQualifiedName, string> control,
                              IDictionary<XmlQualifiedName, string> test,
                              IEnumerable<XmlQualifiedName> keys) {
-            foreach (XmlQualifiedName q in keys) {
+            return !keys.Any(q => {
                 string c, t;
-                if (control.TryGetValue(q, out c) != test.TryGetValue(q, out t)) {
-                    return false;
-                }
-                if (!BothNullOrEqual(c, t)) {
-                    return false;
-                }
-            }
-            return true;
+                return control.TryGetValue(q, out c) != test.TryGetValue(q, out t)
+                    || !BothNullOrEqual(c, t);
+            });
         }
 
         private static bool IsText(XmlNode n) {
