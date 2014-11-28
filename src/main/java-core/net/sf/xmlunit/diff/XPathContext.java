@@ -192,8 +192,8 @@ public class XPathContext {
     }
 
     public static final class DOMNodeInfo implements NodeInfo {
-        private QName name;
-        private short type;
+        private final QName name;
+        private final short type;
         public DOMNodeInfo(Node n) {
             name = Nodes.getQName(n);
             type = n.getNodeType();

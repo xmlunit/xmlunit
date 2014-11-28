@@ -190,8 +190,8 @@ namespace net.sf.xmlunit.diff {
         }
 
         public class DOMNodeInfo : INodeInfo {
-            private XmlQualifiedName name;
-            private XmlNodeType type;
+            private readonly XmlQualifiedName name;
+            private readonly XmlNodeType type;
             public DOMNodeInfo(XmlNode n) {
                 name = Nodes.GetQName(n);
                 type = n.NodeType;
