@@ -199,24 +199,15 @@ namespace net.sf.xmlunit.transform {
                                           XsltArgumentList args);
 
         private static Transformer TransformToStream(Stream stream) {
-            return delegate(XslCompiledTransform t, XmlReader r,
-                            XsltArgumentList args) {
-                t.Transform(r, args, stream);
-            };
+            return (t, r, args) => t.Transform(r, args, stream);
         }
 
         private static Transformer TransformToTextWriter(TextWriter tw) {
-            return delegate(XslCompiledTransform t, XmlReader r,
-                            XsltArgumentList args) {
-                t.Transform(r, args, tw);
-            };
+            return (t, r, args) => t.Transform(r, args, tw);
         }
 
         private static Transformer TransformToXmlWriter(XmlWriter xw) {
-            return delegate(XslCompiledTransform t, XmlReader r,
-                            XsltArgumentList args) {
-                t.Transform(r, args, xw);
-            };
+            return (t, r, args) => t.Transform(r, args, xw);
         }
 
     }
