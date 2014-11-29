@@ -13,6 +13,7 @@
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using System.Xml.XPath;
 using net.sf.xmlunit.exceptions;
@@ -34,7 +35,7 @@ namespace net.sf.xmlunit.xpath {
             try {
                 XmlDocument doc = new XmlDocument();
                 doc.Load(s.Reader);
-                return ToNodeEnumerable(doc.SelectNodes(xPath, nsContext));
+                return doc.SelectNodes(xPath, nsContext).Cast<XmlNode>();
             } catch (XPathException ex) {
                 throw new XMLUnitException(ex);
             }
@@ -67,14 +68,6 @@ namespace net.sf.xmlunit.xpath {
             set {
                 nsContext = Convert.ToNamespaceContext(value);
             }
-        }
-
-        private IEnumerable<XmlNode> ToNodeEnumerable(XmlNodeList it) {
-            LinkedList<XmlNode> l = new LinkedList<XmlNode>();
-            foreach (XmlNode n in it) {
-                l.AddLast(n);
-            }
-            return l;
         }
     }
 }
