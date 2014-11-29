@@ -79,6 +79,16 @@ namespace net.sf.xmlunit.diff {
             return altered;
         }
 
+        /// <summary>
+        /// Returns a function that compares the detail values for
+        /// object equality, lets the difference evaluator evaluate
+        /// the result, notifies all listeners and returns the
+        /// outcome.
+        /// </summary>
+        protected internal Func<ComparisonResult> Comparer(Comparison comp) {
+            return () => Compare(comp);
+        }
+
         private void FireComparisonPerformed(Comparison comp,
                                              ComparisonResult outcome) {
             if (ComparisonListener != null) {
