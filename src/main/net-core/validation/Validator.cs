@@ -138,9 +138,8 @@ namespace net.sf.xmlunit.validation {
         }
 
         private static ValidationEventHandler CollectProblems(List<ValidationProblem> problems) {
-            return delegate(object sender, ValidationEventArgs e) {
+            return (sender, e) =>
                 problems.Add(ValidationProblem.FromEvent(e));
-            };
         }
 
         private static void ThrowOnError(object sender, ValidationEventArgs e) {
