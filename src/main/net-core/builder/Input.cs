@@ -14,6 +14,7 @@
 using System;
 using System.IO;
 using System.Xml;
+using System.Xml.Linq;
 using net.sf.xmlunit.exceptions;
 using net.sf.xmlunit.input;
 
@@ -171,5 +172,30 @@ namespace net.sf.xmlunit.builder {
         public static ITransformationBuilder ByTransforming(IBuilder b) {
             return ByTransforming(b.Build());
         }
+
+        internal class LinqBuilder : IBuilder {
+            private readonly ISource source;
+            internal LinqBuilder(XNode d) {
+                source = new LinqSource(d);
+            }
+            public ISource Build() {
+                return source;
+            }
+        }
+
+        /// <summary>
+        /// Build an ISource from a System.Xml.Linq Document.
+        /// </summary>
+        public static IBuilder FromDocument(XDocument d) {
+            return new LinqBuilder(d);
+        }
+
+        /// <summary>
+        /// Build an ISource from a System.Xml.Linq Node.
+        /// </summary>
+        public static IBuilder FromNode(XNode n) {
+            return new LinqBuilder(n);
+        }
+
     }
 }

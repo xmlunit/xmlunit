@@ -83,6 +83,9 @@
         <include name="${gen.core.dir}**/*.cs"/>
         <include name="${core.src.dir}/**/*.cs"/>
       </sources>
+      <references>
+        <include name="System.Xml.Linq.dll"/>
+      </references>
     </csc>
   </target>
     
@@ -129,6 +132,7 @@
       <references basedir="${bin.dir}">
         <include name="${project::get-name()}-core.dll"/>
         <include name="${nunit.v2.assembly}"/>
+        <include name="System.Xml.Linq.dll"/>
       </references>
       <sources basedir="${core.tests.src.dir}">
         <include name="**/*.cs"/>

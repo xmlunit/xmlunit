@@ -15,6 +15,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using NUnit.Framework;
 
 namespace net.sf.xmlunit.builder {
@@ -28,9 +29,19 @@ namespace net.sf.xmlunit.builder {
             return d;
         }
 
+        private static XDocument XParse(ISource s) {
+            return XDocument.Load(s.Reader);
+        }
+
         [Test] public void ShouldParseADocument() {
             XmlDocument d = Parse(Input.FromFile(TestResources.ANIMAL_FILE)
                                   .Build());
+            AllIsWellFor(Input.FromDocument(d).Build());
+        }
+
+        [Test] public void ShouldParseAnXDocument() {
+            XDocument d = XParse(Input.FromFile(TestResources.ANIMAL_FILE)
+                                 .Build());
             AllIsWellFor(Input.FromDocument(d).Build());
         }
 
