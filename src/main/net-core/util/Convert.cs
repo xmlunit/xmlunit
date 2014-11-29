@@ -20,8 +20,7 @@ namespace net.sf.xmlunit.util {
     /// <summary>
     /// Conversion methods.
     /// </summary>
-    public sealed class Convert {
-        private Convert() { }
+    public static class Convert {
 
         /// <summary>
         /// Creates a DOM Document from an ISource.

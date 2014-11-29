@@ -13,6 +13,7 @@
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -20,8 +21,7 @@ namespace net.sf.xmlunit.util {
     /// <summary>
     /// Utility algorithms that work on DOM nodes.
     /// </summary>
-    public sealed class Nodes {
-        private Nodes() { }
+    public static class Nodes {
 
         /// <summary>
         /// Extracts a Node's name and namespace URI (if any).
@@ -37,16 +37,13 @@ namespace net.sf.xmlunit.util {
         /// <return>an empty string if the Node has no Text or CDATA
         /// children.</return>
         public static string GetMergedNestedText(XmlNode n) {
-            StringBuilder sb = new StringBuilder();
-            foreach (XmlNode child in n.ChildNodes) {
-                if (child is XmlText || child is XmlCDataSection) {
-                    string s = child.Value;
-                    if (s != null) {
-                        sb.Append(s);
-                    }
-                }
-            }
-            return sb.ToString();
+            return n.ChildNodes
+                .Cast<XmlNode>()
+                .Where(child => child is XmlText || child is XmlCDataSection)
+                .Select(child => child.Value)
+                .Where(s => s != null)
+                .Aggregate(new StringBuilder(), (sb, s) => sb.Append(s))
+                .ToString();
         }
 
         /// <summary>
@@ -54,15 +51,11 @@ namespace net.sf.xmlunit.util {
         /// </summary>
         public static IDictionary<XmlQualifiedName, string>
             GetAttributes(XmlNode n) {
-            IDictionary<XmlQualifiedName, string> map =
-                new Dictionary<XmlQualifiedName, string>();
             XmlAttributeCollection coll = n.Attributes;
             if (coll != null) {
-                foreach (XmlAttribute a in coll) {
-                    map[GetQName(a)] = a.Value;
-                }
+                return coll.Cast<XmlAttribute>().ToDictionary(GetQName, a => a.Value);
             }
-            return map;
+            return new Dictionary<XmlQualifiedName, string>();
         }
 
         /// <summary>

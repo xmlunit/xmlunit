@@ -20,7 +20,7 @@ namespace net.sf.xmlunit.util {
     /// <summary>
     /// Sequence processing constructs not present in System.Linq.
     /// </summary>
-    public sealed class Linqy {
+    public static class Linqy {
 
         /// <summary>
         /// An enumerable containing a single element.
@@ -43,7 +43,7 @@ namespace net.sf.xmlunit.util {
         /// Like Enumerable.FirstOrDefault but with a configurable default value.
         /// </summary>
         public static T FirstOrDefaultValue<T>(IEnumerable<T> enumerable,
-                                               Func<T, bool> predicate,
+                                               Predicate<T> predicate,
                                                T defaultValue)
             where T : struct {
             return enumerable.SkipWhile(t => !predicate(t))
