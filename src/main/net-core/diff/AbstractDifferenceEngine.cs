@@ -105,5 +105,35 @@ namespace net.sf.xmlunit.diff {
         protected static string GetXPath(XPathContext ctx) {
             return ctx == null ? null : ctx.XPath;
         }
+
+        /// <summary>
+        /// Chain of comparisons where the last comparision performed
+        /// determines the final result but the first comparison with
+        /// a critical difference stops the chain.
+        /// </summary>
+        protected class ComparisonChain {
+            private ComparisonResult currentResult;
+            internal ComparisonChain()
+                : this(ComparisonResult.EQUAL) {
+            }
+            internal ComparisonChain(ComparisonResult firstResult) {
+                currentResult = firstResult;
+            }
+            internal ComparisonChain AndThen(Func<ComparisonResult> next) {
+                if (currentResult != ComparisonResult.CRITICAL) {
+                    currentResult = next();
+                }
+                return this;
+            }
+            internal ComparisonChain AndIfTrueThen(bool evalNext,
+                                                   Func<ComparisonResult> next) {
+                return evalNext ? AndThen(next) : this;
+            }
+            internal ComparisonResult FinalResult {
+                get {
+                    return currentResult;
+                }
+            }
+        }
     }
 }

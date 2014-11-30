@@ -77,11 +77,11 @@ namespace net.sf.xmlunit.diff{
                                                  control.Prefix,
                                                  test, GetXPath(testContext),
                                                  test.Prefix)))
-                .AndThen(() => NodeTypeSpecificComparison(control, controlContext,
-                                                          test, testContext))
                 .AndIfTrueThen(control.NodeType != XmlNodeType.Attribute,
                                CompareChildren(control, controlContext,
                                                test, testContext))
+                .AndThen(() => NodeTypeSpecificComparison(control, controlContext,
+                                                          test, testContext))
                 .FinalResult;
         }
 
@@ -709,30 +709,5 @@ namespace net.sf.xmlunit.diff{
                 && n.NodeType != XmlNodeType.XmlDeclaration;
         }
 
-
-        private class ComparisonChain {
-            private ComparisonResult currentResult;
-            internal ComparisonChain()
-                : this(ComparisonResult.EQUAL) {
-            }
-            internal ComparisonChain(ComparisonResult firstResult) {
-                currentResult = firstResult;
-            }
-            internal ComparisonChain AndThen(Func<ComparisonResult> next) {
-                if (currentResult != ComparisonResult.CRITICAL) {
-                    currentResult = next();
-                }
-                return this;
-            }
-            internal ComparisonChain AndIfTrueThen(bool evalNext,
-                                                   Func<ComparisonResult> next) {
-                return evalNext ? AndThen(next) : this;
-            }
-            internal ComparisonResult FinalResult {
-                get {
-                    return currentResult;
-                }
-            }
-        }
     }
 }
