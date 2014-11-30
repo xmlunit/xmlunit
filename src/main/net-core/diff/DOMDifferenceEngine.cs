@@ -61,6 +61,11 @@ namespace net.sf.xmlunit.diff{
                                                XPathContext controlContext,
                                                XmlNode test,
                                                XPathContext testContext) {
+            IEnumerable<XmlNode> controlChildren =
+                control.ChildNodes.Cast<XmlNode>().Where(INTERESTING_NODES);
+            IEnumerable<XmlNode> testChildren =
+                test.ChildNodes.Cast<XmlNode>().Where(INTERESTING_NODES);
+
             return new ComparisonChain(Compare(new Comparison(ComparisonType.NODE_TYPE,
                                                               control,
                                                               GetXPath(controlContext),
@@ -78,10 +83,19 @@ namespace net.sf.xmlunit.diff{
                                                  test, GetXPath(testContext),
                                                  test.Prefix)))
                 .AndIfTrueThen(control.NodeType != XmlNodeType.Attribute,
-                               CompareChildren(control, controlContext,
-                                               test, testContext))
+                               Comparer(new Comparison(ComparisonType.CHILD_NODELIST_LENGTH,
+                                                       control, GetXPath(controlContext),
+                                                       controlChildren.Count(),
+                                                       test, GetXPath(testContext),
+                                                       testChildren.Count())))
                 .AndThen(() => NodeTypeSpecificComparison(control, controlContext,
                                                           test, testContext))
+                // and finally recurse into children
+                .AndIfTrueThen(control.NodeType != XmlNodeType.Attribute,
+                               CompareChildren(control, controlContext,
+                                               controlChildren,
+                                               test, testContext,
+                                               testChildren))
                 .FinalResult;
         }
 
@@ -148,28 +162,19 @@ namespace net.sf.xmlunit.diff{
 
         private Func<ComparisonResult> CompareChildren(XmlNode control,
                                                        XPathContext controlContext,
+                                                       IEnumerable<XmlNode> controlChildren,
                                                        XmlNode test,
-                                                       XPathContext testContext) {
-            IEnumerable<XmlNode> controlChildren =
-                control.ChildNodes.Cast<XmlNode>().Where(INTERESTING_NODES);
-            IEnumerable<XmlNode> testChildren =
-                test.ChildNodes.Cast<XmlNode>().Where(INTERESTING_NODES);
+                                                       XPathContext testContext,
+                                                       IEnumerable<XmlNode> testChildren) {
 
-            return () => new ComparisonChain(
-                Compare(new Comparison(ComparisonType.CHILD_NODELIST_LENGTH,
-                                       control, GetXPath(controlContext),
-                                       controlChildren.Count(),
-                                       test, GetXPath(testContext),
-                                       testChildren.Count())))
-                .AndThen(() => {
-                        controlContext
-                            .SetChildren(controlChildren.Select(TO_NODE_INFO));
-                        testContext
-                            .SetChildren(testChildren.Select(TO_NODE_INFO));
-                        return CompareNodeLists(controlChildren, controlContext,
-                                                testChildren, testContext);
-                    })
-                .FinalResult;
+            return () => {
+                controlContext
+                    .SetChildren(controlChildren.Select(TO_NODE_INFO));
+                testContext
+                    .SetChildren(testChildren.Select(TO_NODE_INFO));
+                return CompareNodeLists(controlChildren, controlContext,
+                                        testChildren, testContext);
+            };
         }
 
         /// <summary>
