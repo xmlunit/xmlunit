@@ -94,7 +94,55 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         return altered;
     }
 
+    /**
+     * Returns a function that compares the detail values for object
+     * equality, lets the difference evaluator evaluate the result,
+     * notifies all listeners and returns the outcome.
+     */
+    protected final DeferredComparison comparer(final Comparison comp) {
+        return new DeferredComparison() {
+            public ComparisonResult apply() {
+                return compare(comp);
+            }
+        };
+    }
+
     protected static String getXPath(XPathContext ctx) {
         return ctx == null ? null : ctx.getXPath();
+    }
+
+    /**
+     * Encapsulates a comparision that may or may not be performed.
+     */
+    protected interface DeferredComparison {
+        ComparisonResult apply();
+    }
+
+    /**
+     * Chain of comparisons where the last comparision performed
+     * determines the final result but the first comparison with a
+     * critical difference stops the chain.
+     */
+    protected static class ComparisonChain {
+        private ComparisonResult currentResult;
+        public ComparisonChain() {
+            this(ComparisonResult.EQUAL);
+        }
+        public ComparisonChain(ComparisonResult firstResult) {
+            currentResult = firstResult;
+        }
+        public ComparisonChain andThen(DeferredComparison next) {
+            if (currentResult != ComparisonResult.CRITICAL) {
+                currentResult = next.apply();
+            }
+            return this;
+        }
+        public ComparisonChain andIfTrueThen(boolean evalNext,
+                                             DeferredComparison next) {
+            return evalNext ? andThen(next) : this;
+        }
+        public ComparisonResult getFinalResult() {
+            return currentResult;
+        }
     }
 }
