@@ -291,123 +291,182 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
      * Compares elements node properties, in particular the element's
      * name and its attributes.
      */
-    private ComparisonResult compareElements(Element control,
-                                             XPathContext controlContext,
-                                             Element test,
-                                             XPathContext testContext) {
-        ComparisonResult lastResult =
+    private ComparisonResult compareElements(final Element control,
+                                             final XPathContext controlContext,
+                                             final Element test,
+                                             final XPathContext testContext) {
+        return new ComparisonChain(
             compare(new Comparison(ComparisonType.ELEMENT_TAG_NAME,
                                    control, getXPath(controlContext),
                                    Nodes.getQName(control).getLocalPart(),
                                    test, getXPath(testContext),
-                                   Nodes.getQName(test).getLocalPart()));
-        if (lastResult == ComparisonResult.CRITICAL) {
-            return lastResult;
-        }
+                                   Nodes.getQName(test).getLocalPart())))
+            .andThen(new DeferredComparison() {
+                    public ComparisonResult apply() {
+                        return compareElementAttributes(control, controlContext,
+                                                        test, testContext);
+                    }
+                })
+            .getFinalResult();
+    }
 
-        Attributes controlAttributes = splitAttributes(control.getAttributes());
+    /**
+     * Compares element's attributes.
+     */
+    private ComparisonResult compareElementAttributes(final Element control,
+                                                      final XPathContext controlContext,
+                                                      final Element test,
+                                                      final XPathContext testContext) {
+        final Attributes controlAttributes = splitAttributes(control.getAttributes());
         controlContext
             .addAttributes(Linqy.map(controlAttributes.remainingAttributes,
                                      QNAME_MAPPER));
-        Attributes testAttributes = splitAttributes(test.getAttributes());
+        final Attributes testAttributes = splitAttributes(test.getAttributes());
         testContext
             .addAttributes(Linqy.map(testAttributes.remainingAttributes,
                                      QNAME_MAPPER));
 
-        lastResult =
+        return new ComparisonChain(
             compare(new Comparison(ComparisonType.ELEMENT_NUM_ATTRIBUTES,
                                    control, getXPath(controlContext),
                                    controlAttributes.remainingAttributes.size(),
                                    test, getXPath(testContext),
-                                   testAttributes.remainingAttributes.size()));
-        if (lastResult == ComparisonResult.CRITICAL) {
-            return lastResult;
-        }
-
-        Set<Attr> foundTestAttributes = new HashSet<Attr>();
-        for (Attr controlAttr : controlAttributes.remainingAttributes) {
-            final Attr testAttr =
-                findMatchingAttr(testAttributes.remainingAttributes,
-                                 controlAttr);
-
-            controlContext.navigateToAttribute(Nodes.getQName(controlAttr));
-            try {
-                lastResult =
-                    compare(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
-                                           control, getXPath(controlContext),
-                                           Boolean.TRUE,
-                                           test, getXPath(testContext),
-                                           Boolean.valueOf(testAttr != null)));
-                if (lastResult == ComparisonResult.CRITICAL) {
-                    return lastResult;
-                }
-
-                if (testAttr != null) {
-                    testContext.navigateToAttribute(Nodes.getQName(testAttr));
-                    try {
-                        lastResult = compareNodes(controlAttr, controlContext,
-                                                  testAttr, testContext);
-                        if (lastResult == ComparisonResult.CRITICAL) {
-                            return lastResult;
-                        }
-
-                        foundTestAttributes.add(testAttr);
-                    } finally {
-                        testContext.navigateToParent();
+                                   testAttributes.remainingAttributes.size())))
+            .andThen(new DeferredComparison() {
+                    public ComparisonResult apply() {
+                        return compareXsiType(controlAttributes.type, controlContext,
+                                              testAttributes.type, testContext);
                     }
+                })
+            .andThen(comparer(new Comparison(ComparisonType.SCHEMA_LOCATION,
+                                             control, getXPath(controlContext),
+                                             controlAttributes.schemaLocation != null
+                                             ? controlAttributes.schemaLocation.getValue()
+                                             : null,
+                                             test, getXPath(testContext),
+                                             testAttributes.schemaLocation != null
+                                             ? testAttributes.schemaLocation.getValue()
+                                             : null)))
+            .andThen(comparer(new Comparison(ComparisonType.NO_NAMESPACE_SCHEMA_LOCATION,
+                                             control, getXPath(controlContext),
+                                             controlAttributes.noNamespaceSchemaLocation != null ?
+                                             controlAttributes.noNamespaceSchemaLocation.getValue()
+                                             : null,
+                                             test, getXPath(testContext),
+                                             testAttributes.noNamespaceSchemaLocation != null
+                                             ? testAttributes.noNamespaceSchemaLocation.getValue()
+                                             : null)))
+            .andThen(new NormalAttributeComparer(control, controlContext,
+                                                 controlAttributes, test,
+                                                 testContext, testAttributes))
+            .getFinalResult();
+    }
+
+    private class NormalAttributeComparer implements DeferredComparison {
+        private final Set<Attr> foundTestAttributes = new HashSet<Attr>();
+        private final Element control, test;
+        private final XPathContext controlContext, testContext;
+        private final Attributes controlAttributes, testAttributes;
+
+        private NormalAttributeComparer(Element control,
+                                        XPathContext controlContext,
+                                        Attributes controlAttributes,
+                                        Element test,
+                                        XPathContext testContext,
+                                        Attributes testAttributes) {
+            this.control = control;
+            this.controlContext = controlContext;
+            this.controlAttributes = controlAttributes;
+            this.test = test;
+            this.testContext = testContext;
+            this.testAttributes = testAttributes;
+        }
+
+        public ComparisonResult apply() {
+            ComparisonChain chain = new ComparisonChain();
+            for (final Attr controlAttr : controlAttributes.remainingAttributes) {
+                final Attr testAttr =
+                    findMatchingAttr(testAttributes.remainingAttributes,
+                                     controlAttr);
+
+                controlContext.navigateToAttribute(Nodes.getQName(controlAttr));
+                try {
+                    chain.andThen(
+                        comparer(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
+                                                control, getXPath(controlContext),
+                                                Boolean.TRUE,
+                                                test, getXPath(testContext),
+                                                Boolean.valueOf(testAttr != null))));
+
+                    if (testAttr != null) {
+                        testContext.navigateToAttribute(Nodes.getQName(testAttr));
+                        try {
+                            chain.andThen(new DeferredComparison() {
+                                    public ComparisonResult apply() {
+                                        return compareNodes(controlAttr,
+                                                            controlContext,
+                                                            testAttr,
+                                                            testContext);
+                                    }
+                                });
+                            foundTestAttributes.add(testAttr);
+                        } finally {
+                            testContext.navigateToParent();
+                        }
+                    }
+                } finally {
+                    controlContext.navigateToParent();
                 }
-            } finally {
-                controlContext.navigateToParent();
             }
+            return chain.andThen(new ControlAttributePresentComparer(control,
+                                                                     controlContext,
+                                                                     test, testContext,
+                                                                     testAttributes,
+                                                                     foundTestAttributes))
+                .getFinalResult();
+        }
+    }
+    
+    private class ControlAttributePresentComparer implements DeferredComparison {
+
+        private final Set<Attr> foundTestAttributes;
+        private final Element control, test;
+        private final XPathContext controlContext, testContext;
+        private final Attributes testAttributes;
+
+        private ControlAttributePresentComparer(Element control,
+                                                XPathContext controlContext,
+                                                Element test,
+                                                XPathContext testContext,
+                                                Attributes testAttributes,
+                                                Set<Attr> foundTestAttributes) {
+            this.control = control;
+            this.controlContext = controlContext;
+            this.test = test;
+            this.testContext = testContext;
+            this.testAttributes = testAttributes;
+            this.foundTestAttributes = foundTestAttributes;
         }
 
-        for (Attr testAttr : testAttributes.remainingAttributes) {
-            testContext.navigateToAttribute(Nodes.getQName(testAttr));
-            try {
-                lastResult =
-                    compare(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
-                                           control, getXPath(controlContext),
-                                           Boolean.valueOf(foundTestAttributes.contains(testAttr)),
-                                           test, getXPath(testContext),
-                                           Boolean.TRUE));
-                if (lastResult == ComparisonResult.CRITICAL) {
-                    return lastResult;
+        public ComparisonResult apply() {
+            ComparisonChain chain = new ComparisonChain();
+            for (Attr testAttr : testAttributes.remainingAttributes) {
+                testContext.navigateToAttribute(Nodes.getQName(testAttr));
+                try {
+                    chain.andThen(comparer(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
+                                                          control, getXPath(controlContext),
+                                                          Boolean
+                                                          .valueOf(foundTestAttributes
+                                                                   .contains(testAttr)),
+                                                          test, getXPath(testContext),
+                                                          Boolean.TRUE)));
+                } finally {
+                    testContext.navigateToParent();
                 }
-            } finally {
-                testContext.navigateToParent();
             }
+            return chain.getFinalResult();
         }
 
-        lastResult = compareXsiType(controlAttributes.type, controlContext,
-                                    testAttributes.type, testContext);
-        if (lastResult == ComparisonResult.CRITICAL) {
-            return lastResult;
-        }
-
-        lastResult =
-            compare(new Comparison(ComparisonType.SCHEMA_LOCATION,
-                                   control, getXPath(controlContext),
-                                   controlAttributes.schemaLocation != null
-                                   ? controlAttributes.schemaLocation.getValue()
-                                   : null,
-                                   test, getXPath(testContext),
-                                   testAttributes.schemaLocation != null
-                                   ? testAttributes.schemaLocation.getValue()
-                                   : null));
-        if (lastResult == ComparisonResult.CRITICAL) {
-            return lastResult;
-        }
-
-        return
-            compare(new Comparison(ComparisonType.NO_NAMESPACE_SCHEMA_LOCATION,
-                                   control, getXPath(controlContext),
-                                   controlAttributes.noNamespaceSchemaLocation != null ?
-                                   controlAttributes.noNamespaceSchemaLocation.getValue()
-                                   : null,
-                                   test, getXPath(testContext),
-                                   testAttributes.noNamespaceSchemaLocation != null
-                                   ? testAttributes.noNamespaceSchemaLocation.getValue()
-                                   : null));
     }
 
     /**
@@ -439,11 +498,10 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
      * couldn't be matched to one of the "other" list.</p>
      */
     private ComparisonResult compareNodeLists(Iterable<Node> controlSeq,
-                                              XPathContext controlContext,
+                                              final XPathContext controlContext,
                                               Iterable<Node> testSeq,
-                                              XPathContext testContext) {
-        // if there are no children on either Node, the result is equal
-        ComparisonResult lastResult = ComparisonResult.EQUAL;
+                                              final XPathContext testContext) {
+        ComparisonChain chain = new ComparisonChain();
 
         Iterable<Map.Entry<Node, Node>> matches =
             getNodeMatcher().match(controlSeq, testSeq);
@@ -451,9 +509,9 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         List<Node> testList = Linqy.asList(testSeq);
         Set<Node> seen = new HashSet<Node>();
         for (Map.Entry<Node, Node> pair : matches) {
-            Node control = pair.getKey();
+            final Node control = pair.getKey();
             seen.add(control);
-            Node test = pair.getValue();
+            final Node test = pair.getValue();
             seen.add(test);
             int controlIndex = controlList.indexOf(control);
             int testIndex = testList.indexOf(test);
@@ -461,67 +519,92 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             controlContext.navigateToChild(controlIndex);
             testContext.navigateToChild(testIndex);
             try {
-                lastResult =
-                    compare(new Comparison(ComparisonType.CHILD_NODELIST_SEQUENCE,
-                                           control, getXPath(controlContext),
-                                           Integer.valueOf(controlIndex),
-                                           test, getXPath(testContext),
-                                           Integer.valueOf(testIndex)));
-                if (lastResult == ComparisonResult.CRITICAL) {
-                    return lastResult;
-                }
-
-                lastResult = compareNodes(control, controlContext,
-                                          test, testContext);
-                if (lastResult == ComparisonResult.CRITICAL) {
-                    return lastResult;
-                }
+                chain.andThen(comparer(new Comparison(ComparisonType.CHILD_NODELIST_SEQUENCE,
+                                                      control, getXPath(controlContext),
+                                                      Integer.valueOf(controlIndex),
+                                                      test, getXPath(testContext),
+                                                      Integer.valueOf(testIndex))))
+                    .andThen(new DeferredComparison() {
+                            public ComparisonResult apply() {
+                                return compareNodes(control, controlContext,
+                                                    test, testContext);
+                            }
+                        });
             } finally {
                 testContext.navigateToParent();
                 controlContext.navigateToParent();
             }
         }
 
-        final int controlSize = controlList.size();
-        for (int i = 0; i < controlSize; i++) {
-            if (!seen.contains(controlList.get(i))) {
-                controlContext.navigateToChild(i);
-                try {
-                    lastResult =
-                        compare(new Comparison(ComparisonType.CHILD_LOOKUP,
-                                               controlList.get(i),
-                                               getXPath(controlContext),
-                                               controlList.get(i),
-                                               null, null, null));
-                    if (lastResult == ComparisonResult.CRITICAL) {
-                        return lastResult;
-                    }
-                } finally {
-                    controlContext.navigateToParent();
-                }
-            }
+        return chain.andThen(new UnmatchedControlNodes(controlList, controlContext, seen))
+            .andThen(new UnmatchedTestNodes(testList, testContext, seen))
+            .getFinalResult();
+    }
+
+    private class UnmatchedControlNodes implements DeferredComparison {
+        private final List<Node> controlList;
+        private final XPathContext controlContext;
+        private final Set<Node> seen;
+        
+        private UnmatchedControlNodes(List<Node> controlList, XPathContext controlContext,
+                                      Set<Node> seen) {
+            this.controlList = controlList;
+            this.controlContext = controlContext;
+            this.seen = seen;
         }
 
-        final int testSize = testList.size();
-        for (int i = 0; i < testSize; i++) {
-            if (!seen.contains(testList.get(i))) {
-                testContext.navigateToChild(i);
-                try {
-                    lastResult =
-                        compare(new Comparison(ComparisonType.CHILD_LOOKUP,
-                                               null, null, null,
-                                               testList.get(i),
-                                               getXPath(testContext),
-                                               testList.get(i)));
-                    if (lastResult == ComparisonResult.CRITICAL) {
-                        return lastResult;
+        public ComparisonResult apply() {
+            ComparisonChain chain = new ComparisonChain();
+            final int controlSize = controlList.size();
+            for (int i = 0; i < controlSize; i++) {
+                if (!seen.contains(controlList.get(i))) {
+                    controlContext.navigateToChild(i);
+                    try {
+                        chain.andThen(comparer(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                                              controlList.get(i),
+                                                              getXPath(controlContext),
+                                                              controlList.get(i),
+                                                              null, null, null)));
+                    } finally {
+                        controlContext.navigateToParent();
                     }
-                } finally {
-                    testContext.navigateToParent();
                 }
             }
+            return chain.getFinalResult();
         }
-        return lastResult;
+    }
+        
+    private class UnmatchedTestNodes implements DeferredComparison {
+        private final List<Node> testList;
+        private final XPathContext testContext;
+        private final Set<Node> seen;
+        
+        private UnmatchedTestNodes(List<Node> testList, XPathContext testContext,
+                                      Set<Node> seen) {
+            this.testList = testList;
+            this.testContext = testContext;
+            this.seen = seen;
+        }
+
+        public ComparisonResult apply() {
+            ComparisonChain chain = new ComparisonChain();
+            final int testSize = testList.size();
+            for (int i = 0; i < testSize; i++) {
+                if (!seen.contains(testList.get(i))) {
+                    testContext.navigateToChild(i);
+                    try {
+                        chain.andThen(comparer(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                                              null, null, null,
+                                                              testList.get(i),
+                                                              getXPath(testContext),
+                                                              testList.get(i))));
+                    } finally {
+                        testContext.navigateToParent();
+                    }
+                }
+            }
+            return chain.getFinalResult();
+        }
     }
 
     /**

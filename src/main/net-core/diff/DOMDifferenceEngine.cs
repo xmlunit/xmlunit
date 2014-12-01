@@ -296,18 +296,18 @@ namespace net.sf.xmlunit.diff{
                                        control.Name,
                                        test, GetXPath(testContext),
                                        test.Name)))
-                .AndThen(() => CompareAttributes(control, controlContext,
-                                                 test, testContext))
+                .AndThen(() => CompareElementAttributes(control, controlContext,
+                                                        test, testContext))
                 .FinalResult;
         }
 
         /// <summary>
         /// Compares element's attributes.
         /// </summary>
-        private ComparisonResult CompareAttributes(XmlElement control,
-                                                   XPathContext controlContext,
-                                                   XmlElement test,
-                                                   XPathContext testContext) {
+        private ComparisonResult CompareElementAttributes(XmlElement control,
+                                                          XPathContext controlContext,
+                                                          XmlElement test,
+                                                          XPathContext testContext) {
             Attributes controlAttributes = SplitAttributes(control.Attributes);
             controlContext
                 .AddAttributes(controlAttributes.RemainingAttributes
@@ -484,47 +484,59 @@ namespace net.sf.xmlunit.diff{
             }
 
             return chain
-                .AndThen(() => {
-                        ComparisonChain secondChain = new ComparisonChain();
-                        int controlSize = controlList.Count;
-                        for (int i = 0; i < controlSize; i++) {
-                            if (!seen.ContainsKey(controlList[i])) {
-                                controlContext.NavigateToChild(i);
-                                try {
-                                    secondChain
-                                        .AndThen(Comparer(new Comparison(ComparisonType.CHILD_LOOKUP,
-                                                                         controlList[i],
-                                                                         GetXPath(controlContext),
-                                                                         controlList[i],
-                                                                         null, null, null)));
-                                } finally {
-                                    controlContext.NavigateToParent();
-                                }
-                            }
-                        }
-                        return secondChain.FinalResult;
-                    })
-                .AndThen(() => {
-                        ComparisonChain thirdChain = new ComparisonChain();
-                        int testSize = testList.Count;
-                        for (int i = 0; i < testSize; i++) {
-                            if (!seen.ContainsKey(testList[i])) {
-                                testContext.NavigateToChild(i);
-                                try {
-                                    thirdChain
-                                        .AndThen(Comparer(new Comparison(ComparisonType.CHILD_LOOKUP,
-                                                                         null, null, null,
-                                                                         testList[i],
-                                                                         GetXPath(testContext),
-                                                                         testList[i])));
-                                } finally {
-                                    testContext.NavigateToParent();
-                                }
-                            }
-                        }
-                        return thirdChain.FinalResult;
-                    })
+                .AndThen(UnmatchedControlNodes(controlList, controlContext, seen))
+                .AndThen(UnmatchedTestNodes(testList, testContext, seen))
                 .FinalResult;
+        }
+
+        private Func<ComparisonResult> UnmatchedControlNodes(IList<XmlNode> controlList,
+                                                             XPathContext controlContext,
+                                                             IDictionary<XmlNode, object> seen) {
+            return () => {
+                ComparisonChain chain = new ComparisonChain();
+                int controlSize = controlList.Count;
+                for (int i = 0; i < controlSize; i++) {
+                    if (!seen.ContainsKey(controlList[i])) {
+                        controlContext.NavigateToChild(i);
+                        try {
+                            chain
+                                .AndThen(Comparer(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                                                 controlList[i],
+                                                                 GetXPath(controlContext),
+                                                                 controlList[i],
+                                                                 null, null, null)));
+                        } finally {
+                            controlContext.NavigateToParent();
+                        }
+                    }
+                }
+                return chain.FinalResult;
+            };
+        }
+
+        private Func<ComparisonResult> UnmatchedTestNodes(IList<XmlNode> testList,
+                                                          XPathContext testContext,
+                                                          IDictionary<XmlNode, object> seen) {
+            return () => {
+                ComparisonChain chain = new ComparisonChain();
+                int testSize = testList.Count;
+                for (int i = 0; i < testSize; i++) {
+                    if (!seen.ContainsKey(testList[i])) {
+                        testContext.NavigateToChild(i);
+                        try {
+                            chain
+                                .AndThen(Comparer(new Comparison(ComparisonType.CHILD_LOOKUP,
+                                                                 null, null, null,
+                                                                 testList[i],
+                                                                 GetXPath(testContext),
+                                                                 testList[i])));
+                        } finally {
+                            testContext.NavigateToParent();
+                        }
+                    }
+                }
+                return chain.FinalResult;
+            };
         }
 
         /// <summary>
