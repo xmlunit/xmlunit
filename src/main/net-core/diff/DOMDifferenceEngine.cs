@@ -560,7 +560,6 @@ namespace net.sf.xmlunit.diff{
                                            test, GetXPath(testContext),
                                            mustChangeTestContext)))
                     .AndIfTrueThen(attributePresentOnBothSides,
-                                   () =>
                                    CompareAttributeExplicitness(control, controlContext,
                                                                 test, testContext))
                     .AndIfTrueThen(attributePresentOnBothSides,
@@ -591,7 +590,7 @@ namespace net.sf.xmlunit.diff{
                                                    XPathContext testContext) {
             return new ComparisonChain(
                 CompareAttributeExplicitness(control, controlContext,
-                                             test, testContext))
+                                             test, testContext)())
                 .AndThen(Comparer(new Comparison(ComparisonType.ATTR_VALUE,
                                                  control, GetXPath(controlContext),
                                                  control.Value,
@@ -603,17 +602,17 @@ namespace net.sf.xmlunit.diff{
         /// <summary>
         // Compares whether two attributes are specified explicitly.
         /// </summary>
-        private ComparisonResult
+        private Func<ComparisonResult>
             CompareAttributeExplicitness(XmlAttribute control,
                                          XPathContext controlContext,
                                          XmlAttribute test,
                                          XPathContext testContext) {
             return
-                Compare(new Comparison(ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED,
-                                       control, GetXPath(controlContext),
-                                       control.Specified,
-                                       test, GetXPath(testContext),
-                                       test.Specified));
+                Comparer(new Comparison(ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED,
+                                        control, GetXPath(controlContext),
+                                        control.Specified,
+                                        test, GetXPath(testContext),
+                                        test.Specified));
         }
 
         /// <summary>

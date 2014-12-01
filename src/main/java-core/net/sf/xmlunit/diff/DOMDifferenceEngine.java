@@ -418,21 +418,18 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                       XPathContext controlContext,
                                       ProcessingInstruction test,
                                       XPathContext testContext) {
-        ComparisonResult lastResult =
+        return new ComparisonChain(
             compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_TARGET,
                                    control, getXPath(controlContext),
                                    control.getTarget(),
                                    test, getXPath(testContext),
-                                   test.getTarget()));
-        if (lastResult == ComparisonResult.CRITICAL) {
-            return lastResult;
-        }
-
-        return compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_DATA,
-                                      control, getXPath(controlContext),
-                                      control.getData(),
-                                      test, getXPath(testContext),
-                                      test.getData()));
+                                   test.getTarget())))
+            .andThen(comparer(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_DATA,
+                                             control, getXPath(controlContext),
+                                             control.getData(),
+                                             test, getXPath(testContext),
+                                             test.getData())))
+            .getFinalResult();
     }
 
     /**
@@ -539,6 +536,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         if (!mustChangeControlContext && !mustChangeTestContext) {
             return ComparisonResult.EQUAL;
         }
+        boolean attributePresentOnBothSides = mustChangeControlContext
+            && mustChangeTestContext;
 
         try {
             if (mustChangeControlContext) {
@@ -551,34 +550,24 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                 testContext.addAttribute(q);
                 testContext.navigateToAttribute(q);
             }
-            ComparisonResult lastResult =
+            return new ComparisonChain(
                 compare(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
                                        controlAttr, getXPath(controlContext),
                                        mustChangeControlContext,
                                        testAttr, getXPath(testContext),
-                                       mustChangeTestContext));
-            if (lastResult == ComparisonResult.CRITICAL) {
-                return lastResult;
-            }
-            if (mustChangeControlContext && mustChangeTestContext) {
-                lastResult =
-                    compareAttributeExplicitness(controlAttr, controlContext,
-                                                 testAttr, testContext);
-                if (lastResult == ComparisonResult.CRITICAL) {
-                    return lastResult;
-                }
-                QName controlQName = valueAsQName(controlAttr);
-                QName testQName = valueAsQName(testAttr);
-                lastResult =
-                    compare(new Comparison(ComparisonType.ATTR_VALUE,
-                                           controlAttr,
-                                           getXPath(controlContext),
-                                           controlQName.toString(),
-                                           testAttr,
-                                           getXPath(testContext),
-                                           testQName.toString()));
-            }
-            return lastResult;
+                                       mustChangeTestContext)))
+                .andIfTrueThen(attributePresentOnBothSides,
+                               compareAttributeExplicitness(controlAttr, controlContext,
+                                                            testAttr, testContext))
+                .andIfTrueThen(attributePresentOnBothSides,
+                               comparer(new Comparison(ComparisonType.ATTR_VALUE,
+                                                       controlAttr,
+                                                       getXPath(controlContext),
+                                                       valueAsQName(controlAttr).toString(),
+                                                       testAttr,
+                                                       getXPath(testContext),
+                                                       valueAsQName(testAttr).toString())))
+                .getFinalResult();
         } finally {
             if (mustChangeControlContext) {
                 controlContext.navigateToParent();
@@ -596,28 +585,25 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                XPathContext controlContext,
                                                Attr test,
                                                XPathContext testContext) {
-        ComparisonResult lastResult =
+        return new ComparisonChain(
             compareAttributeExplicitness(control, controlContext, test,
-                                         testContext);
-        if (lastResult == ComparisonResult.CRITICAL) {
-            return lastResult;
-        }
-
-        return compare(new Comparison(ComparisonType.ATTR_VALUE,
-                                      control, getXPath(controlContext),
-                                      control.getValue(),
-                                      test, getXPath(testContext),
-                                      test.getValue()));
+                                         testContext).apply())
+            .andThen(comparer(new Comparison(ComparisonType.ATTR_VALUE,
+                                             control, getXPath(controlContext),
+                                             control.getValue(),
+                                             test, getXPath(testContext),
+                                             test.getValue())))
+            .getFinalResult();
     }
 
     /**
      * Compares whether two attributes are specified explicitly.
      */
-    private ComparisonResult
+    private DeferredComparison
         compareAttributeExplicitness(Attr control, XPathContext controlContext,
                                      Attr test, XPathContext testContext) {
         return
-            compare(new Comparison(ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED,
+            comparer(new Comparison(ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED,
                                    control, getXPath(controlContext),
                                    control.getSpecified(),
                                    test, getXPath(testContext),
