@@ -45,10 +45,9 @@ namespace net.sf.xmlunit.diff {
                 new LinkedList<KeyValuePair<XmlNode, XmlNode>>();
             IList<XmlNode> controlList = new List<XmlNode>(controlNodes);
             IList<XmlNode> testList = new List<XmlNode>(testNodes);
-            IDictionary<int, object> unmatchedTestIndexes =
-                new Dictionary<int, object>();
+            ISet<int> unmatchedTestIndexes = new HashSet<int>();
             for (int i = 0; i < testList.Count; i++) {
-                unmatchedTestIndexes.Add(i, DUMMY);
+                unmatchedTestIndexes.Add(i);
             }
             int controlSize = controlList.Count;
             MatchInfo lastMatch = new MatchInfo(null, -1);
@@ -69,11 +68,10 @@ namespace net.sf.xmlunit.diff {
         private MatchInfo FindMatchingNode(XmlNode searchFor,
                                            IList<XmlNode> searchIn,
                                            int indexOfLastMatch,
-                                           IDictionary<int, object>
-                                           availableIndexes) {
+                                           ISet<int> availableIndexes) {
             int searchSize = searchIn.Count;
             for (int i = indexOfLastMatch + 1; i < searchSize; i++) {
-                if (!availableIndexes.ContainsKey(i)) {
+                if (!availableIndexes.Contains(i)) {
                     continue;
                 }
                 if (NodesMatch(searchFor, searchIn[i])) {
@@ -81,7 +79,7 @@ namespace net.sf.xmlunit.diff {
                 }
             }
             for (int i = 0; i < indexOfLastMatch; i++) {
-                if (!availableIndexes.ContainsKey(i)) {
+                if (!availableIndexes.Contains(i)) {
                     continue;
                 }
                 if (NodesMatch(searchFor, searchIn[i])) {

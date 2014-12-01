@@ -27,8 +27,6 @@ namespace net.sf.xmlunit.diff{
     /// </summary>
     public sealed class DOMDifferenceEngine : AbstractDifferenceEngine {
 
-        private static readonly object DUMMY = new object();
-
         public override void Compare(ISource control, ISource test) {
             if (control == null) {
                 throw new ArgumentNullException("control");
@@ -359,8 +357,7 @@ namespace net.sf.xmlunit.diff{
                                     Attributes testAttributes) {
             return () => {
                 ComparisonChain chain = new ComparisonChain();
-                IDictionary<XmlAttribute, object> foundTestAttributes =
-                    new Dictionary<XmlAttribute, object>();
+                ISet<XmlAttribute> foundTestAttributes = new HashSet<XmlAttribute>();
 
                 foreach (XmlAttribute controlAttr
                          in controlAttributes.RemainingAttributes) {
@@ -383,7 +380,7 @@ namespace net.sf.xmlunit.diff{
                                               CompareNodes(controlAttr, controlContext,
                                                            testAttr, testContext));
 
-                                foundTestAttributes[testAttr] = DUMMY;
+                                foundTestAttributes.Add(testAttr);
                             } finally {
                                 testContext.NavigateToParent();
                             }
@@ -403,7 +400,7 @@ namespace net.sf.xmlunit.diff{
                                                                      control,
                                                                      GetXPath(controlContext),
                                                                      foundTestAttributes
-                                                                     .ContainsKey(testAttr),
+                                                                     .Contains(testAttr),
                                                                      test,
                                                                      GetXPath(testContext),
                                                                      true)));
@@ -458,13 +455,12 @@ namespace net.sf.xmlunit.diff{
                 NodeMatcher.Match(controlSeq, testSeq);
             IList<XmlNode> controlList = new List<XmlNode>(controlSeq);
             IList<XmlNode> testList = new List<XmlNode>(testSeq);
-            IDictionary<XmlNode, object> seen =
-                new Dictionary<XmlNode, object>();
+            ISet<XmlNode> seen = new HashSet<XmlNode>();
             foreach (KeyValuePair<XmlNode, XmlNode> pair in matches) {
                 XmlNode control = pair.Key;
-                seen[control] = DUMMY;
+                seen.Add(control);
                 XmlNode test = pair.Value;
-                seen[test] = DUMMY;
+                seen.Add(test);
                 int controlIndex = controlList.IndexOf(control);
                 int testIndex = testList.IndexOf(test);
                 controlContext.NavigateToChild(controlIndex);
@@ -491,12 +487,12 @@ namespace net.sf.xmlunit.diff{
 
         private Func<ComparisonResult> UnmatchedControlNodes(IList<XmlNode> controlList,
                                                              XPathContext controlContext,
-                                                             IDictionary<XmlNode, object> seen) {
+                                                             ISet<XmlNode> seen) {
             return () => {
                 ComparisonChain chain = new ComparisonChain();
                 int controlSize = controlList.Count;
                 for (int i = 0; i < controlSize; i++) {
-                    if (!seen.ContainsKey(controlList[i])) {
+                    if (!seen.Contains(controlList[i])) {
                         controlContext.NavigateToChild(i);
                         try {
                             chain
@@ -516,12 +512,12 @@ namespace net.sf.xmlunit.diff{
 
         private Func<ComparisonResult> UnmatchedTestNodes(IList<XmlNode> testList,
                                                           XPathContext testContext,
-                                                          IDictionary<XmlNode, object> seen) {
+                                                          ISet<XmlNode> seen) {
             return () => {
                 ComparisonChain chain = new ComparisonChain();
                 int testSize = testList.Count;
                 for (int i = 0; i < testSize; i++) {
-                    if (!seen.ContainsKey(testList[i])) {
+                    if (!seen.Contains(testList[i])) {
                         testContext.NavigateToChild(i);
                         try {
                             chain

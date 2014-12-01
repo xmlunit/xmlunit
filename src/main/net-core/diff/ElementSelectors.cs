@@ -104,7 +104,7 @@ namespace net.sf.xmlunit.diff {
         /// </summary>
         /// <remarks>
         /// Namespace URIs of attributes are those of the attributes on
-        /// the control element or the null namespace if the don't
+        /// the control element or the null namespace if they don't
         /// exist.
         /// </remarks>
         public static ElementSelector
@@ -112,7 +112,7 @@ namespace net.sf.xmlunit.diff {
             if (attribs == null) {
                 throw new ArgumentNullException("attribs");
             }
-            List<string> ats = new List<string>(attribs);
+            ISet<string> ats = new HashSet<string>(attribs);
             return (controlElement, testElement) => {
                 if (!ByName(controlElement, testElement)) {
                     return false;
