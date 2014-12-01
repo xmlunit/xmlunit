@@ -13,11 +13,11 @@
 */
 package net.sf.xmlunit.diff;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import net.sf.xmlunit.util.Linqy;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -48,7 +48,7 @@ public class DefaultNodeMatcher implements NodeMatcher {
         List<Node> controlList = Linqy.asList(controlNodes);
         List<Node> testList = Linqy.asList(testNodes);
         final int testSize = testList.size();
-        Set<Integer> unmatchedTestIndexes = new TreeSet<Integer>();
+        Set<Integer> unmatchedTestIndexes = new HashSet<Integer>();
         for (int i = 0; i < testSize; i++) {
             unmatchedTestIndexes.add(Integer.valueOf(i));
         }

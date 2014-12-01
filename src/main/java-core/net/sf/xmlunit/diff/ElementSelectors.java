@@ -97,7 +97,7 @@ public final class ElementSelectors {
      * compared.
      *
      * <p>Namespace URIs of attributes are those of the attributes on
-     * the control element or the null namespace if the don't
+     * the control element or the null namespace if they don't
      * exist.</p>
      */
     public static ElementSelector
