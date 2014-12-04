@@ -39,8 +39,8 @@
   <property name="userguide.docs.dir" value="${docs.dir}/userguide"/>
 
   <!-- javac properties -->
-  <property name="javac.source" value="5"/>
-  <property name="javac.target" value="5"/>
+  <property name="javac.source" value="6"/>
+  <property name="javac.target" value="6"/>
   <property name="javac.debug" value="true"/>
 
   <!-- junit task properties -->
