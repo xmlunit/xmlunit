@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.net.URI;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
@@ -79,6 +80,23 @@ public class InputTest {
         } finally {
             if (r != null) {
                 r.close();
+            }
+        }
+    }
+
+    @Test public void shouldParseAnExistingFileFromChannel() throws Exception {
+        FileChannel fc = null;
+        FileInputStream is = null;
+        try {
+            is = new FileInputStream(TestResources.ANIMAL_FILE);
+            fc = is.getChannel();
+            allIsWellFor(Input.fromChannel(fc).build());
+        } finally {
+            if (fc != null) {
+                fc.close();
+            }
+            if (is != null) {
+                is.close();
             }
         }
     }

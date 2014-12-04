@@ -23,6 +23,8 @@ import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
@@ -131,6 +133,13 @@ public class Input {
      */
     public static Builder fromMemory(byte[] b) {
         return fromStream(new ByteArrayInputStream(b));
+    }
+
+    /**
+     * Build a Source from a channel.
+     */
+    public static Builder fromChannel(ReadableByteChannel c) {
+        return fromStream(Channels.newInputStream(c));
     }
 
     /**
