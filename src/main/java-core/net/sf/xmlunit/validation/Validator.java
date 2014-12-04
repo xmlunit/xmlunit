@@ -13,6 +13,7 @@
 */
 package net.sf.xmlunit.validation;
 
+import java.util.Arrays;
 import javax.xml.transform.Source;
 
 /**
@@ -40,8 +41,7 @@ public abstract class Validator {
      */
     public void setSchemaSources(Source[] s) {
         if (s != null) {
-            sourceLocations = new Source[s.length];
-            System.arraycopy(s, 0, sourceLocations, 0, s.length);
+            sourceLocations = Arrays.copyOf(s, s.length);
         } else {
             sourceLocations = null;
         }
