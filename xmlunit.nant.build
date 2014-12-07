@@ -174,8 +174,8 @@
     <delete file="${build.dir}/${deploy.file}" failonerror="false"/>
     <zip zipfile="${build.dir}/${deploy.file}">
       <fileset basedir="${base.dir}">
-        <include name="LICENSE.txt"/> 
-        <include name="NUnit.ReadMe"/> 
+        <include name="LICENSE"/> 
+        <include name="README.md"/> 
         <include name="*.build"/>
         <include name="**/*.cs"/>
         <include name="./tests/etc/**/*.*"/>
