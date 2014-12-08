@@ -4,3 +4,6 @@ jdk:
   - oraclejdk7
   - oraclejdk8
 install: true
+notifications:
+  email:
+    - xmlunit-commits@lists.sourceforge.net
