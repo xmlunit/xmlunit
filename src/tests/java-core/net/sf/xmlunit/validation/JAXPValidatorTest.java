@@ -38,6 +38,13 @@ public class JAXPValidatorTest {
         assertFalse(r.getProblems().iterator().hasNext());
     }
 
+    @Test public void shouldSuccessfullyValidateInstanceWithoutSchemaSource() {
+        JAXPValidator v = new JAXPValidator(Languages.W3C_XML_SCHEMA_NS_URI);
+        ValidationResult r = v.validateInstance(new StreamSource(new File("src/tests/resources/BookXsdGeneratedWithFixedSchemaLocation.xml")));
+        assertTrue(r.isValid());
+        assertFalse(r.getProblems().iterator().hasNext());
+    }
+
     @Test public void shouldFailOnBrokenSchema() {
         JAXPValidator v = new JAXPValidator(Languages.W3C_XML_SCHEMA_NS_URI);
         v.setSchemaSource(new StreamSource(new File("src/tests/resources/broken.xsd")));

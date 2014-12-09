@@ -45,6 +45,21 @@ namespace net.sf.xmlunit.validation {
         }
 
         [Test]
+        public void ShouldSuccessfullyValidateInstanceWithoutSchemaSource() {
+            Validator v = Validator.ForLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
+            v.SchemaSource = new StreamSource(TestResources.TESTS_DIR + "Book.xsd");
+            ValidationResult r = v.ValidateInstance(new StreamSource(TestResources.TESTS_DIR + "BookXsdGeneratedWithFixedSchemaLocation.xml"));
+            IEnumerator<ValidationProblem> problems = r.Problems.GetEnumerator();
+            bool haveErrors = problems.MoveNext();
+
+            Assert.IsTrue(r.Valid,
+                          "Expected validation to pass, first validation error"
+                          + " is "
+                          + (haveErrors ? problems.Current.Message : "unknown"));
+            Assert.IsFalse(haveErrors);
+        }
+
+        [Test]
         public void ShouldFailOnBrokenSchema() {
             Validator v = Validator.ForLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
             v.SchemaSource = new StreamSource(TestResources.TESTS_DIR + "broken.xsd");
