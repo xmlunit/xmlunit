@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2008,2011, Jeff Martin, Tim Bacon
+Copyright (c) 2008,2011,2014 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -101,6 +101,14 @@ public class test_Validator extends TestCase {
         StreamSource s =
             new StreamSource(new File(test_Constants.BASEDIR
                                       + "/src/tests/resources/BookXsdGenerated.xml"));
+        assertTrue(v.isInstanceValid(s));
+    }
+
+    public void testGoodInstanceIsValidNoSchemaSource() throws Exception {
+        Validator v = new Validator();
+        StreamSource s =
+            new StreamSource(new File(test_Constants.BASEDIR
+                                      + "/src/tests/resources/BookXsdGeneratedWithFixedSchemaLocation.xml"));
         assertTrue(v.isInstanceValid(s));
     }
 

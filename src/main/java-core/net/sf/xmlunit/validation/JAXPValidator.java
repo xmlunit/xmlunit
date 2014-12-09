@@ -61,7 +61,7 @@ public class JAXPValidator extends Validator {
     @Override public ValidationResult validateInstance(Source s) {
         Schema schema;
         try {
-            schema = getFactory().newSchema(getSchemaSources());
+            schema = createSchema();
         } catch (SAXException e) {
             throw new XMLUnitException("The schema is invalid", e);
         }
@@ -82,4 +82,9 @@ public class JAXPValidator extends Validator {
         return v.getResult();
     }
 
+    private Schema createSchema() throws SAXException {
+        Source[] sources = getSchemaSources();
+        return sources.length > 0 ? getFactory().newSchema(getSchemaSources())
+            : getFactory().newSchema();
+    }
 }
