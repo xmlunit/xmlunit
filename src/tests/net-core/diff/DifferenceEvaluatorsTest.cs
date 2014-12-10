@@ -14,7 +14,7 @@
 
 using NUnit.Framework;
 
-namespace net.sf.xmlunit.diff {
+namespace Org.XmlUnit.Diff {
 
     [TestFixture]
     public class DifferenceEvaluatorsTest {

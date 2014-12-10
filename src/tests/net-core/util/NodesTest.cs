@@ -15,9 +15,9 @@
 using System.Collections.Generic;
 using System.Xml;
 using NUnit.Framework;
-using net.sf.xmlunit.builder;
+using Org.XmlUnit.Builder;
 
-namespace net.sf.xmlunit.util {
+namespace Org.XmlUnit.Util {
     [TestFixture]
     public class NodesTest {
 

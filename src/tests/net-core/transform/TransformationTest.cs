@@ -13,10 +13,10 @@
 */
 
 using System.Xml;
-using net.sf.xmlunit.builder;
+using Org.XmlUnit.Builder;
 using NUnit.Framework;
 
-namespace net.sf.xmlunit.transform {
+namespace Org.XmlUnit.Transform {
     [TestFixture]
     public class TransformationTest {
         private Transformation t;

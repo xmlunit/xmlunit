@@ -16,9 +16,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Xml.Schema;
-using net.sf.xmlunit.exceptions;
+using Org.XmlUnit.Exceptions;
 
-namespace net.sf.xmlunit.validation {
+namespace Org.XmlUnit.Validation {
 
     /// <summary>
     /// Validates a piece of XML against a schema given in a supported

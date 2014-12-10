@@ -14,7 +14,7 @@
 
 using System.Xml;
 
-namespace net.sf.xmlunit.diff {
+namespace Org.XmlUnit.Diff {
 
     /// <summary>
     /// Strategy for selecting matching elements.

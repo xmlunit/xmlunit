@@ -14,7 +14,7 @@
 
 using System.Xml;
 
-namespace net.sf.xmlunit.builder {
+namespace Org.XmlUnit.Builder {
 
     /// <summary>
     /// Holds the common builder methods for XSLT related builders.

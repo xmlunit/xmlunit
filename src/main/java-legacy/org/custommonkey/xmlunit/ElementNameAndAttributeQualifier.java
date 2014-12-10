@@ -37,8 +37,8 @@ POSSIBILITY OF SUCH DAMAGE.
 package org.custommonkey.xmlunit;
 
 import java.util.Arrays;
-import net.sf.xmlunit.diff.ElementSelector;
-import net.sf.xmlunit.diff.ElementSelectors;
+import org.xmlunit.diff.ElementSelector;
+import org.xmlunit.diff.ElementSelectors;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;

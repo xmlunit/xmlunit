@@ -14,10 +14,10 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using net.sf.xmlunit.exceptions;
-using net.sf.xmlunit.input;
+using Org.XmlUnit.Exceptions;
+using Org.XmlUnit.Input;
 
-namespace net.sf.xmlunit.validation {
+namespace Org.XmlUnit.Validation {
     [TestFixture]
     public class ValidatorTest {
         [Test]

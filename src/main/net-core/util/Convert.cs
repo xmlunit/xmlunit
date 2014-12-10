@@ -14,9 +14,9 @@
 
 using System.Collections.Generic;
 using System.Xml;
-using net.sf.xmlunit.input;
+using Org.XmlUnit.Input;
 
-namespace net.sf.xmlunit.util {
+namespace Org.XmlUnit.Util {
     /// <summary>
     /// Conversion methods.
     /// </summary>

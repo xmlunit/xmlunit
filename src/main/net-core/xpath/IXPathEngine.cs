@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using System.Xml;
 
-namespace net.sf.xmlunit.xpath {
+namespace Org.XmlUnit.Xpath {
 
     /// <summary>
     /// Interface for XMLUnit's XPath abstraction.

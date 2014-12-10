@@ -13,7 +13,7 @@
 */
 using System;
 
-namespace net.sf.xmlunit.exceptions {
+namespace Org.XmlUnit.Exceptions {
 
     /// <summary>
     /// Base class of any Exception thrown within XMLUnit.

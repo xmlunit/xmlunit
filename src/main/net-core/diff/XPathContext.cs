@@ -16,9 +16,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using net.sf.xmlunit.util;
+using Org.XmlUnit.Util;
 
-namespace net.sf.xmlunit.diff {
+namespace Org.XmlUnit.Diff {
     public class XPathContext {
         private readonly LinkedList<Level> path = new LinkedList<Level>();
         private readonly IDictionary<string, string> uri2Prefix;

@@ -13,7 +13,7 @@
 */
 using System.Xml.Linq;
 
-namespace net.sf.xmlunit.input {
+namespace Org.XmlUnit.Input {
     /// <summary>
     /// ISource implementation encapsulating a System.Xml.Linq XNode.
     /// </summary>

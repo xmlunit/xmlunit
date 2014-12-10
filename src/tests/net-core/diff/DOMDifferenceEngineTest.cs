@@ -14,9 +14,9 @@
 using System;
 using System.Xml;
 using NUnit.Framework;
-using net.sf.xmlunit.builder;
+using Org.XmlUnit.Builder;
 
-namespace net.sf.xmlunit.diff {
+namespace Org.XmlUnit.Diff {
 
     [TestFixture]
     public class DOMDifferenceEngineTest : AbstractDifferenceEngineTest {
@@ -313,7 +313,7 @@ namespace net.sf.xmlunit.diff {
 
             XmlDocument d1, d2;
 
-            d1 = net.sf.xmlunit.util.Convert
+            d1 = Org.XmlUnit.Util.Convert
                 .ToDocument(Input.FromMemory("<Book/>").Build());
             d2 = new XmlDocument();
             d2.LoadXml("<!DOCTYPE Book PUBLIC "
@@ -333,11 +333,11 @@ namespace net.sf.xmlunit.diff {
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
 
-            d1 = net.sf.xmlunit.util.Convert
+            d1 = Org.XmlUnit.Util.Convert
                 .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
                                              + " encoding=\"UTF-8\"?>"
                                              + "<Book/>").Build());
-            d2 = net.sf.xmlunit.util.Convert
+            d2 = Org.XmlUnit.Util.Convert
                 .ToDocument(Input.FromMemory("<?xml version=\"1.1\""
                                              + " encoding=\"UTF-8\"?>"
                                              + "<Book/>").Build());
@@ -353,11 +353,11 @@ namespace net.sf.xmlunit.diff {
             d.DifferenceEvaluator =
                 DifferenceEvaluators.DefaultStopWhenDifferent;
 
-            d1 = net.sf.xmlunit.util.Convert
+            d1 = Org.XmlUnit.Util.Convert
                 .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
                                              + " standalone=\"yes\"?>"
                                              + "<Book/>").Build());
-            d2 = net.sf.xmlunit.util.Convert
+            d2 = Org.XmlUnit.Util.Convert
                 .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
                                              + " standalone=\"no\"?>"
                                              + "<Book/>").Build());
@@ -379,11 +379,11 @@ namespace net.sf.xmlunit.diff {
                 return ComparisonResult.EQUAL;
             };
 
-            d1 = net.sf.xmlunit.util.Convert
+            d1 = Org.XmlUnit.Util.Convert
                 .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
                                              + " encoding=\"UTF-8\"?>"
                                              + "<Book/>").Build());
-            d2 = net.sf.xmlunit.util.Convert
+            d2 = Org.XmlUnit.Util.Convert
                 .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
                                              + " encoding=\"UTF-16\"?>"
                                              + "<Book/>").Build());
@@ -884,7 +884,7 @@ namespace net.sf.xmlunit.diff {
         }
 
         private XmlDocument DocumentForString(string s) {
-            return net.sf.xmlunit.util.Convert.ToDocument(Input.FromMemory(s).Build());
+            return Org.XmlUnit.Util.Convert.ToDocument(Input.FromMemory(s).Build());
         }
     }
 }

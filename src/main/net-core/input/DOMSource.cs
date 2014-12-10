@@ -13,7 +13,7 @@
 */
 using System.Xml;
 
-namespace net.sf.xmlunit.input {
+namespace Org.XmlUnit.Input {
     /// <summary>
     /// ISource implementation encapsulating a DOM Node.
     /// </summary>

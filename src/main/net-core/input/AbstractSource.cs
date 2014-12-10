@@ -13,7 +13,7 @@
 */
 using System.Xml;
 
-namespace net.sf.xmlunit.input {
+namespace Org.XmlUnit.Input {
     /// <summary>
     /// Provides a base implementation for the different concrete ISource
     /// implementations.

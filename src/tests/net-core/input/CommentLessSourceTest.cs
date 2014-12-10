@@ -16,7 +16,7 @@ using NUnit.Framework;
 using System.IO;
 using System.Xml;
 
-namespace net.sf.xmlunit.input {
+namespace Org.XmlUnit.Input {
     [TestFixture]
     public class CommentLessSourceTest {
 
@@ -29,7 +29,7 @@ namespace net.sf.xmlunit.input {
                                                   + "<!-- comment 2 -->"
                                                   + "</foo>"));
             CommentLessSource cls = new CommentLessSource(s);
-            XmlDocument d = net.sf.xmlunit.util.Convert.ToDocument(cls);
+            XmlDocument d = Org.XmlUnit.Util.Convert.ToDocument(cls);
             Assert.AreEqual(2, d.ChildNodes.Count);
             Assert.IsTrue(d.ChildNodes[0] is XmlDeclaration);
             Assert.IsTrue(d.ChildNodes[1] is XmlElement);

@@ -15,7 +15,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace net.sf.xmlunit.diff {
+namespace Org.XmlUnit.Diff {
 
     /// <summary>
     /// Useful base-implementation of some parts of the

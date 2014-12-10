@@ -14,9 +14,9 @@
 
 using System;
 using System.Xml;
-using net.sf.xmlunit.transform;
+using Org.XmlUnit.Transform;
 
-namespace net.sf.xmlunit.input {
+namespace Org.XmlUnit.Input {
 
     /// <summary>
     /// ISource implementation that is obtained from a different

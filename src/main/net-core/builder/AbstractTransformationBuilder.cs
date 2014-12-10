@@ -13,9 +13,9 @@
 */
 
 using System.Xml;
-using net.sf.xmlunit.transform;
+using Org.XmlUnit.Transform;
 
-namespace net.sf.xmlunit.builder {
+namespace Org.XmlUnit.Builder {
 
     /// <summary>
     /// Base class providing the common logic of the XSLT related builders.

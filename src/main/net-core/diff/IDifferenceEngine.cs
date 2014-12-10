@@ -14,7 +14,7 @@
 
 using System.Collections.Generic;
 
-namespace net.sf.xmlunit.diff {
+namespace Org.XmlUnit.Diff {
 
     /// <summary>
     /// XMLUnit's difference engine.

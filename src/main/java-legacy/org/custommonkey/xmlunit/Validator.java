@@ -36,10 +36,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit;
 
-import net.sf.xmlunit.validation.Languages;
-import net.sf.xmlunit.validation.ParsingValidator;
-import net.sf.xmlunit.validation.ValidationProblem;
-import net.sf.xmlunit.validation.ValidationResult;
+import org.xmlunit.validation.Languages;
+import org.xmlunit.validation.ParsingValidator;
+import org.xmlunit.validation.ValidationProblem;
+import org.xmlunit.validation.ValidationResult;
 
 import org.custommonkey.xmlunit.exceptions.ConfigurationException;
 import org.custommonkey.xmlunit.exceptions.XMLUnitRuntimeException;
@@ -339,9 +339,9 @@ public class Validator extends DefaultHandler {
             for (ValidationProblem p : r.getProblems()) {
                 validationProblem(p);
             }
-        } catch (net.sf.xmlunit.exceptions.ConfigurationException e) {
+        } catch (org.xmlunit.exceptions.ConfigurationException e) {
             throw new ConfigurationException(e.getCause());
-        } catch (net.sf.xmlunit.exceptions.XMLUnitException e) {
+        } catch (org.xmlunit.exceptions.XMLUnitException e) {
             throw new XMLUnitRuntimeException(e.getMessage(), e.getCause());
         }
 

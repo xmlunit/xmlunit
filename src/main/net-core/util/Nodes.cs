@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace net.sf.xmlunit.util {
+namespace Org.XmlUnit.Util {
     /// <summary>
     /// Utility algorithms that work on DOM nodes.
     /// </summary>

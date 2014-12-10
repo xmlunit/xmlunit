@@ -12,9 +12,9 @@
   limitations under the License.
 */
 
-using net.sf.xmlunit.util;
+using Org.XmlUnit.Util;
 
-namespace net.sf.xmlunit.input {
+namespace Org.XmlUnit.Input {
 
     /// <summary>
     /// A source that is obtained from a different source by removing

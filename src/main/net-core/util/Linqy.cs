@@ -16,7 +16,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace net.sf.xmlunit.util {
+namespace Org.XmlUnit.Util {
     /// <summary>
     /// Sequence processing constructs not present in System.Linq.
     /// </summary>

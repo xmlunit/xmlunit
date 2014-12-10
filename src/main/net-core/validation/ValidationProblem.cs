@@ -13,7 +13,7 @@
 */
 using System.Xml.Schema;
 
-namespace net.sf.xmlunit.validation {
+namespace Org.XmlUnit.Validation {
 
     /// <summary>
     /// A validation "problem" which may be an error or a warning.

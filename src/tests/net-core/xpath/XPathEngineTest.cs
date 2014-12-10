@@ -14,7 +14,7 @@
 
 using NUnit.Framework;
 
-namespace net.sf.xmlunit.xpath {
+namespace Org.XmlUnit.Xpath {
 
     [TestFixture]
     public class XPathEngineTest : AbstractXPathEngineTest {

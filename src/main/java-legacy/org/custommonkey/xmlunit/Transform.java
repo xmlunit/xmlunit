@@ -49,10 +49,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXSource;
-import net.sf.xmlunit.builder.Input;
-import net.sf.xmlunit.exceptions.XMLUnitException;
-import net.sf.xmlunit.exceptions.XMLUnitException;
-import net.sf.xmlunit.transform.Transformation;
+import org.xmlunit.builder.Input;
+import org.xmlunit.exceptions.XMLUnitException;
+import org.xmlunit.exceptions.XMLUnitException;
+import org.xmlunit.transform.Transformation;
 import org.custommonkey.xmlunit.exceptions.XMLUnitRuntimeException;
 import org.custommonkey.xmlunit.exceptions.ConfigurationException;
 import org.w3c.dom.Document;
@@ -300,7 +300,7 @@ public class Transform {
         throws TransformerException {
         try {
             return trans.transform();
-        } catch (net.sf.xmlunit.exceptions.ConfigurationException ex) {
+        } catch (org.xmlunit.exceptions.ConfigurationException ex) {
             throw new ConfigurationException(ex.getMessage(), ex.getCause());
         } catch (XMLUnitException ex) {
             Throwable cause = ex.getCause();

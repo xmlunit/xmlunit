@@ -14,10 +14,10 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using net.sf.xmlunit.util;
+using Org.XmlUnit.Util;
 using NUnit.Framework;
 
-namespace net.sf.xmlunit.diff {
+namespace Org.XmlUnit.Diff {
 
     [TestFixture]
     public class XPathContextTest {

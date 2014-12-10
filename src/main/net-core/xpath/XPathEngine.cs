@@ -16,10 +16,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.Xml.XPath;
-using net.sf.xmlunit.exceptions;
-using net.sf.xmlunit.util;
+using Org.XmlUnit.Exceptions;
+using Org.XmlUnit.Util;
 
-namespace net.sf.xmlunit.xpath {
+namespace Org.XmlUnit.Xpath {
 
     /// <summary>
     /// Simplified access to System.Xml.XPath API.

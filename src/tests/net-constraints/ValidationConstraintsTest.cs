@@ -13,9 +13,9 @@
 */
 using System;
 using NUnit.Framework;
-using net.sf.xmlunit.input;
+using Org.XmlUnit.Input;
 
-namespace net.sf.xmlunit.constraints {
+namespace Org.XmlUnit.Constraints {
     [TestFixture]
     public class ValidationConstraintTest {
         [Test]

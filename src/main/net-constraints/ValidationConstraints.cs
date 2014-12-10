@@ -15,9 +15,9 @@
 using System.Linq;
 using System.Text;
 using NUnit.Framework.Constraints;
-using net.sf.xmlunit.validation;
+using Org.XmlUnit.Validation;
 
-namespace net.sf.xmlunit.constraints {
+namespace Org.XmlUnit.Constraints {
 
     /// <summary>
     /// Constraint that validates a document against a given XML

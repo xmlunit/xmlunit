@@ -14,7 +14,7 @@
 using System.IO;
 using System.Xml;
 
-namespace net.sf.xmlunit.input {
+namespace Org.XmlUnit.Input {
     /// <summary>
     /// ISource implementation encapsulating data read from a stream
     /// or a reader.

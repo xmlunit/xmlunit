@@ -16,9 +16,9 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Xsl;
-using net.sf.xmlunit.exceptions;
+using Org.XmlUnit.Exceptions;
 
-namespace net.sf.xmlunit.transform {
+namespace Org.XmlUnit.Transform {
 
     /// <summary>
     /// Provides a convenience layer over System.Xml.Xsl.

@@ -45,23 +45,23 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
-import net.sf.xmlunit.builder.Input;
-import net.sf.xmlunit.diff.Comparison;
-import net.sf.xmlunit.diff.ComparisonListener;
-import net.sf.xmlunit.diff.ComparisonResult;
-import net.sf.xmlunit.diff.ComparisonType;
-import net.sf.xmlunit.diff.DOMDifferenceEngine;
-import net.sf.xmlunit.diff.DefaultNodeMatcher;
-import net.sf.xmlunit.diff.DifferenceEvaluator;
-import net.sf.xmlunit.diff.DifferenceEvaluators;
-import net.sf.xmlunit.diff.ElementSelector;
-import net.sf.xmlunit.diff.ElementSelectors;
-import net.sf.xmlunit.diff.NodeMatcher;
-import net.sf.xmlunit.input.CommentLessSource;
-import net.sf.xmlunit.input.WhitespaceNormalizedSource;
-import net.sf.xmlunit.input.WhitespaceStrippedSource;
-import net.sf.xmlunit.util.Linqy;
-import net.sf.xmlunit.util.Predicate;
+import org.xmlunit.builder.Input;
+import org.xmlunit.diff.Comparison;
+import org.xmlunit.diff.ComparisonListener;
+import org.xmlunit.diff.ComparisonResult;
+import org.xmlunit.diff.ComparisonType;
+import org.xmlunit.diff.DOMDifferenceEngine;
+import org.xmlunit.diff.DefaultNodeMatcher;
+import org.xmlunit.diff.DifferenceEvaluator;
+import org.xmlunit.diff.DifferenceEvaluators;
+import org.xmlunit.diff.ElementSelector;
+import org.xmlunit.diff.ElementSelectors;
+import org.xmlunit.diff.NodeMatcher;
+import org.xmlunit.input.CommentLessSource;
+import org.xmlunit.input.WhitespaceNormalizedSource;
+import org.xmlunit.input.WhitespaceStrippedSource;
+import org.xmlunit.util.Linqy;
+import org.xmlunit.util.Predicate;
 import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
 
 import org.w3c.dom.CDATASection;
@@ -166,7 +166,7 @@ public class NewDifferenceEngine
         } else  {
             ev = controllerAsEvaluator;
         }
-        final net.sf.xmlunit.diff.DifferenceEvaluator evaluator = ev;
+        final org.xmlunit.diff.DifferenceEvaluator evaluator = ev;
         engine
             .setDifferenceEvaluator(new DifferenceEvaluator() {
                     public ComparisonResult evaluate(Comparison comparison,

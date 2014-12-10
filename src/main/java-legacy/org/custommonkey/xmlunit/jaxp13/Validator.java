@@ -40,10 +40,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.transform.Source;
 import javax.xml.validation.SchemaFactory;
-import net.sf.xmlunit.exceptions.XMLUnitException;
-import net.sf.xmlunit.validation.JAXPValidator;
-import net.sf.xmlunit.validation.Languages;
-import net.sf.xmlunit.validation.ValidationProblem;
+import org.xmlunit.exceptions.XMLUnitException;
+import org.xmlunit.validation.JAXPValidator;
+import org.xmlunit.validation.Languages;
+import org.xmlunit.validation.ValidationProblem;
 import org.custommonkey.xmlunit.exceptions.XMLUnitRuntimeException;
 import org.xml.sax.SAXParseException;
 

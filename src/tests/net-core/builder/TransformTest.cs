@@ -15,7 +15,7 @@
 using System.Xml;
 using NUnit.Framework;
 
-namespace net.sf.xmlunit.builder {
+namespace Org.XmlUnit.Builder {
     [TestFixture]
     public class TransformTest {
         [Test] public void TransformAnimalToString() {

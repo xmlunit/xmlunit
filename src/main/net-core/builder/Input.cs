@@ -15,10 +15,10 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
-using net.sf.xmlunit.exceptions;
-using net.sf.xmlunit.input;
+using Org.XmlUnit.Exceptions;
+using Org.XmlUnit.Input;
 
-namespace net.sf.xmlunit.builder {
+namespace Org.XmlUnit.Builder {
     /// <summary>
     /// Fluent API to create ISource instances.
     /// </summary>

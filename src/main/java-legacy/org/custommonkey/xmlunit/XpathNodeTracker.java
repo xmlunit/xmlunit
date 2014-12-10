@@ -41,9 +41,9 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
-import net.sf.xmlunit.diff.XPathContext;
-import net.sf.xmlunit.util.IterableNodeList;
-import net.sf.xmlunit.util.Linqy;
+import org.xmlunit.diff.XPathContext;
+import org.xmlunit.util.IterableNodeList;
+import org.xmlunit.util.Linqy;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;

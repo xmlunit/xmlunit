@@ -14,7 +14,7 @@
 
 using System;
 
-namespace net.sf.xmlunit {
+namespace Org.XmlUnit {
 
     public sealed class TestResources {
         private static readonly string PREFIX = "../../../";

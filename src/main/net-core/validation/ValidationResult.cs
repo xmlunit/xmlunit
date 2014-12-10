@@ -14,7 +14,7 @@
 
 using System.Collections.Generic;
 
-namespace net.sf.xmlunit.validation {
+namespace Org.XmlUnit.Validation {
 
     /// <summary>
     /// The result of a validation.

@@ -14,9 +14,9 @@
 
 using System.Xml;
 using NUnit.Framework;
-using net.sf.xmlunit.input;
+using Org.XmlUnit.Input;
 
-namespace net.sf.xmlunit.util {
+namespace Org.XmlUnit.Util {
     [TestFixture]
     public class ConvertTest {
         private static void ConvertToDocumentAndAssert(ISource s) {

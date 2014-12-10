@@ -16,9 +16,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using net.sf.xmlunit.util;
+using Org.XmlUnit.Util;
 
-namespace net.sf.xmlunit.diff {
+namespace Org.XmlUnit.Diff {
 
     /// <summary>
     /// Common ElementSelector implementations.

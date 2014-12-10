@@ -12,7 +12,7 @@
   limitations under the License.
 */
 
-namespace net.sf.xmlunit.diff {
+namespace Org.XmlUnit.Diff {
 
     /// <summary>
     /// Details of a single comparison XMLUnit has performed.

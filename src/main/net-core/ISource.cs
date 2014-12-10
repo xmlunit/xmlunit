@@ -13,7 +13,7 @@
 */
 using System.Xml;
 
-namespace net.sf.xmlunit {
+namespace Org.XmlUnit {
     /// <summary>
     /// Representation of the various ways to provide pieces of XML to
     /// XMLUnit.

@@ -15,10 +15,10 @@
 using System.IO;
 using System.Xml;
 
-namespace net.sf.xmlunit.builder {
+namespace Org.XmlUnit.Builder {
 
     /// <summary>
-    /// Fluent API access to net.sf.xmlunit.transform.Transformation.
+    /// Fluent API access to Org.XmlUnit.Transform.Transformation.
     /// </summary>
     public sealed class Transform {
 

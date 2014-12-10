@@ -15,10 +15,10 @@
 using System.Collections.Generic;
 using System.Xml;
 using NUnit.Framework;
-using net.sf.xmlunit.builder;
-using net.sf.xmlunit.exceptions;
+using Org.XmlUnit.Builder;
+using Org.XmlUnit.Exceptions;
 
-namespace net.sf.xmlunit.xpath {
+namespace Org.XmlUnit.Xpath {
 
     public abstract class AbstractXPathEngineTest {
 

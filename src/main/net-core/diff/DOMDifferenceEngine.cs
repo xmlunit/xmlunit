@@ -17,10 +17,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
-using net.sf.xmlunit.exceptions;
-using net.sf.xmlunit.util;
+using Org.XmlUnit.Exceptions;
+using Org.XmlUnit.Util;
 
-namespace net.sf.xmlunit.diff{
+namespace Org.XmlUnit.Diff{
 
     /// <summary>
     /// Difference engine based on DOM.
@@ -35,9 +35,9 @@ namespace net.sf.xmlunit.diff{
                 throw new ArgumentNullException("test");
             }
             try {
-                CompareNodes(net.sf.xmlunit.util.Convert.ToNode(control),
+                CompareNodes(Org.XmlUnit.Util.Convert.ToNode(control),
                              new XPathContext(),
-                             net.sf.xmlunit.util.Convert.ToNode(test),
+                             Org.XmlUnit.Util.Convert.ToNode(test),
                              new XPathContext());
             } catch (Exception ex) {
                 throw new XMLUnitException("Caught exception during comparison",

@@ -52,8 +52,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import net.sf.xmlunit.exceptions.XMLUnitException;
-import net.sf.xmlunit.xpath.JAXPXPathEngine;
+import org.xmlunit.exceptions.XMLUnitException;
+import org.xmlunit.xpath.JAXPXPathEngine;
 
 /**
  * XPath engine based on javax.xml.xpath.
@@ -73,7 +73,7 @@ public class Jaxp13XpathEngine implements XpathEngine {
                 e = new JAXPXPathEngine();
             }
             engine = e;
-        } catch (net.sf.xmlunit.exceptions.ConfigurationException ex) {
+        } catch (org.xmlunit.exceptions.ConfigurationException ex) {
             throw new ConfigurationException(ex.getCause());
         } catch (Exception ex) {
             throw new ConfigurationException(ex);
