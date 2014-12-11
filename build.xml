@@ -22,7 +22,9 @@
 
   <!-- some locations -->
   <property name="src.dir" value="src/main"/>
+  <property name="legacy.src.dir" value="java-legacy/src/main"/>
   <property name="test.dir" value="src/tests"/>
+  <property name="legacy.test.dir" value="java-legacy/src/tests"/>
   <property name="build.dir" location="build/java"/>
   <property name="gen.src.dir" value="${build.dir}/generated"/>
   <property name="lib.dir" value="${build.dir}/lib"/>
@@ -91,7 +93,7 @@
 
   <target name="compile-legacy" depends="compile-core"
     description="compiles legacy sources">
-    <javac srcdir="${src.dir}/java-legacy" destdir="${legacy.out.dir}"
+    <javac srcdir="${legacy.src.dir}" destdir="${legacy.out.dir}"
            includeantruntime="false" debug="${javac.debug}"
            target="${javac.target}" source="${javac.source}">
       <classpath>
@@ -105,7 +107,7 @@
 
   <target name="compile-legacy-tests" depends="compile-legacy"
           description="Compiles the test for XMLUnit 1.x">
-    <javac srcdir="${test.dir}/java-legacy" destdir="${legacytest.out.dir}"
+    <javac srcdir="${legacy.test.dir}" destdir="${legacytest.out.dir}"
            includeantruntime="false" debug="${javac.debug}"
            target="${javac.target}" source="${javac.source}">
       <classpath>
@@ -183,7 +185,7 @@
       </classpath>
       <formatter type="xml"/>
       <batchtest todir="${test.report.dir}">
-        <fileset dir="${test.dir}/java-legacy">
+        <fileset dir="${legacy.test.dir}">
           <include name="**/test_*.java"/>
         </fileset>
         <fileset dir="${test.dir}/java-core">
@@ -214,12 +216,12 @@
     description="creates the API documentation">
     <delete includeEmptyDirs="true" dir="${docs.dir}/api"/>
     <javadoc destdir="${docs.dir}/api"
-      overview="${src.dir}/java-legacy/overview.html"
+      overview="${legacy.src.dir}/overview.html"
       windowtitle="XMLUnit Documentation"
       footer="&lt;p&gt;&lt;a href=&quot;http://xmlunit.sourceforge.net/&quot;&gt;XMLUnit&lt;/a&gt; is hosted by sourceforge.net&lt;/p&gt;">
       <group title="XMLUnit v${xmlunit.version}"
         packages="org.custommonkey.xmlunit*"/>
-      <fileset dir="${src.dir}/java-legacy">
+      <fileset dir="${legacy.src.dir}">
         <include name="org/custommonkey/**/*.java"/>
       </fileset>
       <classpath>
