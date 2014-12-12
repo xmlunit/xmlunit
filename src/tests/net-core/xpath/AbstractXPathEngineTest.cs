@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using NUnit.Framework;
-using Org.XmlUnit.Builder;
+using InputBuilder = Org.XmlUnit.Builder.Input;
 using Org.XmlUnit.Exceptions;
 
 namespace Org.XmlUnit.Xpath {
@@ -27,7 +27,7 @@ namespace Org.XmlUnit.Xpath {
         protected abstract IXPathEngine Engine { get; }
 
         [SetUp] public void ReadSource() {
-            source = Input.FromFile(TestResources.BLAME_FILE).Build();
+            source = InputBuilder.FromFile(TestResources.BLAME_FILE).Build();
         }
 
         [Test] public void SelectNodesWithNoMatches() {
@@ -98,7 +98,7 @@ namespace Org.XmlUnit.Xpath {
 
         [Test] public void SelectNodesWithNS() {
             IXPathEngine e = Engine;
-            source = Input.FromMemory("<n:d xmlns:n='urn:test:1'><n:e/></n:d>")
+            source = InputBuilder.FromMemory("<n:d xmlns:n='urn:test:1'><n:e/></n:d>")
                 .Build();
             Dictionary<string, string> m = new Dictionary<string, string>();
             m["x"] = "urn:test:1";
@@ -109,7 +109,7 @@ namespace Org.XmlUnit.Xpath {
 
         [Test] public void SelectNodesWithDefaultNS() {
             IXPathEngine e = Engine;
-            source = Input.FromMemory("<d xmlns='urn:test:1'><e/></d>")
+            source = InputBuilder.FromMemory("<d xmlns='urn:test:1'><e/></d>")
                 .Build();
             Dictionary<string, string> m = new Dictionary<string, string>();
             m["x"] = "urn:test:1";
@@ -121,7 +121,7 @@ namespace Org.XmlUnit.Xpath {
         // throws an exception "'/:d/:e' has an invalid token."
         public void SelectNodesWithDefaultNSEmptyPrefix() {
             IXPathEngine e = Engine;
-            source = Input.FromMemory("<d xmlns='urn:test:1'><e/></d>")
+            source = InputBuilder.FromMemory("<d xmlns='urn:test:1'><e/></d>")
                 .Build();
             Dictionary<string, string> m = new Dictionary<string, string>();
             m[string.Empty] = "urn:test:1";
@@ -133,7 +133,7 @@ namespace Org.XmlUnit.Xpath {
         // doesn't match
         public void SelectNodesWithDefaultNSNoPrefix() {
             IXPathEngine e = Engine;
-            source = Input.FromMemory("<d xmlns='urn:test:1'><e/></d>")
+            source = InputBuilder.FromMemory("<d xmlns='urn:test:1'><e/></d>")
                 .Build();
             Dictionary<string, string> m = new Dictionary<string, string>();
             m[string.Empty] = "urn:test:1";

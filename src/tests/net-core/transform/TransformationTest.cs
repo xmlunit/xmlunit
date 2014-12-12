@@ -13,7 +13,7 @@
 */
 
 using System.Xml;
-using Org.XmlUnit.Builder;
+using InputBuilder = Org.XmlUnit.Builder.Input;
 using NUnit.Framework;
 
 namespace Org.XmlUnit.Transform {
@@ -22,9 +22,9 @@ namespace Org.XmlUnit.Transform {
         private Transformation t;
 
         [SetUp] public void CreateTransformation() {
-            t = new Transformation(Input.FromFile(TestResources.DOG_FILE)
+            t = new Transformation(InputBuilder.FromFile(TestResources.DOG_FILE)
                                    .Build());
-            t.Stylesheet = Input.FromFile(TestResources.ANIMAL_XSL).Build();
+            t.Stylesheet = InputBuilder.FromFile(TestResources.ANIMAL_XSL).Build();
         }
 
         [Test] public void TransformAnimalToString() {

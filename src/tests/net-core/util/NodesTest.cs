@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using NUnit.Framework;
-using Org.XmlUnit.Builder;
+using InputBuilder = Org.XmlUnit.Builder.Input;
 
 namespace Org.XmlUnit.Util {
     [TestFixture]
@@ -124,7 +124,7 @@ namespace Org.XmlUnit.Util {
         }
 
         private XmlDocument HandleWsSetup() {
-            return Convert.ToDocument(Input.FromMemory(
+            return Convert.ToDocument(InputBuilder.FromMemory(
                 "<root>\n"
                 + "<!-- trim\tme -->\n"
                 + "<child attr=' trim me ' attr2='not me'>\n"

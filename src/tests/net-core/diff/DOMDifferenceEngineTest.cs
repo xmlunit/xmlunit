@@ -14,7 +14,7 @@
 using System;
 using System.Xml;
 using NUnit.Framework;
-using Org.XmlUnit.Builder;
+using InputBuilder = Org.XmlUnit.Builder.Input;
 
 namespace Org.XmlUnit.Diff {
 
@@ -314,7 +314,7 @@ namespace Org.XmlUnit.Diff {
             XmlDocument d1, d2;
 
             d1 = Org.XmlUnit.Util.Convert
-                .ToDocument(Input.FromMemory("<Book/>").Build());
+                .ToDocument(InputBuilder.FromMemory("<Book/>").Build());
             d2 = new XmlDocument();
             d2.LoadXml("<!DOCTYPE Book PUBLIC "
                        + "\"XMLUNIT/TEST/PUB\" "
@@ -334,11 +334,11 @@ namespace Org.XmlUnit.Diff {
                 DifferenceEvaluators.DefaultStopWhenDifferent;
 
             d1 = Org.XmlUnit.Util.Convert
-                .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
+                .ToDocument(InputBuilder.FromMemory("<?xml version=\"1.0\""
                                              + " encoding=\"UTF-8\"?>"
                                              + "<Book/>").Build());
             d2 = Org.XmlUnit.Util.Convert
-                .ToDocument(Input.FromMemory("<?xml version=\"1.1\""
+                .ToDocument(InputBuilder.FromMemory("<?xml version=\"1.1\""
                                              + " encoding=\"UTF-8\"?>"
                                              + "<Book/>").Build());
             Assert.AreEqual(ComparisonResult.CRITICAL,
@@ -354,11 +354,11 @@ namespace Org.XmlUnit.Diff {
                 DifferenceEvaluators.DefaultStopWhenDifferent;
 
             d1 = Org.XmlUnit.Util.Convert
-                .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
+                .ToDocument(InputBuilder.FromMemory("<?xml version=\"1.0\""
                                              + " standalone=\"yes\"?>"
                                              + "<Book/>").Build());
             d2 = Org.XmlUnit.Util.Convert
-                .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
+                .ToDocument(InputBuilder.FromMemory("<?xml version=\"1.0\""
                                              + " standalone=\"no\"?>"
                                              + "<Book/>").Build());
             Assert.AreEqual(ComparisonResult.CRITICAL,
@@ -380,11 +380,11 @@ namespace Org.XmlUnit.Diff {
             };
 
             d1 = Org.XmlUnit.Util.Convert
-                .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
+                .ToDocument(InputBuilder.FromMemory("<?xml version=\"1.0\""
                                              + " encoding=\"UTF-8\"?>"
                                              + "<Book/>").Build());
             d2 = Org.XmlUnit.Util.Convert
-                .ToDocument(Input.FromMemory("<?xml version=\"1.0\""
+                .ToDocument(InputBuilder.FromMemory("<?xml version=\"1.0\""
                                              + " encoding=\"UTF-16\"?>"
                                              + "<Book/>").Build());
             Assert.AreEqual(ComparisonResult.CRITICAL,
@@ -884,7 +884,7 @@ namespace Org.XmlUnit.Diff {
         }
 
         private XmlDocument DocumentForString(string s) {
-            return Org.XmlUnit.Util.Convert.ToDocument(Input.FromMemory(s).Build());
+            return Org.XmlUnit.Util.Convert.ToDocument(InputBuilder.FromMemory(s).Build());
         }
     }
 }
