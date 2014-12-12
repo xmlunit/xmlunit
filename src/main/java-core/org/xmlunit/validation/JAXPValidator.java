@@ -22,6 +22,13 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Validator using the javax.xml.validation namespace.
+ *
+ * <p>An implementation detail of {@code
+ * javax.xml.validation.Validator} leaks into this class: any {@code
+ * xsi:schemaLocation} or {@code xsi:noSchemaLocation} attribute of
+ * the instance document will be ignored if any schema source has been
+ * set.  This means you must either specify all sources or none of
+ * them to successfully validate instances.</p>
  */
 public class JAXPValidator extends Validator {
     private final String language;
