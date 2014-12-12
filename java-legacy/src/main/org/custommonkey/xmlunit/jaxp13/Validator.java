@@ -54,6 +54,13 @@ import org.xml.sax.SAXParseException;
  * well as instance documents.  It defaults to the W3C XML Schema 1.0
  * but can be used to validate against any schema language supported
  * by your SchemaFactory implementation.</p>
+ *
+ * <p>An implementation detail of {@code
+ * javax.xml.validation.Validator} leaks into this class: any {@code
+ * xsi:schemaLocation} or {@code xsi:noSchemaLocation} attribute of
+ * the instance document will be ignored if any schema source has been
+ * set.  This means you must either specify all sources or none of
+ * them to successfully validate instances.</p>
  */
 public class Validator {
     private final ArrayList<Source> sources = new ArrayList<Source>();
