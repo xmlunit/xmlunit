@@ -13,7 +13,7 @@ Some goals for XMLUnit 2.x:
   - XPath
   - (Schema) validation
   - comparisons
-* be independet of any test framework
+* be independent of any test framework
 
 Build Status XMLUnit 2.x for Java: [![Build Status XMLUnit 2.x for Java](https://travis-ci.org/xmlunit/xmlunit.svg?branch=master)](https://travis-ci.org/xmlunit/xmlunit)
 
