@@ -39,7 +39,7 @@ public abstract class Validator {
     /**
      * Where to find the schema.
      */
-    public void setSchemaSources(Source[] s) {
+    public void setSchemaSources(Source... s) {
         if (s != null) {
             sourceLocations = Arrays.copyOf(s, s.length);
         } else {
