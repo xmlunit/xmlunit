@@ -48,6 +48,30 @@ IEnumerable<XmlNode> allMatches = xpath.SelectNodes("/foo", source);
 string content = xpath.evaluate("/foo/text()", source);
 ```
 
+### Validating a Document Against an XML Schema
+
+```java
+Validator v = Validator.forLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
+v.setSchemaSources(Input.fromUri("http://example.com/some.xsd").build(),
+                   Input.fromFile("local.xsd").build());
+ValidationResult result = v.validateInstance(Input.fromDocument(createDocument()).build());
+boolean valid = result.isValid();
+Iterable<ValidationProblem> problems = result.getProblems();
+```
+
+or
+
+```java
+Validator v = Validator.ForLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
+v.SchemaSources = new ISource[] {
+        Input.FromUri("http://example.com/some.xsd").Build(),
+        Input.FromFile("local.xsd").Build()
+    };
+ValidationResult result = v.ValidateInstance(Input.FromDocument(CreateDocument()).Build());
+bool valid = result.Valid;
+IEnumerable<ValidationProblem> problems = result.Problems;
+```
+
 ## Requirements
 
 XMLUnit requires Java6 or .NET 3.5 respectively (it is known to work
