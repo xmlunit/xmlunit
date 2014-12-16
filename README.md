@@ -30,6 +30,32 @@ XMLUnit 2.x for Java: [![Build Status XMLUnit 2.x for Java](https://travis-ci.or
 
 These are some really small examples, more is to come in the [user guide](https://github.com/xmlunit/user-guide/wiki)
 
+### Comparing Two Documents
+
+```java
+Source control = Input.fromFile("test-data/good.xml").build();
+Source test = Input.fromMemory(createTestDocument()).build();
+AbstractDifferenceEngine diff = new DOMDifferenceEngine();
+diff.addDifferenceListener(new ComparisonListener() {
+        public void comparisonPerformed(Comparison comparison, ComparisonResult outcome) {
+            Assert.fail("found a difference: " + comparison);
+        }
+    });
+diff.compare(control, test);
+```
+
+or
+
+```csharp
+ISource control = Input.FromFile("test-data/good.xml").Build();
+ISource test = Input.FromMemory(CreateTestDocument()).Build();
+AbstractDifferenceEngine diff = new DOMDifferenceEngine();
+diff.DifferenceListener += (comparison, outcome) => {
+            Assert.Fail("found a difference: {}", comparison);
+        };
+diff.Compare(control, test);
+```
+
 ### Asserting an XPath Value
 
 ```java
