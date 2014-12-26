@@ -28,11 +28,11 @@ XMLUnit 2.x for Java: [![Build Status XMLUnit 2.x for Java](https://travis-ci.or
 
 ## Help Wanted!
 
-If you are looking for soemthing to work on, we've compiled a
+If you are looking for something to work on, we've compiled a
 [list](HELP_WANTED.md) of things that should be done before XMLUnit
 2.0 can be released.
 
-Please see the (contributing guide)[CONTRIBUTING.md] for details on
+Please see the [contributing guide](CONTRIBUTING.md) for details on
 how to contribute.
 
 ## Examples
