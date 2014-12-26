@@ -26,6 +26,15 @@ stay at [sourceforge](https://sourceforge.net/projects/xmlunit/).
 
 XMLUnit 2.x for Java: [![Build Status XMLUnit 2.x for Java](https://travis-ci.org/xmlunit/xmlunit.svg?branch=master)](https://travis-ci.org/xmlunit/xmlunit)
 
+## Help Wanted!
+
+If you are looking for soemthing to work on, we've compiled a
+[list](HELP_WANTED.md) of things that should be done before XMLUnit
+2.0 can be released.
+
+Please see the (contributing guide)[CONTRIBUTING.md] for details on
+how to contribute.
+
 ## Examples
 
 These are some really small examples, more is to come in the [user guide](https://github.com/xmlunit/user-guide/wiki)
