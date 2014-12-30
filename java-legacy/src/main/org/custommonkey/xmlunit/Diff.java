@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008,2010 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2010,2014 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -376,6 +376,12 @@ public class Diff
 
     /**
      * Get the result of this Diff instance as a String
+     *
+     * <p><b>Note:</b></p> This method will perform the comparison and
+     * cache the result if it hasn't been performed already.  Any
+     * configuration changes made after calling this method will be
+     * ignored.</p>
+     *
      * @return result of this Diff
      */
     public String toString(){
