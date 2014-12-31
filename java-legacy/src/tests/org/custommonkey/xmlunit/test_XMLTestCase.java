@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2011, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2011,2014 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestSuite;
@@ -580,6 +581,22 @@ public class test_XMLTestCase extends XMLTestCase {
                              "<foo><Bar a=\"1\" b=\"1\"/></foo>");
         assertXpathsEqual("/foo/Bar/@a", "/foo/Bar/@a",
                           "<foo><Bar a=\"1\" b=\"2\"/></foo>");
+    }
+
+    // https://sourceforge.net/p/xmlunit/feature-requests/25/
+    public void testXpathEvaluatesToQualifiedName() throws Exception {
+        String faultDocument = "<env:Envelope "
+            + "xmlns:env='http://schemas.xmlsoap.org/soap/envelope/'>"
+            + "<env:Body><env:Fault><faultcode>env:Server</faultcode>"
+            + "<faultstring>marche pas</faultstring><detail/></env:Fault>"
+            + "</env:Body></env:Envelope>";
+        Map namespaces = new HashMap();
+        namespaces.put("env11", "http://schemas.xmlsoap.org/soap/envelope/");
+        XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
+        XMLAssert.assertXpathEvaluatesTo(QualifiedName.valueOf("env11:Server"),
+                                         "//env11:Envelope/env11:Body/"
+                                         + "env11:Fault/faultcode",
+                                         faultDocument);
     }
 
     public test_XMLTestCase(String name) {

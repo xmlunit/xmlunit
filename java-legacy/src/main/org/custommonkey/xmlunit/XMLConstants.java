@@ -157,4 +157,9 @@ public interface XMLConstants {
      */
     String W3C_XML_SCHEMA_INSTANCE_NO_NAMESPACE_SCHEMA_LOCATION_ATTR
         = "noNamespaceSchemaLocation";
+
+    /**
+     * ""
+     */
+    String NULL_NS_URI = "";
 }

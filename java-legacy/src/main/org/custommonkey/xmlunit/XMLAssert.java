@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2011 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2011,2014 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -42,6 +42,8 @@ import org.custommonkey.xmlunit.exceptions.XpathException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -862,6 +864,67 @@ public class XMLAssert extends Assert implements XSLTConstants {
     }
 
     /**
+     * Assert the value of an Xpath expression in an XML document.
+     * @param expectedValue
+     * @param xpathExpression
+     * @param control
+     * @throws SAXException
+     * @throws IOException
+     * @see XpathEngine which provides the underlying evaluation mechanism
+     */
+    public static void assertXpathEvaluatesTo(QualifiedName expectedValue,
+                                              String xpathExpression,
+                                              InputSource control)
+        throws SAXException, IOException,
+               XpathException {
+        Document document = XMLUnit.buildControlDocument(control);
+        assertXpathEvaluatesTo(expectedValue, xpathExpression, document);
+    }
+
+    /**
+     * Assert the value of an Xpath expression in an XML String
+     * @param expectedValue
+     * @param xpathExpression
+     * @param inXMLString
+     * @throws SAXException
+     * @throws IOException
+     * @see XpathEngine which provides the underlying evaluation mechanism
+     */
+    public static void assertXpathEvaluatesTo(QualifiedName expectedValue,
+                                              String xpathExpression,
+                                              String inXMLString)
+        throws SAXException, IOException,
+               XpathException {
+        Document document = XMLUnit.buildControlDocument(inXMLString);
+        assertXpathEvaluatesTo(expectedValue, xpathExpression, document);
+    }
+
+    /**
+     * Assert the value of an Xpath expression in an DOM Document
+     * @param expectedValue
+     * @param xpathExpression
+     * @param inDocument
+     * @see XpathEngine which provides the underlying evaluation mechanism
+     */
+    public static void assertXpathEvaluatesTo(QualifiedName expectedValue,
+                                              String xpathExpression,
+                                              Document inDocument)
+        throws XpathException {
+        XpathEngine simpleXpathEngine = XMLUnit.newXpathEngine();
+        NodeList nl =
+            simpleXpathEngine.getMatchingNodes(xpathExpression, inDocument);
+        NamespaceContext ctx = null;
+        if (nl.getLength() > 0) {
+            ctx = new NodeBasedNamespaceContext(nl.item(0));
+        }
+        assertEquals(expectedValue,
+                     QualifiedName
+                     .valueOf(simpleXpathEngine.evaluate(xpathExpression,
+                                                         inDocument),
+                              ctx));
+    }
+
+    /**
      * Assert that a specific XPath exists in some given XML
      * @param inXpathExpression
      * @param control
@@ -1124,5 +1187,30 @@ public class XMLAssert extends Assert implements XSLTConstants {
             }
         }
         return d;
+    }
+
+    private static class NodeBasedNamespaceContext implements NamespaceContext {
+        private final Node node;
+        NodeBasedNamespaceContext(Node n) {
+            node = n;
+        }
+        public String getNamespaceURI(String prefix) {
+            return node.lookupNamespaceURI(prefix);
+        }
+
+        // not used in context of #assertXpathEvaluatesTo
+        public Iterator getPrefixes() {
+            return new Iterator() {
+                public boolean hasNext() {
+                    return false;
+                }
+                public Object next() {
+                    throw new NoSuchElementException();
+                }
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        }
     }
 }
