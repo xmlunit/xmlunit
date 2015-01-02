@@ -16,8 +16,10 @@ package org.xmlunit.diff;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.xmlunit.util.Linqy;
 import org.junit.Test;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import static org.junit.Assert.*;
@@ -25,6 +27,15 @@ import static org.junit.Assert.*;
 public class XPathContextTest {
     @Test public void empty() {
         assertEquals("/", new XPathContext().getXPath());
+    }
+
+    @Test public void rootElement() throws Exception {
+        Document doc =
+            DocumentBuilderFactory.newInstance().newDocumentBuilder()
+            .newDocument();
+        assertEquals("/foo[1]",
+                     new XPathContext(doc.createElement("foo"))
+                     .getXPath());
     }
 
     @Test public void oneLevelOfElements() {

@@ -23,6 +23,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.xmlunit.util.Linqy;
 import org.xmlunit.util.Nodes;
 
 import org.w3c.dom.Node;
@@ -42,16 +43,28 @@ public class XPathContext {
     private static final String EMPTY = "";
 
     public XPathContext() {
-        this(null);
+        this(null, null);
+    }
+
+    public XPathContext(Node root) {
+        this(null, root);
     }
 
     public XPathContext(Map<String, String> uri2Prefix) {
+        this(uri2Prefix, null);
+    }
+
+    public XPathContext(Map<String, String> uri2Prefix, Node root) {
         if (uri2Prefix == null) {
             this.uri2Prefix = Collections.emptyMap();
         } else {
             this.uri2Prefix = Collections.unmodifiableMap(uri2Prefix);
         }
         path.addLast(new Level(EMPTY));
+        if (root != null) {
+            setChildren(Linqy.singleton(new DOMNodeInfo(root)));
+            navigateToChild(0);
+        }
     }
 
     public void navigateToChild(int index) {

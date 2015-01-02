@@ -31,16 +31,28 @@ namespace Org.XmlUnit.Diff {
         private const string SEP = "/";
         private const string ATTR = "@";
 
-        public XPathContext() : this(null) {
+        public XPathContext() : this(null, null) {
         }
 
-        public XPathContext(IDictionary<string, string> uri2Prefix) {
-            if (uri2Prefix == null) {
+        public XPathContext(XmlNode root) : this(null, root) {
+        }
+
+        public XPathContext(IDictionary<string, string> uri2Prefix)
+            : this(uri2Prefix, null) {
+        }
+
+        public XPathContext(IDictionary<string, string> uri2Prefix,
+                            XmlNode root) {
+                if (uri2Prefix == null) {
                 this.uri2Prefix = new Dictionary<string, string>();
             } else {
                 this.uri2Prefix = new Dictionary<string, string>(uri2Prefix);
             }
             path.AddLast(new Level(string.Empty));
+            if (root != null) {
+                SetChildren(Linqy.Singleton(new DOMNodeInfo(root)));
+                NavigateToChild(0);
+            }
         }
 
         public void NavigateToChild(int index) {

@@ -27,6 +27,14 @@ namespace Org.XmlUnit.Diff {
         }
 
         [Test]
+        public void RootElement() {
+            XmlDocument doc = new XmlDocument();
+            Assert.AreEqual("/foo[1]",
+                            new XPathContext(doc.CreateElement("foo"))
+                            .XPath);
+        }
+
+        [Test]
         public void AppendChildren() {
             List<Element> l = new List<Element>();
             l.Add(new Element("foo"));
