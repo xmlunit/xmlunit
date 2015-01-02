@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008,2010,2013 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2010,2013,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -841,6 +841,8 @@ public class test_DifferenceEngine extends TestCase implements DifferenceConstan
         test.setAttribute("baz", "bar");
         engine.compare(control, test, listener, null);
         assertEquals(ATTR_NAME_NOT_FOUND_ID, listener.comparingWhat);
+        assertEquals("/foo[1]/@bar", listener.controlXpath);
+        assertEquals("/foo[1]", listener.testXpath);
     }
 
     public void testMatchTrackerSetViaConstructor() throws Exception {

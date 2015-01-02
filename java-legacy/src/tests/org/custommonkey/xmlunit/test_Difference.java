@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2010, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2010,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -118,6 +118,28 @@ public class test_Difference extends TestCase {
         assertEquals("/foo[1]/bar[1]/@y",
                      d2.getControlNodeDetail().getXpathLocation());
         assertEquals("/foo[1]/bar[1]",
+                     d2.getTestNodeDetail().getXpathLocation());
+    }
+
+    public void testXpathOfMissingTestAttribute() throws Exception {
+        Diff d = new Diff("<foo><bar a=\"x\"/></foo>",
+                          "<foo><bar a=\"x\" y=\"z\"/></foo>");
+        DetailedDiff dd = new DetailedDiff(d);
+        List diffs = dd.getAllDifferences();
+        assertEquals(2, diffs.size());
+        Difference d1 = (Difference) diffs.get(0);
+        assertEquals(DifferenceConstants.ELEMENT_NUM_ATTRIBUTES_ID,
+                     d1.getId());
+        assertEquals("/foo[1]/bar[1]",
+                     d1.getControlNodeDetail().getXpathLocation());
+        assertEquals("/foo[1]/bar[1]",
+                     d1.getTestNodeDetail().getXpathLocation());
+        Difference d2 = (Difference) diffs.get(1);
+        assertEquals(DifferenceConstants.ATTR_NAME_NOT_FOUND_ID,
+                     d2.getId());
+        assertEquals("/foo[1]/bar[1]",
+                     d2.getControlNodeDetail().getXpathLocation());
+        assertEquals("/foo[1]/bar[1]/@y",
                      d2.getTestNodeDetail().getXpathLocation());
     }
 

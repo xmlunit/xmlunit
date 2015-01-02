@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2010,2013 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2010,2013,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -625,6 +625,7 @@ public class DifferenceEngine
                     }
                 } else {
                     controlTracker.clearTrackedAttribute();
+                    controlTracker.visited(nextAttr);
                     testTracker.clearTrackedAttribute();
                     compare(attrName, null, control, test, listener,
                             ATTR_NAME_NOT_FOUND);
@@ -640,6 +641,7 @@ public class DifferenceEngine
             } else {
                 controlTracker.clearTrackedAttribute();
                 testTracker.clearTrackedAttribute();
+                testTracker.visited(nextAttr);
                 compare(null,
                         getUnNamespacedNodeName(nextAttr,
                                                 isNamespaced(nextAttr)),
@@ -661,7 +663,6 @@ public class DifferenceEngine
         }
         return aNode.getNodeName();
     }
-
 
     /**
      * @param attribute
