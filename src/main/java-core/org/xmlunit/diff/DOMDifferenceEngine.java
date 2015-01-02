@@ -51,8 +51,10 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             throw new IllegalArgumentException("test must not be null");
         }
         try {
-            compareNodes(Convert.toNode(control), new XPathContext(),
-                         Convert.toNode(test), new XPathContext());
+            Node controlNode = Convert.toNode(control);
+            Node testNode = Convert.toNode(test);
+            compareNodes(controlNode, new XPathContext(controlNode),
+                         testNode, new XPathContext(testNode));
         } catch (Exception ex) {
             throw new XMLUnitException("Caught exception during comparison",
                                        ex);

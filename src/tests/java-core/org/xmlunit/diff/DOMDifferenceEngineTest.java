@@ -15,6 +15,7 @@ package org.xmlunit.diff;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.dom.DOMSource;
 import org.xmlunit.NullNode;
 import org.xmlunit.TestResources;
 import org.xmlunit.builder.Input;
@@ -87,6 +88,17 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
     @Before public void createDoc() throws Exception {
         doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
             .newDocument();
+    }
+
+    @Test public void compareXPathOfDifferentRootElements() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.ELEMENT_TAG_NAME,
+                                           "/x[1]", "/y[1]");
+        d.addDifferenceListener(ex);
+        d.setDifferenceEvaluator(DifferenceEvaluators.DefaultStopWhenDifferent);
+        d.compare(new DOMSource(doc.createElement("x")),
+                  new DOMSource(doc.createElement("y")));
+        assertEquals(1, ex.invoked);
     }
 
     @Test public void compareNodesOfDifferentType() {

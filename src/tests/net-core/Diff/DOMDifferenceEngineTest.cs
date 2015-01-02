@@ -14,6 +14,7 @@
 using System;
 using System.Xml;
 using NUnit.Framework;
+using Org.XmlUnit.Input;
 using InputBuilder = Org.XmlUnit.Builder.Input;
 
 namespace Org.XmlUnit.Diff {
@@ -74,6 +75,19 @@ namespace Org.XmlUnit.Diff {
         [SetUp]
         public void CreateDoc() {
             doc = new XmlDocument();
+        }
+
+        [Test]
+        public void CompareXPathOfDifferentRootElements() {
+            DOMDifferenceEngine d = new DOMDifferenceEngine();
+            DiffExpecter ex = new DiffExpecter(ComparisonType.ELEMENT_TAG_NAME,
+                                               "/x[1]", "/y[1]");
+            d.DifferenceListener += ex.ComparisonPerformed;
+            d.DifferenceEvaluator =
+                DifferenceEvaluators.DefaultStopWhenDifferent;
+            d.Compare(new DOMSource(doc.CreateElement("x")),
+                      new DOMSource(doc.CreateElement("y")));
+            Assert.AreEqual(1, ex.invoked);
         }
 
         [Test]

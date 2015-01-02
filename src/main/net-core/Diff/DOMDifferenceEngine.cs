@@ -35,10 +35,10 @@ namespace Org.XmlUnit.Diff{
                 throw new ArgumentNullException("test");
             }
             try {
-                CompareNodes(Org.XmlUnit.Util.Convert.ToNode(control),
-                             new XPathContext(),
-                             Org.XmlUnit.Util.Convert.ToNode(test),
-                             new XPathContext());
+                XmlNode controlNode = Org.XmlUnit.Util.Convert.ToNode(control);
+                XmlNode testNode = Org.XmlUnit.Util.Convert.ToNode(test);
+                CompareNodes(controlNode, new XPathContext(controlNode),
+                             testNode, new XPathContext(testNode));
             } catch (Exception ex) {
                 throw new XMLUnitException("Caught exception during comparison",
                                            ex);
