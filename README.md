@@ -125,8 +125,8 @@ library.
 
 ### Java
 
-XMLUnit 2.x builds using Ant, run `ant -projecthelp` for the available
-targets, but mainly you want to runant
+XMLUnit for Java builds using Apache Ant, run `ant -projecthelp` for
+the available targets, but mainly you want to run
 
 ```sh
 $ ant
@@ -143,8 +143,8 @@ creates the corresponding jar files.
 
 ### .NET
 
-XMLUnit 2.x builds using NAnt, run `ant -projecthelp` for the available
-targets, but mainly you want to runant
+XMLUnit for .NET builds using NAnt, run `nant -projecthelp` for the
+available targets, but mainly you want to run
 
 ```sh
 $ nant
