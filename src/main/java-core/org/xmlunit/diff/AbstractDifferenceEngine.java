@@ -76,6 +76,10 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         this.uri2Prefix = Collections.unmodifiableMap(uri2Prefix);
     }
 
+    protected Map<String, String> getNamespaceContext() {
+        return uri2Prefix;
+    }
+
     /**
      * Compares the detail values for object equality, lets the
      * difference evaluator evaluate the result, notifies all

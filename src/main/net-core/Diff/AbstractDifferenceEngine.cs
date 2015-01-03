@@ -58,7 +58,12 @@ namespace Org.XmlUnit.Diff {
 
         public IDictionary<string, string> NamespaceContext {
             set {
-                namespaceContext = value;
+                namespaceContext = value == null ? value
+                    : new Dictionary<string, string>(value);
+            }
+            protected get {
+                return namespaceContext == null ? namespaceContext
+                    : new Dictionary<string, string>(namespaceContext);
             }
         }
 

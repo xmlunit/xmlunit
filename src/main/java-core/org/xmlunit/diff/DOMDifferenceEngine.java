@@ -53,12 +53,16 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         try {
             Node controlNode = Convert.toNode(control);
             Node testNode = Convert.toNode(test);
-            compareNodes(controlNode, new XPathContext(controlNode),
-                         testNode, new XPathContext(testNode));
+            compareNodes(controlNode, xpathContextFor(controlNode),
+                         testNode, xpathContextFor(testNode));
         } catch (Exception ex) {
             throw new XMLUnitException("Caught exception during comparison",
                                        ex);
         }
+    }
+
+    private XPathContext xpathContextFor(Node n) {
+        return new XPathContext(getNamespaceContext(), n);
     }
 
     /**

@@ -45,6 +45,10 @@ namespace Org.XmlUnit.Diff{
             }
         }
 
+        private XPathContext xpathContextFor(XmlNode n) {
+            return new XPathContext(NamespaceContext, n);
+        }
+
         /// <summary>
         /// Recursively compares two XML nodes.
         /// </summary>
