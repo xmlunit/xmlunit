@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2010,2013 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2010,2013,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
 import org.xmlunit.builder.Input;
@@ -316,9 +315,7 @@ public class NewDifferenceEngine
 
     public static NodeDetail toNodeDetail(Comparison.Detail detail) {
         String value = String.valueOf(detail.getValue());
-        if (detail.getValue() instanceof QName) {
-            value = ((QName) detail.getValue()).getLocalPart();
-        } else if (detail.getValue() instanceof Node) {
+        if (detail.getValue() instanceof Node) {
             value = ((Node) detail.getValue()).getNodeName();
         }
         return new NodeDetail(value, (Node) detail.getTarget(),

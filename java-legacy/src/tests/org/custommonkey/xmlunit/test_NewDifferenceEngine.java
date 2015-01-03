@@ -227,12 +227,31 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
         String test = "<stuff><?item data?></stuff>";
         listenToDifferences(control, test);
         // mutiple Differences, we only see the last one, missing second element
+        assertEquals("item", listener.expected);
+        assertEquals("null", listener.actual);
         assertEquals("13 difference type",
                      DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
                      listener.comparingWhat);
         assertEquals("13th control xpath", "/stuff[1]/item[2]", 
                      listener.controlXpath);
         assertNull("13th test xpath", listener.testXpath);       
+    }
+
+    public void testMissingChildNS() throws Exception {
+        engine = new NewDifferenceEngine(PSEUDO_DETAILED_DIFF);
+        String control = "<stuff xmlns=\"http://example.org/\">"
+            + "<item id=\"1\"/><item id=\"2\"/></stuff>";
+        String test = "<stuff xmlns=\"http://example.org/\"><?item data?></stuff>";
+        listenToDifferences(control, test);
+        // mutiple Differences, we only see the last one, missing second element
+        assertEquals("{http://example.org/}item", listener.expected);
+        assertEquals("null", listener.actual);
+        assertEquals("13 difference type",
+                     DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
+                     listener.comparingWhat);
+        assertEquals("13th control xpath", "/stuff[1]/item[2]",
+                     listener.controlXpath);
+        assertNull("13th test xpath", listener.testXpath);
     }
 
     public void testXpathLocation14() throws Exception {
@@ -374,6 +393,21 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
         test.setAttribute("baz", "bar");
         engine.compare(control, test, listener, null);
         assertEquals(ATTR_NAME_NOT_FOUND_ID, listener.comparingWhat);
+        assertEquals("bar", listener.expected);
+        assertEquals("null", listener.actual);
+        assertEquals("/foo[1]/@bar", listener.controlXpath);
+        assertEquals("/foo[1]", listener.testXpath);
+    }
+
+    public void testMissingAttributeNS() throws Exception {
+        Element control = document.createElement("foo");
+        control.setAttributeNS("http://example.org/", "bar", "baz");
+        Element test = document.createElement("foo");
+        test.setAttributeNS("http://example.org/", "baz", "bar");
+        engine.compare(control, test, listener, null);
+        assertEquals(ATTR_NAME_NOT_FOUND_ID, listener.comparingWhat);
+        assertEquals("{http://example.org/}bar", listener.expected);
+        assertEquals("null", listener.actual);
         assertEquals("/foo[1]/@bar", listener.controlXpath);
         assertEquals("/foo[1]", listener.testXpath);
     }

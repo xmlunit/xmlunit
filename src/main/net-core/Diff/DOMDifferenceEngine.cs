@@ -361,20 +361,23 @@ namespace Org.XmlUnit.Diff{
 
                 foreach (XmlAttribute controlAttr
                          in controlAttributes.RemainingAttributes) {
+                    XmlQualifiedName controlAttrName = Nodes.GetQName(controlAttr);
                     XmlAttribute testAttr =
                         FindMatchingAttr(testAttributes.RemainingAttributes,
                                          controlAttr);
-                    controlContext.NavigateToAttribute(Nodes.GetQName(controlAttr));
+                    XmlQualifiedName testAttrName = testAttr != null
+                        ? Nodes.GetQName(testAttr) : null;
+
+                    controlContext.NavigateToAttribute(controlAttrName);
                     try {
                         chain.AndThen(Comparer(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
                                                               control, GetXPath(controlContext),
-                                                              true,
+                                                              controlAttrName,
                                                               test, GetXPath(testContext),
-                                                              testAttr != null)));
+                                                              testAttrName)));
 
                         if (testAttr != null) {
-                            testContext.NavigateToAttribute(Nodes
-                                                            .GetQName(testAttr));
+                            testContext.NavigateToAttribute(testAttrName);
                             try {
                                 chain.AndThen(() =>
                                               CompareNodes(controlAttr, controlContext,
@@ -393,19 +396,21 @@ namespace Org.XmlUnit.Diff{
                         ComparisonChain secondChain = new ComparisonChain();
                         foreach (XmlAttribute testAttr
                                  in testAttributes.RemainingAttributes) {
-                            testContext.NavigateToAttribute(Nodes.GetQName(testAttr));
-                            try {
-                                secondChain
-                                    .AndThen(Comparer(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
-                                                                     control,
-                                                                     GetXPath(controlContext),
-                                                                     foundTestAttributes
-                                                                     .Contains(testAttr),
-                                                                     test,
-                                                                     GetXPath(testContext),
-                                                                     true)));
-                            } finally {
-                                testContext.NavigateToParent();
+                            if (!foundTestAttributes.Contains(testAttr)) {
+                                XmlQualifiedName testAttrName = Nodes.GetQName(testAttr);
+                                testContext.NavigateToAttribute(testAttrName);
+                                try {
+                                    secondChain
+                                        .AndThen(Comparer(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
+                                                                         control,
+                                                                         GetXPath(controlContext),
+                                                                         null,
+                                                                         test,
+                                                                         GetXPath(testContext),
+                                                                         testAttrName)));
+                                } finally {
+                                    testContext.NavigateToParent();
+                                }
                             }
                         }
                         return secondChain.FinalResult;
@@ -499,7 +504,8 @@ namespace Org.XmlUnit.Diff{
                                 .AndThen(Comparer(new Comparison(ComparisonType.CHILD_LOOKUP,
                                                                  controlList[i],
                                                                  GetXPath(controlContext),
-                                                                 controlList[i],
+                                                                 Nodes
+                                                                 .GetQName(controlList[i]),
                                                                  null, null, null)));
                         } finally {
                             controlContext.NavigateToParent();
@@ -525,7 +531,8 @@ namespace Org.XmlUnit.Diff{
                                                                  null, null, null,
                                                                  testList[i],
                                                                  GetXPath(testContext),
-                                                                 testList[i])));
+                                                                 Nodes
+                                                                 .GetQName(testList[i]))));
                         } finally {
                             testContext.NavigateToParent();
                         }
@@ -551,22 +558,24 @@ namespace Org.XmlUnit.Diff{
                 && mustChangeTestContext;
             
             try {
+                XmlQualifiedName controlAttrName = null;
                 if (mustChangeControlContext) {
-                    XmlQualifiedName q = Nodes.GetQName(control);
-                    controlContext.AddAttribute(q);
-                    controlContext.NavigateToAttribute(q);
+                    controlAttrName = Nodes.GetQName(control);
+                    controlContext.AddAttribute(controlAttrName);
+                    controlContext.NavigateToAttribute(controlAttrName);
                 }
+                XmlQualifiedName testAttrName = null;
                 if (mustChangeTestContext) {
-                    XmlQualifiedName q = Nodes.GetQName(test);
-                    testContext.AddAttribute(q);
-                    testContext.NavigateToAttribute(q);
+                    testAttrName = Nodes.GetQName(test);
+                    testContext.AddAttribute(testAttrName);
+                    testContext.NavigateToAttribute(testAttrName);
                 }
                 return new ComparisonChain(
                     Compare(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
                                            control, GetXPath(controlContext),
-                                           mustChangeControlContext,
+                                           controlAttrName,
                                            test, GetXPath(testContext),
-                                           mustChangeTestContext)))
+                                           testAttrName)))
                     .AndIfTrueThen(attributePresentOnBothSides,
                                    CompareAttributeExplicitness(control, controlContext,
                                                                 test, testContext))
@@ -574,10 +583,10 @@ namespace Org.XmlUnit.Diff{
                                    Comparer(new Comparison(ComparisonType.ATTR_VALUE,
                                                            control,
                                                            GetXPath(controlContext),
-                                                           ValueAsQName(control).ToString(),
+                                                           ValueAsQName(control),
                                                            test,
                                                            GetXPath(testContext),
-                                                           ValueAsQName(test).ToString())))
+                                                           ValueAsQName(test))))
                     .FinalResult;
             } finally {
                 if (mustChangeControlContext) {

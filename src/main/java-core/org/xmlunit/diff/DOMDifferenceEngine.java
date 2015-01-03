@@ -386,21 +386,24 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         public ComparisonResult apply() {
             ComparisonChain chain = new ComparisonChain();
             for (final Attr controlAttr : controlAttributes.remainingAttributes) {
+                final QName controlAttrName = Nodes.getQName(controlAttr);
                 final Attr testAttr =
                     findMatchingAttr(testAttributes.remainingAttributes,
                                      controlAttr);
+                final QName testAttrName = testAttr != null
+                    ? Nodes.getQName(testAttr) : null;
 
-                controlContext.navigateToAttribute(Nodes.getQName(controlAttr));
+                controlContext.navigateToAttribute(controlAttrName);
                 try {
                     chain.andThen(
                         comparer(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
                                                 control, getXPath(controlContext),
-                                                Boolean.TRUE,
+                                                controlAttrName,
                                                 test, getXPath(testContext),
-                                                Boolean.valueOf(testAttr != null))));
+                                                testAttrName)));
 
                     if (testAttr != null) {
-                        testContext.navigateToAttribute(Nodes.getQName(testAttr));
+                        testContext.navigateToAttribute(testAttrName);
                         try {
                             chain.andThen(new DeferredComparison() {
                                     public ComparisonResult apply() {
@@ -452,17 +455,19 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         public ComparisonResult apply() {
             ComparisonChain chain = new ComparisonChain();
             for (Attr testAttr : testAttributes.remainingAttributes) {
-                testContext.navigateToAttribute(Nodes.getQName(testAttr));
-                try {
-                    chain.andThen(comparer(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
-                                                          control, getXPath(controlContext),
-                                                          Boolean
-                                                          .valueOf(foundTestAttributes
-                                                                   .contains(testAttr)),
-                                                          test, getXPath(testContext),
-                                                          Boolean.TRUE)));
-                } finally {
-                    testContext.navigateToParent();
+                if (!foundTestAttributes.contains(testAttr)) {
+                    QName testAttrName = Nodes.getQName(testAttr);
+                    testContext.navigateToAttribute(testAttrName);
+                    try {
+                        chain.andThen(comparer(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
+                                                              control,
+                                                              getXPath(controlContext),
+                                                              null,
+                                                              test, getXPath(testContext),
+                                                              testAttrName)));
+                    } finally {
+                        testContext.navigateToParent();
+                    }
                 }
             }
             return chain.getFinalResult();
@@ -564,7 +569,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                         chain.andThen(comparer(new Comparison(ComparisonType.CHILD_LOOKUP,
                                                               controlList.get(i),
                                                               getXPath(controlContext),
-                                                              controlList.get(i),
+                                                              Nodes.getQName(controlList
+                                                                             .get(i)),
                                                               null, null, null)));
                     } finally {
                         controlContext.navigateToParent();
@@ -598,7 +604,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                               null, null, null,
                                                               testList.get(i),
                                                               getXPath(testContext),
-                                                              testList.get(i))));
+                                                              Nodes.getQName(testList
+                                                                             .get(i)))));
                     } finally {
                         testContext.navigateToParent();
                     }
@@ -624,22 +631,24 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             && mustChangeTestContext;
 
         try {
+            QName controlAttrName = null;
             if (mustChangeControlContext) {
-                QName q = Nodes.getQName(controlAttr);
-                controlContext.addAttribute(q);
-                controlContext.navigateToAttribute(q);
+                controlAttrName = Nodes.getQName(controlAttr);
+                controlContext.addAttribute(controlAttrName);
+                controlContext.navigateToAttribute(controlAttrName);
             }
+            QName testAttrName = null;
             if (mustChangeTestContext) {
-                QName q = Nodes.getQName(testAttr);
-                testContext.addAttribute(q);
-                testContext.navigateToAttribute(q);
+                testAttrName = Nodes.getQName(testAttr);
+                testContext.addAttribute(testAttrName);
+                testContext.navigateToAttribute(testAttrName);
             }
             return new ComparisonChain(
                 compare(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
                                        controlAttr, getXPath(controlContext),
-                                       mustChangeControlContext,
+                                       controlAttrName,
                                        testAttr, getXPath(testContext),
-                                       mustChangeTestContext)))
+                                       testAttrName)))
                 .andIfTrueThen(attributePresentOnBothSides,
                                compareAttributeExplicitness(controlAttr, controlContext,
                                                             testAttr, testContext))
@@ -647,10 +656,10 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                comparer(new Comparison(ComparisonType.ATTR_VALUE,
                                                        controlAttr,
                                                        getXPath(controlContext),
-                                                       valueAsQName(controlAttr).toString(),
+                                                       valueAsQName(controlAttr),
                                                        testAttr,
                                                        getXPath(testContext),
-                                                       valueAsQName(testAttr).toString())))
+                                                       valueAsQName(testAttr))))
                 .getFinalResult();
         } finally {
             if (mustChangeControlContext) {

@@ -514,11 +514,11 @@ public class DifferenceEngine
         throws DifferenceFoundException {
         if (control != null) {
             controlTracker.visited(control);
-            compare(control.getNodeName(), null, control, null,
+            compare(getQName(control), null, control, null,
                     listener, CHILD_NODE_NOT_FOUND, controlTracker, null);
         } else {
             testTracker.visited(test);
-            compare(null, test.getNodeName(), null, test, listener,
+            compare(null, getQName(test), null, test, listener,
                     CHILD_NODE_NOT_FOUND, null, testTracker);
         }
     }
@@ -627,7 +627,8 @@ public class DifferenceEngine
                     controlTracker.clearTrackedAttribute();
                     controlTracker.visited(nextAttr);
                     testTracker.clearTrackedAttribute();
-                    compare(attrName, null, control, test, listener,
+                    compare(getQName(nextAttr, isNamespacedAttr), null,
+                            control, test, listener,
                             ATTR_NAME_NOT_FOUND);
                 }
             }
@@ -643,8 +644,7 @@ public class DifferenceEngine
                 testTracker.clearTrackedAttribute();
                 testTracker.visited(nextAttr);
                 compare(null,
-                        getUnNamespacedNodeName(nextAttr,
-                                                isNamespaced(nextAttr)),
+                        getQName(nextAttr),
                         control, test, listener, ATTR_NAME_NOT_FOUND);
             }
         }
@@ -660,6 +660,17 @@ public class DifferenceEngine
     private String getUnNamespacedNodeName(Node aNode, boolean isNamespacedNode) {
         if (isNamespacedNode) {
             return aNode.getLocalName();
+        }
+        return aNode.getNodeName();
+    }
+
+    private String getQName(Node aNode) {
+        return getQName(aNode, isNamespaced(aNode));
+    }
+
+    private String getQName(Node aNode, boolean isNamespacedNode) {
+        if (isNamespacedNode) {
+            return "{" + aNode.getNamespaceURI() + "}" + aNode.getLocalName();
         }
         return aNode.getNodeName();
     }
