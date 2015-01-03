@@ -37,8 +37,8 @@ namespace Org.XmlUnit.Diff{
             try {
                 XmlNode controlNode = Org.XmlUnit.Util.Convert.ToNode(control);
                 XmlNode testNode = Org.XmlUnit.Util.Convert.ToNode(test);
-                CompareNodes(controlNode, new XPathContext(controlNode),
-                             testNode, new XPathContext(testNode));
+                CompareNodes(controlNode, xpathContextFor(controlNode),
+                             testNode, xpathContextFor(testNode));
             } catch (Exception ex) {
                 throw new XMLUnitException("Caught exception during comparison",
                                            ex);
