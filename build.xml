@@ -216,13 +216,19 @@
     description="creates the API documentation">
     <delete includeEmptyDirs="true" dir="${docs.dir}/api"/>
     <javadoc destdir="${docs.dir}/api"
-      overview="${legacy.src.dir}/overview.html"
-      windowtitle="XMLUnit Documentation"
-      footer="&lt;p&gt;&lt;a href=&quot;http://xmlunit.sourceforge.net/&quot;&gt;XMLUnit&lt;/a&gt; is hosted by sourceforge.net&lt;/p&gt;">
+      windowtitle="XMLUnit Documentation">
       <group title="XMLUnit v${xmlunit.version}"
+        packages="org.xmlunit*"/>
+      <group title="XMLUnit Legacy v${xmlunit.version}"
         packages="org.custommonkey.xmlunit*"/>
       <fileset dir="${legacy.src.dir}">
         <include name="org/custommonkey/**/*.java"/>
+      </fileset>
+      <fileset dir="${src.dir}/java-core">
+        <include name="org/xmlunit/**/*.java"/>
+      </fileset>
+      <fileset dir="${src.dir}/java-hamcrest">
+        <include name="org/xmlunit/**/*.java"/>
       </fileset>
       <classpath>
         <fileset dir="${lib.dir}">
