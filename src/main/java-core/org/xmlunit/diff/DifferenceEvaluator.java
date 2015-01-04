@@ -22,7 +22,7 @@ public interface DifferenceEvaluator {
      * May alter the outcome of a comparison.
      *
      * @return the new result of the comparison, should return {@link
-     * ComaprisonResult#CRITICAL} to stop the comparison completely.
+     * ComparisonResult#CRITICAL} to stop the comparison completely.
      */
     ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome);
 }

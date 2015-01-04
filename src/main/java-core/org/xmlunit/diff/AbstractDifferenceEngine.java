@@ -123,7 +123,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     }
 
     /**
-     * Chain of comparisons where the last comparision performed
+     * Chain of comparisons where the last comparison performed
      * determines the final result but the first comparison with a
      * critical difference stops the chain.
      */
