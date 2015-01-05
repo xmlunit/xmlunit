@@ -11,7 +11,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-package org.xmlunit.matcher;
+package org.xmlunit.matchers;
 
 import org.xmlunit.validation.JAXPValidator;
 import org.xmlunit.validation.Languages;
