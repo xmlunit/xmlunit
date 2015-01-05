@@ -39,6 +39,8 @@ import org.w3c.dom.Node;
  */
 public class Input {
 
+    private Input() { /* no instances */ }
+
     public static interface Builder {
         /**
          * build the actual Source instance.

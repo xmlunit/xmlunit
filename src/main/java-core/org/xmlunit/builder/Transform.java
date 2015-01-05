@@ -23,6 +23,8 @@ import org.w3c.dom.Document;
  */
 public final class Transform {
 
+    private Transform() { /* no instances */ }
+
     public interface Builder extends TransformationBuilderBase<Builder> {
         /**
          * Create the result of the transformation.
