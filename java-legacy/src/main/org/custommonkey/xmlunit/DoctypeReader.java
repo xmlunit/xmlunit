@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -123,7 +123,7 @@ public class DoctypeReader extends Reader {
      * Determine where to place the DOCTYPE declaration within some marked-up
      * content
      * @param withinContent
-     * @return
+     * @return index where to insert the doctype
      */
     private int obsoleteFindStartDoctype(StringBuffer withinContent) {
         int startAt = -1;

@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,6 @@ public class SimpleXpathEngine implements XpathEngine, XSLTConstants {
 
     /**
      * What every XSL transform needs
-     * @return
      */
     private StringBuffer getXSLTBase() {
         StringBuffer result = new StringBuffer(XML_DECLARATION)

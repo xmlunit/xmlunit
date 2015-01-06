@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -161,7 +161,7 @@ public class Validator extends DefaultHandler {
      * Validates the contents of the InputSource using the DTD or
      * schema referenced by those contents.
      *
-     * @param readerForValidation
+     * @param sourceForValidation
      */
     public Validator(InputSource sourceForValidation) {
         this(sourceForValidation, null);
@@ -258,7 +258,7 @@ public class Validator extends DefaultHandler {
      * 1.2 compliant and supports XML Schema validation.</b></p>
      *
      * <p>For a fully JAXP 1.2 compliant parser the property {@link
-     * JAXPConstants.Properties.SCHEMA_LANGUAGE
+     * JAXPConstants.Properties#SCHEMA_LANGUAGE
      * http://java.sun.com/xml/jaxp/properties/schemaLanguage} is set,
      * if this fails the method falls back to the features
      * http://apache.org/xml/features/validation/schema &amp;
@@ -391,7 +391,7 @@ public class Validator extends DefaultHandler {
      *       runtime. When an array of Objects is passed it is illegal to
      *       have two schemas that share the same namespace.</li>
      * </ul>
-     * @see http://java.sun.com/webservices/jaxp/change-requests-11.html
+     * @see "http://java.sun.com/webservices/jaxp/change-requests-11.html"
      */
     public void setJAXP12SchemaSource(Object schemaSource) {
         this.schemaSource = schemaSource;

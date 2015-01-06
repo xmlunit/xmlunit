@@ -375,8 +375,8 @@ public class DifferenceEngine
      * Compare the contents of two node list one by one, assuming that order
      * of children is NOT important: matching begins at same position in test
      * list as control list.
-     * @param control
-     * @param test
+     * @param controlChildren
+     * @param testChildren
      * @param numNodes convenience parameter because the calling method should
      *  know the value already
      * @param listener
@@ -862,7 +862,7 @@ public class DifferenceEngine
      * @param control
      * @param test
      * @param listener
-     * @param differenceType
+     * @param difference
      * @throws DifferenceFoundException
      */
     protected void compare(Object expected, Object actual,
@@ -880,7 +880,9 @@ public class DifferenceEngine
      * @param control
      * @param test
      * @param listener
-     * @param differenceType
+     * @param difference
+     * @param controlLoc
+     * @param testLoc
      * @throws DifferenceFoundException
      */
     protected void compare(Object expected, Object actual,

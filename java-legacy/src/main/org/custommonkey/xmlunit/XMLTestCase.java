@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001, Jeff Martin, Tim Bacon
+Copyright (c) 2001,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -382,8 +382,8 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in the same document are equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param document
      * @see XpathEngine
      */
@@ -395,8 +395,8 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in the same document are equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param document
      * @see XpathEngine
      */
@@ -409,8 +409,8 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     /**
      * Assert that the node lists of two Xpaths in the same XML string are
      * equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param inXMLString
      * @throws SAXException
      * @throws IOException
@@ -423,9 +423,9 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two XML pieces are equal
-     * @param xpathOne
+     * @param controlXpath
      * @param control
-     * @param xpathTwo
+     * @param testXpath
      * @param test
      * @throws SAXException
      * @throws IOException
@@ -439,9 +439,9 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two XML strings are equal
-     * @param xpathOne
+     * @param controlXpath
      * @param inControlXMLString
-     * @param xpathTwo
+     * @param testXpath
      * @param inTestXMLString
      * @throws SAXException
      * @throws IOException
@@ -457,9 +457,10 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two documents are equal
-     * @param xpathOne
-     * @param xpathTwo
-     * @param document
+     * @param controlXpath
+     * @param testXpath
+     * @param controlDocument
+     * @param testDocument
      * @see XpathEngine
      */
     public void assertXpathsEqual(String controlXpath,
@@ -472,8 +473,8 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in the same document are NOT equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param document
      * @see XpathEngine
      */
@@ -486,8 +487,8 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     /**
      * Assert that the node lists of two Xpaths in the same XML are NOT
      * equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param control
      * @throws SAXException
      * @throws IOException
@@ -501,8 +502,8 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     /**
      * Assert that the node lists of two Xpaths in the same XML string are NOT
      * equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param inXMLString
      * @throws SAXException
      * @throws IOException
@@ -517,9 +518,9 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     /**
      * Assert that the node lists of two Xpaths in two pieces of XML
      * are NOT equal
-     * @param xpathOne
+     * @param controlXpath
      * @param control
-     * @param xpathTwo
+     * @param testXpath
      * @param test
      * @throws SAXException
      * @throws IOException
@@ -532,9 +533,9 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two XML strings are NOT equal
-     * @param xpathOne
+     * @param controlXpath
      * @param inControlXMLString
-     * @param xpathTwo
+     * @param testXpath
      * @param inTestXMLString
      * @throws SAXException
      * @throws IOException
@@ -550,9 +551,10 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two documents are NOT equal
-     * @param xpathOne
-     * @param xpathTwo
-     * @param document
+     * @param controlXpath
+     * @param testXpath
+     * @param controlDocument
+     * @param testDocument
      * @see XpathEngine
      */
     public void assertXpathsNotEqual(String controlXpath,
@@ -565,8 +567,8 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that the evaluation of two Xpaths in the same document are equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param document
      * @see XpathEngine
      */
@@ -579,8 +581,8 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same XML are
      *  equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param control
      * @throws SAXException
      * @throws IOException
@@ -594,8 +596,8 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same XML string are
      *  equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param inXMLString
      * @throws SAXException
      * @throws IOException
@@ -609,9 +611,9 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that the evaluation of two Xpaths in two XML strings are equal
-     * @param xpathOne
+     * @param controlXpath
      * @param control
-     * @param xpathTwo
+     * @param testXpath
      * @param test
      * @throws SAXException
      * @throws IOException
@@ -627,9 +629,9 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that the evaluation of two Xpaths in two XML strings are equal
-     * @param xpathOne
+     * @param controlXpath
      * @param inControlXMLString
-     * @param xpathTwo
+     * @param testXpath
      * @param inTestXMLString
      * @throws SAXException
      * @throws IOException
@@ -646,9 +648,10 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that the evaluation of two Xpaths in two documents are equal
-     * @param xpathOne
-     * @param xpathTwo
-     * @param document
+     * @param controlXpath
+     * @param testXpath
+     * @param controlDocument
+     * @param testDocument
      * @see XpathEngine
      */
     public void assertXpathValuesEqual(String controlXpath,
@@ -662,8 +665,8 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same XML string are
      * NOT equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param control
      * @throws SAXException
      * @throws IOException
@@ -679,8 +682,8 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same XML string are
      * NOT equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param inXMLString
      * @throws SAXException
      * @throws IOException
@@ -696,8 +699,8 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same document are
      * NOT equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param document
      */
     public void assertXpathValuesNotEqual(String controlXpath, String testXpath,
@@ -709,9 +712,9 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in two XML strings are
      * NOT equal
-     * @param xpathOne
+     * @param controlXpath
      * @param control
-     * @param xpathTwo
+     * @param testXpath
      * @param test
      * @throws SAXException
      * @throws IOException
@@ -728,9 +731,9 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in two XML strings are
      * NOT equal
-     * @param xpathOne
+     * @param controlXpath
      * @param inControlXMLString
-     * @param xpathTwo
+     * @param testXpath
      * @param inTestXMLString
      * @throws SAXException
      * @throws IOException
@@ -748,9 +751,10 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in two documents are
      * NOT equal
-     * @param xpathOne
-     * @param xpathTwo
-     * @param document
+     * @param controlXpath
+     * @param testXpath
+     * @param controlDocument
+     * @param testDocument
      */
     public void assertXpathValuesNotEqual(String controlXpath,
                                           Document controlDocument,
@@ -801,7 +805,6 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
      * @param expectedValue
      * @param xpathExpression
      * @param inDocument
-     * @param ctx
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
     public void assertXpathEvaluatesTo(String expectedValue,
@@ -814,7 +817,7 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that a specific XPath exists in some given XML
-     * @param inXpathExpression
+     * @param xPathExpression
      * @param xml
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
@@ -826,7 +829,7 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     
     /**
      * Assert that a specific XPath exists in some given XML
-     * @param inXpathExpression
+     * @param xPathExpression
      * @param inXMLString
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
@@ -838,9 +841,8 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     
     /**
      * Assert that a specific XPath exists in some given XML
-     * @param inXpathExpression
+     * @param xPathExpression
      * @param inDocument
-     * @param ctx
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
     public void assertXpathExists(String xPathExpression, Document inDocument) 
@@ -850,7 +852,7 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
 
     /**
      * Assert that a specific XPath does NOT exist in some given XML
-     * @param inXpathExpression
+     * @param xPathExpression
      * @param xml
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
@@ -862,7 +864,7 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     
     /**
      * Assert that a specific XPath does NOT exist in some given XML
-     * @param inXpathExpression
+     * @param xPathExpression
      * @param inXMLString
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
@@ -874,7 +876,7 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     
     /**
      * Assert that a specific XPath does NOT exist in some given XML
-     * @param inXpathExpression
+     * @param xPathExpression
      * @param inDocument
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
@@ -988,7 +990,7 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
      * @param xml XML to be tested
      * @param tester The test strategy
      * @param nodeType The node type to be tested: constants defined
-     *  in {@link Node org.w3c.dom.Node} e.g. <code>Node.ELEMENT_NODE</code>
+     *  in {@link org.w3c.dom.Node Node} e.g. <code>Node.ELEMENT_NODE</code>
      * @throws SAXException
      * @throws IOException
      * @see AbstractNodeTester
@@ -1006,7 +1008,7 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
      * @param xmlString XML to be tested
      * @param tester The test strategy
      * @param nodeType The node type to be tested: constants defined
-     *  in {@link Node org.w3c.dom.Node} e.g. <code>Node.ELEMENT_NODE</code>
+     *  in {@link org.w3c.dom.Node Node} e.g. <code>Node.ELEMENT_NODE</code>
      * @throws SAXException
      * @throws IOException
      * @see AbstractNodeTester
@@ -1024,7 +1026,7 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
      * @param test a NodeTest instance containing the XML source to be tested
      * @param tester The test strategy
      * @param nodeTypes The node types to be tested: constants defined
-     *  in {@link Node org.w3c.dom.Node} e.g. <code>Node.ELEMENT_NODE</code>
+     *  in {@link org.w3c.dom.Node Node} e.g. <code>Node.ELEMENT_NODE</code>
      * @param assertion true if the test is expected to pass, false otherwise
      * @see AbstractNodeTester
      * @see CountingNodeTester

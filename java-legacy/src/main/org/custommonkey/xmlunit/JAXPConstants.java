@@ -1,6 +1,6 @@
 /*
  ******************************************************************
- Copyright (c) 2001-2007, Jeff Martin, Tim Bacon
+ Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,8 @@
 
 package org.custommonkey.xmlunit;
 
+import org.xml.sax.XMLReader;
+
 /**
  * Utility constant class for JAXP-defined constants.
  */
@@ -53,14 +55,14 @@ public final class JAXPConstants {
          * only W3C Schema are supported.
          * 
          * @see XMLConstants#W3C_XML_SCHEMA_NS_URI
-         * @see http://java.sun.com/webservices/jaxp/change-requests-11.html
+         * @see "http://java.sun.com/webservices/jaxp/change-requests-11.html"
          */
         public static final String SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 
         /**
          * Property name for the Schema Location being used.
          * 
-         * @see http://java.sun.com/webservices/jaxp/change-requests-11.html
+         * @see "http://java.sun.com/webservices/jaxp/change-requests-11.html"
          */
         public static final String SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
 

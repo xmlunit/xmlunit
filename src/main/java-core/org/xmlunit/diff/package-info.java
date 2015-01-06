@@ -13,8 +13,8 @@
 */
 
 /**
- * Contains XMLUnit {@link DifferenceEngine} that is at the heart of
- * all comparisons as well as supporting interfaces and
- * implementations.
+ * Contains XMLUnit {@link org.xmlunit.diff.DifferenceEngine} that is
+ * at the heart of all comparisons as well as supporting interfaces
+ * and implementations.
  */ 
 package org.xmlunit.diff;

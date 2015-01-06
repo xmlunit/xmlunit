@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,7 @@ public class NodeDescriptor implements XMLConstants {
      * Convert a Node into a simple String representation 
      * and append to StringBuffer
      * @param buf
-     * @param aNode
+     * @param nodeDetail
      */
     public static void appendNodeDetail(StringBuffer buf, NodeDetail nodeDetail) {
         appendNodeDetail(buf, nodeDetail.getNode(), true);

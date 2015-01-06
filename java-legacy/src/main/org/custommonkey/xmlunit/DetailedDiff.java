@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -64,11 +64,7 @@ public class DetailedDiff extends Diff {
     /**
      * DifferenceListener implementation.
      * Add the difference to the list of all differences
-     * @param expected
-     * @param actual
-     * @param control
-     * @param test
-     * @param comparingWhat
+     * @param difference
      * @return the value supplied by the superclass implementation
      */
     public int differenceFound(Difference difference) {

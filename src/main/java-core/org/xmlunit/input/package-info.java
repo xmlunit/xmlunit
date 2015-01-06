@@ -13,6 +13,6 @@
 */
 
 /**
- * Some useful {@link javax.transform.Source Source} implementations.
+ * Some useful {@link javax.xml.transform.Source Source} implementations.
  */
 package org.xmlunit.input;

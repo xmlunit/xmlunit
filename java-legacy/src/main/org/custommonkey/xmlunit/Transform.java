@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -45,19 +45,20 @@ import java.util.Properties;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXSource;
+import org.custommonkey.xmlunit.exceptions.ConfigurationException;
+import org.custommonkey.xmlunit.exceptions.XMLUnitRuntimeException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 import org.xmlunit.builder.Input;
 import org.xmlunit.exceptions.XMLUnitException;
 import org.xmlunit.exceptions.XMLUnitException;
 import org.xmlunit.transform.Transformation;
-import org.custommonkey.xmlunit.exceptions.XMLUnitRuntimeException;
-import org.custommonkey.xmlunit.exceptions.ConfigurationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
 
 /**
  * Handy wrapper for an XSLT transformation performed using JAXP/Trax.
@@ -115,7 +116,7 @@ public class Transform {
 
     /**
      * Create a transformation that allows us to serialize a DOM Node
-     * @param source
+     * @param sourceNode
      */
     public Transform(Node sourceNode) {
         this(sourceNode, (String) null);
@@ -148,8 +149,8 @@ public class Transform {
 
     /**
      * Create a transformation using Source input XML and Source stylesheet
-     * @param inputReader
-     * @param stylesheetReader
+     * @param inputSource
+     * @param stylesheetSource
      */
     public Transform(Source inputSource, Source stylesheetSource) {
         transformation = new Transformation(inputSource);

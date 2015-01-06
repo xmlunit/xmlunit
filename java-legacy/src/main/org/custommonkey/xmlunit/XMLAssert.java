@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2011,2014 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2011,2014-2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -361,8 +361,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in the same document are equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param document
      * @see XpathEngine
      */
@@ -374,8 +374,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in the same document are equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param document
      * @see XpathEngine
      */
@@ -389,8 +389,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the node lists of two Xpaths in the same XML string are
      * equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param inXMLString
      * @throws SAXException
      * @throws IOException
@@ -404,8 +404,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two documents are equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param controlDocument
      * @param testDocument
      * @see XpathEngine
@@ -423,9 +423,9 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two XML strings are equal
-     * @param xpathOne
+     * @param controlXpath
      * @param inControlXMLString
-     * @param xpathTwo
+     * @param testXpath
      * @param inTestXMLString
      * @throws SAXException
      * @throws IOException
@@ -443,8 +443,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two documents are equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param controlDocument
      * @param testDocument
      * @see XpathEngine
@@ -460,8 +460,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in the same document are NOT equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param document
      * @see XpathEngine
      */
@@ -474,8 +474,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in the same document are NOT equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param document
      * @see XpathEngine
      */
@@ -490,8 +490,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the node lists of two Xpaths in the same XML string are NOT
      * equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param inXMLString
      * @throws SAXException
      * @throws IOException
@@ -506,9 +506,9 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two XML strings are NOT equal
-     * @param xpathOne
+     * @param controlXpath
      * @param inControlXMLString
-     * @param xpathTwo
+     * @param testXpath
      * @param inTestXMLString
      * @throws SAXException
      * @throws IOException
@@ -527,9 +527,9 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the node lists of two Xpaths in two XML strings are
      * NOT equal
-     * @param xpathOne
+     * @param controlXpath
      * @param controlDocument
-     * @param xpathTwo
+     * @param testXpath
      * @param testDocument
      * @throws SAXException
      * @throws IOException
@@ -547,9 +547,10 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two documents are NOT equal
-     * @param xpathOne
-     * @param xpathTwo
-     * @param document
+     * @param controlXpath
+     * @param testXpath
+     * @param controlDocument
+     * @param testDocument
      * @see XpathEngine
      */
     public static void assertXpathsNotEqual(String controlXpath,
@@ -564,10 +565,11 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the node lists of two Xpaths in two documents are
      * equal or not.
-     * @param xpathOne
-     * @param xpathTwo
-     * @param document
-     * @param equality whether the values should be equal.
+     * @param controlXpath
+     * @param testXpath
+     * @param controlDocument
+     * @param testDocument
+     * @param equal whether the values should be equal.
      * @see XpathEngine
      */
     private static void assertXpathEquality(String controlXpath,
@@ -588,8 +590,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the evaluation of two Xpaths in the same document are equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param document
      * @see XpathEngine
      */
@@ -603,8 +605,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same XML string are
      *  equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param document
      * @throws SAXException
      * @throws IOException
@@ -620,8 +622,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same XML string are
      *  equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param inXMLString
      * @throws SAXException
      * @throws IOException
@@ -637,9 +639,9 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the evaluation of two Xpaths in two XML strings are equal
-     * @param xpathOne
+     * @param controlXpath
      * @param control
-     * @param xpathTwo
+     * @param testXpath
      * @param test
      * @throws SAXException
      * @throws IOException
@@ -657,9 +659,9 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the evaluation of two Xpaths in two XML strings are equal
-     * @param xpathOne
+     * @param controlXpath
      * @param inControlXMLString
-     * @param xpathTwo
+     * @param testXpath
      * @param inTestXMLString
      * @throws SAXException
      * @throws IOException
@@ -678,9 +680,10 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the evaluation of two Xpaths in two documents are equal
-     * @param xpathOne
-     * @param xpathTwo
-     * @param document
+     * @param controlXpath
+     * @param testXpath
+     * @param controlDocument
+     * @param testDocument
      * @see XpathEngine
      */
     public static void assertXpathValuesEqual(String controlXpath,
@@ -696,8 +699,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same XML string are
      * NOT equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param control
      * @throws SAXException
      * @throws IOException
@@ -713,8 +716,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same XML string are
      * NOT equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param inXMLString
      * @throws SAXException
      * @throws IOException
@@ -731,8 +734,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same document are
      * NOT equal
-     * @param xpathOne
-     * @param xpathTwo
+     * @param controlXpath
+     * @param testXpath
      * @param document
      */
     public static void assertXpathValuesNotEqual(String controlXpath,
@@ -745,9 +748,9 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in two XML strings are
      * NOT equal
-     * @param xpathOne
+     * @param controlXpath
      * @param control
-     * @param xpathTwo
+     * @param testXpath
      * @param test
      * @throws SAXException
      * @throws IOException
@@ -766,9 +769,9 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in two XML strings are
      * NOT equal
-     * @param xpathOne
+     * @param controlXpath
      * @param inControlXMLString
-     * @param xpathTwo
+     * @param testXpath
      * @param inTestXMLString
      * @throws SAXException
      * @throws IOException
@@ -788,9 +791,10 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in two documents are
      * NOT equal
-     * @param xpathOne
-     * @param xpathTwo
-     * @param document
+     * @param controlXpath
+     * @param testXpath
+     * @param controlDocument
+     * @param testDocument
      */
     public static void assertXpathValuesNotEqual(String controlXpath,
                                                  Document controlDocument,
@@ -926,7 +930,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that a specific XPath exists in some given XML
-     * @param inXpathExpression
+     * @param xPathExpression
      * @param control
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
@@ -939,7 +943,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
     
     /**
      * Assert that a specific XPath exists in some given XML
-     * @param inXpathExpression
+     * @param xPathExpression
      * @param inXMLString
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
@@ -952,7 +956,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
     
     /**
      * Assert that a specific XPath exists in some given XML
-     * @param inXpathExpression
+     * @param xPathExpression
      * @param inDocument
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
@@ -969,7 +973,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that a specific XPath does NOT exist in some given XML
-     * @param inXpathExpression
+     * @param xPathExpression
      * @param control
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
@@ -982,7 +986,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
     
     /**
      * Assert that a specific XPath does NOT exist in some given XML
-     * @param inXpathExpression
+     * @param xPathExpression
      * @param inXMLString
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
@@ -995,7 +999,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
     
     /**
      * Assert that a specific XPath does NOT exist in some given XML
-     * @param inXpathExpression
+     * @param xPathExpression
      * @param inDocument
      * @see XpathEngine which provides the underlying evaluation mechanism
      */

@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2008, Stefan Bodewig
+Copyright (c) 2008,2015 Stefan Bodewig
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -49,5 +49,5 @@ public interface MatchTracker {
      * that matched and containing the detail of the nodes that have
      * been compared
      */
-    void matchFound(Difference difference);
+    void matchFound(Difference match);
 }

@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2008, Jeff Martin, Tim Bacon
+Copyright (c) 2008,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -95,7 +95,7 @@ public class Validator {
      *
      * @param schemaLanguage the schema language to use - see {@link
      * javax.xml.validation.SchemaFactory SchemaFactory}.
-     * @param schemaFactory the concrete factory to use.  If this is
+     * @param factory the concrete factory to use.  If this is
      * non-null, the first argument will be ignored.
      */
     protected Validator(String schemaLanguage, SchemaFactory factory) {

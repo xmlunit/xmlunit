@@ -1,6 +1,6 @@
 /*
 *****************************************************************
-Copyright (c) 2001-2008, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -287,7 +287,7 @@ public final class XMLUnit {
      * underlying control AND test document builder factories.</p>
      *
      * <p>Setting this parameter has no effect on {@link
-     * setNormalizeWhitespace whitespace inside texts}.</p>
+     * #setNormalizeWhitespace whitespace inside texts}.</p>
      */
     public static void setIgnoreWhitespace(boolean ignore){
         ignoreWhitespace = ignore;
@@ -463,7 +463,7 @@ public final class XMLUnit {
      * Get the SAX parser to use in tests.
      *
      * <p>Unless an instance has been given via {@link
-     * setSAXParserFactory(SAXParserFactory) setSAXParserFactory}
+     * #setSAXParserFactory(SAXParserFactory) setSAXParserFactory}
      * explicitly, the returned factory will be namespace aware.</p>
      *
      * @return the SAXParserFactory instance used by the {@link
@@ -726,13 +726,13 @@ public final class XMLUnit {
      * from streams (like files or network connections) or working
      * with strings, there is no reason to change the default since
      * the XML parser is required to normalize the documents.  If you
-     * are testing {@link org.w3c.Document Document} instances you've
+     * are testing {@link org.w3c.dom.Document Document} instances you've
      * created in code, you may want to alter the default
      * behavior.</p>
      *
      * <p><b>Note2:</b> depending on the XML parser or XSLT
-     * transformer you use, setting {@link setIgnoreWhitespace
-     * ignoreWhitespace} or {@link setIgnoreComments ignoreComments}
+     * transformer you use, setting {@link #setIgnoreWhitespace
+     * ignoreWhitespace} or {@link #setIgnoreComments ignoreComments}
      * to true may have already normalized your document and this
      * setting doesn't have any effect anymore.</p>
      */
@@ -761,7 +761,7 @@ public final class XMLUnit {
      * <p>The default value is false.</p>
      *
      * <p>Setting this parameter has no effect on {@link
-     * setIgnoreWhitespace ignorable whitespace}.</p>
+     * #setIgnoreWhitespace ignorable whitespace}.</p>
      */
     public static void setNormalizeWhitespace(boolean b) {
         normalizeWhitespace = b;

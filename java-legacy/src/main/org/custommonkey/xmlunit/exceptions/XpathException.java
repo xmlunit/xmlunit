@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2006-2008, Jeff Martin, Tim Bacon
+Copyright (c) 2006-2008,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -43,29 +43,28 @@ package org.custommonkey.xmlunit.exceptions;
 public class XpathException extends XMLUnitException {
 
     /**
-     * Inititializes the exeption.
+     * Inititializes the exception.
      *
-     * @param cause the root cause of the exception
+     * @param t the root cause of the exception
      */
     public XpathException(Throwable t) {
         this(t != null ? t.getMessage() : null, t);
     }
 
     /**
-     * Inititializes the exeption.
+     * Inititializes the exception.
      *
      * @param message the detail message
-     * @param cause the root cause of the exception
      */
     public XpathException(String message) {
         this(message, null);
     }
 
     /**
-     * Inititializes the exeption.
+     * Inititializes the exception.
      *
      * @param message the detail message
-     * @param cause the root cause of the exception
+     * @param t the root cause of the exception
      */
     public XpathException(String message, Throwable t) {
         super(message, t);
