@@ -20,17 +20,21 @@ import java.io.FileReader;
 import java.net.URI;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
+
 import org.w3c.dom.Document;
+
 import org.xmlunit.TestResources;
+import org.xmlunit.builder.jaxb.ComplexNode;
 import org.xmlunit.util.Convert;
+
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.*;
-import static org.hamcrest.core.IsInstanceOf.*;
 import static org.hamcrest.core.IsNull.*;
 import static org.junit.Assert.*;
 
@@ -139,6 +143,10 @@ public class InputTest {
             .withStylesheet(Input.fromFile("src/tests/resources/animal.xsl"))
             .build();
         allIsWellFor(s, "furry");
+    }
+
+    @Test public void shouldParseJaxbObject() throws Exception {
+        allIsWellFor(Input.fromJaxb(new ComplexNode()).build(), "complexNode");
     }
 
     private static void allIsWellFor(Source s) throws Exception {

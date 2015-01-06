@@ -26,8 +26,6 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import javax.xml.transform.Source;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import org.xmlunit.exceptions.XMLUnitException;
@@ -93,6 +91,13 @@ public class Input {
             assert source != null;
             return source;
         }
+    }
+    
+    /**
+     * Build a Source from a Jaxb-Object.
+     */
+    public static JaxbBuilder fromJaxb(Object jaxbObject) {
+        return new JaxbBuilder(jaxbObject);
     }
 
     /**
