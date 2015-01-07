@@ -53,18 +53,6 @@ diff.addDifferenceListener(new ComparisonListener() {
 diff.compare(control, test);
 ```
 
-or
-
-```csharp
-ISource control = Input.FromFile("test-data/good.xml").Build();
-ISource test = Input.FromMemory(CreateTestDocument()).Build();
-AbstractDifferenceEngine diff = new DOMDifferenceEngine();
-diff.DifferenceListener += (comparison, outcome) => {
-            Assert.Fail("found a difference: {}", comparison);
-        };
-diff.Compare(control, test);
-```
-
 ### Asserting an XPath Value
 
 ```java
@@ -72,15 +60,6 @@ Source source = Input.fromMemory("<foo>bar</foo>").build();
 XPathEngine xpath = new JAXPXPathEngine();
 Iterable<Node> allMatches = xpath.selectNodes("/foo", source);
 String content = xpath.evaluate("/foo/text()", source);
-```
-
-or
-
-```csharp
-ISource source = Input.FromMemory("<foo>bar</foo>").Build();
-IXPathEngine xpath = new XPathEngine();
-IEnumerable<XmlNode> allMatches = xpath.SelectNodes("/foo", source);
-string content = xpath.evaluate("/foo/text()", source);
 ```
 
 ### Validating a Document Against an XML Schema
@@ -94,36 +73,19 @@ boolean valid = result.isValid();
 Iterable<ValidationProblem> problems = result.getProblems();
 ```
 
-or
-
-```java
-Validator v = Validator.ForLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
-v.SchemaSources = new ISource[] {
-        Input.FromUri("http://example.com/some.xsd").Build(),
-        Input.FromFile("local.xsd").Build()
-    };
-ValidationResult result = v.ValidateInstance(Input.FromDocument(CreateDocument()).Build());
-bool valid = result.Valid;
-IEnumerable<ValidationProblem> problems = result.Problems;
-```
-
 ## Requirements
 
-XMLUnit requires Java6 or .NET 3.5 respectively (it is known to work
-and actually is developed on Mono 4).
+XMLUnit requires Java6.
 
-The `core` library of each platform provides all functionality needed
-to test XML output and haven't got any dependencies.  They use JUnit
-4.x and NUnit 2.x for their own tests.
+The `core` library of provides all functionality needed to test XML
+output and hasn't got any dependencies.  It uses JUnit 4.x for its own
+tests.
 
-The core libraries are complemented by Hamcrest matchers and NUnit
-constraints respectively.  For Java there also exists a `legacy`
-project that provides the API of XMLUnit 1.x on top of the 2.x core
-library.
+The core library is complemented by Hamcrest matchers.  There also
+exists a `legacy` project that provides the API of XMLUnit 1.x on top
+of the 2.x core library.
 
 ## Building
-
-### Java
 
 XMLUnit for Java builds using Apache Ant, run `ant -projecthelp` for
 the available targets, but mainly you want to run
@@ -141,19 +103,3 @@ $ ant jar
 
 creates the corresponding jar files.
 
-### .NET
-
-XMLUnit for .NET builds using NAnt, run `nant -projecthelp` for the
-available targets, but mainly you want to run
-
-```sh
-$ nant
-```
-
-in order to compile `core` and `constraints` and build the assemblies.
-
-```sh
-$ nant test
-```
-
-executes the NUnit tests.
