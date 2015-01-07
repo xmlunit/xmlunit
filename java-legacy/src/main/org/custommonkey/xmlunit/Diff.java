@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008,2010,2014 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2010,2014-2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,7 +13,7 @@ are met:
       copyright notice, this list of conditions and the following
       disclaimer in the documentation and/or other materials provided
       with the distribution.
-    * Neither the name of the xmlunit.sourceforge.net nor the names
+    * Neither the name of the XMLUnit nor the names
       of its contributors may be used to endorse or promote products
       derived from this software without specific prior written
       permission.
@@ -69,7 +69,6 @@ import org.xml.sax.SAXException;
  * is known with certainty. For a  list of all differences between the documents
  * an instance of  {@link DetailedDiff the DetailedDiff class} can be used
  * instead.
- * <br />Examples and more at <a href="http://xmlunit.sourceforge.net"/>xmlunit.sourceforge.net</a>
  */
 public class Diff 
     implements DifferenceListener, ComparisonController {

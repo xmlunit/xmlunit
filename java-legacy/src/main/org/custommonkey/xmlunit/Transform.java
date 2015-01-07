@@ -13,7 +13,7 @@ are met:
       copyright notice, this list of conditions and the following
       disclaimer in the documentation and/or other materials provided
       with the distribution.
-    * Neither the name of the xmlunit.sourceforge.net nor the names
+    * Neither the name of the XMLUnit nor the names
       of its contributors may be used to endorse or promote products
       derived from this software without specific prior written
       permission.
@@ -64,7 +64,6 @@ import org.xmlunit.transform.Transformation;
  * Handy wrapper for an XSLT transformation performed using JAXP/Trax.
  * Note that transformation is not actually performed until a call to
  * <code>getResultXXX</code> method, and Templates are not used.
- * <br />Examples and more at <a href="http://xmlunit.sourceforge.net"/>xmlunit.sourceforge.net</a>
  */
 public class Transform {
     private static final File PWD = new File(".");

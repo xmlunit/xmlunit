@@ -13,7 +13,7 @@ are met:
       copyright notice, this list of conditions and the following
       disclaimer in the documentation and/or other materials provided
       with the distribution.
-    * Neither the name of the xmlunit.sourceforge.net nor the names
+    * Neither the name of the XMLUnit nor the names
       of its contributors may be used to endorse or promote products
       derived from this software without specific prior written
       permission.
@@ -59,7 +59,6 @@ import org.xml.sax.SAXException;
  * an XMLTestCase.
  * @see Diff#similar()
  * @see Diff#identical()
- * <br />Examples and more at <a href="http://xmlunit.sourceforge.net"/>xmlunit.sourceforge.net</a>
  */
 public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     /**

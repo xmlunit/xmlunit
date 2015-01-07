@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,7 +13,7 @@ are met:
       copyright notice, this list of conditions and the following
       disclaimer in the documentation and/or other materials provided
       with the distribution.
-    * Neither the name of the xmlunit.sourceforge.net nor the names
+    * Neither the name of the XMLUnit nor the names
       of its contributors may be used to endorse or promote products
       derived from this software without specific prior written
       permission.
@@ -61,7 +61,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * for use with HTML pages so that they can be transformed into DOM
  * trees, without being XHTML to start with.
  * Note that this class currently does not handle entity, DTD or CDATA tags.
- * <br />Examples and more at <a href="http://xmlunit.sourceforge.net"/>xmlunit.sourceforge.net</a>
  * @see HTMLDocumentBuilder#parse
  */
 public class TolerantSaxDocumentBuilder

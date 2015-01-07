@@ -13,7 +13,7 @@ are met:
       copyright notice, this list of conditions and the following
       disclaimer in the documentation and/or other materials provided
       with the distribution.
-    * Neither the name of the xmlunit.sourceforge.net nor the names
+    * Neither the name of the XMLUnit nor the names
       of its contributors may be used to endorse or promote products
       derived from this software without specific prior written
       permission.
@@ -63,7 +63,6 @@ import org.w3c.dom.NodeList;
  * This is not an efficient method for accessing XPaths but it is portable
  * across underlying transform implementations. (Yes I know Jaxen is too, but
  * this approach seemed to be the simplest thing that could possibly work...)
- * <br />Examples and more at <a href="http://xmlunit.sourceforge.net"/>xmlunit.sourceforge.net</a>
  */
 public class SimpleXpathEngine implements XpathEngine, XSLTConstants {
 

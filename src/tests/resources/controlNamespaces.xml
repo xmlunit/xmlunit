@@ -1,5 +1,5 @@
 <?xml version="1.0"?> 
-<openSource xmlns="http://xmlunit.sourceforge.net/tests" 
+<openSource xmlns="http://www.xmlunit.org/tests" 
   xmlns:ju="http://www.junit.org"
   xmlns:ec="http://www.eclipse.org" 
   xmlns:ja="http://jakarta.apache.org">

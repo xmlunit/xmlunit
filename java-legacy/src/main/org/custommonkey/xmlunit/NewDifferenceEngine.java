@@ -13,7 +13,7 @@ are met:
       copyright notice, this list of conditions and the following
       disclaimer in the documentation and/or other materials provided
       with the distribution.
-    * Neither the name of the xmlunit.sourceforge.net nor the names
+    * Neither the name of the XMLUnit nor the names
       of its contributors may be used to endorse or promote products
       derived from this software without specific prior written
       permission.
@@ -76,8 +76,6 @@ import org.w3c.dom.Node;
  * only compares nodes of type ELEMENT_NODE, CDATA_SECTION_NODE,
  * COMMENT_NODE, DOCUMENT_TYPE_NODE, PROCESSING_INSTRUCTION_NODE and TEXT_NODE.
  * Nodes of other types (eg ENTITY_NODE) will be skipped.
- * <br />Examples and more at <a href="http://xmlunit.sourceforge.net"/>xmlunit.
- * sourceforge.net</a>
  * @see DifferenceListener#differenceFound(Difference)
  */
 public class NewDifferenceEngine

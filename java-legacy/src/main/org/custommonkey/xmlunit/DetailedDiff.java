@@ -13,7 +13,7 @@ are met:
       copyright notice, this list of conditions and the following
       disclaimer in the documentation and/or other materials provided
       with the distribution.
-    * Neither the name of the xmlunit.sourceforge.net nor the names
+    * Neither the name of the XMLUnit nor the names
       of its contributors may be used to endorse or promote products
       derived from this software without specific prior written
       permission.
@@ -46,7 +46,6 @@ import java.util.ArrayList;
  * Note that because the differences are described relative to some control XML
  * the list of all differences when <i>A</i> is compared to <i>B</i> will not
  * necessarily be the same as when <i>B</i> is compared to <i>A</i>.
- * <br />Examples and more at <a href="http://xmlunit.sourceforge.net"/>xmlunit.sourceforge.net</a>
  */
 public class DetailedDiff extends Diff {
     private final List allDifferences;

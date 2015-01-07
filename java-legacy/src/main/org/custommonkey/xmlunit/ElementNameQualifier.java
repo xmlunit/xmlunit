@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007, Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,7 +13,7 @@ are met:
           copyright notice, this list of conditions and the following
           disclaimer in the documentation and/or other materials provided
           with the distribution.
-        * Neither the name of the xmlunit.sourceforge.net nor the names
+        * Neither the name of the XMLUnit nor the names
           of its contributors may be used to endorse or promote products
           derived from this software without specific prior written
           permission.
@@ -44,8 +44,6 @@ import org.w3c.dom.Node;
  * Simple interface implementation that tests two elements for name
  * comparability. This class provides the default behaviour within a
  * DifferenceEngine (for backwards compatibility)
- * <br />Examples and more at 
- * <a href="http://xmlunit.sourceforge.net"/>xmlunit.sourceforge.net</a>
  * @see DifferenceEngine#compareNodeList(NodeList, NodeList, int, DifferenceListener, ElementQualifier)
  * @see Diff#overrideElementQualifier(ElementQualifier)
  */
