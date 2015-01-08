@@ -25,6 +25,6 @@ Java
 .NET
 ----
 
-* CI builds
+* CI builds on Windows
 * additional NUnit constraints
 * NuGet packaging
