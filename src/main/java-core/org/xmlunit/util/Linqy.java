@@ -22,6 +22,9 @@ import java.util.NoSuchElementException;
  * A couple of (functional) sequence processing constructs.
  */
 public final class Linqy {
+
+    private Linqy() { /* no instances */ }
+
     /**
      * Turns the iterable into a list.
      */
