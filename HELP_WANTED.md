@@ -26,5 +26,6 @@ Java
 ----
 
 * CI builds on Windows
+* create API docs
 * additional NUnit constraints
 * NuGet packaging

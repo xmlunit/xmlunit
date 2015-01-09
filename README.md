@@ -1,5 +1,5 @@
-XMLUnit 2.x
-===========
+XMLUnit for Java 2.x
+====================
 
 [![Build Status XMLUnit 2.x for Java](https://travis-ci.org/xmlunit/xmlunit.svg?branch=master)](https://travis-ci.org/xmlunit/xmlunit)
 
