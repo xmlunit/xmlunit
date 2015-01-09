@@ -34,22 +34,27 @@ abstract class
     protected AbstractTransformationBuilder(Source s) {
         helper = new Transformation(s);
     }
+    @Override
     public B withStylesheet(Source s) {
         helper.setStylesheet(s);
         return asB();
     }
+    @Override
     public B withOutputProperty(String name, String value) {
         helper.addOutputProperty(name, value);
         return asB();
     }
+    @Override
     public B withParameter(String name, Object value) {
         helper.addParameter(name, value);
         return asB();
     }
+    @Override
     public B usingFactory(TransformerFactory f) {
         helper.setFactory(f);
         return asB();
     }
+    @Override
     public B withURIResolver(URIResolver r) {
         helper.setURIResolver(r);
         return asB();

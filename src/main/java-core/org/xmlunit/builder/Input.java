@@ -51,6 +51,7 @@ public class Input {
         private DOMBuilder(Node d) {
             source = new DOMSource(d);
         }
+        @Override
         public Source build() {
             assert source != null;
             return source;
@@ -87,6 +88,7 @@ public class Input {
                 source.setSystemId(id);
             }
         }
+        @Override
         public Source build() {
             assert source != null;
             return source;
@@ -226,9 +228,11 @@ public class Input {
         private Transformation(Source s) {
             super(s);
         }
+        @Override
         public TransformationBuilder withStylesheet(Builder b) {
             return withStylesheet(b.build());
         }
+        @Override
         public Source build() {
             return new DOMSource(getHelper().transformToDocument());
         }

@@ -52,15 +52,19 @@ public final class Transform {
         private TransformationBuilder(Source s) {
             super(s);
         }
+        @Override
         public TransformationResult build() {
             return this;
         }
-        @Override public String toString() {
+        @Override
+        public String toString() {
             return getHelper().transformToString();
         }
+        @Override
         public Document toDocument() {
             return getHelper().transformToDocument();
         }
+        @Override
         public void to(Result r) {
             getHelper().transformTo(r);
         }
