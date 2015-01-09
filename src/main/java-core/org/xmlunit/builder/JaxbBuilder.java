@@ -41,10 +41,17 @@ public class JaxbBuilder implements Builder {
     private final Object object;
     private Marshaller marshaller;
 
+    /**
+     * Creates a builder based on the given object.
+     */
     protected JaxbBuilder(final Object object) {
         this.object = object;
     }
 
+    /**
+     * Sets a non-default {@link Marshaller} to use when creating the
+     * {@link Source}.
+     */
     public JaxbBuilder withMarshaller(final Marshaller marshaller) {
         this.marshaller = marshaller;
         return this;
@@ -59,7 +66,8 @@ public class JaxbBuilder implements Builder {
 
             final Object jaxbObject = getPreparedJaxbObject();
             final JAXBSource jaxbSource = new JAXBSource(marshaller, jaxbObject);
-            // the fake InputSource cannot be used (the Convert.java will create a working one if it is null)
+            // the fake InputSource cannot be used (the Convert.java
+            // will create a working one if it is null)
             jaxbSource.setInputSource(null);
             return jaxbSource;
         } catch (final JAXBException e) {

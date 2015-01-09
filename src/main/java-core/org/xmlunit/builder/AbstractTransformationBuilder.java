@@ -60,6 +60,9 @@ abstract class
         return asB();
     }
 
+    /**
+     * Provides access to a cached {@link Transformation} instance.
+     */
     protected Transformation getHelper() {
         return helper;
     }

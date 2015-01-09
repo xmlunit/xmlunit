@@ -25,12 +25,19 @@ public final class Transform {
 
     private Transform() { /* no instances */ }
 
+    /**
+     * Builder for XSLT transformations.
+     */
     public interface Builder extends TransformationBuilderBase<Builder> {
         /**
          * Create the result of the transformation.
          */
         TransformationResult build();
     }
+
+    /**
+     * Provides different options to obtain the result of an XSLT transformation.
+     */
     public interface TransformationResult {
         /**
          * Output the result to a TraX Result.

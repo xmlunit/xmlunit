@@ -39,9 +39,12 @@ public class Input {
 
     private Input() { /* no instances */ }
 
+    /**
+     * Interface for fluent builders of {@link Source}s.
+     */
     public static interface Builder {
         /**
-         * build the actual Source instance.
+         * build the actual {@link Source} instance.
          */
         Source build();
     }
@@ -213,6 +216,9 @@ public class Input {
         }
     }
 
+    /**
+     * Builds {@link Source}s by transforming other sources.
+     */
     public static interface TransformationBuilder
         extends TransformationBuilderBase<TransformationBuilder>, Builder {
         /**
