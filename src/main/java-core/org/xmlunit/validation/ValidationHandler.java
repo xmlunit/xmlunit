@@ -20,7 +20,8 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 
 /**
- * ErrorHandler collecting parser exceptions as ValidationProblems
+ * {@link ErrorHandler} collecting parser exceptions as {@link
+ * ValidationProblem}s.
  */
 final class ValidationHandler implements ErrorHandler {
     private List<ValidationProblem> problems =

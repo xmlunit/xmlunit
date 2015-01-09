@@ -48,6 +48,11 @@ public class ParsingValidator extends Validator {
         this.language = language;
     }
 
+    /**
+     * {@link ParsingValidator} doesn't support validation of the
+     * schema itself.
+     * @throws XMLUnitException always
+     */
     @Override public ValidationResult validateSchema() {
         throw new XMLUnitException("Schema validation is not supported by"
                                    + " ParsingValidator");

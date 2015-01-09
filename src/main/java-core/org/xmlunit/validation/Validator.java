@@ -32,6 +32,10 @@ public abstract class Validator {
         this.schemaURI = uri;
     }
 
+    /**
+     * The URI (or for example the System ID in case of a DTD) that
+     * identifies the schema validated or used during validation.
+     */
     protected String getSchemaURI() {
         return schemaURI;
     }
@@ -54,6 +58,9 @@ public abstract class Validator {
         setSchemaSources(s == null ? null : new Source[] {s});
     }
 
+    /**
+     * Where to find the schema.
+     */
     protected Source[] getSchemaSources() {
         return sourceLocations == null ? new Source[0] : sourceLocations;
     }

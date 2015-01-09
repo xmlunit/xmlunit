@@ -20,6 +20,10 @@ public class ValidationResult {
     private final boolean valid;
     private final Iterable<ValidationProblem> problems;
 
+    /**
+     * Creates a result based on a valid flag and an Iterable of
+     * iteration problems.
+     */
     public ValidationResult(boolean valid, Iterable<ValidationProblem> problems) {
         this.valid = valid;
         this.problems = problems;
@@ -27,6 +31,9 @@ public class ValidationResult {
 
     /**
      * Has the validation been successful?
+     *
+     * <p>A successful validation results in no validation problems of
+     * type ERROR.</p>
      */
     public boolean isValid() {
         return valid;
