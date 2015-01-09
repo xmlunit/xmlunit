@@ -24,6 +24,9 @@ public abstract class Validator {
     private String schemaURI;
     private Source[] sourceLocations;
 
+    protected Validator() {
+    }
+
     /**
      * The URI (or for example the System ID in case of a DTD) that
      * identifies the schema to validate or use during validation.
