@@ -211,7 +211,9 @@ public class XPathContext {
             name = Nodes.getQName(n);
             type = n.getNodeType();
         }
+        @Override
         public QName getName() { return name; }
+        @Override
         public short getType() { return type; }
     }
 }

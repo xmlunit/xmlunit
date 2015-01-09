@@ -29,6 +29,7 @@ public final class DifferenceEvaluators {
      */
     public static final DifferenceEvaluator Accept =
         new DifferenceEvaluator() {
+            @Override
             public ComparisonResult evaluate(Comparison comparison,
                                              ComparisonResult outcome) {
                 return outcome;
@@ -42,6 +43,7 @@ public final class DifferenceEvaluators {
      */
     public static final DifferenceEvaluator Default =
         new DifferenceEvaluator() {
+            @Override
             public ComparisonResult evaluate(Comparison comparison,
                                              ComparisonResult outcome) {
                 if (outcome == ComparisonResult.DIFFERENT) {
@@ -92,6 +94,7 @@ public final class DifferenceEvaluators {
     public static DifferenceEvaluator
         stopWhenDifferent(final DifferenceEvaluator nestedEvaluator) {
         return new DifferenceEvaluator() {
+            @Override
             public ComparisonResult evaluate(Comparison comparison,
                                              ComparisonResult outcome) {
                 ComparisonResult r = nestedEvaluator.evaluate(comparison,
@@ -109,6 +112,7 @@ public final class DifferenceEvaluators {
     public static DifferenceEvaluator
         first(final DifferenceEvaluator... evaluators) {
         return new DifferenceEvaluator() {
+            @Override
             public ComparisonResult evaluate(Comparison comparison,
                                              ComparisonResult orig) {
                 for (DifferenceEvaluator ev : evaluators) {

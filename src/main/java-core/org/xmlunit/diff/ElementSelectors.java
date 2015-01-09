@@ -40,6 +40,7 @@ public final class ElementSelectors {
      * order.</p>
      */
     public static final ElementSelector Default = new ElementSelector() {
+            @Override
             public boolean canBeCompared(Element controlElement,
                                          Element testElement) {
                 return true;
@@ -51,6 +52,7 @@ public final class ElementSelectors {
      * can be compared.
      */
     public static final ElementSelector byName = new ElementSelector() {
+            @Override
             public boolean canBeCompared(Element controlElement,
                                          Element testElement) {
                 return controlElement != null
@@ -65,6 +67,7 @@ public final class ElementSelectors {
      * and nested text (if any) can be compared.
      */
     public static final ElementSelector byNameAndText = new ElementSelector() {
+            @Override
             public boolean canBeCompared(Element controlElement,
                                          Element testElement) {
                 return byName.canBeCompared(controlElement, testElement)
@@ -108,6 +111,7 @@ public final class ElementSelectors {
         }
         final HashSet<String> as = new HashSet(Arrays.asList(attribs));
         return new ElementSelector() {
+            @Override
             public boolean canBeCompared(Element controlElement,
                                          Element testElement) {
                 if (!byName.canBeCompared(controlElement, testElement)) {
@@ -146,6 +150,7 @@ public final class ElementSelectors {
         }
         final Collection<QName> qs = Arrays.asList(attribs);
         return new ElementSelector() {
+            @Override
             public boolean canBeCompared(Element controlElement,
                                          Element testElement) {
                 if (!byName.canBeCompared(controlElement, testElement)) {
@@ -164,6 +169,7 @@ public final class ElementSelectors {
      */
     public static final ElementSelector byNameAndAllAttributes =
         new ElementSelector() {
+            @Override
             public boolean canBeCompared(Element controlElement,
                                          Element testElement) {
                 if (!byName.canBeCompared(controlElement, testElement)) {
@@ -185,6 +191,7 @@ public final class ElementSelectors {
      */
     public static final ElementSelector
         byNameAndTextRec = new ElementSelector() {
+                @Override
                 public boolean canBeCompared(Element controlElement,
                                              Element testElement) {
                     if (!byNameAndText.canBeCompared(controlElement,

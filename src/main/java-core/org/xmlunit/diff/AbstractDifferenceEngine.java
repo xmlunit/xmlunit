@@ -27,6 +27,9 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     private DifferenceEvaluator diffEvaluator = DifferenceEvaluators.Default;
     private Map<String, String> uri2Prefix = Collections.emptyMap();
 
+    protected AbstractDifferenceEngine() { }
+
+    @Override
     public void addComparisonListener(ComparisonListener l) {
         if (l == null) {
             throw new IllegalArgumentException("listener must not be null");
@@ -34,6 +37,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         listeners.addComparisonListener(l);
     }
 
+    @Override
     public void addMatchListener(ComparisonListener l) {
         if (l == null) {
             throw new IllegalArgumentException("listener must not be null");
@@ -41,6 +45,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         listeners.addMatchListener(l);
     }
 
+    @Override
     public void addDifferenceListener(ComparisonListener l) {
         if (l == null) {
             throw new IllegalArgumentException("listener must not be null");
@@ -48,6 +53,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         listeners.addDifferenceListener(l);
     }
 
+    @Override
     public void setNodeMatcher(NodeMatcher n) {
         if (n == null) {
             throw new IllegalArgumentException("node matcher must"
@@ -60,6 +66,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         return nodeMatcher;
     }
 
+    @Override
     public void setDifferenceEvaluator(DifferenceEvaluator e) {
         if (e == null) {
             throw new IllegalArgumentException("difference evaluator must"
@@ -72,6 +79,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         return diffEvaluator;
     }
 
+    @Override
     public void setNamespaceContext(Map<String, String> uri2Prefix) {
         this.uri2Prefix = Collections.unmodifiableMap(uri2Prefix);
     }

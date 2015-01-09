@@ -30,6 +30,7 @@ final class ValidationHandler implements ErrorHandler {
     // fatal errors are re-thrown by the parser
     private SAXParseException lastFatalError = null;
 
+    @Override
     public void error(SAXParseException e) {
         if (e != lastFatalError) {
             valid = false;
@@ -40,6 +41,7 @@ final class ValidationHandler implements ErrorHandler {
         }
     }
 
+    @Override
     public void fatalError(SAXParseException e) {
         valid = false;
         lastFatalError = e;
@@ -48,6 +50,7 @@ final class ValidationHandler implements ErrorHandler {
                                                      .ProblemType.ERROR));
     }
 
+    @Override
     public void warning(SAXParseException e) {
         problems.add(ValidationProblem.fromException(e,
                                                      ValidationProblem

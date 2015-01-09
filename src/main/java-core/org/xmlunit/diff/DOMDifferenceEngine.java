@@ -43,6 +43,7 @@ import org.w3c.dom.ProcessingInstruction;
  */
 public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
 
+    @Override
     public void compare(Source control, Source test) {
         if (control == null) {
             throw new IllegalArgumentException("control must not be null");
@@ -109,6 +110,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                    test, getXPath(testContext),
                                                    Linqy.count(testChildren))))
             .andThen(new DeferredComparison() {
+                    @Override
                     public ComparisonResult apply() {
                         return nodeTypeSpecificComparison(control, controlContext,
                                                           test, testContext);
@@ -185,6 +187,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                final XPathContext testContext,
                                                final Iterable<Node> testChildren) {
         return new DeferredComparison() {
+            @Override
             public ComparisonResult apply() {
                 controlContext
                     .setChildren(Linqy.map(controlChildren, TO_NODE_INFO));
@@ -228,6 +231,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                    Boolean.valueOf(testDt != null))))
             .andIfTrueThen(controlDt != null && testDt != null,
                            new DeferredComparison() {
+                               @Override
                                public ComparisonResult apply() {
                                    return compareNodes(controlDt, controlContext,
                                                        testDt, testContext);
@@ -270,6 +274,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                    final Document test,
                                                    final XPathContext testContext) {
         return new DeferredComparison() {
+            @Override
             public ComparisonResult apply() {
                 return new ComparisonChain(
                     compare(new Comparison(ComparisonType.XML_VERSION,
@@ -307,6 +312,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                    test, getXPath(testContext),
                                    Nodes.getQName(test).getLocalPart())))
             .andThen(new DeferredComparison() {
+                    @Override
                     public ComparisonResult apply() {
                         return compareElementAttributes(control, controlContext,
                                                         test, testContext);
@@ -338,6 +344,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                    test, getXPath(testContext),
                                    testAttributes.remainingAttributes.size())))
             .andThen(new DeferredComparison() {
+                    @Override
                     public ComparisonResult apply() {
                         return compareXsiType(controlAttributes.type, controlContext,
                                               testAttributes.type, testContext);
@@ -387,6 +394,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             this.testAttributes = testAttributes;
         }
 
+        @Override
         public ComparisonResult apply() {
             ComparisonChain chain = new ComparisonChain();
             for (final Attr controlAttr : controlAttributes.remainingAttributes) {
@@ -410,6 +418,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                         testContext.navigateToAttribute(testAttrName);
                         try {
                             chain.andThen(new DeferredComparison() {
+                                    @Override
                                     public ComparisonResult apply() {
                                         return compareNodes(controlAttr,
                                                             controlContext,
@@ -456,6 +465,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             this.foundTestAttributes = foundTestAttributes;
         }
 
+        @Override
         public ComparisonResult apply() {
             ComparisonChain chain = new ComparisonChain();
             for (Attr testAttr : testAttributes.remainingAttributes) {
@@ -535,6 +545,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                       test, getXPath(testContext),
                                                       Integer.valueOf(testIndex))))
                     .andThen(new DeferredComparison() {
+                            @Override
                             public ComparisonResult apply() {
                                 return compareNodes(control, controlContext,
                                                     test, testContext);
@@ -563,6 +574,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             this.seen = seen;
         }
 
+        @Override
         public ComparisonResult apply() {
             ComparisonChain chain = new ComparisonChain();
             final int controlSize = controlList.size();
@@ -597,6 +609,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             this.seen = seen;
         }
 
+        @Override
         public ComparisonResult apply() {
             ComparisonChain chain = new ComparisonChain();
             final int testSize = testList.size();
