@@ -63,6 +63,28 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <artifactSet>
+            <excludes>
+              <exclude>junit:junit</exclude>
+            </excludes>
+          </artifactSet>
+          <shadedArtifactAttached>true</shadedArtifactAttached>
+          <shadedClassifierName>sumo</shadedClassifierName>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>
