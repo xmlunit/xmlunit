@@ -19,14 +19,24 @@ import org.xml.sax.SAXParseException;
  * A validation "problem" which may be an error or a warning.
  */
 public class ValidationProblem {
+    /**
+     * The type of validation problem encountered.
+     */
     public static enum ProblemType {ERROR, WARNING};
 
+    /**
+     * Constant used for unknown location information.
+     */
     public static final int UNKNOWN = -1;
 
     private final int line, column;
     private final ProblemType type;
     private final String message;
 
+    /**
+     * Creates a ValidationProblem for the given message and location
+     * of the given type.
+     */
     public ValidationProblem(String message, int line, int column,
                              ProblemType type) {
         this.message = message;

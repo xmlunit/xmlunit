@@ -16,7 +16,8 @@ package org.xmlunit.diff;
 import org.w3c.dom.Element;
 
 /**
- * Strategy for selecting matching elements.
+ * Strategy used by {@link DefaultNodeMatcher} for selecting matching
+ * elements.
  */
 public interface ElementSelector {
     /**

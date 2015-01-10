@@ -17,5 +17,9 @@ package org.xmlunit.diff;
  * Is notified of comparisions and their results.
  */
 public interface ComparisonListener {
+    /**
+     * Receives information about a comparison that has been performed
+     * and its outcome.
+     */
     void comparisonPerformed(Comparison comparison, ComparisonResult outcome);
 }

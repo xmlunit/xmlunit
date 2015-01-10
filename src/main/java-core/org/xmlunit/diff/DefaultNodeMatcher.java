@@ -23,25 +23,40 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Strategy that matches control and tests nodes for comparison.
+ * Default implemetation of {@link NodeMatcher} that matches control
+ * and tests nodes for comparison with the help of {@link
+ * NodeTypeMatcher} and {@link ElementSelector}.
  */
 public class DefaultNodeMatcher implements NodeMatcher {
     private final ElementSelector elementSelector;
     private final NodeTypeMatcher nodeTypeMatcher;
 
+    /**
+     * Creates a matcher using {@link ElementSelectors#Default} and
+     * {@link DefaultNodeTypeMatcher}.
+     */
     public DefaultNodeMatcher() {
         this(ElementSelectors.Default);
     }
 
+    /**
+     * Creates a matcher using the given {@link ElementSelector} and
+     * {@link DefaultNodeTypeMatcher}.
+     */
     public DefaultNodeMatcher(ElementSelector es) {
         this(es, new DefaultNodeTypeMatcher());
     }
 
+    /**
+     * Creates a matcher using the given {@link ElementSelector} and
+     * {@link NodeTypeMatcher}.
+     */
     public DefaultNodeMatcher(ElementSelector es, NodeTypeMatcher ntm) {
         elementSelector = es;
         nodeTypeMatcher = ntm;
     }
 
+    @Override
     public Iterable<Map.Entry<Node, Node>> match(Iterable<Node> controlNodes,
                                                  Iterable<Node> testNodes) {
         Map<Node, Node> matches = new LinkedHashMap<Node, Node>();
@@ -108,14 +123,28 @@ public class DefaultNodeMatcher implements NodeMatcher {
         }
     }
 
+    /**
+     * Determines whether two Nodes are eligible for comparison based
+     * on their node type.
+     */
     public interface NodeTypeMatcher {
+        /**
+         * Determines whether two Nodes are eligible for comparison
+         * based on their node type.
+         */
         boolean canBeCompared(short controlType, short testType);
     }
 
     private static final short CDATA = Node.TEXT_NODE;
     private static final short TEXT = Node.CDATA_SECTION_NODE;
 
+    /**
+     * {@link NodeTypeMatcher} that marks pairs of nodes of the same
+     * node type as well as pairs of CDATA sections and text nodes as
+     * eligible.
+     */
     public static class DefaultNodeTypeMatcher implements NodeTypeMatcher {
+        @Override
         public boolean canBeCompared(short controlType, short testType) {
             return controlType == testType
                 || (controlType == CDATA && testType == TEXT)

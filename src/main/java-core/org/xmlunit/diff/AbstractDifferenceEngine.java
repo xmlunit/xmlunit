@@ -90,6 +90,9 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         this.uri2Prefix = Collections.unmodifiableMap(uri2Prefix);
     }
 
+    /**
+     * Provides access to the configured namespace context.
+     */
     protected Map<String, String> getNamespaceContext() {
         return uri2Prefix;
     }
@@ -125,6 +128,9 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         };
     }
 
+    /**
+     * Returns a string representation of the given XPathContext.
+     */
     protected static String getXPath(XPathContext ctx) {
         return ctx == null ? null : ctx.getXPath();
     }
@@ -133,6 +139,9 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
      * Encapsulates a comparision that may or may not be performed.
      */
     protected interface DeferredComparison {
+        /**
+         * Perform the comparison.
+         */
         ComparisonResult apply();
     }
 
@@ -143,22 +152,41 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
      */
     protected static class ComparisonChain {
         private ComparisonResult currentResult;
+        /**
+         * Creates a chain without any parts.
+         */
         public ComparisonChain() {
             this(ComparisonResult.EQUAL);
         }
+        /**
+         * Creates a chain with an initial value.
+         */
         public ComparisonChain(ComparisonResult firstResult) {
             currentResult = firstResult;
         }
+        /**
+         * Adds a new part to the chain.
+         *
+         * <p>If the current result of the chain is already critical
+         * the new part will be ognored, otherwise it is evaluated and
+         * its outcome is the new result of the chain.</p>
+         */
         public ComparisonChain andThen(DeferredComparison next) {
             if (currentResult != ComparisonResult.CRITICAL) {
                 currentResult = next.apply();
             }
             return this;
         }
+        /**
+         * Adds a new part to the chain if the given predicate is true.
+         */
         public ComparisonChain andIfTrueThen(boolean evalNext,
                                              DeferredComparison next) {
             return evalNext ? andThen(next) : this;
         }
+        /**
+         * Returns the current result of the evaluated chain.
+         */
         public ComparisonResult getFinalResult() {
             return currentResult;
         }

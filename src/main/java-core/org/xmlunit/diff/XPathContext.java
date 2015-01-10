@@ -29,6 +29,10 @@ import org.xmlunit.util.Nodes;
 
 import org.w3c.dom.Node;
 
+/**
+ * Helper class that keeps track of the XPath of matched nodes during
+ * comparison.
+ */
 public class XPathContext {
     private final Deque<Level> path = new LinkedList<Level>();
     private final Map<String, String> uri2Prefix;
@@ -42,18 +46,33 @@ public class XPathContext {
     private static final String ATTR = "@";
     private static final String EMPTY = "";
 
+    /**
+     * Starts with an empty context.
+     */
     public XPathContext() {
         this(null, null);
     }
 
+    /**
+     * Starts with the context of a root node.
+     */
     public XPathContext(Node root) {
         this(null, root);
     }
 
+    /**
+     * Starts with an empty context and a given namespace mapping.
+     */
     public XPathContext(Map<String, String> uri2Prefix) {
         this(uri2Prefix, null);
     }
 
+    /**
+     * Starts with the context of an optional root node and an
+     * optional namespace mapping.
+     * @param uri2Prefix maps from namespace URI to prefix.
+     * @param root optional root node that determines the initial XPath
+     */
     public XPathContext(Map<String, String> uri2Prefix, Node root) {
         if (uri2Prefix == null) {
             this.uri2Prefix = Collections.emptyMap();
@@ -67,18 +86,30 @@ public class XPathContext {
         }
     }
 
+    /**
+     * Moves from the current node to the given child node.
+     */
     public void navigateToChild(int index) {
         path.addLast(path.getLast().children.get(index));
     }
 
+    /**
+     * Moves from the current node to the given attribute.
+     */
     public void navigateToAttribute(QName attribute) {
         path.addLast(path.getLast().attributes.get(attribute));
     }
 
+    /**
+     * Moves back to the parent.
+     */
     public void navigateToParent() {
         path.removeLast();
     }
 
+    /**
+     * Adds knowledge about the current node's attributes.
+     */
     public void addAttributes(Iterable<? extends QName> attributes) {
         Level current = path.getLast();
         for (QName attribute : attributes) {
@@ -87,18 +118,29 @@ public class XPathContext {
         }
     }
 
+    /**
+     * Adds knowledge about a single attribute of the current node.
+     */
     public void addAttribute(QName attribute) {
         Level current = path.getLast();
         current.attributes.put(attribute,
                                new Level(ATTR + getName(attribute)));
     }
 
+    /**
+     * Adds knowledge about the current node's children replacing
+     * existing knowledge.
+     */
     public void setChildren(Iterable<? extends NodeInfo> children) {
         Level current = path.getLast();
         current.children.clear();
         appendChildren(children);
     }
 
+    /**
+     * Adds knowledge about the current node's children appending to
+     * the knowledge already present.
+     */
     public void appendChildren(Iterable<? extends NodeInfo> children) {
         Level current = path.getLast();
         int comments, pis, texts;
@@ -147,6 +189,9 @@ public class XPathContext {
         }
     }
 
+    /**
+     * Stringifies the XPath of the current node.
+     */
     public String getXPath() {
         return getXPath(path.descendingIterator());
     }
@@ -199,11 +244,17 @@ public class XPathContext {
         }
     }
 
+    /**
+     * Representation of a node used by {@link XPathContext}.
+     */
     public static interface NodeInfo {
         QName getName();
         short getType();
     }
 
+    /**
+     * DOM based implementation of {@link NodeInfo}.
+     */
     public static final class DOMNodeInfo implements NodeInfo {
         private final QName name;
         private final short type;

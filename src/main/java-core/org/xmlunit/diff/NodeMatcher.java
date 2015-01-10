@@ -24,6 +24,10 @@ public interface NodeMatcher {
     /**
      * Matches control and test nodes against each other, returns the
      * matching pairs.
+     *
+     * <p>Nodes passed in as attributes but not returned as member of
+     * any pair will cause {@link ComparisonType#CHILD_LOOKUP}
+     * differences}.</p>
      */
     Iterable<Map.Entry<Node, Node>> match(Iterable<Node> controlNodes,
                                           Iterable<Node> testNodes);
