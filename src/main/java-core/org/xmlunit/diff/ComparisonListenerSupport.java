@@ -13,13 +13,12 @@
 */
 package org.xmlunit.diff;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Encapsulates support for DifferenceListeners so it can be reused by
- * different implementations of IDifferenceEngine.
+ * Encapsulates support for {@link ComparisonListener}s so it can be
+ * reused by different implementations of {@link DifferenceEngine}.
  */
 public class ComparisonListenerSupport {
     private final List<ComparisonListener> compListeners =
@@ -69,9 +68,8 @@ public class ComparisonListenerSupport {
     private static void fire(Comparison comparison, ComparisonResult outcome,
                              List<ComparisonListener> listeners) {
         if (!listeners.isEmpty()) {
-            for (Iterator<ComparisonListener> it = listeners.iterator();
-                 it.hasNext(); ) {
-                it.next().comparisonPerformed(comparison, outcome);
+            for (ComparisonListener l : listeners) {
+                l.comparisonPerformed(comparison, outcome);
             }
         }
     }

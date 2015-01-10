@@ -62,7 +62,10 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         nodeMatcher = n;
     }
 
-    public NodeMatcher getNodeMatcher() {
+    /**
+     * Provides access to the configured NodeMatcher.
+     */
+    protected NodeMatcher getNodeMatcher() {
         return nodeMatcher;
     }
 
@@ -75,7 +78,10 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         diffEvaluator = e;
     }
 
-    public DifferenceEvaluator getDifferenceEvaluator() {
+    /**
+     * Provides access to the configured DifferenceEvaluator.
+     */
+    protected DifferenceEvaluator getDifferenceEvaluator() {
         return diffEvaluator;
     }
 
