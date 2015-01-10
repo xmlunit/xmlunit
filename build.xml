@@ -18,7 +18,7 @@
   <property file="build.properties"/>
 
   <!-- Version -->
-  <property name="xmlunit.version" value="2.0alpha"/>
+  <property name="xmlunit.version" value="2.0.0-SNAPSHOT"/>
 
   <!-- some locations -->
   <property name="src.dir" value="src/main"/>
