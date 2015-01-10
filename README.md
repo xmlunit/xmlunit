@@ -85,19 +85,11 @@ of the 2.x core library.
 
 ## Building
 
-XMLUnit for Java builds using Apache Ant, run `ant -projecthelp` for
-the available targets, but mainly you want to run
+XMLUnit for Java builds using Apache Maven 3.x, mainly you want to run
 
 ```sh
-$ ant
+$ mvn install
 ```
 
 in order to compile `core`, `matchers` and `legacy` and run the
 tests.
-
-```sh
-$ ant jar
-```
-
-creates the corresponding jar files.
-
