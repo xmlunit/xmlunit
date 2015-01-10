@@ -67,6 +67,7 @@ public class test_AbstractNodeTester extends TestCase {
             + "<?target processing-instruction?>"
             + "bar"
             + "&my;"
+            + "xyzzy"
             + "<![CDATA[baz]]>"
             + "</foo>";
         NodeTest nt = new NodeTest(testXml);
@@ -124,9 +125,23 @@ public class test_AbstractNodeTester extends TestCase {
         }
 
         public void testText(Text text) {
-            Assert.assertFalse("testText called", textCalled);
+            String fullText = text.getNodeValue();
+            if (fullText.startsWith("bar")) {
+                Assert.assertFalse("testText called", textCalled);
+            }
+            if (!"barhelloxyzzy".equals(fullText)) {
+                if (!textCalled) {
+                    Assert.assertEquals("bar", fullText);
+                } else {
+                    Assert.assertEquals("helloxyzzy", fullText);
+                }
+            } // else - parser didn't expand entity reference
             textCalled = true;
-            Assert.assertEquals("barhello", text.getNodeValue());
+        }
+
+        public void testEntityReference(EntityReference reference) {
+            Assert.assertTrue("testEntityReference called", textCalled);
+            Assert.assertEquals("my", reference.getNodeName());
         }
 
         public void noMoreNodes(NodeTest t) {

@@ -190,7 +190,7 @@ public abstract class AbstractNodeTester implements NodeTester {
     }
     
     private void unhandled(Node aNode) throws NodeTestException {
-        throw new NodeTestException("Test fails by default in AbstractNodeTester", aNode);
+        throw new NodeTestException("Test fails by default in AbstractNodeTester" + aNode, aNode);
     }
 
     /**
