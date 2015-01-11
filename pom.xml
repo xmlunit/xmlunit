@@ -35,7 +35,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-  </properties>
+
+    <!-- location of any manifest file used by maven-jar-plugin -->
+    <manifestfile>${project.build.directory}/osgi/MANIFEST.MF</manifestfile>
+</properties>
 
   <inceptionYear>2001</inceptionYear>
 
@@ -127,11 +130,28 @@
           </configuration>
         </plugin>
         <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>buildnumber-maven-plugin</artifactId>
+          <version>1.3</version>
+          <configuration>
+            <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>validate</phase>
+              <goals>
+                <goal>create</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
           <version>2.5</version>
           <configuration>
             <archive>
+              <manifestFile>${manifestfile}</manifestFile>
               <manifest>
                 <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                 <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
@@ -140,6 +160,7 @@
                 <X-Compile-Source-JDK>${maven.compile.source}</X-Compile-Source-JDK>
                 <X-Compile-Target-JDK>${maven.compile.target}</X-Compile-Target-JDK>
                 <build-time>${maven.build.timestamp}</build-time>
+                <X-Git-Hash>${buildNumber} (Branch ${scmBranch})</X-Git-Hash>
               </manifestEntries>
             </archive>
           </configuration>
@@ -154,7 +175,57 @@
           <artifactId>maven-shade-plugin</artifactId>
           <version>2.3</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.5.3</version>
+          <inherited>true</inherited>
+        </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <!--
+            dummy entry to stop bundle plugin from picking up jar config and reporting
+            WARNING: Duplicate name in Manifest
+            See http://markmail.org/message/mpkl24wk3jrjhhjg
+          -->
+          <archive>
+            <forced>true</forced>
+          </archive>
+          <excludeDependencies>true</excludeDependencies>
+          <manifestLocation>${project.build.directory}/osgi</manifestLocation>
+          <instructions>
+            <!-- stops the "uses" clauses being added to "Export-Package" manifest entry -->
+            <_nouses>true</_nouses>
+            <!-- Stop the JAVA_1_n_HOME variables from being treated as headers by Bnd -->
+            <_removeheaders>JAVA_1_3_HOME,JAVA_1_4_HOME,JAVA_1_5_HOME,JAVA_1_6_HOME,JAVA_1_7_HOME,JAVA_1_8_HOME</_removeheaders>
+            <Bundle-SymbolicName>org.xmlunit.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Description>${project.description}</Bundle-Description>
+            <Export-Package>org.xmlunit.*;version=${project.version};-noimport:=true</Export-Package>
+            <Private-Package></Private-Package>
+            <Import-Package>*</Import-Package>
+            <DynamicImport-Package></DynamicImport-Package>
+            <Bundle-DocURL>${project.url}</Bundle-DocURL>
+          </instructions>
+        </configuration>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>
