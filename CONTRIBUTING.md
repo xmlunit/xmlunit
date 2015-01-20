@@ -41,8 +41,8 @@ a lot of help is needed here, before we can cut a new release.
 + Make sure your commit messages are in the proper format. Your commit
   message should contain the key of the issue if you created one.
 + Make sure you have added the necessary tests for your changes.
-+ Run all the tests with `ant clean test` or `nant clean test` to
-  assure nothing else was accidentally broken.
++ Run all the tests with `mvn clean test` to assure nothing else was
+  accidentally broken.
 
 Contributing to XMLUnit for Java 1.x
 ------------------------------------
@@ -55,8 +55,3 @@ http://svn.code.sf.net/p/xmlunit/code/trunk will be gladly accepted.
 The same rules that have been laid out for pull requests also apply to
 patches against the subversion trunk.
 
-Contributing to XMLUnit for .NET 0.x
-------------------------------------
-
-We don't expect to work on the old XMLUnit for .NET anymore, please
-help us getting version 2.x on the road as soon as possible.
