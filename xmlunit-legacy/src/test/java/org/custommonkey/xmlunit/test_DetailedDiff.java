@@ -113,8 +113,8 @@ public class test_DetailedDiff extends test_Diff {
         int i = 0;
         String expr = null;
         File test, control;
-        control = new File(test_Constants.BASEDIR + "/src/tests/resources/controlDetail.xml");
-        test = new File(test_Constants.BASEDIR + "/src/tests/resources/testDetail.xml");
+        control = new File(test_Constants.TEST_RESOURCE_DIR + "controlDetail.xml");
+        test = new File(test_Constants.TEST_RESOURCE_DIR + "testDetail.xml");
 
         try {
             XMLUnit.setIgnoreWhitespace(true);

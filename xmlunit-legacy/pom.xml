@@ -58,7 +58,6 @@
             <include>**/test_*.java</include>
           </includes>
           <systemPropertyVariables>
-            <testresourcebasedir>..</testresourcebasedir>
             <user.dir>..</user.dir>
           </systemPropertyVariables>
         </configuration>

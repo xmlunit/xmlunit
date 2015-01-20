@@ -144,10 +144,10 @@ public class test_Diff extends TestCase{
     }
 
     public void testFiles() throws Exception {
-        FileReader control = new FileReader(test_Constants.BASEDIR
-                                            + "/src/tests/resources/test.blame.html");
-        FileReader test = new FileReader(test_Constants.BASEDIR
-                                         + "/src/tests/resources/test.blame.html");
+        FileReader control = new FileReader(test_Constants.TEST_RESOURCE_DIR
+                                            + "test.blame.html");
+        FileReader test = new FileReader(test_Constants.TEST_RESOURCE_DIR
+                                         + "test.blame.html");
         Diff diff = buildDiff(control, test);
         assertEquals(diff.toString(), true, diff.identical());
     }
@@ -388,10 +388,10 @@ public class test_Diff extends TestCase{
     }
     
     public void testNamespacedAttributes() throws Exception {
-        FileReader control = new FileReader(test_Constants.BASEDIR
-                                            + "/src/tests/resources/controlNamespaces.xml");
-        FileReader test = new FileReader(test_Constants.BASEDIR
-                                         + "/src/tests/resources/testNamespaces.xml");
+        FileReader control = new FileReader(test_Constants.TEST_RESOURCE_DIR
+                                            + "controlNamespaces.xml");
+        FileReader test = new FileReader(test_Constants.TEST_RESOURCE_DIR
+                                         + "testNamespaces.xml");
         Diff diff = buildDiff(control, test);
         diff.overrideDifferenceListener(
                                         new ExpectedDifferenceListener(DifferenceConstants.NAMESPACE_PREFIX_ID));

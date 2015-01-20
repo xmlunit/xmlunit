@@ -83,6 +83,16 @@ The core library is complemented by Hamcrest matchers.  There also
 exists a `legacy` project that provides the API of XMLUnit 1.x on top
 of the 2.x core library.
 
+## Checking out XMLUnit for Java
+
+XMLUnit for Java uses a git submodule for test resources it shares
+with XMLUnit.NET.  You can either clone this repository using `git
+clone --recursive` or run `git submodule update --init` after inside
+your fresh working copy after cloning normally.
+
+If you have checked out a working copy before we added the submodule,
+you'll need to run `git submodule update --init` once.
+
 ## Building
 
 XMLUnit for Java builds using Apache Maven 3.x, mainly you want to run

@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
 public class test_Constants extends TestCase
     implements XMLConstants, XSLTConstants {
         
-    public static final String BASEDIR = System.getProperty("testresourcebasedir");
+    public static final String TEST_RESOURCE_DIR = "../test-resources/";
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     public static final String CHUCK_JONES_RIP_DTD =
@@ -65,8 +65,6 @@ public class test_Constants extends TestCase
         + "<!--meep meep--><toon><name>roadrunnner</name></toon>"
         + DOCUMENT_END;
 
-    public static final String EXTERNAL_DTD = BASEDIR +  "/cartoons.dtd";
-    
     public static final String DOCUMENT_WITH_GOOD_EXTERNAL_DTD =
         "<!DOCTYPE cartoons SYSTEM \"yak.dtd\">"
         + CHUCK_JONES_RIP_XML;

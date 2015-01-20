@@ -49,13 +49,13 @@ public class test_JAXP_1_2_Schema_Validation extends TestCase {
     private Validator validator;
 
     public void testUsingStringURI() throws Exception {
-        File xsdFile = new File(test_Constants.BASEDIR + "/src/tests/resources/Book.xsd");
-        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists", 
+        File xsdFile = new File(test_Constants.TEST_RESOURCE_DIR + "Book.xsd");
+        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists",
                    xsdFile.exists());
 
-        File xmlFile = new File(test_Constants.BASEDIR 
-                                + "/src/tests/resources/BookXsdGeneratedNoSchema.xml");
-        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists", 
+        File xmlFile = new File(test_Constants.TEST_RESOURCE_DIR +
+                                "BookXsdGeneratedNoSchema.xml");
+        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists",
                    xmlFile.exists());
 
         validator = new Validator(new FileReader(xmlFile));
@@ -67,13 +67,13 @@ public class test_JAXP_1_2_Schema_Validation extends TestCase {
     }
 
     public void testUsingInputStream() throws Exception {
-        File xsdFile = new File(test_Constants.BASEDIR + "/src/tests/resources/Book.xsd");
-        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists", 
+        File xsdFile = new File(test_Constants.TEST_RESOURCE_DIR + "Book.xsd");
+        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists",
                    xsdFile.exists());
 
-        File xmlFile = new File(test_Constants.BASEDIR 
-                                + "/src/tests/resources/BookXsdGeneratedNoSchema.xml");
-        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists", 
+        File xmlFile = new File(test_Constants.TEST_RESOURCE_DIR +
+                                "BookXsdGeneratedNoSchema.xml");
+        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists",
                    xmlFile.exists());
 
         validator = new Validator(new FileReader(xmlFile));
@@ -85,13 +85,13 @@ public class test_JAXP_1_2_Schema_Validation extends TestCase {
     }
 
     public void testUsingInputSource() throws Exception {
-        File xsdFile = new File(test_Constants.BASEDIR + "/src/tests/resources/Book.xsd");
-        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists", 
+        File xsdFile = new File(test_Constants.TEST_RESOURCE_DIR + "Book.xsd");
+        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists",
                    xsdFile.exists());
 
-        File xmlFile = new File(test_Constants.BASEDIR
-                                + "/src/tests/resources/BookXsdGeneratedNoSchema.xml");
-        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists", 
+        File xmlFile = new File(test_Constants.TEST_RESOURCE_DIR +
+                                "BookXsdGeneratedNoSchema.xml");
+        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists",
                    xmlFile.exists());
 
         validator = new Validator(new FileReader(xmlFile));
@@ -104,13 +104,13 @@ public class test_JAXP_1_2_Schema_Validation extends TestCase {
     }
 
     public void testUsingAFile() throws Exception {
-        File xsdFile = new File(test_Constants.BASEDIR + "/src/tests/resources/Book.xsd");
-        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists", 
+        File xsdFile = new File(test_Constants.TEST_RESOURCE_DIR + "Book.xsd");
+        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists",
                    xsdFile.exists());
 
-        File xmlFile = new File(test_Constants.BASEDIR
-                                + "/src/tests/resources/BookXsdGeneratedNoSchema.xml");
-        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists", 
+        File xmlFile = new File(test_Constants.TEST_RESOURCE_DIR +
+                                "BookXsdGeneratedNoSchema.xml");
+        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists",
                    xmlFile.exists());
 
         validator = new Validator(new FileReader(xmlFile));
@@ -120,15 +120,15 @@ public class test_JAXP_1_2_Schema_Validation extends TestCase {
 
         validator.assertIsValid();
     }
-    
+
     public void testUsingObjectArrayContainingStringURI() throws Exception {
-        File xsdFile = new File(test_Constants.BASEDIR + "/src/tests/resources/Book.xsd");
-        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists", 
+        File xsdFile = new File(test_Constants.TEST_RESOURCE_DIR + "Book.xsd");
+        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists",
                    xsdFile.exists());
 
-        File xmlFile = new File(test_Constants.BASEDIR 
-                                + "/src/tests/resources/BookXsdGeneratedNoSchema.xml");
-        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists", 
+        File xmlFile = new File(test_Constants.TEST_RESOURCE_DIR +
+                                "BookXsdGeneratedNoSchema.xml");
+        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists",
                    xmlFile.exists());
 
         validator = new Validator(new FileReader(xmlFile));
@@ -140,15 +140,15 @@ public class test_JAXP_1_2_Schema_Validation extends TestCase {
 
         validator.assertIsValid();
     }
-    
+
     public void testUsingStringArrayContainingStringURI() throws Exception {
-        File xsdFile = new File(test_Constants.BASEDIR + "/src/tests/resources/Book.xsd");
-        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists", 
+        File xsdFile = new File(test_Constants.TEST_RESOURCE_DIR + "Book.xsd");
+        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists",
                    xsdFile.exists());
 
-        File xmlFile = new File(test_Constants.BASEDIR 
-                                + "/src/tests/resources/BookXsdGeneratedNoSchema.xml");
-        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists", 
+        File xmlFile = new File(test_Constants.TEST_RESOURCE_DIR +
+                                "BookXsdGeneratedNoSchema.xml");
+        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists",
                    xmlFile.exists());
 
         validator = new Validator(new FileReader(xmlFile));
@@ -160,15 +160,15 @@ public class test_JAXP_1_2_Schema_Validation extends TestCase {
 
         validator.assertIsValid();
     }
-    
+
     public void testUsingNonExistentFile() throws Exception {
-        File xsdFile = new File(test_Constants.BASEDIR + "/src/tests/resources/BookDoesNotExist.xsd");
-        assertFalse("xsdFile " + xsdFile.getAbsolutePath() + " exists", 
+        File xsdFile = new File(test_Constants.TEST_RESOURCE_DIR + "BookDoesNotExist.xsd");
+        assertFalse("xsdFile " + xsdFile.getAbsolutePath() + " exists",
                     xsdFile.exists());
 
-        File xmlFile = new File(test_Constants.BASEDIR
-                                + "/src/tests/resources/BookXsdGeneratedNoSchema.xml");
-        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists", 
+        File xmlFile = new File(test_Constants.TEST_RESOURCE_DIR +
+                                "BookXsdGeneratedNoSchema.xml");
+        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists",
                    xmlFile.exists());
 
         validator = new Validator(new FileReader(xmlFile));
@@ -178,15 +178,15 @@ public class test_JAXP_1_2_Schema_Validation extends TestCase {
 
         assertFalse("Isn't valid since no schema can be found", validator.isValid());
     }
-    
+
     public void testUsingInvalidXML() throws Exception {
-        File xsdFile = new File(test_Constants.BASEDIR + "/src/tests/resources/Book.xsd");
-        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists", 
+        File xsdFile = new File(test_Constants.TEST_RESOURCE_DIR + "Book.xsd");
+        assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists",
                    xsdFile.exists());
 
-        File xmlFile = new File(test_Constants.BASEDIR
-                                + "/src/tests/resources/InvalidBookXsdGeneratedNoSchema.xml");
-        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists", 
+        File xmlFile = new File(test_Constants.TEST_RESOURCE_DIR +
+                                "InvalidBookXsdGeneratedNoSchema.xml");
+        assertTrue("xmlFile " + xmlFile.getAbsolutePath() + " exists",
                    xmlFile.exists());
 
         validator = new Validator(new FileReader(xmlFile));

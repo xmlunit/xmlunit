@@ -58,7 +58,7 @@ public class test_Validator extends XMLTestCase {
     private File tempDTDFile;
 
     public void testXSchema() throws Exception{
-        File xsdFile = new File(test_Constants.BASEDIR + "/src/tests/resources/Book.xsd");
+        File xsdFile = new File(test_Constants.TEST_RESOURCE_DIR + "Book.xsd");
         assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists",
                    xsdFile.exists());
                 
@@ -196,7 +196,7 @@ public class test_Validator extends XMLTestCase {
     }
 
     public void setUp() throws Exception {
-        tempDTDFile = new File(test_Constants.EXTERNAL_DTD);
+        tempDTDFile = File.createTempFile("cartoon", "dtd");
         removeTempDTDFile();
     }
 

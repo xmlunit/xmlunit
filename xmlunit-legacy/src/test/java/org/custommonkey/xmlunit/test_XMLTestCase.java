@@ -103,23 +103,23 @@ public class test_XMLTestCase extends XMLTestCase {
      */
     public void testXMLEqualsFiles() throws Exception {
         assertXMLEqual(new FileReader(
-                                      test_Constants.BASEDIR + "/src/tests/resources/test1.xml"),
+                                      test_Constants.TEST_RESOURCE_DIR + "test1.xml"),
                        new FileReader(
-                                      test_Constants.BASEDIR + "/src/tests/resources/test1.xml"));
+                                      test_Constants.TEST_RESOURCE_DIR + "test1.xml"));
         assertXMLNotEqual(new FileReader(
-                                         test_Constants.BASEDIR + "/src/tests/resources/test1.xml"),
+                                         test_Constants.TEST_RESOURCE_DIR + "test1.xml"),
                           new FileReader(
-                                         test_Constants.BASEDIR + "/src/tests/resources/test2.xml"));
+                                         test_Constants.TEST_RESOURCE_DIR + "test2.xml"));
 
         // Bug 956372
         assertXMLEqual("equal message", new FileReader(
-                                                       test_Constants.BASEDIR + "/src/tests/resources/test1.xml"),
+                                                       test_Constants.TEST_RESOURCE_DIR + "test1.xml"),
                        new FileReader(
-                                      test_Constants.BASEDIR + "/src/tests/resources/test1.xml"));
+                                      test_Constants.TEST_RESOURCE_DIR + "test1.xml"));
         assertXMLNotEqual("notEqual message", new FileReader(
-                                                             test_Constants.BASEDIR + "/src/tests/resources/test1.xml"),
+                                                             test_Constants.TEST_RESOURCE_DIR + "test1.xml"),
                           new FileReader(
-                                         test_Constants.BASEDIR + "/src/tests/resources/test2.xml"));
+                                         test_Constants.TEST_RESOURCE_DIR + "test2.xml"));
 
         try{
             assertXMLNotEqual(new FileReader("nosuchfile.xml"),
