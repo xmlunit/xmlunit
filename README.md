@@ -33,6 +33,35 @@ If you are looking for something to work on, we've compiled a
 Please see the [contributing guide](CONTRIBUTING.md) for details on
 how to contribute.
 
+## SNAPSHOT builds
+
+There is no released version of XMLUnit for Java 2.x, we'll need to
+hash out a few remaining API questions before we can think about
+cutting an alpha version.
+
+We are providing SNAPSHOT builds from
+[Sonatypes OSS Nexus Repository](https://oss.sonatype.org/content/repositories/snapshots/org/xmlunit/),
+you need to add
+
+```xml
+<repository>
+  <id>snapshots-repo</id>
+  <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  <releases><enabled>false</enabled></releases>
+  <snapshots><enabled>true</enabled></snapshots>
+</repository>
+```
+
+to your Maven settings.  The core library is
+
+```xml
+<dependency>
+  <groupId>org.xmlunit</groupId>
+  <artifactId>xmlunit-core</artifactId>
+  <version>2.0.0-SNAPSHOT</version>
+</dependency>
+```
+
 ## Examples
 
 These are some really small examples, more is to come in the [user guide](https://github.com/xmlunit/user-guide/wiki)
