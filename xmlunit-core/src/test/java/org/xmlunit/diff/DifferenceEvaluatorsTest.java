@@ -34,21 +34,21 @@ public class DifferenceEvaluatorsTest {
 
     @Test public void emptyFirstJustWorks() {
         DifferenceEvaluator d = DifferenceEvaluators.first();
-        assertEquals(ComparisonResult.CRITICAL,
-                     d.evaluate(null, ComparisonResult.CRITICAL));
+        assertEquals(ComparisonResult.DIFFERENT,
+                     d.evaluate(null, ComparisonResult.DIFFERENT));
     }
 
     @Test public void firstChangeWinsInFirst() {
-        Evaluator e1 = new Evaluator(ComparisonResult.CRITICAL);
+        Evaluator e1 = new Evaluator(ComparisonResult.DIFFERENT);
         Evaluator e2 = new Evaluator(ComparisonResult.EQUAL);
         DifferenceEvaluator d = DifferenceEvaluators.first(e1, e2);
-        assertEquals(ComparisonResult.CRITICAL,
-                     d.evaluate(null, ComparisonResult.DIFFERENT));
+        assertEquals(ComparisonResult.DIFFERENT,
+                     d.evaluate(null, ComparisonResult.SIMILAR));
         assertTrue(e1.called);
         assertFalse(e2.called);
         e1.called = false;
         assertEquals(ComparisonResult.EQUAL,
-                     d.evaluate(null, ComparisonResult.CRITICAL));
+                     d.evaluate(null, ComparisonResult.DIFFERENT));
         assertTrue(e1.called);
         assertTrue(e2.called);
     }

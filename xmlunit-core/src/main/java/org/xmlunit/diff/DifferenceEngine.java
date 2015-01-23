@@ -43,10 +43,15 @@ public interface DifferenceEngine {
     void setNodeMatcher(NodeMatcher n);
 
     /**
+     * Evaluates the severity of a difference.
+     */
+    void setDifferenceEvaluator(DifferenceEvaluator e);
+
+    /**
      * Determines whether the comparison should stop after given
      * difference has been found.
      */
-    void setDifferenceEvaluator(DifferenceEvaluator e);
+    void setComparisonController(ComparisonController c);
 
     /**
      * Establish a namespace context that will be used in {@link

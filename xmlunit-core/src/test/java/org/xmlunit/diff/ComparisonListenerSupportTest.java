@@ -26,24 +26,21 @@ public class ComparisonListenerSupportTest {
         Listener c, m, d;
         s.addComparisonListener(c = new Listener(ComparisonResult.EQUAL,
                                                  ComparisonResult.SIMILAR,
-                                                 ComparisonResult.DIFFERENT,
-                                                 ComparisonResult.CRITICAL));
+                                                 ComparisonResult.DIFFERENT));
         s.addMatchListener(m = new Listener(ComparisonResult.EQUAL));
         s.addDifferenceListener(d = new Listener(ComparisonResult.SIMILAR,
-                                                 ComparisonResult.DIFFERENT,
-                                                 ComparisonResult.CRITICAL));
+                                                 ComparisonResult.DIFFERENT));
         for (ComparisonResult r : new ComparisonResult[] {
                 ComparisonResult.EQUAL,
                 ComparisonResult.SIMILAR,
-                ComparisonResult.DIFFERENT,
-                ComparisonResult.CRITICAL
+                ComparisonResult.DIFFERENT
             }) {
             s.fireComparisonPerformed(null, r);
         }
 
-        assertEquals(4, c.invocations);
+        assertEquals(3, c.invocations);
         assertEquals(1, m.invocations);
-        assertEquals(3, d.invocations);
+        assertEquals(2, d.invocations);
     }
 
     @Test public void noListenersDontCauseProblems() {

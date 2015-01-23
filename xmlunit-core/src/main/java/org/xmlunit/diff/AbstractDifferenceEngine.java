@@ -13,6 +13,7 @@
 */
 package org.xmlunit.diff;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         new ComparisonListenerSupport();
     private NodeMatcher nodeMatcher = new DefaultNodeMatcher();
     private DifferenceEvaluator diffEvaluator = DifferenceEvaluators.Default;
+    private ComparisonController comparisonController = ComparisonControllers.Default;
     private Map<String, String> uri2Prefix = Collections.emptyMap();
 
     protected AbstractDifferenceEngine() { }
@@ -86,6 +88,22 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     }
 
     @Override
+    public void setComparisonController(ComparisonController c) {
+        if (c == null) {
+            throw new IllegalArgumentException("comparison controller must"
+                                               + " not be null");
+        }
+        comparisonController = c;
+    }
+
+    /**
+     * Provides access to the configured ComparisonController.
+     */
+    protected ComparisonController getComparisonController() {
+        return comparisonController;
+    }
+
+    @Override
     public void setNamespaceContext(Map<String, String> uri2Prefix) {
         this.uri2Prefix = Collections.unmodifiableMap(uri2Prefix);
     }
@@ -99,10 +117,13 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
 
     /**
      * Compares the detail values for object equality, lets the
-     * difference evaluator evaluate the result, notifies all
-     * listeners and returns the outcome.
+     * difference evaluator and comparison controller evaluate the
+     * result, notifies all listeners and returns the outcome.
+     *
+     * @return the outcome as pair of result and a flag that says
+     * "stop the whole comparison process" when true.
      */
-    protected final ComparisonResult compare(Comparison comp) {
+    protected final Map.Entry<ComparisonResult, Boolean> compare(Comparison comp) {
         Object controlValue = comp.getControlDetails().getValue();
         Object testValue = comp.getTestDetails().getValue();
         boolean equal = controlValue == null
@@ -112,7 +133,11 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         ComparisonResult altered =
             getDifferenceEvaluator().evaluate(comp, initial);
         listeners.fireComparisonPerformed(comp, altered);
-        return altered;
+        boolean stop = false;
+        if (altered != ComparisonResult.EQUAL) {
+            stop = comparisonController.stopDiffing(new Difference(comp, altered));
+        }
+        return new AbstractMap.SimpleImmutableEntry(altered, stop);
     }
 
     /**
@@ -122,7 +147,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
      */
     protected final DeferredComparison comparer(final Comparison comp) {
         return new DeferredComparison() {
-            public ComparisonResult apply() {
+            public Map.Entry<ComparisonResult, Boolean> apply() {
                 return compare(comp);
             }
         };
@@ -142,26 +167,27 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         /**
          * Perform the comparison.
          */
-        ComparisonResult apply();
+        Map.Entry<ComparisonResult, Boolean> apply();
     }
 
     /**
      * Chain of comparisons where the last comparison performed
-     * determines the final result but the first comparison with a
-     * critical difference stops the chain.
+     * determines the final result but the chain stops as soon as the
+     * comparison controller says so.
      */
     protected static class ComparisonChain {
-        private ComparisonResult currentResult;
+        private Map.Entry<ComparisonResult, Boolean> currentResult;
+
         /**
          * Creates a chain without any parts.
          */
         public ComparisonChain() {
-            this(ComparisonResult.EQUAL);
+            this(new AbstractMap.SimpleImmutableEntry(ComparisonResult.EQUAL, false));
         }
         /**
          * Creates a chain with an initial value.
          */
-        public ComparisonChain(ComparisonResult firstResult) {
+        public ComparisonChain(Map.Entry<ComparisonResult, Boolean> firstResult) {
             currentResult = firstResult;
         }
         /**
@@ -172,7 +198,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
          * its outcome is the new result of the chain.</p>
          */
         public ComparisonChain andThen(DeferredComparison next) {
-            if (currentResult != ComparisonResult.CRITICAL) {
+            if (!currentResult.getValue()) {
                 currentResult = next.apply();
             }
             return this;
@@ -187,8 +213,9 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         /**
          * Returns the current result of the evaluated chain.
          */
-        public ComparisonResult getFinalResult() {
+        public Map.Entry<ComparisonResult, Boolean> getFinalResult() {
             return currentResult;
         }
     }
+
 }

@@ -14,6 +14,7 @@
 
 package org.xmlunit.diff;
 
+import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,8 +79,9 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
      *
      * <p>package private to support tests.</p>
      */
-    ComparisonResult compareNodes(final Node control, final XPathContext controlContext,
-                                  final Node test, final XPathContext testContext) {
+    Map.Entry<ComparisonResult, Boolean>
+        compareNodes(final Node control, final XPathContext controlContext,
+                     final Node test, final XPathContext testContext) {
         final Iterable<Node> controlChildren =
             Linqy.filter(new IterableNodeList(control.getChildNodes()),
                          INTERESTING_NODES);
@@ -111,7 +113,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                    Linqy.count(testChildren))))
             .andThen(new DeferredComparison() {
                     @Override
-                    public ComparisonResult apply() {
+                    public Map.Entry<ComparisonResult, Boolean> apply() {
                         return nodeTypeSpecificComparison(control, controlContext,
                                                           test, testContext);
                     }
@@ -129,7 +131,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
      * Dispatches to the node type specific comparison if one is
      * defined for the given combination of nodes.
      */
-    private ComparisonResult
+    private Map.Entry<ComparisonResult, Boolean>
         nodeTypeSpecificComparison(Node control,
                                    XPathContext controlContext,
                                    Node test, XPathContext testContext) {
@@ -177,7 +179,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             }
             break;
         }
-        return ComparisonResult.EQUAL;
+        return new AbstractMap.SimpleImmutableEntry(ComparisonResult.EQUAL, false);
     }
 
     private DeferredComparison compareChildren(final Node control,
@@ -188,7 +190,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                final Iterable<Node> testChildren) {
         return new DeferredComparison() {
             @Override
-            public ComparisonResult apply() {
+            public Map.Entry<ComparisonResult, Boolean> apply() {
                 controlContext
                     .setChildren(Linqy.map(controlChildren, TO_NODE_INFO));
                 testContext
@@ -202,10 +204,11 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     /**
      * Compares textual content.
      */
-    private ComparisonResult compareCharacterData(CharacterData control,
-                                                  XPathContext controlContext,
-                                                  CharacterData test,
-                                                  XPathContext testContext) {
+    private Map.Entry<ComparisonResult, Boolean>
+        compareCharacterData(CharacterData control,
+                             XPathContext controlContext,
+                             CharacterData test,
+                             XPathContext testContext) {
         return compare(new Comparison(ComparisonType.TEXT_VALUE, control,
                                       getXPath(controlContext),
                                       control.getData(),
@@ -216,10 +219,11 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     /**
      * Compares document node, doctype and XML declaration properties
      */
-    private ComparisonResult compareDocuments(final Document control,
-                                              final XPathContext controlContext,
-                                              final Document test,
-                                              final XPathContext testContext) {
+    private Map.Entry<ComparisonResult, Boolean>
+        compareDocuments(final Document control,
+                         final XPathContext controlContext,
+                         final Document test,
+                         final XPathContext testContext) {
         final DocumentType controlDt = control.getDoctype();
         final DocumentType testDt = test.getDoctype();
 
@@ -232,7 +236,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             .andIfTrueThen(controlDt != null && testDt != null,
                            new DeferredComparison() {
                                @Override
-                               public ComparisonResult apply() {
+                               public Map.Entry<ComparisonResult, Boolean> apply() {
                                    return compareNodes(controlDt, controlContext,
                                                        testDt, testContext);
                                }
@@ -240,15 +244,16 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             .andThen(compareDeclarations(control, controlContext,
                                          test, testContext))
             .getFinalResult();
-    }            
+    }
 
     /**
      * Compares properties of the doctype declaration.
      */
-    private ComparisonResult compareDocTypes(DocumentType control,
-                                             XPathContext controlContext,
-                                             DocumentType test,
-                                             XPathContext testContext) {
+    private Map.Entry<ComparisonResult, Boolean>
+        compareDocTypes(DocumentType control,
+                        XPathContext controlContext,
+                        DocumentType test,
+                        XPathContext testContext) {
         return new ComparisonChain(
             compare(new Comparison(ComparisonType.DOCTYPE_NAME,
                                    control, getXPath(controlContext),
@@ -275,7 +280,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                    final XPathContext testContext) {
         return new DeferredComparison() {
             @Override
-            public ComparisonResult apply() {
+            public Map.Entry<ComparisonResult, Boolean> apply() {
                 return new ComparisonChain(
                     compare(new Comparison(ComparisonType.XML_VERSION,
                                            control, getXPath(controlContext),
@@ -301,10 +306,11 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
      * Compares elements node properties, in particular the element's
      * name and its attributes.
      */
-    private ComparisonResult compareElements(final Element control,
-                                             final XPathContext controlContext,
-                                             final Element test,
-                                             final XPathContext testContext) {
+    private Map.Entry<ComparisonResult, Boolean>
+        compareElements(final Element control,
+                        final XPathContext controlContext,
+                        final Element test,
+                        final XPathContext testContext) {
         return new ComparisonChain(
             compare(new Comparison(ComparisonType.ELEMENT_TAG_NAME,
                                    control, getXPath(controlContext),
@@ -313,7 +319,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                    Nodes.getQName(test).getLocalPart())))
             .andThen(new DeferredComparison() {
                     @Override
-                    public ComparisonResult apply() {
+                    public Map.Entry<ComparisonResult, Boolean> apply() {
                         return compareElementAttributes(control, controlContext,
                                                         test, testContext);
                     }
@@ -324,10 +330,11 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     /**
      * Compares element's attributes.
      */
-    private ComparisonResult compareElementAttributes(final Element control,
-                                                      final XPathContext controlContext,
-                                                      final Element test,
-                                                      final XPathContext testContext) {
+    private Map.Entry<ComparisonResult, Boolean>
+        compareElementAttributes(final Element control,
+                                 final XPathContext controlContext,
+                                 final Element test,
+                                 final XPathContext testContext) {
         final Attributes controlAttributes = splitAttributes(control.getAttributes());
         controlContext
             .addAttributes(Linqy.map(controlAttributes.remainingAttributes,
@@ -345,7 +352,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                    testAttributes.remainingAttributes.size())))
             .andThen(new DeferredComparison() {
                     @Override
-                    public ComparisonResult apply() {
+                    public Map.Entry<ComparisonResult, Boolean> apply() {
                         return compareXsiType(controlAttributes.type, controlContext,
                                               testAttributes.type, testContext);
                     }
@@ -395,7 +402,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         }
 
         @Override
-        public ComparisonResult apply() {
+        public Map.Entry<ComparisonResult, Boolean> apply() {
             ComparisonChain chain = new ComparisonChain();
             for (final Attr controlAttr : controlAttributes.remainingAttributes) {
                 final QName controlAttrName = Nodes.getQName(controlAttr);
@@ -419,7 +426,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                         try {
                             chain.andThen(new DeferredComparison() {
                                     @Override
-                                    public ComparisonResult apply() {
+                                    public Map.Entry<ComparisonResult, Boolean> apply() {
                                         return compareNodes(controlAttr,
                                                             controlContext,
                                                             testAttr,
@@ -466,7 +473,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         }
 
         @Override
-        public ComparisonResult apply() {
+        public Map.Entry<ComparisonResult, Boolean> apply() {
             ComparisonChain chain = new ComparisonChain();
             for (Attr testAttr : testAttributes.remainingAttributes) {
                 if (!foundTestAttributes.contains(testAttr)) {
@@ -492,7 +499,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     /**
      * Compares properties of a processing instruction.
      */
-    private ComparisonResult
+    private Map.Entry<ComparisonResult, Boolean>
         compareProcessingInstructions(ProcessingInstruction control,
                                       XPathContext controlContext,
                                       ProcessingInstruction test,
@@ -517,10 +524,11 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
      * <p>Also performs CHILD_LOOKUP comparisons for each node that
      * couldn't be matched to one of the "other" list.</p>
      */
-    private ComparisonResult compareNodeLists(Iterable<Node> controlSeq,
-                                              final XPathContext controlContext,
-                                              Iterable<Node> testSeq,
-                                              final XPathContext testContext) {
+    private Map.Entry<ComparisonResult, Boolean>
+        compareNodeLists(Iterable<Node> controlSeq,
+                         final XPathContext controlContext,
+                         Iterable<Node> testSeq,
+                         final XPathContext testContext) {
         ComparisonChain chain = new ComparisonChain();
 
         Iterable<Map.Entry<Node, Node>> matches =
@@ -546,7 +554,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                       Integer.valueOf(testIndex))))
                     .andThen(new DeferredComparison() {
                             @Override
-                            public ComparisonResult apply() {
+                            public Map.Entry<ComparisonResult, Boolean> apply() {
                                 return compareNodes(control, controlContext,
                                                     test, testContext);
                             }
@@ -575,7 +583,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         }
 
         @Override
-        public ComparisonResult apply() {
+        public Map.Entry<ComparisonResult, Boolean> apply() {
             ComparisonChain chain = new ComparisonChain();
             final int controlSize = controlList.size();
             for (int i = 0; i < controlSize; i++) {
@@ -610,7 +618,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         }
 
         @Override
-        public ComparisonResult apply() {
+        public Map.Entry<ComparisonResult, Boolean> apply() {
             ComparisonChain chain = new ComparisonChain();
             final int testSize = testList.size();
             for (int i = 0; i < testSize; i++) {
@@ -635,14 +643,15 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     /**
      * Compares xsi:type attribute values
      */
-    private ComparisonResult compareXsiType(Attr controlAttr,
-                                            XPathContext controlContext,
-                                            Attr testAttr,
-                                            XPathContext testContext) {
+    private Map.Entry<ComparisonResult, Boolean>
+        compareXsiType(Attr controlAttr,
+                       XPathContext controlContext,
+                       Attr testAttr,
+                       XPathContext testContext) {
         boolean mustChangeControlContext = controlAttr != null;
         boolean mustChangeTestContext = testAttr != null;
         if (!mustChangeControlContext && !mustChangeTestContext) {
-            return ComparisonResult.EQUAL;
+            return new AbstractMap.SimpleImmutableEntry(ComparisonResult.EQUAL, false);
         }
         boolean attributePresentOnBothSides = mustChangeControlContext
             && mustChangeTestContext;
@@ -691,10 +700,11 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     /**
      * Compares properties of an attribute.
      */
-    private ComparisonResult compareAttributes(Attr control,
-                                               XPathContext controlContext,
-                                               Attr test,
-                                               XPathContext testContext) {
+    private Map.Entry<ComparisonResult, Boolean>
+        compareAttributes(Attr control,
+                          XPathContext controlContext,
+                          Attr test,
+                          XPathContext testContext) {
         return new ComparisonChain(
             compareAttributeExplicitness(control, controlContext, test,
                                          testContext).apply())

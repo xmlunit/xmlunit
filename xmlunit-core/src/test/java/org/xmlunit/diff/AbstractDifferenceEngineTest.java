@@ -14,6 +14,9 @@
 package org.xmlunit.diff;
 
 import org.junit.Test;
+import java.util.AbstractMap;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 public abstract class AbstractDifferenceEngineTest {
@@ -21,7 +24,7 @@ public abstract class AbstractDifferenceEngineTest {
     protected abstract AbstractDifferenceEngine getDifferenceEngine();
 
     private static class ResultGrabber implements DifferenceEvaluator {
-        private ComparisonResult outcome = ComparisonResult.CRITICAL;
+        private ComparisonResult outcome = ComparisonResult.SIMILAR;
         public ComparisonResult evaluate(Comparison comparison,
                                          ComparisonResult outcome) {
             this.outcome = outcome;
@@ -33,7 +36,7 @@ public abstract class AbstractDifferenceEngineTest {
         ResultGrabber g = new ResultGrabber();
         AbstractDifferenceEngine d = getDifferenceEngine();
         d.setDifferenceEvaluator(g);
-        assertEquals(ComparisonResult.EQUAL,
+        assertEquals(wrap(ComparisonResult.EQUAL),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
                                               null, null, null,
                                               null, null, null)));
@@ -44,7 +47,7 @@ public abstract class AbstractDifferenceEngineTest {
         ResultGrabber g = new ResultGrabber();
         AbstractDifferenceEngine d = getDifferenceEngine();
         d.setDifferenceEvaluator(g);
-        assertEquals(ComparisonResult.DIFFERENT,
+        assertEquals(wrap(ComparisonResult.DIFFERENT),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
                                               null, null, null,
                                               null, null, "")));
@@ -55,7 +58,7 @@ public abstract class AbstractDifferenceEngineTest {
         ResultGrabber g = new ResultGrabber();
         AbstractDifferenceEngine d = getDifferenceEngine();
         d.setDifferenceEvaluator(g);
-        assertEquals(ComparisonResult.DIFFERENT,
+        assertEquals(wrap(ComparisonResult.DIFFERENT),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
                                               null, null, "",
                                               null, null, null)));
@@ -66,7 +69,7 @@ public abstract class AbstractDifferenceEngineTest {
         ResultGrabber g = new ResultGrabber();
         AbstractDifferenceEngine d = getDifferenceEngine();
         d.setDifferenceEvaluator(g);
-        assertEquals(ComparisonResult.DIFFERENT,
+        assertEquals(wrap(ComparisonResult.DIFFERENT),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
                                               null, null, new Short("1"),
                                               null, null, new Short("2"))));
@@ -77,7 +80,7 @@ public abstract class AbstractDifferenceEngineTest {
         ResultGrabber g = new ResultGrabber();
         AbstractDifferenceEngine d = getDifferenceEngine();
         d.setDifferenceEvaluator(g);
-        assertEquals(ComparisonResult.EQUAL,
+        assertEquals(wrap(ComparisonResult.EQUAL),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
                                               null, null, new Short("2"),
                                               null, null, new Short("2"))));
@@ -89,7 +92,7 @@ public abstract class AbstractDifferenceEngineTest {
         ComparisonListenerSupportTest.Listener l =
             new ComparisonListenerSupportTest.Listener(ComparisonResult.EQUAL);
         d.addComparisonListener(l);
-        assertEquals(ComparisonResult.EQUAL,
+        assertEquals(wrap(ComparisonResult.EQUAL),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
                                               null, null, new Short("2"),
                                               null, null, new Short("2"))));
@@ -107,11 +110,36 @@ public abstract class AbstractDifferenceEngineTest {
                     return ComparisonResult.SIMILAR;
                 }
             });
-        assertEquals(ComparisonResult.SIMILAR,
+        assertEquals(wrap(ComparisonResult.SIMILAR),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
                                               null, null, new Short("2"),
                                               null, null, new Short("2"))));
         assertEquals(1, l.getInvocations());
     }
 
+    @Test public void compareUsesResultOfController() {
+        AbstractDifferenceEngine d = getDifferenceEngine();
+        ComparisonListenerSupportTest.Listener l =
+            new ComparisonListenerSupportTest.Listener(ComparisonResult.SIMILAR);
+        d.addComparisonListener(l);
+        d.setComparisonController(new ComparisonController() {
+                @Override
+                public boolean stopDiffing(Difference ignored) {
+                    return true;
+                }
+            });
+        assertEquals(wrapAndStop(ComparisonResult.SIMILAR),
+                     d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
+                                              null, null, new Short("1"),
+                                              null, null, new Short("2"))));
+        assertEquals(1, l.getInvocations());
+    }
+
+    protected static Map.Entry<ComparisonResult, Boolean> wrap(ComparisonResult c) {
+        return new AbstractMap.SimpleImmutableEntry(c, false);
+    }
+
+    protected static Map.Entry<ComparisonResult, Boolean> wrapAndStop(ComparisonResult c) {
+        return new AbstractMap.SimpleImmutableEntry(c, true);
+    }
 }

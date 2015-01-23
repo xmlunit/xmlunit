@@ -153,28 +153,24 @@ public class NewDifferenceEngine
                 .addMatchListener(new MatchTracker2ComparisonListener(matchTracker));
         }
 
-        DifferenceEvaluator controllerAsEvaluator =
-            new ComparisonController2DifferenceEvaluator(controller);
-        DifferenceEvaluator ev = null;
+        org.xmlunit.diff.ComparisonController mappedController =
+            new ComparisonController2ComparisonController(controller);
+        engine.setComparisonController(mappedController);
         if (listener != null) {
-            ev = DifferenceEvaluators
-                .first(new DifferenceListener2DifferenceEvaluator(listener),
-                       controllerAsEvaluator);
-        } else  {
-            ev = controllerAsEvaluator;
-        }
-        final org.xmlunit.diff.DifferenceEvaluator evaluator = ev;
-        engine
-            .setDifferenceEvaluator(new DifferenceEvaluator() {
-                    public ComparisonResult evaluate(Comparison comparison,
-                                                     ComparisonResult outcome) {
-                        if (!swallowComparison(comparison, outcome,
-                                               checkPrelude)) {
-                            return evaluator.evaluate(comparison, outcome);
+            final org.xmlunit.diff.DifferenceEvaluator evaluator =
+                new DifferenceListener2DifferenceEvaluator(listener);
+            engine
+                .setDifferenceEvaluator(new DifferenceEvaluator() {
+                        public ComparisonResult evaluate(Comparison comparison,
+                                                         ComparisonResult outcome) {
+                            if (!swallowComparison(comparison, outcome,
+                                                   checkPrelude)) {
+                                return evaluator.evaluate(comparison, outcome);
+                            }
+                            return outcome;
                         }
-                        return outcome;
-                    }
-                });
+                    });
+        }
 
         NodeMatcher m = new DefaultNodeMatcher();
         if (elementQualifier != null) {
@@ -209,6 +205,10 @@ public class NewDifferenceEngine
         }
 
         engine.compare(ctrlSource, tstSource);
+    }
+
+    private static Iterable<Difference> toDifference(org.xmlunit.diff.Difference d) {
+        return toDifference(d.getComparison());
     }
 
     public static Iterable<Difference> toDifference(Comparison comp) {
@@ -398,21 +398,20 @@ public class NewDifferenceEngine
             && ((Node) detail.getTarget()).getParentNode() instanceof Document;
     }
 
-    public static class ComparisonController2DifferenceEvaluator
-        implements DifferenceEvaluator {
+    public static class ComparisonController2ComparisonController
+        implements org.xmlunit.diff.ComparisonController {
         private final ComparisonController cc;
-        public ComparisonController2DifferenceEvaluator(ComparisonController c) {
+        public ComparisonController2ComparisonController(ComparisonController c) {
             cc = c;
         }
 
-        public ComparisonResult evaluate(Comparison comparison,
-                                         ComparisonResult outcome) {
-            for (Difference diff : toDifference(comparison)) {
+        public boolean stopDiffing(org.xmlunit.diff.Difference difference) {
+            for (Difference diff : toDifference(difference)) {
                 if (cc.haltComparison(diff)) {
-                    return ComparisonResult.CRITICAL;
+                    return true;
                 }
             }
-            return outcome;
+            return false;
         }
     }
 

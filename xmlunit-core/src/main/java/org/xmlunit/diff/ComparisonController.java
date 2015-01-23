@@ -14,13 +14,16 @@
 package org.xmlunit.diff;
 
 /**
- * May decide to up- or downgrade the severity of a difference.
+ * Decides whether the difference engine should stop the whole
+ * comparison process because of the current difference.
  */
-public interface DifferenceEvaluator {
+public interface ComparisonController {
     /**
-     * May alter the outcome of a comparison.
+     * May instruct the difference engine to stop the whole comparison process.
      *
-     * @return the new result of the comparison.
+     * @param difference the Difference that is responsible for
+     * stopping the comparison process
+     * @return whether to stop the comparison process
      */
-    ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome);
+    boolean stopDiffing(Difference difference);
 }

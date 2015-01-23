@@ -30,11 +30,4 @@ public enum ComparisonResult {
      * The two nodes are different.
      */
     DIFFERENT,
-    /**
-     * The two nodes are different and comparison should stop
-     * immediately.
-     *
-     * <p>Only used as a return type by {@link DifferenceEvaluator}
-     */
-    CRITICAL,
 }
