@@ -127,6 +127,10 @@
             <source>${maven.compile.source}</source>
             <target>${maven.compile.target}</target>
             <encoding>${project.build.sourceEncoding}</encoding>
+            <!-- Fix incremental compiler bug, see https://jira.codehaus.org/browse/MCOMPILER-205 -->
+ 	    <excludes>
+ 	      <exclude>**/package-info.java</exclude>
+ 	    </excludes>
           </configuration>
         </plugin>
         <plugin>
