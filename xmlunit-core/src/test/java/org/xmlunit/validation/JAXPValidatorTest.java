@@ -20,7 +20,7 @@ import static org.xmlunit.TestResources.TEST_RESOURCE_DIR;
 import java.io.File;
 import javax.xml.transform.stream.StreamSource;
 import org.xmlunit.TestResources;
-import org.xmlunit.exceptions.XMLUnitException;
+import org.xmlunit.XMLUnitException;
 import org.junit.Test;
 
 public class JAXPValidatorTest {

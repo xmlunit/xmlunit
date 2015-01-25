@@ -25,8 +25,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamResult;
-import org.xmlunit.exceptions.ConfigurationException;
-import org.xmlunit.exceptions.XMLUnitException;
+import org.xmlunit.ConfigurationException;
+import org.xmlunit.XMLUnitException;
 import org.w3c.dom.Document;
 
 /**

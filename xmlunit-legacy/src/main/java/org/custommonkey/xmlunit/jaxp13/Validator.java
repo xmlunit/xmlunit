@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.transform.Source;
 import javax.xml.validation.SchemaFactory;
-import org.xmlunit.exceptions.XMLUnitException;
+import org.xmlunit.XMLUnitException;
 import org.xmlunit.validation.JAXPValidator;
 import org.xmlunit.validation.Languages;
 import org.xmlunit.validation.ValidationProblem;

@@ -55,9 +55,8 @@ import org.custommonkey.xmlunit.exceptions.XMLUnitRuntimeException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
+import org.xmlunit.XMLUnitException;
 import org.xmlunit.builder.Input;
-import org.xmlunit.exceptions.XMLUnitException;
-import org.xmlunit.exceptions.XMLUnitException;
 import org.xmlunit.transform.Transformation;
 
 /**
@@ -300,7 +299,7 @@ public class Transform {
         throws TransformerException {
         try {
             return trans.transform();
-        } catch (org.xmlunit.exceptions.ConfigurationException ex) {
+        } catch (org.xmlunit.ConfigurationException ex) {
             throw new ConfigurationException(ex.getMessage(), ex.getCause());
         } catch (XMLUnitException ex) {
             Throwable cause = ex.getCause();

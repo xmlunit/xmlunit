@@ -23,7 +23,7 @@ import java.util.Set;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
-import org.xmlunit.exceptions.XMLUnitException;
+import org.xmlunit.XMLUnitException;
 import org.xmlunit.util.Convert;
 import org.xmlunit.util.IterableNodeList;
 import org.xmlunit.util.Linqy;

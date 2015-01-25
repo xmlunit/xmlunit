@@ -16,7 +16,7 @@ package org.xmlunit.validation;
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import org.xmlunit.exceptions.XMLUnitException;
+import org.xmlunit.XMLUnitException;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 

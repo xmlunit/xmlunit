@@ -11,8 +11,14 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+package org.xmlunit;
 
 /**
- * Common exceptions used by XMLUnit.
+ * Exception thrown when anything inside JAXP throws a
+ * *ConfigurationException.
  */
-package org.xmlunit.exceptions;
+public class ConfigurationException extends XMLUnitException {
+    public ConfigurationException(Throwable cause) {
+        super(cause);
+    }
+}

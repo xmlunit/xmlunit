@@ -11,14 +11,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-package org.xmlunit.exceptions;
 
 /**
- * Exception thrown when anything inside JAXP throws a
- * *ConfigurationException.
+ * XMLUnit helps testing code that creates XML.
+ * @see "http://www.xmlunit.org/"
  */
-public class ConfigurationException extends XMLUnitException {
-    public ConfigurationException(Throwable cause) {
-        super(cause);
-    }
-}
+package org.xmlunit;

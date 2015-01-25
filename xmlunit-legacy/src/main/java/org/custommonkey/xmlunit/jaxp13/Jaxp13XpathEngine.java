@@ -52,7 +52,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.xmlunit.exceptions.XMLUnitException;
+import org.xmlunit.XMLUnitException;
 import org.xmlunit.xpath.JAXPXPathEngine;
 
 /**
@@ -73,7 +73,7 @@ public class Jaxp13XpathEngine implements XpathEngine {
                 e = new JAXPXPathEngine();
             }
             engine = e;
-        } catch (org.xmlunit.exceptions.ConfigurationException ex) {
+        } catch (org.xmlunit.ConfigurationException ex) {
             throw new ConfigurationException(ex.getCause());
         } catch (Exception ex) {
             throw new ConfigurationException(ex);

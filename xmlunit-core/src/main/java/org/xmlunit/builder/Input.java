@@ -28,7 +28,7 @@ import java.nio.channels.ReadableByteChannel;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
-import org.xmlunit.exceptions.XMLUnitException;
+import org.xmlunit.XMLUnitException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
