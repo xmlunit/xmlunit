@@ -95,4 +95,23 @@ public final class DifferenceEvaluators {
             }
         };
     }
+
+    /**
+     * Combines multiple DifferenceEvaluators so that the result of the
+     * first Evaluator will be passed to the next Evaluator.
+     */
+    public static DifferenceEvaluator
+        sequence(final DifferenceEvaluator... evaluators) {
+        return new DifferenceEvaluator() {
+            @Override
+            public ComparisonResult evaluate(Comparison comparison, ComparisonResult orig) {
+                ComparisonResult finalResult = orig;
+                for (DifferenceEvaluator ev : evaluators) {
+                    ComparisonResult evaluated = ev.evaluate(comparison, finalResult);
+                    finalResult = evaluated;
+                }
+                return finalResult;
+            }
+        };
+    }
 }

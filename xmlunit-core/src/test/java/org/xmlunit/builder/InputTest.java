@@ -149,6 +149,37 @@ public class InputTest {
         allIsWellFor(Input.fromJaxb(new ComplexNode()).build(), "complexNode");
     }
 
+    @Test public void shouldParseUnknownToSource() throws Exception {
+        // from Source
+        allIsWellFor(Input.from(Input.fromMemory(readTestFile()).build()).build());
+        // from Builder
+        allIsWellFor(Input.from(Input.fromMemory(readTestFile())).build());
+        // from Document
+        allIsWellFor(Input.from(parse(Input.fromFile(TestResources.ANIMAL_FILE).build())).build());
+        // from File
+        allIsWellFor(Input.from(new File(TestResources.ANIMAL_FILE)).build());
+        // from String
+        allIsWellFor(Input.from(new String(readTestFile(), "UTF-8")).build());
+        // from byte[]
+        allIsWellFor(Input.from(readTestFile()).build());
+        // from URI
+        allIsWellFor(Input.from(new URI("file:" + TestResources.ANIMAL_FILE)).build());
+        // from URL
+        allIsWellFor(Input.from(new URL("file:" + TestResources.ANIMAL_FILE)).build());
+        // from Jaxb-Object
+        allIsWellFor(Input.from(new ComplexNode()).build(), "complexNode");
+        // from InputStream
+        FileInputStream is = null;
+        try {
+            is = new FileInputStream(TestResources.ANIMAL_FILE);
+            allIsWellFor(Input.from(is).build());
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
+    }
+    
     private static void allIsWellFor(Source s) throws Exception {
         allIsWellFor(s, "animal");
     }

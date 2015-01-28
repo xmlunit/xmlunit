@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
@@ -83,6 +84,9 @@ public class Input {
         private StreamBuilder(InputStream s) {
             source = new StreamSource(s);
         }
+        private StreamBuilder(Source s) {
+            source = s;
+        }
         private StreamBuilder(Reader r) {
             source = new StreamSource(r);
         }
@@ -96,6 +100,39 @@ public class Input {
             assert source != null;
             return source;
         }
+    }
+
+    /**
+     * Return the matching Builder for the supported types: {@link Source}, {@link Builder}, {@link Document},
+     * byte[] (XML as byte[]), {@link String} (XML as String), {@link File} (contains XML),
+     * {@link URL} (to a XML-File), {@link URI} (to a XML-File), {@link InputStream},
+     * Jaxb-{@link Object} (marshal-able with {@link javax.xml.bind.JAXB}.marshal(...))
+     */
+    public static Builder from(Object object) {
+        Builder xml;
+        if (object instanceof Source) {
+            xml = new StreamBuilder((Source) object);
+        } else if (object instanceof Builder) {
+            xml = ((Builder) object);
+        } else if (object instanceof Document) {
+            xml = Input.fromDocument((Document) object);
+        } else if (object instanceof byte[]) {
+            xml = Input.fromMemory((byte[]) object);
+        } else if (object instanceof String) {
+            xml = Input.fromMemory((String) object);
+        } else if (object instanceof File) {
+            xml = Input.fromFile((File) object);
+        } else if (object instanceof URL) {
+            xml = Input.fromURL((URL) object);
+        } else if (object instanceof URI) {
+            xml = Input.fromURI((URI) object);
+        } else if (object instanceof InputStream) {
+            xml = Input.fromStream((InputStream) object);
+        } else {
+            // assume it is a JaxB-Object.
+            xml = Input.fromJaxb(object);
+        }
+        return xml;
     }
     
     /**

@@ -24,7 +24,7 @@ import org.xmlunit.util.Nodes;
  *
  * <p>"normalized" in this context means all whitespace characters
  * are replaced by space characters and consecutive whitespace
- * characaters are collapsed.</p>
+ * characters are collapsed.</p>
  */
 public class WhitespaceNormalizedSource extends DOMSource {
 

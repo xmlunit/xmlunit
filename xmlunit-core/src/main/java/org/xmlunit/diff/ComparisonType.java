@@ -95,15 +95,15 @@ public enum ComparisonType {
     /**
      * Compare explicit/implicit status of attributes.
      */
-    ATTR_VALUE_EXPLICITLY_SPECIFIED,
+    ATTR_VALUE_EXPLICITLY_SPECIFIED("attribute value explicitly specified"),
     /**
      * Compare number of attributes.
      */
-    ELEMENT_NUM_ATTRIBUTES,
+    ELEMENT_NUM_ATTRIBUTES("number of attributes"),
     /**
      * Compare attribute's value.
      */
-    ATTR_VALUE,
+    ATTR_VALUE("attribute value"),
     /**
      * Compare number of child nodes.
      */
@@ -117,10 +117,28 @@ public enum ComparisonType {
      * Search for a child node matching a specific child node of the
      * other node.
      */
-    CHILD_LOOKUP,
+    CHILD_LOOKUP("child"),
     /**
-     * Search for an atribute with a name matching a specific
+     * Search for an attribute with a name matching a specific
      * attribute of the other node.
      */
-    ATTR_NAME_LOOKUP,
+    ATTR_NAME_LOOKUP("attribute name");
+    
+    private final String description;
+
+    private ComparisonType() {
+        this(null);
+    }
+
+    private ComparisonType(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        if (description == null) {
+            return name().toLowerCase().replace('_', ' ');
+        }
+        return description;
+    }
+    
 }
