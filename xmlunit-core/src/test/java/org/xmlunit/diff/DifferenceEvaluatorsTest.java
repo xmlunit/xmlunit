@@ -15,6 +15,7 @@ package org.xmlunit.diff;
 
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 public class DifferenceEvaluatorsTest {
@@ -22,12 +23,15 @@ public class DifferenceEvaluatorsTest {
     private static class Evaluator implements DifferenceEvaluator {
         private boolean called = false;
         private final ComparisonResult ret;
+        private ComparisonResult orig;
         private Evaluator(ComparisonResult ret) {
             this.ret = ret;
         }
+        @Override
         public ComparisonResult evaluate(Comparison comparison,
                                          ComparisonResult orig) {
             called = true;
+            this.orig = orig;
             return ret;
         }
     }
@@ -51,6 +55,19 @@ public class DifferenceEvaluatorsTest {
                      d.evaluate(null, ComparisonResult.DIFFERENT));
         assertTrue(e1.called);
         assertTrue(e2.called);
+    }
+
+    @Test public void allEvaluatorsAreCalledInSequence() {
+        Evaluator e1 = new Evaluator(ComparisonResult.SIMILAR);
+        Evaluator e2 = new Evaluator(ComparisonResult.EQUAL);
+        DifferenceEvaluator d = DifferenceEvaluators.sequence(e1, e2);
+
+        assertEquals(ComparisonResult.EQUAL, d.evaluate(null, ComparisonResult.DIFFERENT));
+
+        assertTrue(e1.called);
+        assertThat(e1.orig, is(ComparisonResult.DIFFERENT)); // passed initial ComparisonResult
+        assertTrue(e2.called);
+        assertThat(e2.orig, is(ComparisonResult.SIMILAR)); // passed ComparisonResult from e1
     }
 
 }
