@@ -37,7 +37,7 @@ public interface ComparisonFormatter {
      * Return the xml node from {@link Detail#getTarget()} as formatted String.
      * <p>
      * This can be used to produce a nice compare-View in your IDE (e.g. with org.junit.ComparisonFailure).
-     * 
+     *
      * @param details The {@link Comparison#getControlDetails()} or {@link Comparison#getTestDetails()}.
      * @param type the implementation can return different details depending on the ComparisonType.
      * @param formatXml set this to true if the Comparison was generated with {@link DiffBuilder#ignoreWhitespace()}.

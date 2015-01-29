@@ -123,7 +123,7 @@ public enum ComparisonType {
      * attribute of the other node.
      */
     ATTR_NAME_LOOKUP("attribute name");
-    
+
     private final String description;
 
     private ComparisonType() {
@@ -140,5 +140,5 @@ public enum ComparisonType {
         }
         return description;
     }
-    
+
 }

@@ -47,7 +47,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         String description = type.getDescription();
         final Detail controlDetails = difference.getControlDetails();
         final Detail testDetails = difference.getTestDetails();
-        
+
         if (type == ComparisonType.ATTR_NAME_LOOKUP ) {
             return String.format("Expected %s '%s' - comparing %s to %s",
                 description,
@@ -182,7 +182,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         } else {
             sb.append(aNode.getNodeValue());
         }
-        
+
         sb.append("</")
             .append(aNode.getParentNode().getNodeName())
             .append(">");

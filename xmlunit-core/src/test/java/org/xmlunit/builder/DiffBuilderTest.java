@@ -46,12 +46,12 @@ public class DiffBuilderTest {
         // prepare testData
         String controlXml = "<a><b>Test Value</b></a>";
         String testXml = "<a>\n <b>\n  Test Value\n </b>\n</a>";
-        
+
         // run test
         Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
                       .withTest(Input.fromMemory(testXml).build())
                       .build();
-        
+
         // validate result
         Assert.assertTrue(myDiff.toString(), myDiff.hasDifferences());
 
@@ -79,12 +79,12 @@ public class DiffBuilderTest {
         // prepare testData
         String controlXml = "<a><b>Test Value</b></a>";
         String testXml = "<a>\n <b>\n  Test Value\n </b>\n</a>";
-        
+
         // run test
         Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
                       .withTest(Input.fromMemory(testXml).build())
                       .build();
-        
+
         // validate result
         Assert.assertTrue(myDiff.toString(), myDiff.hasDifferences());
 
@@ -112,13 +112,13 @@ public class DiffBuilderTest {
         // prepare testData
         String controlXml = "<a>Test Value</a>";
         String testXml = "<a><![CDATA[Test Value]]></a>";
-        
+
         // run test
         Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
                       .withTest(Input.fromMemory(testXml).build())
                       .checkForIdentical()
                       .build();
-        
+
         // validate result
         Assert.assertTrue(myDiff.toString(), myDiff.hasDifferences());
 
@@ -145,12 +145,12 @@ public class DiffBuilderTest {
         // prepare testData
         String controlXml = "<a><b><!-- A comment -->Test Value</b></a>";
         String testXml = "<a><b><!-- An other comment -->Test Value</b></a>";
-        
+
         // run test
         Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
                     .withTest(Input.fromMemory(testXml).build())
                     .build();
-        
+
         // validate result
         Assert.assertTrue(myDiff.toString(), myDiff.hasDifferences());
 
@@ -240,7 +240,7 @@ public class DiffBuilderTest {
                 diffs.add(new Difference(comparison, outcome));
             }
         };
-        
+
         // run test
         Diff myDiff = DiffBuilder.compare(control).withTest(test)
                 .withComparisonListeners(comparisonListener)
@@ -259,7 +259,7 @@ public class DiffBuilderTest {
         // prepare testData
         final String control = "<a><b attr=\"abc\"></b></a>";
         final String test = "<a><b attr=\"xyz\"></b></a>";
-        
+
         // run test
         Diff myDiff = DiffBuilder.compare(control).withTest(test)
                 .withDifferenceEvaluator(new IgnoreAttributeDifferenceEvaluator("attr"))
@@ -275,7 +275,7 @@ public class DiffBuilderTest {
         // prepare testData
         final String control = "<a><b><![CDATA[abc]]></b></a>";
         final String test = "<a><b>abc</b></a>";
-        
+
         // run test
         Diff myDiff = DiffBuilder.compare(control).withTest(test)
                 .withDifferenceEvaluator(
@@ -294,7 +294,7 @@ public class DiffBuilderTest {
         // prepare testData
         final String control = "<a><b><![CDATA[abc]]></b></a>";
         final String test = "<a><b>abc</b></a>";
-        
+
         // run test
         Diff myDiff = DiffBuilder.compare(control).withTest(test)
                 .withDifferenceEvaluator(new IgnoreAttributeDifferenceEvaluator("attr"))
@@ -310,7 +310,7 @@ public class DiffBuilderTest {
     private final class IgnoreAttributeDifferenceEvaluator implements DifferenceEvaluator {
 
         private String attributeName;
-        
+
         public IgnoreAttributeDifferenceEvaluator(String attributeName) {
             this.attributeName = attributeName;
         }
@@ -333,7 +333,7 @@ public class DiffBuilderTest {
         // prepare testData
         final String control = "<a><b attr1=\"abc\" attr2=\"def\"></b></a>";
         final String test = "<a><b attr1=\"uvw\" attr2=\"xyz\"></b></a>";
-        
+
         // run test
         Diff myDiff = DiffBuilder.compare(control).withTest(test)
                 .build();
@@ -349,7 +349,7 @@ public class DiffBuilderTest {
         // prepare testData
         final String control = "<a><b attr1=\"abc\" attr2=\"def\"></b></a>";
         final String test = "<a><b attr1=\"uvw\" attr2=\"xyz\"></b></a>";
-        
+
         // run test
         Diff myDiff = DiffBuilder.compare(control).withTest(test)
                 .withComparisonController(ComparisonControllers.StopWhenDifferent)

@@ -31,7 +31,7 @@ public class Diff {
     private final List<Difference> differences;
 
     private final Source controlSource;
-    
+
     private final Source testSource;
 
     public Diff(Source controlSource, Source testSource, List<Difference> differences) {
@@ -55,16 +55,16 @@ public class Diff {
         return differences.iterator();
     }
 
-    
+
     public Source getControlSource() {
         return controlSource;
     }
 
-    
+
     public Source getTestSource() {
         return testSource;
     }
-    
+
     @Override
     public String toString() {
         return toString(ComparisonFormatter.DEFAULT);
@@ -76,5 +76,5 @@ public class Diff {
         }
         return formatter.getDescription(getDifferences().next().getComparison());
     }
-    
+
 }

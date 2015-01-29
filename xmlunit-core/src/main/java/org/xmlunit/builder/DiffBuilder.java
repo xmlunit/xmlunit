@@ -68,7 +68,7 @@ public class DiffBuilder {
     private Source testSource;
 
     private NodeMatcher nodeMatcher;
-    
+
     private ComparisonController comparisonController = ComparisonControllers.Default;
 
     private DifferenceEvaluator differenceEvaluator = DifferenceEvaluators.Default;
@@ -147,7 +147,7 @@ public class DiffBuilder {
         ignoreComments = true;
         return this;
     }
-    
+
     public DiffBuilder withNodeMatcher(final NodeMatcher nodeMatcher) {
         this.nodeMatcher = nodeMatcher;
         return this;
@@ -188,7 +188,7 @@ public class DiffBuilder {
         this.comparisonController = comparisonController;
         return this;
     }
-    
+
     public DiffBuilder withComparisonListeners(final ComparisonListener... comparisonListeners) {
         this.comparisonListeners.addAll(Arrays.asList(comparisonListeners));
         return this;

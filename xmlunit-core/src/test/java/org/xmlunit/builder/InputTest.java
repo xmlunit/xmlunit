@@ -179,7 +179,7 @@ public class InputTest {
             }
         }
     }
-    
+
     private static void allIsWellFor(Source s) throws Exception {
         allIsWellFor(s, "animal");
     }

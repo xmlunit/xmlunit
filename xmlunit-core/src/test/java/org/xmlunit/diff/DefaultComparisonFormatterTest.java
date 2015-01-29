@@ -33,7 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class DefaultComparisonFormatterTest {
 
     private DefaultComparisonFormatter compFormatter = new DefaultComparisonFormatter();
-    
+
     @Test
     public void testComparisonType_XML_VERSION() {
         // prepare data
@@ -45,7 +45,7 @@ public class DefaultComparisonFormatterTest {
         String description = compFormatter.getDescription(firstDiff);
         String controlDetails =  getDetails(firstDiff.getControlDetails(), firstDiff.getType());
         String testDetails =  getDetails(firstDiff.getTestDetails(), firstDiff.getType());
-        
+
         // validate result
         Assert.assertEquals("Expected xml version '1.0' but was '1.1' - "
                 + "comparing <a...> at / to <?xml version=\"1.1\"?><a...> at /", description);
@@ -219,7 +219,7 @@ public class DefaultComparisonFormatterTest {
         // validate result
         Assert.assertEquals("Expected schema location 'http://www.publishing.org Book.xsd' but was 'null' - "
                 + "comparing <a...> at /a[1] to <a...> at /a[1]", description);
-        
+
         assertEquals("<a xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
                         + "xsi:schemaLocation=\"http://www.publishing.org Book.xsd\"/>", controlDetails);
         assertEquals("<a/>", testDetails);
@@ -555,7 +555,7 @@ public class DefaultComparisonFormatterTest {
         assertEquals("<a b=\"xxx\"/>", controlDetails);
         assertEquals("<a c=\"yyy\"/>", testDetails);
     }
-    
+
     @Test
     public void testComparisonType_Comment() {
         // prepare data
@@ -575,7 +575,7 @@ public class DefaultComparisonFormatterTest {
         assertEquals("<a>\n  <!--XXX-->\n</a>", controlDetails);
         assertEquals("<a>\n  <!--YYY-->\n</a>", testDetails);
     }
-    
+
     @Test
     public void testComparisonType_WhitespacesAndUnformattedDetails() {
         // prepare data
@@ -614,7 +614,7 @@ public class DefaultComparisonFormatterTest {
         dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         return dbf;
     }
-    
+
     /**
      * Assert Equals for two Strings where Windows-Linendings where removed.
      */
