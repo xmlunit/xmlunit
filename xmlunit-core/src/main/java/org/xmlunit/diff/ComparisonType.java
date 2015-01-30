@@ -13,6 +13,8 @@
 */
 package org.xmlunit.diff;
 
+import java.util.Locale;
+
 /**
  * The kinds of comparisons XMLUnit performs.
  */
@@ -136,7 +138,7 @@ public enum ComparisonType {
 
     public String getDescription() {
         if (description == null) {
-            return name().toLowerCase().replace('_', ' ');
+            return name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
         }
         return description;
     }
