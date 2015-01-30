@@ -47,26 +47,27 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         String description = type.getDescription();
         final Detail controlDetails = difference.getControlDetails();
         final Detail testDetails = difference.getTestDetails();
+        final String controlTarget =
+            getShortString(controlDetails.getTarget(), controlDetails.getXPath(),
+                           type);
+        final String testTarget =
+            getShortString(testDetails.getTarget(), testDetails.getXPath(),
+                           type);
 
         if (type == ComparisonType.ATTR_NAME_LOOKUP ) {
             return String.format("Expected %s '%s' - comparing %s to %s",
                 description,
                 controlDetails.getXPath(),
-                getShortString(controlDetails.getTarget(), controlDetails.getXPath(), type),
-                getShortString(testDetails.getTarget(), testDetails.getXPath(), type));
+                controlTarget, testTarget);
         }
         return String.format("Expected %s '%s' but was '%s' - comparing %s to %s",
             description,
             getValue(controlDetails.getValue(), type), getValue(testDetails.getValue(), type),
-            getShortString(controlDetails.getTarget(), controlDetails.getXPath(), type),
-            getShortString(testDetails.getTarget(), testDetails.getXPath(), type));
+            controlTarget, testTarget);
     }
 
     private Object getValue(Object value, ComparisonType type) {
-        if (type == ComparisonType.NODE_TYPE) {
-            return nodeType((Short) value);
-        }
-        return value;
+        return type == ComparisonType.NODE_TYPE ? nodeType((Short) value) : value;
     }
 
     private String getShortString(Object node, String xpath, ComparisonType type) {
@@ -102,7 +103,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         } else if (node == null) {
             sb.append("<NULL>");
         } else {
-            sb.append("<!-- ").append(node.toString()).append(" -->");
+            sb.append("<!-- ").append(node).append(" -->");
         }
         if (xpath != null && xpath.length() > 0) {
             sb.append(" at ").append(xpath);
@@ -130,7 +131,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         return true;
     }
 
-    /** a short indication of the documents root element like "<ElementName...>".*/
+    /** a short indication of the documents root element like "&lt;ElementName...&gt;".*/
     private void appendDocumentElementIndication(StringBuilder sb, Document doc) {
         sb.append("<");
         sb.append(doc.getDocumentElement().getNodeName());
@@ -221,7 +222,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
             appendFullDocumentHeader(sb, doc);
             return sb.toString();
         } else if (node instanceof DocumentType) {
-            Document doc = ((DocumentType) node).getOwnerDocument();
+            Document doc = node.getOwnerDocument();
             appendFullDocumentHeader(sb, doc);
             return sb.toString();
         } else if (node instanceof Attr) {

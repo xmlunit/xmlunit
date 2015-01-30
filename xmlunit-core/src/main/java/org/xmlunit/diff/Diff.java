@@ -34,6 +34,9 @@ public class Diff {
 
     private final Source testSource;
 
+    private static final ComparisonFormatter DEFAULT_FORMATTER =
+        new DefaultComparisonFormatter();
+
     public Diff(Source controlSource, Source testSource, List<Difference> differences) {
         super();
         this.controlSource = controlSource;
@@ -67,7 +70,7 @@ public class Diff {
 
     @Override
     public String toString() {
-        return toString(ComparisonFormatter.DEFAULT);
+        return toString(DEFAULT_FORMATTER);
     }
 
     public String toString(ComparisonFormatter formatter) {

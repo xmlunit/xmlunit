@@ -14,7 +14,6 @@
 
 package org.xmlunit.diff;
 
-import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Comparison.Detail;
 
 /**
@@ -22,16 +21,13 @@ import org.xmlunit.diff.Comparison.Detail;
  */
 public interface ComparisonFormatter {
 
-    /** "&lt;" */
-    public static final ComparisonFormatter DEFAULT = new DefaultComparisonFormatter();
-
     /**
      * Return a short String of the Comparison including the XPath and the shorten value of the effected control and
      * test Node.
      * <p>
      * This is used for {@link Diff#toString()}.
      */
-    public abstract String getDescription(Comparison difference);
+    String getDescription(Comparison difference);
 
     /**
      * Return the xml node from {@link Detail#getTarget()} as formatted String.
@@ -40,9 +36,9 @@ public interface ComparisonFormatter {
      *
      * @param details The {@link Comparison#getControlDetails()} or {@link Comparison#getTestDetails()}.
      * @param type the implementation can return different details depending on the ComparisonType.
-     * @param formatXml set this to true if the Comparison was generated with {@link DiffBuilder#ignoreWhitespace()}.
+     * @param formatXml set this to true if the Comparison was generated with {@link org.xmlunit.builder.DiffBuilder#ignoreWhitespace()}.
      * @return the full xml node.
      */
-    public abstract String getDetails(Detail details, ComparisonType type, boolean formatXml);
+    String getDetails(Detail details, ComparisonType type, boolean formatXml);
 
 }
