@@ -279,7 +279,7 @@ public class DiffBuilderTest {
         // run test
         Diff myDiff = DiffBuilder.compare(control).withTest(test)
                 .withDifferenceEvaluator(
-                    DifferenceEvaluators.sequence(DifferenceEvaluators.Default,
+                    DifferenceEvaluators.chain(DifferenceEvaluators.Default,
                     new IgnoreAttributeDifferenceEvaluator("attr")))
                 .checkForSimilar()
                 .build();

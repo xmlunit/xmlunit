@@ -60,7 +60,7 @@ public class DifferenceEvaluatorsTest {
     @Test public void allEvaluatorsAreCalledInSequence() {
         Evaluator e1 = new Evaluator(ComparisonResult.SIMILAR);
         Evaluator e2 = new Evaluator(ComparisonResult.EQUAL);
-        DifferenceEvaluator d = DifferenceEvaluators.sequence(e1, e2);
+        DifferenceEvaluator d = DifferenceEvaluators.chain(e1, e2);
 
         assertEquals(ComparisonResult.EQUAL, d.evaluate(null, ComparisonResult.DIFFERENT));
 

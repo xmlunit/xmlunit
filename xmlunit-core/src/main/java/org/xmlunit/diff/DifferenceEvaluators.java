@@ -101,7 +101,7 @@ public final class DifferenceEvaluators {
      * first Evaluator will be passed to the next Evaluator.
      */
     public static DifferenceEvaluator
-        sequence(final DifferenceEvaluator... evaluators) {
+        chain(final DifferenceEvaluator... evaluators) {
         return new DifferenceEvaluator() {
             @Override
             public ComparisonResult evaluate(Comparison comparison, ComparisonResult orig) {
