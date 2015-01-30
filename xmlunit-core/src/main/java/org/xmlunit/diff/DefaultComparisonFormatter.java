@@ -314,15 +314,15 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
     private String nodeType(short type) {
       switch(type) {
         case Node.ELEMENT_NODE:                return "Element";
-        case Node.DOCUMENT_TYPE_NODE:          return "Document type";
+        case Node.DOCUMENT_TYPE_NODE:          return "Document Type";
         case Node.ENTITY_NODE:                 return "Entity";
-        case Node.ENTITY_REFERENCE_NODE:       return "Entity reference";
+        case Node.ENTITY_REFERENCE_NODE:       return "Entity Reference";
         case Node.NOTATION_NODE:               return "Notation";
         case Node.TEXT_NODE:                   return "Text";
         case Node.COMMENT_NODE:                return "Comment";
         case Node.CDATA_SECTION_NODE:          return "CDATA Section";
         case Node.ATTRIBUTE_NODE:              return "Attribute";
-        case Node.PROCESSING_INSTRUCTION_NODE: return "Attribute";
+        case Node.PROCESSING_INSTRUCTION_NODE: return "Processing Instruction";
       }
       return Short.toString(type);
     }
