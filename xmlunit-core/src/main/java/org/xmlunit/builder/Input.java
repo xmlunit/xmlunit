@@ -50,10 +50,10 @@ public class Input {
         Source build();
     }
 
-    private static class DOMBuilder implements Builder {
-        private final Source source;
-        private DOMBuilder(Node d) {
-            source = new DOMSource(d);
+    private static class SourceHoldingBuilder implements Builder {
+        protected final Source source;
+        protected SourceHoldingBuilder(Source source) {
+            this.source = source;
         }
         @Override
         public Source build() {
@@ -66,56 +66,50 @@ public class Input {
      * Build a Source from a DOM Document.
      */
     public static Builder fromDocument(Document d) {
-        return new DOMBuilder(d);
+        return new SourceHoldingBuilder(new DOMSource(d));
     }
 
     /**
      * Build a Source from a DOM Node.
      */
     public static Builder fromNode(Node n) {
-        return new DOMBuilder(n);
+        return new SourceHoldingBuilder(new DOMSource(n));
     }
 
-    private static class StreamBuilder implements Builder {
-        private final Source source;
+    private static class StreamBuilder extends SourceHoldingBuilder {
         private StreamBuilder(File f) {
-            source = new StreamSource(f);
+            super(new StreamSource(f));
         }
         private StreamBuilder(InputStream s) {
-            source = new StreamSource(s);
-        }
-        private StreamBuilder(Source s) {
-            source = s;
+            super(new StreamSource(s));
         }
         private StreamBuilder(Reader r) {
-            source = new StreamSource(r);
+            super(new StreamSource(r));
         }
         void setSystemId(String id) {
             if (id != null) {
                 source.setSystemId(id);
             }
         }
-        @Override
-        public Source build() {
-            assert source != null;
-            return source;
-        }
     }
 
     /**
-     * Return the matching Builder for the supported types: {@link Source}, {@link Builder}, {@link Document},
+     * Return the matching Builder for the supported types: {@link Source}, {@link Builder}, {@link Document}, {@link Node},
      * byte[] (XML as byte[]), {@link String} (XML as String), {@link File} (contains XML),
-     * {@link URL} (to a XML-File), {@link URI} (to a XML-File), {@link InputStream},
+     * {@link URL} (to an XML-Document), {@link URI} (to an XML-Document), {@link InputStream},
+     * {@link ReadableByteChannel},
      * Jaxb-{@link Object} (marshal-able with {@link javax.xml.bind.JAXB}.marshal(...))
      */
     public static Builder from(Object object) {
         Builder xml;
         if (object instanceof Source) {
-            xml = new StreamBuilder((Source) object);
+            xml = new SourceHoldingBuilder((Source) object);
         } else if (object instanceof Builder) {
             xml = ((Builder) object);
         } else if (object instanceof Document) {
             xml = Input.fromDocument((Document) object);
+        } else if (object instanceof Node) {
+            xml = Input.fromNode((Node) object);
         } else if (object instanceof byte[]) {
             xml = Input.fromMemory((byte[]) object);
         } else if (object instanceof String) {
@@ -128,6 +122,8 @@ public class Input {
             xml = Input.fromURI((URI) object);
         } else if (object instanceof InputStream) {
             xml = Input.fromStream((InputStream) object);
+        } else if (object instanceof ReadableByteChannel) {
+            xml = Input.fromChannel((ReadableByteChannel) object);
         } else {
             // assume it is a JaxB-Object.
             xml = Input.fromJaxb(object);
