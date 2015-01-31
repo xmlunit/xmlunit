@@ -157,12 +157,12 @@ public class DiffBuilder {
      * Provide your own custom {@link DifferenceEvaluator} implementation.
      * This overwrites the Default DifferenceEvaluator.
      * If you want use your custom DifferenceEvaluator in combination with the default or another DifferenceEvaluator
-     * you must use {@link DifferenceEvaluators#sequence(DifferenceEvaluator...)}
+     * you must use {@link DifferenceEvaluators#chain(DifferenceEvaluator...)}
      * or {@link DifferenceEvaluators#first(DifferenceEvaluator...)} to combine them:
      * <pre>
      * Diff myDiff = DiffBuilder.compare(control).withTest(test)
      *         .withDifferenceEvaluator(
-     *             DifferenceEvaluators.sequence(
+     *             DifferenceEvaluators.chain(
      *                 DifferenceEvaluators.Default,
      *                 new MyCustomDifferenceEvaluator()))
      *         ....
