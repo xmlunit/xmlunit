@@ -39,7 +39,7 @@ public class DefaultComparisonFormatterTest {
         // prepare data
         Diff diff = DiffBuilder.compare("<?xml version=\"1.0\"?><a/>").withTest("<?xml version=\"1.1\"?><a/>").build();
         assertPreRequirements(diff, ComparisonType.XML_VERSION);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -61,7 +61,7 @@ public class DefaultComparisonFormatterTest {
             "<?xml version=\"1.0\" standalone=\"yes\"?><a b=\"x\"><b/></a>")
             .withTest("<?xml version=\"1.0\" standalone=\"no\"?><a b=\"x\"><b/></a>").build();
         assertPreRequirements(diff, ComparisonType.XML_STANDALONE);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -83,7 +83,7 @@ public class DefaultComparisonFormatterTest {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?><a/>").withTest(
                 "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><a/>").build();
         assertPreRequirements(diff, ComparisonType.XML_ENCODING);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -107,7 +107,7 @@ public class DefaultComparisonFormatterTest {
 
         Diff diff = DiffBuilder.compare(controlDoc).withTest("<a/>").build();
         assertPreRequirements(diff, ComparisonType.HAS_DOCTYPE_DECLARATION);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -131,7 +131,7 @@ public class DefaultComparisonFormatterTest {
 
         Diff diff = DiffBuilder.compare(controlDoc).withTest(testDoc).build();
         assertPreRequirements(diff, ComparisonType.DOCTYPE_NAME);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -157,7 +157,7 @@ public class DefaultComparisonFormatterTest {
 
         Diff diff = DiffBuilder.compare(controlDoc).withTest(testDoc).build();
         assertPreRequirements(diff, ComparisonType.DOCTYPE_PUBLIC_ID);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -184,7 +184,7 @@ public class DefaultComparisonFormatterTest {
 
         Diff diff = DiffBuilder.compare(controlDoc).withTest(testDoc).build();
         assertPreRequirements(diff, ComparisonType.DOCTYPE_SYSTEM_ID);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -209,7 +209,7 @@ public class DefaultComparisonFormatterTest {
                         + "xsi:schemaLocation=\"http://www.publishing.org Book.xsd\"/>")
                         .withTest("<a />").build();
         assertPreRequirements(diff, ComparisonType.SCHEMA_LOCATION);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -235,7 +235,7 @@ public class DefaultComparisonFormatterTest {
                             + "xsi:noNamespaceSchemaLocation=\"Telephone.xsd\"/>")
                         .build();
         assertPreRequirements(diff, ComparisonType.NO_NAMESPACE_SCHEMA_LOCATION);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -257,7 +257,7 @@ public class DefaultComparisonFormatterTest {
         // prepare data
         Diff diff = DiffBuilder.compare("<a>Text</a>").withTest("<a><![CDATA[Text]]></a>").build();
         assertPreRequirements(diff, ComparisonType.NODE_TYPE);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -280,7 +280,7 @@ public class DefaultComparisonFormatterTest {
         Diff diff = DiffBuilder.compare(
             "<ns1:a xmlns:ns1=\"test\">Text</ns1:a>").withTest("<test:a xmlns:test=\"test\">Text</test:a>").build();
         assertPreRequirements(diff, ComparisonType.NAMESPACE_PREFIX);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -302,7 +302,7 @@ public class DefaultComparisonFormatterTest {
             "<test:a xmlns:test=\"test.org\">Text</test:a>")
             .withTest("<test:a xmlns:test=\"test.net\">Text</test:a>").build();
         assertPreRequirements(diff, ComparisonType.NAMESPACE_URI);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -322,7 +322,7 @@ public class DefaultComparisonFormatterTest {
         // prepare data
         Diff diff = DiffBuilder.compare("<a>Text one</a>").withTest("<a>Text two</a>").build();
         assertPreRequirements(diff, ComparisonType.TEXT_VALUE);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -345,7 +345,7 @@ public class DefaultComparisonFormatterTest {
             "<?xml-stylesheet type=\"text/xsl\" href=\"animal.xsl\" ?><a>Text one</a>")
             .withTest("<?xml-xy type=\"text/xsl\" href=\"animal.xsl\" ?><a>Text one</a>").build();
         assertPreRequirements(diff, ComparisonType.PROCESSING_INSTRUCTION_TARGET);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -368,7 +368,7 @@ public class DefaultComparisonFormatterTest {
                 .withTest("<?xml-stylesheet type=\"text/xsl\" href=\"animal.css\" ?><a>Text one</a>")
                 .build();
         assertPreRequirements(diff, ComparisonType.PROCESSING_INSTRUCTION_DATA);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -390,7 +390,7 @@ public class DefaultComparisonFormatterTest {
         // prepare data
         Diff diff = DiffBuilder.compare("<a></a>").withTest("<b></b>").build();
         assertPreRequirements(diff, ComparisonType.ELEMENT_TAG_NAME);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -416,7 +416,7 @@ public class DefaultComparisonFormatterTest {
                 "<!DOCTYPE root [<!ELEMENT root ANY><!ATTLIST root c CDATA #FIXED \"xxx\">]>" +
                 "<root c=\"xxx\"/>").build();
         assertPreRequirements(diff, ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -437,7 +437,7 @@ public class DefaultComparisonFormatterTest {
         Diff diff = DiffBuilder.compare("<a b=\"xxx\"></a>")
                 .withTest("<a b=\"xxx\" c=\"xxx\"></a>").build();
         assertPreRequirements(diff, ComparisonType.ELEMENT_NUM_ATTRIBUTES);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -457,7 +457,7 @@ public class DefaultComparisonFormatterTest {
         // prepare data
         Diff diff = DiffBuilder.compare("<a b=\"xxx\"></a>").withTest("<a b=\"yyy\"></a>").build();
         assertPreRequirements(diff, ComparisonType.ATTR_VALUE);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -477,7 +477,7 @@ public class DefaultComparisonFormatterTest {
         // prepare data
         Diff diff = DiffBuilder.compare("<a><b/></a>").withTest("<a><b/><c/></a>").build();
         assertPreRequirements(diff, ComparisonType.CHILD_NODELIST_LENGTH);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -500,7 +500,7 @@ public class DefaultComparisonFormatterTest {
             .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
             .build();
         assertPreRequirements(diff, ComparisonType.CHILD_NODELIST_SEQUENCE);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -520,7 +520,7 @@ public class DefaultComparisonFormatterTest {
         // prepare data
         Diff diff = DiffBuilder.compare("<a>Text</a>").withTest("<a><Element/></a>").build();
         assertPreRequirements(diff, ComparisonType.CHILD_LOOKUP);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -541,7 +541,7 @@ public class DefaultComparisonFormatterTest {
         // prepare data
         Diff diff = DiffBuilder.compare("<a b=\"xxx\"></a>").withTest("<a c=\"yyy\"></a>").build();
         assertPreRequirements(diff, ComparisonType.ATTR_NAME_LOOKUP);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -561,7 +561,7 @@ public class DefaultComparisonFormatterTest {
         // prepare data
         Diff diff = DiffBuilder.compare("<a><!--XXX--></a>").withTest("<a><!--YYY--></a>").build();
         assertPreRequirements(diff, ComparisonType.TEXT_VALUE);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -581,7 +581,7 @@ public class DefaultComparisonFormatterTest {
         // prepare data
         Diff diff = DiffBuilder.compare("<a><b/></a>").withTest("<a>\n  <b/>\n</a>").build();
         assertPreRequirements(diff, ComparisonType.CHILD_NODELIST_LENGTH);
-        Comparison firstDiff = diff.getDifferences().next().getComparison();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
         // run test
         String description = compFormatter.getDescription(firstDiff);
@@ -616,15 +616,15 @@ public class DefaultComparisonFormatterTest {
     }
 
     /**
-     * Assert Equals for two Strings where Windows-Linendings where removed.
+     * Assert Equals for two Strings where carriage returns were removed.
      */
-    static public void assertEquals(String expected, String actual) {
+    public static void assertEquals(String expected, String actual) {
         Assert.assertEquals(expected, actual.replace("\r", ""));
     }
 
     private void assertPreRequirements(Diff diff, ComparisonType comparisonType) {
-        assertThat(diff.getDifferences().next(), notNullValue());
-        assertThat(diff.getDifferences().next().getComparison().getType(), is(comparisonType));
+        assertThat(diff.getDifferences().iterator().next(), notNullValue());
+        assertThat(diff.getDifferences().iterator().next().getComparison().getType(), is(comparisonType));
     }
 
     private String getDetails(Comparison.Detail difference, ComparisonType type) {

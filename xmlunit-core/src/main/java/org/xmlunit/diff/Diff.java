@@ -14,21 +14,15 @@
 
 package org.xmlunit.diff;
 
-import org.xmlunit.builder.DiffBuilder;
-
 import javax.xml.transform.Source;
-
-import java.util.Iterator;
-import java.util.List;
-
 
 /**
  * The Diff-Object is the result of two comparisons.
- * @see DiffBuilder
+ * @see org.xmlunit.builder.DiffBuilder
  */
 public class Diff {
 
-    private final List<Difference> differences;
+    private final Iterable<Difference> differences;
 
     private final Source controlSource;
 
@@ -37,8 +31,7 @@ public class Diff {
     private static final ComparisonFormatter DEFAULT_FORMATTER =
         new DefaultComparisonFormatter();
 
-    public Diff(Source controlSource, Source testSource, List<Difference> differences) {
-        super();
+    public Diff(Source controlSource, Source testSource, Iterable<Difference> differences) {
         this.controlSource = controlSource;
         this.testSource = testSource;
         this.differences = differences;
@@ -48,14 +41,14 @@ public class Diff {
      * @return true if there was at least one difference.
      */
     public boolean hasDifferences() {
-        return !(differences.isEmpty());
+        return differences.iterator().hasNext();
     }
 
     /**
-     * @return all found differences.
+     * @return all differences found before the comparison process stopped.
      */
-    public Iterator<Difference> getDifferences() {
-        return differences.iterator();
+    public Iterable<Difference> getDifferences() {
+        return differences;
     }
 
 
@@ -74,10 +67,10 @@ public class Diff {
     }
 
     public String toString(ComparisonFormatter formatter) {
-        if (differences.isEmpty()) {
+        if (!hasDifferences()) {
             return "[identical]";
         }
-        return formatter.getDescription(getDifferences().next().getComparison());
+        return formatter.getDescription(getDifferences().iterator().next().getComparison());
     }
 
 }

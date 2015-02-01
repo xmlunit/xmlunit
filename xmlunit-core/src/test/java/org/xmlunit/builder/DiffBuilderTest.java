@@ -328,7 +328,7 @@ public class DiffBuilderTest {
 
         // validate result
         Assert.assertTrue(myDiff.toString(), myDiff.hasDifferences());
-        Assert.assertThat(ComparisonResult.DIFFERENT, is(myDiff.getDifferences().next().getResult()));
+        Assert.assertThat(ComparisonResult.DIFFERENT, is(myDiff.getDifferences().iterator().next().getResult()));
 
     }
 
@@ -365,7 +365,7 @@ public class DiffBuilderTest {
 
         // validate result
         Assert.assertTrue(myDiff.hasDifferences());
-        assertThat(getSize(myDiff.getDifferences()), is(2));
+        assertThat(count(myDiff.getDifferences()), is(2));
     }
 
 
@@ -382,15 +382,7 @@ public class DiffBuilderTest {
 
         // validate result
         Assert.assertTrue(myDiff.hasDifferences());
-        assertThat(getSize(myDiff.getDifferences()), is(1));
+        assertThat(count(myDiff.getDifferences()), is(1));
     }
 
-    private int getSize(Iterator<Difference> differences) {
-        int i=0;
-        while (differences.hasNext()) {
-            differences.next();
-            i++;
-        }
-        return i;
-    }
 }
