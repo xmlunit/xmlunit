@@ -16,6 +16,8 @@ package org.xmlunit.builder;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.xmlunit.util.Linqy.count;
 
 import org.xmlunit.TestResources;
 import org.xmlunit.diff.Comparison;
@@ -244,6 +246,29 @@ public class DiffBuilderTest {
         // run test
         Diff myDiff = DiffBuilder.compare(control).withTest(test)
                 .withComparisonListeners(comparisonListener)
+                .build();
+
+        // validate result
+        Assert.assertTrue(myDiff.toString(), myDiff.hasDifferences());
+        assertThat(diffs.size(), greaterThan(1));
+    }
+
+    @Test
+    public void testDiff_withDifferenceListener_shouldCallListener() {
+        // prepare testData
+        final String control = "<a><b attr=\"abc\"></b></a>";
+        final String test = "<a><b attr=\"xyz\"></b></a>";
+        final List<Difference> diffs = new ArrayList<Difference>();
+        final ComparisonListener comparisonListener = new ComparisonListener() {
+            @Override
+            public void comparisonPerformed(Comparison comparison, ComparisonResult outcome) {
+                diffs.add(new Difference(comparison, outcome));
+            }
+        };
+
+        // run test
+        Diff myDiff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceListeners(comparisonListener)
                 .build();
 
         // validate result

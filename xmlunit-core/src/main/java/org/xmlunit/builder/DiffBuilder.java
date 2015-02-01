@@ -74,6 +74,7 @@ public class DiffBuilder {
     private DifferenceEvaluator differenceEvaluator = DifferenceEvaluators.Default;
 
     private List<ComparisonListener> comparisonListeners = new ArrayList<ComparisonListener>();
+    private List<ComparisonListener> differenceListeners = new ArrayList<ComparisonListener>();
 
     private ComparisonResult[] comparisonResultsToCheck = CHECK_FOR_IDENTICAL;
 
@@ -194,6 +195,11 @@ public class DiffBuilder {
         return this;
     }
 
+    public DiffBuilder withDifferenceListeners(final ComparisonListener... comparisonListeners) {
+        this.differenceListeners.addAll(Arrays.asList(comparisonListeners));
+        return this;
+    }
+
     /**
      * check test source with the control source for similarity.
      * <p>
@@ -225,6 +231,9 @@ public class DiffBuilder {
         d.setDifferenceEvaluator(differenceEvaluator);
         d.setComparisonController(comparisonController);
         for (ComparisonListener comparisonListener : comparisonListeners) {
+            d.addComparisonListener(comparisonListener);
+        }
+        for (ComparisonListener comparisonListener : differenceListeners) {
             d.addDifferenceListener(comparisonListener);
         }
         d.compare(wrap(controlSource), wrap(testSource));
