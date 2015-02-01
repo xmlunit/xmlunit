@@ -92,7 +92,6 @@ public class DiffBuilder {
      * @param testSource the test result which must be compared with the control source.
      */
     private DiffBuilder(final Source controlSource) {
-        super();
         this.controlSource = controlSource;
     }
 
@@ -100,7 +99,7 @@ public class DiffBuilder {
      * Create a DiffBuilder from all kind of types supported by {@link Input#from(Object)}.
      * 
      * @see DiffBuilder
-     * @param control the expected reference Result.
+     * @param control the expected reference document.
      */
     public static DiffBuilder compare(final Object control) {
         final Source controlSource = getSource(control);
@@ -110,7 +109,7 @@ public class DiffBuilder {
     /**
      * Set the Test-Source from all kind of types supported by {@link Input#from(Object)}.
      * 
-     * @param test the test result which must be compared with the control source.
+     * @param test the test document which must be compared with the control document.
      */
     public DiffBuilder withTest(Object test) {
         testSource = getSource(test);
@@ -158,7 +157,7 @@ public class DiffBuilder {
      * Provide your own custom {@link DifferenceEvaluator} implementation.
      * This overwrites the Default DifferenceEvaluator.
      * If you want use your custom DifferenceEvaluator in combination with the default or another DifferenceEvaluator
-     * you must use {@link DifferenceEvaluators#chain(DifferenceEvaluator...)}
+     * you should use {@link DifferenceEvaluators#chain(DifferenceEvaluator...)}
      * or {@link DifferenceEvaluators#first(DifferenceEvaluator...)} to combine them:
      * <pre>
      * Diff myDiff = DiffBuilder.compare(control).withTest(test)
@@ -260,7 +259,6 @@ public class DiffBuilder {
         private final EnumSet<ComparisonResult> comparisonResultsToCheck;
 
         public CollectResultsListener(final ComparisonResult... comparisonResultsToCheck) {
-            super();
             results = new ArrayList<Difference>();
             this.comparisonResultsToCheck = EnumSet.copyOf(Arrays.asList(comparisonResultsToCheck));
         }

@@ -60,7 +60,7 @@ public class DiffBuilderTest {
     }
 
     @Test
-    public void testDiff_withIgnoreWhitespaces_shouldSuccess() {
+    public void testDiff_withIgnoreWhitespaces_shouldSucceed() {
         // prepare testData
         String controlXml = "<a><b>Test Value</b></a>";
         String testXml = "<a>\n <b>\n  Test Value\n </b>\n</a>";
@@ -93,7 +93,7 @@ public class DiffBuilderTest {
     }
 
     @Test
-    public void testDiff_withNormalizeWhitespaces_shouldSuccess() {
+    public void testDiff_withNormalizeWhitespaces_shouldSucceed() {
         // prepare testData
         String controlXml = "<a><b>Test Value</b></a>";
         String testXml = "<a>\n <b>\n  Test Value\n </b>\n</a>";
@@ -127,7 +127,7 @@ public class DiffBuilderTest {
     }
 
     @Test
-    public void testDiff_withCheckForSimilar_shouldSuccess() {
+    public void testDiff_withCheckForSimilar_shouldSucceed() {
         // prepare testData
         String controlXml = "<a>Test Value</a>";
         String testXml = "<a><![CDATA[Test Value]]></a>";
@@ -159,7 +159,7 @@ public class DiffBuilderTest {
     }
 
     @Test
-    public void testDiff_withIgnoreComments_shouldSuccess() {
+    public void testDiff_withIgnoreComments_shouldSucceed() {
         // prepare testData
         String controlXml = "<a><b><!-- A comment -->Test Value</b></a>";
         String testXml = "<a><b><!-- An other comment -->Test Value</b></a>";
@@ -176,7 +176,7 @@ public class DiffBuilderTest {
     }
 
     @Test
-    public void testDiff_fromCompinedSourceAndString_shouldSuccess() {
+    public void testDiff_fromCombinedSourceAndString_shouldSucceed() {
         // prepare testData
         String controlXml = "<a><b>Test Value</b></a>";
 
@@ -190,7 +190,7 @@ public class DiffBuilderTest {
     }
 
     @Test
-    public void testDiff_fromBuilder_shouldSuccess() {
+    public void testDiff_fromBuilder_shouldSucceed() {
         // prepare testData
         String controlXml = "<a><b>Test Value</b></a>";
 
@@ -205,7 +205,7 @@ public class DiffBuilderTest {
     }
 
     @Test
-    public void testDiff_fromByteArray_shouldSuccess() {
+    public void testDiff_fromByteArray_shouldSucceed() {
         // prepare testData
         byte[] controlXml = "<a><b>Test Value</b></a>".getBytes();
 
@@ -218,7 +218,7 @@ public class DiffBuilderTest {
     }
 
     @Test
-    public void testDiff_fromFile_shouldSuccess() {
+    public void testDiff_fromFile_shouldSucceed() {
         // prepare testData
         File controlXml = new File(TestResources.ANIMAL_FILE);
 
@@ -280,7 +280,7 @@ public class DiffBuilderTest {
     }
 
     @Test
-    public void testDiff_withDifferenceEvaluator_shouldSuccess() {
+    public void testDiff_withDifferenceEvaluator_shouldSucceed() {
         // prepare testData
         final String control = "<a><b attr=\"abc\"></b></a>";
         final String test = "<a><b attr=\"xyz\"></b></a>";
