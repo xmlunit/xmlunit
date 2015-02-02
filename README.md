@@ -80,6 +80,14 @@ diff.addDifferenceListener(new ComparisonListener() {
 diff.compare(control, test);
 ```
 
+or using the fluent builder API
+
+```java
+Diff d = DiffBuilder.compare(Input.fromFile("test-data/good.xml"))
+             .withTest(createTestDocument());
+assert !d.hasDifferences();
+```
+
 ### Asserting an XPath Value
 
 ```java
