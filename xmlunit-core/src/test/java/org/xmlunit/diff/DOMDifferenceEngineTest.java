@@ -67,6 +67,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
             this.controlXPath = controlXPath;
             this.testXPath = testXPath;
         }
+        @Override
         public void comparisonPerformed(Comparison comparison,
                                         ComparisonResult outcome) {
             assertTrue(invoked + " should be less than " + expectedInvocations,
