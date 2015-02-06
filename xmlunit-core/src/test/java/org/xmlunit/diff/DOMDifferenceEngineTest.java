@@ -899,6 +899,24 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                                     d2, new XPathContext()));
     }
 
+    @Test
+    public void shouldDetectCommentInPrelude() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        Document d1 = Convert.toDocument(Input.fromFile(TestResources.TEST_RESOURCE_DIR
+                                                        + "BookXsdGenerated.xml")
+                                         .build());
+        Document d2 = Convert.toDocument(Input.fromFile(TestResources.TEST_RESOURCE_DIR
+                                                        + "BookXsdGeneratedWithComment.xml")
+                                         .build());
+        DiffExpecter ex = new DiffExpecter(ComparisonType.CHILD_NODELIST_LENGTH,
+                                           "/", "/");
+        d.addDifferenceListener(ex);
+        d.setComparisonController(ComparisonControllers.StopWhenDifferent);
+        assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),
+                     d.compareNodes(d1, new XPathContext(),
+                                    d2, new XPathContext()));
+    }
+
     private Document documentForString(String s) {
         return Convert.toDocument(Input.fromMemory(s).build());
     }
