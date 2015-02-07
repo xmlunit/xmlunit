@@ -818,27 +818,30 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
      */
     private static final Linqy.Mapper<Node, QName> QNAME_MAPPER =
         new Linqy.Mapper<Node, QName>() {
-        public QName map(Node n) { return Nodes.getQName(n); }
-    };
+            @Override
+            public QName apply(Node n) { return Nodes.getQName(n); }
+        };
 
     /**
      * Maps Nodes to their NodeInfo equivalent.
      */
     private static final Linqy.Mapper<Node, XPathContext.NodeInfo> TO_NODE_INFO =
         new Linqy.Mapper<Node, XPathContext.NodeInfo>() {
-        public XPathContext.NodeInfo map(Node n) {
-            return new XPathContext.DOMNodeInfo(n);
-        }
-    };
+            @Override
+            public XPathContext.NodeInfo apply(Node n) {
+                return new XPathContext.DOMNodeInfo(n);
+            }
+        };
 
     /**
      * Suppresses document-type nodes.
      */
     private static final Predicate<Node> INTERESTING_NODES =
         new Predicate<Node>() {
-        public boolean matches(Node n) {
-            return n.getNodeType() != Node.DOCUMENT_TYPE_NODE;
-        }
-    };
+            @Override
+            public boolean test(Node n) {
+                return n.getNodeType() != Node.DOCUMENT_TYPE_NODE;
+            }
+        };
 
 }

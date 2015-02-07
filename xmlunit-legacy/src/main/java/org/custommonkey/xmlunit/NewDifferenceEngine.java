@@ -538,7 +538,8 @@ public class NewDifferenceEngine
                 } else {
                     Iterable<Node> unmatchedTestElements =
                         Linqy.filter(testNodes, new Predicate<Node>() {
-                                public boolean matches(Node t) {
+                                @Override
+                                public boolean test(Node t) {
                                     return !map.containsValue(t);
                                 }
                             });

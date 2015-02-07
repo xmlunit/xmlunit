@@ -351,7 +351,7 @@ public final class ElementSelectors {
         }
 
         @Override
-        public boolean matches(ElementSelector es) {
+        public boolean test(ElementSelector es) {
             return es.canBeCompared(e1, e2);
         }
     }

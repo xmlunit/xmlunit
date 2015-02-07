@@ -41,7 +41,7 @@ public final class Linqy {
      */
     public static <E> Iterable<E> cast(final Iterable i) {
         return map(i, new Mapper<Object, E>() {
-                public E map(Object o) {
+                public E apply(Object o) {
                     return (E) o;
                 }
             });
@@ -52,6 +52,7 @@ public final class Linqy {
      */
     public static <E> Iterable<E> singleton(final E single) {
         return new Iterable<E>() {
+            @Override
             public Iterator<E> iterator() {
                 return new OnceOnlyIterator<E>(single);
             }
@@ -65,6 +66,7 @@ public final class Linqy {
     public static <F, T> Iterable<T> map(final Iterable<F> from,
                                          final Mapper<? super F, T> mapper) {
         return new Iterable<T>() {
+            @Override
             public Iterator<T> iterator() {
                 return new MappingIterator<F, T>(from.iterator(), mapper);
             }
@@ -75,7 +77,7 @@ public final class Linqy {
      * A function mapping from one type to another.
      */
     public interface Mapper<F, T> {
-        T map(F from);
+        T apply(F from);
     }
 
     /**
@@ -85,6 +87,7 @@ public final class Linqy {
     public static <T> Iterable<T> filter(final Iterable<T> sequence,
                                          final Predicate<? super T> filter) {
         return new Iterable<T>() {
+            @Override
             public Iterator<T> iterator() {
                 return new FilteringIterator<T>(sequence.iterator(), filter);
             }
@@ -113,7 +116,7 @@ public final class Linqy {
     public static <T> boolean any(final Iterable<T> sequence,
                                   final Predicate<? super T> predicate) {
         for (T t : sequence) {
-            if (predicate.matches(t)) {
+            if (predicate.test(t)) {
                 return true;
             }
         }
@@ -129,7 +132,7 @@ public final class Linqy {
     public static <T> boolean all(final Iterable<T> sequence,
                                   final Predicate<? super T> predicate) {
         for (T t : sequence) {
-            if (!predicate.matches(t)) {
+            if (!predicate.test(t)) {
                 return false;
             }
         }
@@ -142,9 +145,11 @@ public final class Linqy {
         private OnceOnlyIterator(E element) {
             this.element = element;
         }
+        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
+        @Override
         public E next() {
             if (iterated) {
                 throw new NoSuchElementException();
@@ -152,6 +157,7 @@ public final class Linqy {
             iterated = true;
             return element;
         }
+        @Override
         public boolean hasNext() {
             return !iterated;
         }
@@ -164,12 +170,15 @@ public final class Linqy {
             this.i = i;
             this.mapper = mapper;
         }
+        @Override
         public void remove() {
             i.remove();
         }
+        @Override
         public T next() {
-            return mapper.map(i.next());
+            return mapper.apply(i.next());
         }
+        @Override
         public boolean hasNext() {
             return i.hasNext();
         }
@@ -183,9 +192,11 @@ public final class Linqy {
             this.i = i;
             this.filter = filter;
         }
+        @Override
         public void remove() {
             i.remove();
         }
+        @Override
         public T next() {
             if (lookAhead == null) {
                 throw new NoSuchElementException();
@@ -194,10 +205,11 @@ public final class Linqy {
             lookAhead = null;
             return next;
         }
+        @Override
         public boolean hasNext() {
             while (lookAhead == null && i.hasNext()) {
                 T next = i.next();
-                if (filter.matches(next)) {
+                if (filter.test(next)) {
                     lookAhead = next;
                 }
             }
