@@ -275,4 +275,41 @@ public class ElementSelectorsTest {
                    .canBeCompared(control, noNS));
     }
 
+    @Test
+    public void not() {
+        Element control = doc.createElement(FOO);
+        Element equal = doc.createElement(FOO);
+        Element different = doc.createElement(BAR);
+        assertFalse(ElementSelectors.not(ElementSelectors.byName)
+                    .canBeCompared(control, equal));
+        assertTrue(ElementSelectors.not(ElementSelectors.byName)
+                   .canBeCompared(control, different));
+    }
+
+    @Test
+    public void or() {
+        Element control = doc.createElement(FOO);
+        Element test = doc.createElement(BAR);
+        assertFalse(ElementSelectors.or(ElementSelectors.byName)
+                    .canBeCompared(control, test));
+        assertTrue(ElementSelectors.or(ElementSelectors.byName,
+                                       ElementSelectors.Default)
+                   .canBeCompared(control, test));
+    }
+
+    @Test
+    public void and() {
+        Element control = doc.createElement(FOO);
+        control.setAttributeNS(SOME_URI, BAR, BAR);
+        Element test = doc.createElement(FOO);
+        assertTrue(ElementSelectors.and(ElementSelectors.byName)
+                   .canBeCompared(control, test));
+        assertTrue(ElementSelectors.and(ElementSelectors.byName,
+                                        ElementSelectors.Default)
+                   .canBeCompared(control, test));
+        assertFalse(ElementSelectors.and(ElementSelectors.byName,
+                                         ElementSelectors.Default,
+                                         ElementSelectors.byNameAndAllAttributes)
+                    .canBeCompared(control, test));
+    }
 }

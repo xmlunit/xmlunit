@@ -104,6 +104,38 @@ public final class Linqy {
         return c;
     }
 
+    /**
+     * Determines whether a given predicate holds true for at least
+     * one element.
+     *
+     * <p>Returns false for an empty sequence.</p>
+     */
+    public static <T> boolean any(final Iterable<T> sequence,
+                                  final Predicate<? super T> predicate) {
+        for (T t : sequence) {
+            if (predicate.matches(t)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Determines whether a given predicate holds true for all
+     * elements.
+     *
+     * <p>Returns true for an empty sequence.</p>
+     */
+    public static <T> boolean all(final Iterable<T> sequence,
+                                  final Predicate<? super T> predicate) {
+        for (T t : sequence) {
+            if (!predicate.matches(t)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static class OnceOnlyIterator<E> implements Iterator<E> {
         private final E element;
         private boolean iterated = false;

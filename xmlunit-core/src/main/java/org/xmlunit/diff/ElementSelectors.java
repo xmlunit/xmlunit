@@ -13,6 +13,9 @@
 */
 package org.xmlunit.diff;
 
+import static org.xmlunit.util.Linqy.all;
+import static org.xmlunit.util.Linqy.any;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,6 +23,7 @@ import java.util.HashSet;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import org.xmlunit.util.Nodes;
+import org.xmlunit.util.Predicate;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -263,6 +267,47 @@ public final class ElementSelectors {
                 }
             };
 
+    /**
+     * Negates another ElementSelector.
+     */
+    public static ElementSelector not(final ElementSelector es) {
+        return new ElementSelector() {
+            @Override
+            public boolean canBeCompared(Element controlElement,
+                                         Element testElement) {
+                return !es.canBeCompared(controlElement, testElement);
+            }
+        };
+    }
+
+    /**
+     * Accepts two elements if at least one of the given ElementSelectors does.
+     */
+    public static ElementSelector or(final ElementSelector... selectors) {
+        return new ElementSelector() {
+            @Override
+            public boolean canBeCompared(Element controlElement,
+                                         Element testElement) {
+                return any(Arrays.asList(selectors),
+                           new CanBeComparedPredicate(controlElement, testElement));
+            }
+        };
+    }
+
+    /**
+     * Accepts two elements if all of the given ElementSelectors do.
+     */
+    public static ElementSelector and(final ElementSelector... selectors) {
+        return new ElementSelector() {
+            @Override
+            public boolean canBeCompared(Element controlElement,
+                                         Element testElement) {
+                return all(Arrays.asList(selectors),
+                           new CanBeComparedPredicate(controlElement, testElement));
+            }
+        };
+    }
+
     private static boolean bothNullOrEqual(Object o1, Object o2) {
         return o1 == null ? o2 == null : o1.equals(o2);
     }
@@ -280,5 +325,19 @@ public final class ElementSelectors {
 
     private static boolean isText(Node n) {
         return n instanceof Text || n instanceof CDATASection;
+    }
+
+    private static class CanBeComparedPredicate implements Predicate<ElementSelector> {
+        private final Element e1, e2;
+
+        private CanBeComparedPredicate(Element e1, Element e2) {
+            this.e1 = e1;
+            this.e2 = e2;
+        }
+
+        @Override
+        public boolean matches(ElementSelector es) {
+            return es.canBeCompared(e1, e2);
+        }
     }
 }
