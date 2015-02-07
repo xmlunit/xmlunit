@@ -143,11 +143,24 @@ public class DiffBuilder {
         return this;
     }
 
+    /**
+     * Will remove all comment-Tags "&lt;!-- Comment --&gt;" from test- and control-XML before comparing.
+     */
     public DiffBuilder ignoreComments() {
         ignoreComments = true;
         return this;
     }
 
+    /**
+     * Sets the strategy for selecting nodes to compare.
+     * <p>
+     * Example with {@link org.xmlunit.diff.DefaultNodeMatcher}:
+     * <pre>
+     * .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
+     * </pre>
+     * 
+     * @see org.xmlunit.diff.DifferenceEngine#setNodeMatcher(NodeMatcher)
+     */
     public DiffBuilder withNodeMatcher(final NodeMatcher nodeMatcher) {
         this.nodeMatcher = nodeMatcher;
         return this;
@@ -189,11 +202,22 @@ public class DiffBuilder {
         return this;
     }
 
+    /**
+     * Registers a listener that is notified of each comparison.
+     * 
+     * @see org.xmlunit.diff.DifferenceEngine#addComparisonListener(ComparisonListener)
+     */
     public DiffBuilder withComparisonListeners(final ComparisonListener... comparisonListeners) {
         this.comparisonListeners.addAll(Arrays.asList(comparisonListeners));
         return this;
     }
 
+    /**
+     * Registers a listener that is notified of each comparison with
+     * outcome other than {@link ComparisonResult#EQUAL}.
+     * 
+     * @see org.xmlunit.diff.DifferenceEngine#addDifferenceListener(ComparisonListener)
+     */
     public DiffBuilder withDifferenceListeners(final ComparisonListener... comparisonListeners) {
         this.differenceListeners.addAll(Arrays.asList(comparisonListeners));
         return this;
@@ -201,6 +225,12 @@ public class DiffBuilder {
 
     /**
      * check test source with the control source for similarity.
+     * <p>
+     * Example for Similar: The XML node "&lt;a&gt;Text&lt;/a&gt;" and "&lt;a&gt;&lt;![CDATA[Text]]&gt;&lt;/a&gt;" are
+     * similar and the Test will not fail.
+     * <p>
+     * The rating, if a node is similar, will be done by the {@link DifferenceEvaluators#Default}.
+     * See {@link #withDifferenceEvaluator(DifferenceEvaluator)}
      * <p>
      * Default is {@link #checkForIdentical()}.
      */
@@ -219,6 +249,10 @@ public class DiffBuilder {
         return this;
     }
 
+    /**
+     * Compare the Test-XML {@link #withTest(Object)} with the Control-XML {@link #compare(Object)} and return the
+     * collected differences in a {@link Diff} object.
+     */
     public Diff build() {
 
         final DOMDifferenceEngine d = new DOMDifferenceEngine();
