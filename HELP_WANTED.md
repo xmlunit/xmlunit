@@ -13,7 +13,6 @@ In General
 * Validate the API - this is paramount to get 2.0 final out but should
   probably be complete before the first alpha release
 * work on the open issues
-* have a builder for difference engines
 * maybe provide convenient APIs for ignoring complete subtrees when
   comparing pieces of XML.
 
