@@ -13,6 +13,12 @@
 */
 
 /**
- * Utilities hiding the differences between .NET and Java implementations.
+ * <b>Internal</b> utilities hiding the differences between .NET and Java
+ * implementations.
+ *
+ * <p>The classes and interfaces of this package are public as an
+ * implementation detail and are not considered part of XMLUnit's
+ * public API.  Everything may change or get removed completely in
+ * point releases.</p>
  */
 package org.xmlunit.util;
