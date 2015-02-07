@@ -19,10 +19,9 @@ Some goals for XMLUnit 2.x:
   - comparisons
 * be independent of any test framework
 
-This will be a work in progress for quite some time.  We are in the
-process of migrating the - unpublished so far - XMLUnit 2.x from
-sourceforge to github.  XMLUnit 1.x for Java and 0.x for .NET will
-stay at [sourceforge](https://sourceforge.net/projects/xmlunit/).
+We are in the process of finalizing the API for XMLUnit 2.x.  XMLUnit
+1.x for Java is still supported and will stay at
+[sourceforge](https://sourceforge.net/projects/xmlunit/).
 
 ## Help Wanted!
 
