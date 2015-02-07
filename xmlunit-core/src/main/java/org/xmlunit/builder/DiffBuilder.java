@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-
+import java.util.Map;
 
 /**
  * DiffBuilder to create a {@link Diff} instance.
@@ -77,6 +77,8 @@ public class DiffBuilder {
     private List<ComparisonListener> differenceListeners = new ArrayList<ComparisonListener>();
 
     private ComparisonResult[] comparisonResultsToCheck = CHECK_FOR_IDENTICAL;
+
+    private Map<String, String> namespaceContext;
 
     private boolean ignoreWhitespace;
 
@@ -250,6 +252,21 @@ public class DiffBuilder {
     }
 
     /**
+     * Establish a namespace context that will be used in {@link
+     * Comparison.Detail#getXPath Comparison.Detail#getXPath}.
+     *
+     * <p>Without a namespace context (or with an empty context) the
+     * XPath expressions will only use local names for elements and
+     * attributes.</p>
+     *
+     * @param uri2Prefix maps from namespace URI to prefix.
+     */
+    public DiffBuilder withNamespaceContext(Map<String, String> uri2Prefix) {
+        namespaceContext = uri2Prefix;
+        return this;
+    }
+
+    /**
      * Compare the Test-XML {@link #withTest(Object)} with the Control-XML {@link #compare(Object)} and return the
      * collected differences in a {@link Diff} object.
      */
@@ -268,6 +285,9 @@ public class DiffBuilder {
         }
         for (ComparisonListener comparisonListener : differenceListeners) {
             d.addDifferenceListener(comparisonListener);
+        }
+        if (namespaceContext != null) {
+            d.setNamespaceContext(namespaceContext);
         }
         d.compare(wrap(controlSource), wrap(testSource));
 
