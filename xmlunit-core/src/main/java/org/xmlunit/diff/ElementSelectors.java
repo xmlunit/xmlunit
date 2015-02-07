@@ -308,6 +308,21 @@ public final class ElementSelectors {
         };
     }
 
+    /**
+     * Accepts two elements if exactly on of the given ElementSelectors does.
+     */
+    public static ElementSelector xor(final ElementSelector es1,
+                                      final ElementSelector es2) {
+        return new ElementSelector() {
+            @Override
+            public boolean canBeCompared(Element controlElement,
+                                         Element testElement) {
+                return es1.canBeCompared(controlElement, testElement)
+                    ^ es2.canBeCompared(controlElement, testElement);
+            }
+        };
+    }
+
     private static boolean bothNullOrEqual(Object o1, Object o2) {
         return o1 == null ? o2 == null : o1.equals(o2);
     }

@@ -312,4 +312,20 @@ public class ElementSelectorsTest {
                                          ElementSelectors.byNameAndAllAttributes)
                     .canBeCompared(control, test));
     }
+
+    @Test
+    public void xor() {
+        Element control = doc.createElement(FOO);
+        Element test = doc.createElement(BAR);
+        Element test2 = doc.createElement(FOO);
+        assertFalse(ElementSelectors.xor(ElementSelectors.byName,
+                                         ElementSelectors.byNameAndAllAttributes)
+                    .canBeCompared(control, test));
+        assertTrue(ElementSelectors.xor(ElementSelectors.byName,
+                                        ElementSelectors.Default)
+                   .canBeCompared(control, test));
+        assertFalse(ElementSelectors.xor(ElementSelectors.byName,
+                                         ElementSelectors.Default)
+                    .canBeCompared(control, test2));
+    }
 }
