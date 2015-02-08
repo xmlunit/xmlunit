@@ -13,6 +13,7 @@
 */
 package org.xmlunit.diff;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,6 +24,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
+import org.xmlunit.util.Predicate;
 
 import static org.junit.Assert.*;
 
@@ -328,4 +330,74 @@ public class ElementSelectorsTest {
                                          ElementSelectors.Default)
                     .canBeCompared(control, test2));
     }
+
+    @Test
+    public void conditionalReturnsFalseIfConditionIsNotMet() {
+        Element control = doc.createElement(FOO);
+        Element test = doc.createElement(FOO);
+        assertFalse(ElementSelectors.conditionalSelector(new Predicate<Object>() {
+                @Override
+                public boolean test(Object o) {
+                    return false;
+                }
+            }, ElementSelectors.byName)
+            .canBeCompared(control, test));
+    }
+
+    @Test
+    public void conditionalAsksWrappedSelectorIfConditionIsMet() {
+        Element control = doc.createElement(FOO);
+        Element test = doc.createElement(BAR);
+        Element test2 = doc.createElement(FOO);
+        assertFalse(ElementSelectors.conditionalSelector(new Predicate<Object>() {
+                @Override
+                public boolean test(Object o) {
+                    return true;
+                }
+            }, ElementSelectors.byName)
+            .canBeCompared(control, test));
+        assertTrue(ElementSelectors.conditionalSelector(new Predicate<Object>() {
+                @Override
+                public boolean test(Object o) {
+                    return true;
+                }
+            }, ElementSelectors.byName)
+            .canBeCompared(control, test2));
+    }
+
+    @Test
+    public void plainStringNamed() {
+        Element control = doc.createElement(FOO);
+        Element controlNS = doc.createElementNS(SOME_URI, FOO);
+        Element test = doc.createElement(FOO);
+        Element testNS = doc.createElementNS(SOME_URI, FOO);
+        assertFalse(ElementSelectors.selectorForElementNamed(BAR,
+                                                             ElementSelectors.byName)
+                    .canBeCompared(control, test));
+        assertTrue(ElementSelectors.selectorForElementNamed(FOO,
+                                                            ElementSelectors.byName)
+                   .canBeCompared(control, test));
+        assertTrue(ElementSelectors.selectorForElementNamed(FOO,
+                                                            ElementSelectors.byName)
+                   .canBeCompared(controlNS, testNS));
+    }
+
+    @Test
+    public void qnameNamed() {
+        Element control = doc.createElement(FOO);
+        Element controlNS = doc.createElementNS(SOME_URI, FOO);
+        Element test = doc.createElement(FOO);
+        Element testNS = doc.createElementNS(SOME_URI, FOO);
+        assertFalse(ElementSelectors.selectorForElementNamed(new QName(BAR),
+                                                             ElementSelectors.byName)
+                    .canBeCompared(control, test));
+        assertTrue(ElementSelectors.selectorForElementNamed(new QName(FOO),
+                                                            ElementSelectors.byName)
+                   .canBeCompared(control, test));
+        assertTrue(ElementSelectors.selectorForElementNamed(new QName(SOME_URI, FOO,
+                                                                      XMLConstants.DEFAULT_NS_PREFIX),
+                                                            ElementSelectors.byName)
+                   .canBeCompared(controlNS, testNS));
+    }
+
 }

@@ -323,6 +323,57 @@ public final class ElementSelectors {
         };
     }
 
+    /**
+     * Applies the wrapped ElementSelector's logic if and only if the
+     * control element matches the given predicate.
+     */
+    public static ElementSelector conditionalSelector(final Predicate<? super Element> predicate,
+                                                      final ElementSelector es) {
+
+        return new ElementSelector() {
+            @Override
+            public boolean canBeCompared(Element controlElement,
+                                         Element testElement) {
+                return predicate.test(controlElement)
+                    && es.canBeCompared(controlElement, testElement);
+            }
+        };
+    }
+
+    /**
+     * Applies the wrapped ElementSelector's logic if and only if the
+     * control element has the given (local) name.
+     */
+    public static ElementSelector selectorForElementNamed(final String expectedName,
+                                                          final ElementSelector es) {
+
+        return conditionalSelector(new Predicate<Element>() {
+                @Override
+                public boolean test(Element e) {
+                    String name = e.getLocalName();
+                    if (name == null) {
+                        name = e.getNodeName();
+                    }
+                    return expectedName.equals(name);
+                }
+            }, es);
+    }
+
+    /**
+     * Applies the wrapped ElementSelector's logic if and only if the
+     * control element has the given name.
+     */
+    public static ElementSelector selectorForElementNamed(final QName expectedName,
+                                                          final ElementSelector es) {
+
+        return conditionalSelector(new Predicate<Element>() {
+                @Override
+                public boolean test(Element e) {
+                    return expectedName.equals(Nodes.getQName(e));
+                }
+            }, es);
+    }
+
     private static boolean bothNullOrEqual(Object o1, Object o2) {
         return o1 == null ? o2 == null : o1.equals(o2);
     }
