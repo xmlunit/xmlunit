@@ -17,6 +17,7 @@ package org.xmlunit.diff;
  * Controllers used for the base cases.
  */
 public final class ComparisonControllers {
+
     private ComparisonControllers() { }
 
     /**
@@ -34,12 +35,26 @@ public final class ComparisonControllers {
      * Makes the comparison stop as soon as the first "real"
      * difference is encountered.
      */
-    public static final ComparisonController StopWhenDifferent =
-        new ComparisonController() {
-            @Override
-            public boolean stopDiffing(Difference d) {
-                return d.getResult() == ComparisonResult.DIFFERENT;
-            }
-        };
+    public static final ComparisonController StopWhenDifferent = new StopComparisonController(ComparisonResult.DIFFERENT);
+
+    /**
+     * Makes the comparison stop as soon as the first
+     * difference is encountered even if it is similar.
+     */
+    public static final ComparisonController StopWhenSimilar = new StopComparisonController(ComparisonResult.SIMILAR);
+
+    private static final class StopComparisonController implements ComparisonController {
+
+        final ComparisonResult minimumComparisonResult;
+        
+        public StopComparisonController(ComparisonResult minimumComparisonResult) {
+            this.minimumComparisonResult = minimumComparisonResult;
+        }
+
+        @Override
+        public boolean stopDiffing(Difference d) {
+            return d.getResult().ordinal() >= minimumComparisonResult.ordinal();
+        }
+    }
 
 }
