@@ -271,6 +271,9 @@ public final class ElementSelectors {
      * Negates another ElementSelector.
      */
     public static ElementSelector not(final ElementSelector es) {
+        if (es == null) {
+            throw new IllegalArgumentException("es must not be null");
+        }
         return new ElementSelector() {
             @Override
             public boolean canBeCompared(Element controlElement,
@@ -284,6 +287,9 @@ public final class ElementSelectors {
      * Accepts two elements if at least one of the given ElementSelectors does.
      */
     public static ElementSelector or(final ElementSelector... selectors) {
+        if (selectors == null) {
+            throw new IllegalArgumentException("selectors must not be null");
+        }
         return new ElementSelector() {
             @Override
             public boolean canBeCompared(Element controlElement,
@@ -298,6 +304,9 @@ public final class ElementSelectors {
      * Accepts two elements if all of the given ElementSelectors do.
      */
     public static ElementSelector and(final ElementSelector... selectors) {
+        if (selectors == null) {
+            throw new IllegalArgumentException("selectors must not be null");
+        }
         return new ElementSelector() {
             @Override
             public boolean canBeCompared(Element controlElement,
@@ -313,6 +322,9 @@ public final class ElementSelectors {
      */
     public static ElementSelector xor(final ElementSelector es1,
                                       final ElementSelector es2) {
+        if (es1 == null || es2 == null) {
+            throw new IllegalArgumentException("selectors must not be null");
+        }
         return new ElementSelector() {
             @Override
             public boolean canBeCompared(Element controlElement,
@@ -330,6 +342,12 @@ public final class ElementSelectors {
     public static ElementSelector conditionalSelector(final Predicate<? super Element> predicate,
                                                       final ElementSelector es) {
 
+        if (predicate == null) {
+            throw new IllegalArgumentException("predicate must not be null");
+        }
+        if (es == null) {
+            throw new IllegalArgumentException("es must not be null");
+        }
         return new ElementSelector() {
             @Override
             public boolean canBeCompared(Element controlElement,
@@ -346,10 +364,19 @@ public final class ElementSelectors {
      */
     public static ElementSelector selectorForElementNamed(final String expectedName,
                                                           final ElementSelector es) {
+        if (expectedName == null) {
+            throw new IllegalArgumentException("expectedName must not be null");
+        }
+        if (es == null) {
+            throw new IllegalArgumentException("es must not be null");
+        }
 
         return conditionalSelector(new Predicate<Element>() {
                 @Override
                 public boolean test(Element e) {
+                    if (e == null) {
+                        return false;
+                    }
                     String name = e.getLocalName();
                     if (name == null) {
                         name = e.getNodeName();
@@ -365,11 +392,17 @@ public final class ElementSelectors {
      */
     public static ElementSelector selectorForElementNamed(final QName expectedName,
                                                           final ElementSelector es) {
+        if (expectedName == null) {
+            throw new IllegalArgumentException("expectedName must not be null");
+        }
+        if (es == null) {
+            throw new IllegalArgumentException("es must not be null");
+        }
 
         return conditionalSelector(new Predicate<Element>() {
                 @Override
                 public boolean test(Element e) {
-                    return expectedName.equals(Nodes.getQName(e));
+                    return e == null ? false : expectedName.equals(Nodes.getQName(e));
                 }
             }, es);
     }
