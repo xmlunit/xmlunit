@@ -13,7 +13,6 @@
 */
 package org.xmlunit.diff;
 
-import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Map;
 
@@ -123,7 +122,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
      * @return the outcome as pair of result and a flag that says
      * "stop the whole comparison process" when true.
      */
-    protected final Map.Entry<ComparisonResult, Boolean> compare(Comparison comp) {
+    protected final ComparisonState compare(Comparison comp) {
         Object controlValue = comp.getControlDetails().getValue();
         Object testValue = comp.getTestDetails().getValue();
         boolean equal = controlValue == null
@@ -133,24 +132,10 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         ComparisonResult altered =
             getDifferenceEvaluator().evaluate(comp, initial);
         listeners.fireComparisonPerformed(comp, altered);
-        boolean stop = false;
-        if (altered != ComparisonResult.EQUAL) {
-            stop = comparisonController.stopDiffing(new Difference(comp, altered));
-        }
-        return new AbstractMap.SimpleImmutableEntry(altered, stop);
-    }
-
-    /**
-     * Returns a function that compares the detail values for object
-     * equality, lets the difference evaluator evaluate the result,
-     * notifies all listeners and returns the outcome.
-     */
-    protected final DeferredComparison comparer(final Comparison comp) {
-        return new DeferredComparison() {
-            public Map.Entry<ComparisonResult, Boolean> apply() {
-                return compare(comp);
-            }
-        };
+        return altered != ComparisonResult.EQUAL
+            && comparisonController.stopDiffing(new Difference(comp, altered))
+            ? new FinishedComparisonState(altered)
+            : new OngoingComparisonState(altered);
     }
 
     /**
@@ -161,61 +146,82 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     }
 
     /**
-     * Encapsulates a comparision that may or may not be performed.
+     * Encapsulates a comparison that may or may not be performed.
      */
     protected interface DeferredComparison {
         /**
          * Perform the comparison.
          */
-        Map.Entry<ComparisonResult, Boolean> apply();
+        ComparisonState apply();
     }
 
     /**
-     * Chain of comparisons where the last comparison performed
-     * determines the final result but the chain stops as soon as the
-     * comparison controller says so.
+     * Encapsulates the current result and a flag that
+     * indicates whether comparison should be stopped.
      */
-    protected static class ComparisonChain {
-        private Map.Entry<ComparisonResult, Boolean> currentResult;
+    protected abstract class ComparisonState {
+        private final boolean finished;
+        private final ComparisonResult result;
 
-        /**
-         * Creates a chain without any parts.
-         */
-        public ComparisonChain() {
-            this(new AbstractMap.SimpleImmutableEntry(ComparisonResult.EQUAL, false));
+        protected ComparisonState(boolean finished, ComparisonResult result) {
+            this.finished = finished;
+            this.result = result;
         }
-        /**
-         * Creates a chain with an initial value.
-         */
-        public ComparisonChain(Map.Entry<ComparisonResult, Boolean> firstResult) {
-            currentResult = firstResult;
+
+        protected ComparisonState andThen(DeferredComparison newStateProducer) {
+            return finished ? this : newStateProducer.apply();
         }
-        /**
-         * Adds a new part to the chain.
-         *
-         * <p>If the current result of the chain is already critical
-         * the new part will be ognored, otherwise it is evaluated and
-         * its outcome is the new result of the chain.</p>
-         */
-        public ComparisonChain andThen(DeferredComparison next) {
-            if (!currentResult.getValue()) {
-                currentResult = next.apply();
+        protected ComparisonState andIfTrueThen(boolean predicate,
+                                                DeferredComparison newStateProducer) {
+            return predicate ? andThen(newStateProducer) : this;
+        }
+        protected ComparisonState andThen(final Comparison comp) {
+            return andThen(new DeferredComparison() {
+                    @Override
+                    public ComparisonState apply() {
+                        return compare(comp);
+                    }
+                });
+        }
+        protected ComparisonState andIfTrueThen(boolean predicate,
+                                                final Comparison comp) {
+            return andIfTrueThen(predicate, new DeferredComparison() {
+                    @Override
+                    public ComparisonState apply() {
+                        return compare(comp);
+                    }
+                });
+        }
+        @Override
+        public String toString() {
+            return getClass().getName() + ": current result is " + result;
+        }
+        @Override
+        public boolean equals(Object other) {
+            if (other == null || !getClass().equals(other.getClass())) {
+                return false;
             }
-            return this;
+            ComparisonState cs = (ComparisonState) other;
+            return finished == cs.finished && result == cs.result;
         }
-        /**
-         * Adds a new part to the chain if the given predicate is true.
-         */
-        public ComparisonChain andIfTrueThen(boolean evalNext,
-                                             DeferredComparison next) {
-            return evalNext ? andThen(next) : this;
-        }
-        /**
-         * Returns the current result of the evaluated chain.
-         */
-        public Map.Entry<ComparisonResult, Boolean> getFinalResult() {
-            return currentResult;
+        @Override
+        public int hashCode() {
+            return (finished ? 7 : 1) * result.hashCode();
         }
     }
 
+    protected final class FinishedComparisonState extends ComparisonState {
+        protected FinishedComparisonState(ComparisonResult result) {
+            super(true, result);
+        }
+    }
+
+    protected final class OngoingComparisonState extends ComparisonState {
+        protected OngoingComparisonState(ComparisonResult result) {
+            super(false, result);
+        }
+        protected OngoingComparisonState() {
+            this(ComparisonResult.EQUAL);
+        }
+    }
 }

@@ -16,6 +16,7 @@ package org.xmlunit.diff;
 import org.junit.Test;
 import java.util.AbstractMap;
 import java.util.Map;
+import javax.xml.transform.Source;
 
 import static org.junit.Assert.*;
 
@@ -135,11 +136,92 @@ public abstract class AbstractDifferenceEngineTest {
         assertEquals(1, l.getInvocations());
     }
 
-    protected static Map.Entry<ComparisonResult, Boolean> wrap(ComparisonResult c) {
-        return new AbstractMap.SimpleImmutableEntry(c, false);
+    @Test
+    public void ongoingComparisonStateBasics() {
+        AbstractDifferenceEngine.ComparisonState cs = wrap(ComparisonResult.EQUAL);
+        assertEquals(cs, new WrapHelper().empty());
     }
 
-    protected static Map.Entry<ComparisonResult, Boolean> wrapAndStop(ComparisonResult c) {
-        return new AbstractMap.SimpleImmutableEntry(c, true);
+    @Test
+    public void andThenUsesCurrentFinishedFlag() {
+        AbstractDifferenceEngine.ComparisonState cs = wrapAndStop(ComparisonResult.SIMILAR);
+        assertEquals(wrapAndStop(ComparisonResult.SIMILAR),
+                     cs.andThen(new AbstractDifferenceEngine.DeferredComparison() {
+                             @Override
+                             public AbstractDifferenceEngine.ComparisonState apply() {
+                                 return wrap(ComparisonResult.EQUAL);
+                             }
+                         }));
+        cs = wrap(ComparisonResult.SIMILAR);
+        assertEquals(wrap(ComparisonResult.EQUAL),
+                     cs.andThen(new AbstractDifferenceEngine.DeferredComparison() {
+                             @Override
+                             public AbstractDifferenceEngine.ComparisonState apply() {
+                                 return wrap(ComparisonResult.EQUAL);
+                             }
+                         }));
+    }
+
+    @Test
+    public void andIfTrueThenUsesCurrentFinishedFlag() {
+        AbstractDifferenceEngine.ComparisonState cs = wrapAndStop(ComparisonResult.SIMILAR);
+        assertEquals(wrapAndStop(ComparisonResult.SIMILAR),
+                     cs.andIfTrueThen(true, new AbstractDifferenceEngine.DeferredComparison() {
+                             @Override
+                             public AbstractDifferenceEngine.ComparisonState apply() {
+                                 return wrap(ComparisonResult.EQUAL);
+                             }
+                         }));
+        cs = wrap(ComparisonResult.SIMILAR);
+        assertEquals(wrap(ComparisonResult.EQUAL),
+                     cs.andIfTrueThen(true, new AbstractDifferenceEngine.DeferredComparison() {
+                             @Override
+                             public AbstractDifferenceEngine.ComparisonState apply() {
+                                 return wrap(ComparisonResult.EQUAL);
+                             }
+                         }));
+    }
+
+    @Test
+    public void andIfTrueThenIsNoopIfFirstArgIsFalse() {
+        AbstractDifferenceEngine.ComparisonState cs = wrapAndStop(ComparisonResult.SIMILAR);
+        assertEquals(wrapAndStop(ComparisonResult.SIMILAR),
+                     cs.andIfTrueThen(false, new AbstractDifferenceEngine.DeferredComparison() {
+                             @Override
+                             public AbstractDifferenceEngine.ComparisonState apply() {
+                                 return wrap(ComparisonResult.EQUAL);
+                             }
+                         }));
+        cs = wrap(ComparisonResult.SIMILAR);
+        assertEquals(wrap(ComparisonResult.SIMILAR),
+                     cs.andIfTrueThen(false, new AbstractDifferenceEngine.DeferredComparison() {
+                             @Override
+                             public AbstractDifferenceEngine.ComparisonState apply() {
+                                 return wrap(ComparisonResult.EQUAL);
+                             }
+                         }));
+    }
+
+    protected static AbstractDifferenceEngine.ComparisonState wrap(ComparisonResult c) {
+        return new WrapHelper().wrap(c);
+    }
+
+    protected static AbstractDifferenceEngine.ComparisonState wrapAndStop(ComparisonResult c) {
+        return new WrapHelper().wrapAndStop(c);
+    }
+
+    private static class WrapHelper extends AbstractDifferenceEngine {
+        private ComparisonState empty() {
+            return new OngoingComparisonState();
+        }
+        private ComparisonState wrap(ComparisonResult r) {
+            return new OngoingComparisonState(r);
+        }
+        private ComparisonState wrapAndStop(ComparisonResult r) {
+            return new FinishedComparisonState(r);
+        }
+        @Override
+        public void compare(Source control, Source test) {
+        }
     }
 }
