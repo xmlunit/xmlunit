@@ -253,7 +253,7 @@ public class DiffBuilder {
 
     /**
      * Establish a namespace context that will be used in {@link
-     * Comparison.Detail#getXPath Comparison.Detail#getXPath}.
+     * org.xmlunit.diff.Comparison.Detail#getXPath Comparison.Detail#getXPath}.
      *
      * <p>Without a namespace context (or with an empty context) the
      * XPath expressions will only use local names for elements and
