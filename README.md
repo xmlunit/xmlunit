@@ -83,7 +83,7 @@ or using the fluent builder API
 
 ```java
 Diff d = DiffBuilder.compare(Input.fromFile("test-data/good.xml"))
-             .withTest(createTestDocument());
+             .withTest(createTestDocument()).build();
 assert !d.hasDifferences();
 ```
 
