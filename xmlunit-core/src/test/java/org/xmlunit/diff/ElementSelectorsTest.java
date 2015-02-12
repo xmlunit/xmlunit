@@ -400,4 +400,45 @@ public class ElementSelectorsTest {
                    .canBeCompared(controlNS, testNS));
     }
 
+    @Test
+    public void xpath() {
+        String BAZ = "BAZ";
+        String XYZZY1 = "xyzzy1";
+        String XYZZY2 = "xyzzy2";
+
+        Element control = doc.createElement(FOO);
+        Element bar = doc.createElement(BAR);
+        control.appendChild(bar);
+        Element baz = doc.createElement(BAZ);
+        bar.appendChild(baz);
+        baz.appendChild(doc.createTextNode(XYZZY1));
+        baz = doc.createElement(BAZ);
+        bar.appendChild(baz);
+        baz.appendChild(doc.createTextNode(XYZZY2));
+
+        Element test = doc.createElement(FOO);
+        bar = doc.createElement(BAR);
+        test.appendChild(bar);
+        baz = doc.createElement(BAZ);
+        bar.appendChild(baz);
+        baz.appendChild(doc.createTextNode(XYZZY2));
+        baz = doc.createElement(BAZ);
+        bar.appendChild(baz);
+        baz.appendChild(doc.createTextNode(XYZZY1));
+
+        Element test2 = doc.createElement(FOO);
+        bar = doc.createElement(BAR);
+        test2.appendChild(bar);
+        baz = doc.createElement(BAZ);
+        bar.appendChild(baz);
+        baz.appendChild(doc.createTextNode(XYZZY2));
+        baz = doc.createElement(BAZ);
+        bar.appendChild(baz);
+        baz.appendChild(doc.createTextNode(XYZZY2));
+
+        assertTrue(ElementSelectors.byXPath(".//BAZ", ElementSelectors.byNameAndText)
+                   .canBeCompared(control, test));
+        assertFalse(ElementSelectors.byXPath(".//BAZ", ElementSelectors.byNameAndText)
+                    .canBeCompared(control, test2));
+    }
 }

@@ -22,8 +22,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import javax.xml.namespace.QName;
+import javax.xml.transform.dom.DOMSource;
+import org.xmlunit.util.Linqy;
 import org.xmlunit.util.Nodes;
 import org.xmlunit.util.Predicate;
+import org.xmlunit.xpath.JAXPXPathEngine;
+import org.xmlunit.xpath.XPathEngine;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -405,6 +409,60 @@ public final class ElementSelectors {
                     return e == null ? false : expectedName.equals(Nodes.getQName(e));
                 }
             }, es);
+    }
+
+    /**
+     * Selects two elements as matching if the child elements selected
+     * via XPath match using the given childSelector.
+     *
+     * <p>The xpath expression should yield elements.  Two elements
+     * match if a DefaultNodeMatcher applied to the selected children
+     * finds matching pairs for all children.</p>
+     *
+     * @param xpath XPath expression applied in the context of the
+     * elements to chose from that selects the children to compare.
+     * @param childSelector ElementSelector to apply to the selected children.
+     */
+    public static ElementSelector byXPath(String xpath, ElementSelector childSelector) {
+        return byXPath(xpath, null, childSelector);
+    }
+
+    /**
+     * Selects two elements as matching if the child elements selected
+     * via XPath match using the given childSelector.
+     *
+     * <p>The xpath expression should yield elements.  Two elements
+     * match if a DefaultNodeMatcher applied to the selected children
+     * finds matching pairs for all children.</p>
+     *
+     * @param xpath XPath expression applied in the context of the
+     * elements to chose from that selects the children to compare.
+     * @param namespaceContext provides prefix mapping for namespace
+     * prefixes used inside the xpath expression
+     * @param childSelector ElementSelector to apply to the selected children.
+     */
+    public static ElementSelector byXPath(final String xpath,
+                                          Map<String, String> namespaceContext,
+                                          ElementSelector childSelector) {
+        final XPathEngine engine = new JAXPXPathEngine();
+        if (namespaceContext != null) {
+            engine.setNamespaceContext(namespaceContext);
+        }
+        final NodeMatcher nm = new DefaultNodeMatcher(childSelector);
+        return new ElementSelector() {
+            @Override
+            public boolean canBeCompared(Element controlElement,
+                                         Element testElement) {
+                Iterable<Node> controlChildren =
+                    engine.selectNodes(xpath, new DOMSource(controlElement));
+                int expected = Linqy.count(controlChildren);
+                int matched =
+                    Linqy.count(nm.match(controlChildren,
+                                         engine.selectNodes(xpath,
+                                                            new DOMSource(testElement))));
+                return expected == matched;
+            }
+        };
     }
 
     private static boolean bothNullOrEqual(Object o1, Object o2) {
