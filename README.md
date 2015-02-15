@@ -70,7 +70,7 @@ These are some really small examples, more is to come in the [user guide](https:
 ```java
 Source control = Input.fromFile("test-data/good.xml").build();
 Source test = Input.fromMemory(createTestDocument()).build();
-AbstractDifferenceEngine diff = new DOMDifferenceEngine();
+DifferenceEngine diff = new DOMDifferenceEngine();
 diff.addDifferenceListener(new ComparisonListener() {
         public void comparisonPerformed(Comparison comparison, ComparisonResult outcome) {
             Assert.fail("found a difference: " + comparison);
