@@ -37,7 +37,6 @@ import org.w3c.dom.Node;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -96,12 +95,30 @@ public class DiffBuilderTest {
     public void testDiff_withNormalizeWhitespaces_shouldSucceed() {
         // prepare testData
         String controlXml = "<a><b>Test Value</b></a>";
-        String testXml = "<a>\n <b>\n  Test Value\n </b>\n</a>";
+        String testXml = "<a>\n <b>\n  Test\n        Value\n </b>\n</a>";
 
         // run test
         Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
                       .withTest(Input.fromMemory(testXml).build())
                       .normalizeWhitespace()
+                      .build();
+
+        // validate result
+        Assert.assertFalse("XML similar " + myDiff.toString(), myDiff.hasDifferences());
+
+    }
+
+    @Test
+    public void testDiff_withNormalizeAndIgnoreWhitespaces_shouldSucceed() {
+        // prepare testData
+        String controlXml = "<a><b>Test Value</b></a>";
+        String testXml = "<a>\n <b>\n  Test\n        Value\n </b>\n</a>";
+
+        // run test
+        Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
+                      .withTest(Input.fromMemory(testXml).build())
+                      .normalizeWhitespace()
+                      .ignoreWhitespace()
                       .build();
 
         // validate result
