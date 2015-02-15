@@ -136,9 +136,6 @@ public class DiffBuilder {
      * "normalized" in this context means all whitespace characters are replaced by space characters and consecutive
      * whitespace characters are collapsed.
      * </p>
-     * <p>
-     * This flag has no effect if {@link #ignoreWhitespace()} is already activated.
-     * </p>
      */
     public DiffBuilder normalizeWhitespace() {
         normalizeWhitespace = true;
@@ -298,7 +295,8 @@ public class DiffBuilder {
         Source newSource = source;
         if (ignoreWhitespace) {
             newSource = new WhitespaceStrippedSource(newSource);
-        } else if (normalizeWhitespace) {
+        }
+        if (normalizeWhitespace) {
             newSource = new WhitespaceNormalizedSource(newSource);
         }
         if (ignoreComments) {
