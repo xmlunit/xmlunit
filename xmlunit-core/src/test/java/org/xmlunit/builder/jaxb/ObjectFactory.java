@@ -8,7 +8,10 @@
 
 package org.xmlunit.builder.jaxb;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
+import javax.xml.namespace.QName;
 
 
 /**
@@ -28,6 +31,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class ObjectFactory {
 
+    private final static QName _ComplexNode_QNAME = new QName("http://www.xmlunit.org/test/complexXml", "ComplexNode");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.xmlunit.test.jaxb
@@ -50,6 +54,14 @@ public class ObjectFactory {
      */
     public ComplexNode createComplexNode() {
         return new ComplexNode();
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ComplexNode }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://www.xmlunit.org/test/complexXml", name = "ComplexNode")
+    public JAXBElement<ComplexNode> createComplexNode(ComplexNode value) {
+        return new JAXBElement<ComplexNode>(_ComplexNode_QNAME, ComplexNode.class, null, value);
     }
 
 }
