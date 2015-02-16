@@ -28,3 +28,13 @@ Java
 * create API docs
 * additional NUnit constraints
 * NuGet packaging
+
+Claimed
+-------
+
+* @brabenetz is working on a Hamcrest Matcher for comparisons of
+  documents
+* @bodewig has started to work on more generic `ElementSelectors` and
+  intends to add a fluent builder for them - this is a generalization
+  of #4
+
