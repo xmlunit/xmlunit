@@ -45,4 +45,13 @@ public class Difference {
     public Comparison getComparison() {
         return comparison;
     }
+
+    /**
+     * Returns a string representation of this difference using {@link DefaultComparisonFormatter}
+     * @return a string representation of this difference
+     */
+    @Override
+    public String toString(){
+        return new DefaultComparisonFormatter().getDescription(this.comparison) + " (" + result.name() + ")";
+    }
 }

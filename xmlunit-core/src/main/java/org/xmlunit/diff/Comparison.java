@@ -79,4 +79,12 @@ public class Comparison {
         return test;
     }
 
+    /**
+     * Returns a string representation of this comparison using {@link DefaultComparisonFormatter}
+     * @return a string representation of this comparison
+     */
+    @Override
+    public String toString(){
+        return new DefaultComparisonFormatter().getDescription(this);
+    }
 }
