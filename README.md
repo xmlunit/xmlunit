@@ -122,7 +122,7 @@ or using `ValidationMatcher`
 import static org.xmlunit.matchers.ValidationMatcher.valid;
 ...
 
-assertThat(Input.fromDocument(createDocument()).build(), valid(Input.fromFile("local.xsd").build()));
+assertThat(createDocument(), valid(Input.fromFile("local.xsd")));
 ```
 
 ## Requirements

@@ -13,13 +13,18 @@
 */
 package org.xmlunit.matchers;
 
+import static org.xmlunit.util.Linqy.asList;
+import static org.xmlunit.util.Linqy.map;
+
+import org.xmlunit.builder.Input;
+import org.xmlunit.util.Linqy.Mapper;
 import org.xmlunit.validation.JAXPValidator;
 import org.xmlunit.validation.Languages;
 import org.xmlunit.validation.ValidationProblem;
 import org.xmlunit.validation.ValidationResult;
+import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
-import org.hamcrest.TypeSafeMatcher;
 
 import javax.xml.transform.Source;
 import java.util.Arrays;
@@ -27,26 +32,33 @@ import java.util.Arrays;
 /**
  * Hamcrest Matcher for XML Validation.
  */
-public class ValidationMatcher extends TypeSafeMatcher<Source> {
+public class ValidationMatcher extends BaseMatcher {
 
     private final Source schemaSource[];
     private Source instance;
     private ValidationResult result;
 
-    public ValidationMatcher(Source... schemaSource) {
-        this.schemaSource = schemaSource;
+    public ValidationMatcher(Object... schemaSource) {
+        this.schemaSource = asList(map(Arrays.asList(schemaSource),
+                                       new Mapper<Object, Source>() {
+                                           @Override
+                                           public Source apply(Object source) {
+                                               return Input.from(source).build();
+                                           }
+                                       })
+                                   ).toArray(new Source[schemaSource.length]);
     }
 
     @Override
-    public boolean matchesSafely(Source instance) {
-        this.instance = instance;
+    public boolean matches(Object instance) {
+        this.instance = Input.from(instance).build();
         JAXPValidator v = new JAXPValidator(Languages.W3C_XML_SCHEMA_NS_URI);
         if (schemaSource.length <= 1) {
             v.setSchemaSource(schemaSource[0]);
         } else {
             v.setSchemaSources(schemaSource);
         }
-        this.result = v.validateInstance(instance);
+        this.result = v.validateInstance(this.instance);
         return this.result.isValid();
     }
 
@@ -61,7 +73,7 @@ public class ValidationMatcher extends TypeSafeMatcher<Source> {
     }
 
     @Override
-    protected void describeMismatchSafely(final Source instance, final Description mismatchDescription) {
+    public void describeMismatch(final Object item, final Description mismatchDescription) {
         if (this.result != null && this.result.getProblems() != null) {
             mismatchDescription.appendText(" got validation errors: ");
             for (ValidationProblem problem : this.result.getProblems()) {
@@ -73,7 +85,7 @@ public class ValidationMatcher extends TypeSafeMatcher<Source> {
     }
 
     @Factory
-    public static ValidationMatcher valid(final Source schemaSource) {
+    public static ValidationMatcher valid(final Object schemaSource) {
         return new ValidationMatcher(schemaSource);
     }
 
