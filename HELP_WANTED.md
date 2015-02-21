@@ -32,8 +32,6 @@ Java
 Claimed
 -------
 
-* [@brabenetz](https://github.com/brabenetz) is working on a Hamcrest
-  Matcher for comparisons of documents
 * [@bodewig](https://github.com/bodewig) has started to work on more
   generic `ElementSelectors` and intends to add a fluent builder for
   them - this is a generalization of
