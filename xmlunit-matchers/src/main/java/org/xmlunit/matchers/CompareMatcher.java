@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  * </pre>
  * <p>
  * <b>Complex Example</b><br>
- * In most cases you will have a static factory method for your project which wraps all project-specific configurations
+ * In some cases you may have a static factory method for your project which wraps all project-specific configurations
  * like customized {@link ElementSelector} or {@link DifferenceEvaluator}.
  * 
  * <pre>
