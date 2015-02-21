@@ -47,11 +47,21 @@ public class Difference {
     }
 
     /**
+     * Returns a string representation of this difference using the
+     * given {@link ComparisonFormatter}
+     * @param formatter the ComparisonFormatter to use
+     * @return a string representation of this difference
+     */
+    public String toString(ComparisonFormatter formatter) {
+        return this.comparison.toString(formatter) + " (" + result.name() + ")";
+    }
+
+    /**
      * Returns a string representation of this difference using {@link DefaultComparisonFormatter}
      * @return a string representation of this difference
      */
     @Override
     public String toString(){
-        return new DefaultComparisonFormatter().getDescription(this.comparison) + " (" + result.name() + ")";
+        return toString(new DefaultComparisonFormatter());
     }
 }

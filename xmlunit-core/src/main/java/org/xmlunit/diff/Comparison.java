@@ -80,11 +80,21 @@ public class Comparison {
     }
 
     /**
+     * Returns a string representation of this comparison using the
+     * given {@link ComparisonFormatter}
+     * @param formatter the ComparisonFormatter to use
+     * @return a string representation of this comparison
+     */
+    public String toString(ComparisonFormatter formatter) {
+        return formatter.getDescription(this);
+    }
+
+    /**
      * Returns a string representation of this comparison using {@link DefaultComparisonFormatter}
      * @return a string representation of this comparison
      */
     @Override
     public String toString(){
-        return new DefaultComparisonFormatter().getDescription(this);
+        return toString(new DefaultComparisonFormatter());
     }
 }

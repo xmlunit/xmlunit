@@ -70,7 +70,7 @@ public class Diff {
         if (!hasDifferences()) {
             return "[identical]";
         }
-        return formatter.getDescription(getDifferences().iterator().next().getComparison());
+        return getDifferences().iterator().next().toString(formatter);
     }
 
 }
