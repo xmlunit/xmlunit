@@ -116,6 +116,15 @@ boolean valid = result.isValid();
 Iterable<ValidationProblem> problems = result.getProblems();
 ```
 
+or using `ValidationMatcher`
+
+```java
+import static org.xmlunit.matchers.ValidationMatcher.valid;
+...
+
+assertThat(Input.fromDocument(createDocument()).build(), valid(Input.fromFile("local.xsd").build()));
+```
+
 ## Requirements
 
 XMLUnit requires Java6.
