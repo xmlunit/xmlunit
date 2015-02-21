@@ -87,6 +87,15 @@ Diff d = DiffBuilder.compare(Input.fromFile("test-data/good.xml"))
 assert !d.hasDifferences();
 ```
 
+or using the `CompareMatcher`
+
+```java
+import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
+...
+
+assertThat(createTestDocument(), isIdenticalTo(Input.fromFile("test-data/good.xml")));
+```
+
 ### Asserting an XPath Value
 
 ```java
