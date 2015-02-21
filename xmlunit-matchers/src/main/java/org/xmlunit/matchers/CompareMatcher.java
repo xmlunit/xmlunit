@@ -197,7 +197,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
     }
 
     /**
-     * Instead of simple Matcher return <code>false</code> a {@link org.junit.ComparisonFailure} will be thrown.
+     * Instead of Matcher returning <code>false</code> a {@link org.junit.ComparisonFailure} will be thrown.
      * <p>
      * The advantage over the standard Matcher behavior is, that the ComparisonFailure can provide the effected
      * Control-Node and Test-Node in separate Properties.<br />
@@ -205,8 +205,8 @@ public final class CompareMatcher extends BaseMatcher<Object> {
      * ComparisonFailure is also used in {@link org.junit.Assert#assertEquals(Object, Object)} if both values are
      * {@link String}s.
      * <p>
-     * The only disadvantage is, that you cann't combine the {@link CompareMatcher} with other Matchers
-     * (like {@link org.hamcrest.CoreMatchers#not(Object)}) anymore. The following code will NOT WORKING properly:
+     * The only disadvantage is, that you can't combine the {@link CompareMatcher} with other Matchers
+     * (like {@link org.hamcrest.CoreMatchers#not(Object)}) anymore. The following code will NOT WORK properly:
      * <code>assertThat(test, not(isSimilarTo(control).throwComparisonFailure()))</code> 
      */
     public CompareMatcher throwComparisonFailure() {
@@ -233,7 +233,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
 
         diffResult = diffBuilder.withTest(item).build();
 
-        if (!diffResult.getDifferences().iterator().hasNext()) {
+        if (!diffResult.hasDifferences()) {
             return true;
         }
 
@@ -251,7 +251,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
      */
     private AssertionError createComparisonFailure() {
 
-        final Comparison difference = diffResult.getDifferences().iterator().next().getComparison();
+        final Comparison difference = firstComparison();
         final String reason = createReasonPrefix(diffResult.getControlSource().getSystemId(), difference);
         final String controlString = comparisonFormatter.getDetails(difference.getControlDetails(), difference
             .getType(), formatXml);
@@ -286,7 +286,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
 
     @Override
     public void describeTo(Description description) {
-        final Comparison difference = diffResult.getDifferences().iterator().next().getComparison();
+        final Comparison difference = firstComparison();
         final String reason = createReasonPrefix(diffResult.getControlSource().getSystemId(), difference);
         final String testString = comparisonFormatter.getDetails(difference.getControlDetails(), difference.getType(),
             formatXml);
@@ -307,10 +307,14 @@ public final class CompareMatcher extends BaseMatcher<Object> {
 
     @Override
     public void describeMismatch(final Object item, final Description description) {
-        final Comparison difference = diffResult.getDifferences().iterator().next().getComparison();
+        final Comparison difference = firstComparison();
         final String controlString = comparisonFormatter.getDetails(difference.getTestDetails(), difference.getType(),
             formatXml);
 
         description.appendText(String.format("result was: \n%s", controlString));
+    }
+
+    private Comparison firstComparison() {
+        return diffResult.getDifferences().iterator().next().getComparison();
     }
 }
