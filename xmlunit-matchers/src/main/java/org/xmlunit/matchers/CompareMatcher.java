@@ -101,7 +101,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
     }
 
     /**
-     * Create a {@link CompareMatcher} which compares the test-Object with the given control Object for identical.
+     * Create a {@link CompareMatcher} which compares the test-Object with the given control Object for identity.
      * <p>
      * As input all types are supported which are supported by {@link Input#from(Object)}.
      */
@@ -111,7 +111,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
     }
 
     /**
-     * Create a {@link CompareMatcher} which compares the test-Object with the given control Object for similar.
+     * Create a {@link CompareMatcher} which compares the test-Object with the given control Object for similarity.
      * <p>
      * Example for Similar: The XML node "&lt;a&gt;Text&lt;/a&gt;" and "&lt;a&gt;&lt;![CDATA[Text]]&gt;&lt;/a&gt;" are
      * similar and the Test will not fail.

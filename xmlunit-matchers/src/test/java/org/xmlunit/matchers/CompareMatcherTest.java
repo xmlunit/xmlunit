@@ -17,6 +17,7 @@ package org.xmlunit.matchers;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.xmlunit.TestResources.TEST_RESOURCE_DIR;
 import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
 import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
@@ -157,7 +158,8 @@ public class CompareMatcherTest {
         expectMessage("test2.xml");
 
         // run test:
-        assertThat(new File("../test-resources/test1.xml"), isSimilarTo(new File("../test-resources/test2.xml")));
+        assertThat(new File(TEST_RESOURCE_DIR, "test1.xml"),
+                   isSimilarTo(new File(TEST_RESOURCE_DIR, "test2.xml")));
     }
 
     @Test
