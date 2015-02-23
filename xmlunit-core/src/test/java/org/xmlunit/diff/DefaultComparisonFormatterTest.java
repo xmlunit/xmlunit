@@ -103,7 +103,7 @@ public class DefaultComparisonFormatterTest {
     public void testComparisonType_HAS_DOCTYPE_DECLARATION() throws Exception {
         // prepare data
         DocumentBuilderFactory dbf = getDocumentBuilderFactoryWithoutValidation();
-        Document controlDoc = Convert.toDocument(Input.fromMemory("<!DOCTYPE Book><a/>").build(), dbf);
+        Document controlDoc = Convert.toDocument(Input.fromString("<!DOCTYPE Book><a/>").build(), dbf);
 
         Diff diff = DiffBuilder.compare(controlDoc).withTest("<a/>").build();
         assertPreRequirements(diff, ComparisonType.HAS_DOCTYPE_DECLARATION);
@@ -126,8 +126,8 @@ public class DefaultComparisonFormatterTest {
     public void testComparisonType_DOCTYPE_NAME() throws Exception {
         // prepare data
         DocumentBuilderFactory dbf = getDocumentBuilderFactoryWithoutValidation();
-        Document controlDoc = Convert.toDocument(Input.fromMemory("<!DOCTYPE Book ><a/>").build(), dbf);
-        Document testDoc = Convert.toDocument(Input.fromMemory("<!DOCTYPE XY ><a/>").build(), dbf);
+        Document controlDoc = Convert.toDocument(Input.fromString("<!DOCTYPE Book ><a/>").build(), dbf);
+        Document testDoc = Convert.toDocument(Input.fromString("<!DOCTYPE XY ><a/>").build(), dbf);
 
         Diff diff = DiffBuilder.compare(controlDoc).withTest(testDoc).build();
         assertPreRequirements(diff, ComparisonType.DOCTYPE_NAME);
@@ -150,9 +150,9 @@ public class DefaultComparisonFormatterTest {
     public void testComparisonType_DOCTYPE_PUBLIC_ID() throws Exception {
         // prepare data
         DocumentBuilderFactory dbf = getDocumentBuilderFactoryWithoutValidation();
-        Document controlDoc = Convert.toDocument(Input.fromMemory(
+        Document controlDoc = Convert.toDocument(Input.fromString(
                 "<!DOCTYPE Book PUBLIC \"XMLUNIT/TEST/PUB\" \"http://example.org/nonsense\"><a/>").build(), dbf);
-        Document testDoc = Convert.toDocument(Input.fromMemory(
+        Document testDoc = Convert.toDocument(Input.fromString(
                 "<!DOCTYPE Book SYSTEM \"http://example.org/nonsense\"><a/>").build(), dbf);
 
         Diff diff = DiffBuilder.compare(controlDoc).withTest(testDoc).build();
@@ -177,9 +177,9 @@ public class DefaultComparisonFormatterTest {
     public void testComparisonType_DOCTYPE_SYSTEM_ID() throws Exception {
         // prepare data
         DocumentBuilderFactory dbf = getDocumentBuilderFactoryWithoutValidation();
-        Document controlDoc = Convert.toDocument(Input.fromMemory(
+        Document controlDoc = Convert.toDocument(Input.fromString(
                 "<!DOCTYPE Book PUBLIC \"XMLUNIT/TEST/PUB\" \"http://example.org/nonsense\"><a/>").build(), dbf);
-        Document testDoc = Convert.toDocument(Input.fromMemory(
+        Document testDoc = Convert.toDocument(Input.fromString(
                 "<!DOCTYPE Book PUBLIC \"XMLUNIT/TEST/PUB\" \"http://example.org/404\"><a/>").build(), dbf);
 
         Diff diff = DiffBuilder.compare(controlDoc).withTest(testDoc).build();

@@ -16,7 +16,6 @@ package org.xmlunit.util;
 import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.xmlunit.builder.Input;
 import org.junit.Before;
@@ -145,15 +144,15 @@ public class NodesTest {
     }
 
     private Document handleWsSetup() {
-        return Convert.toDocument(Input.fromMemory(
-            "<root>\n"
-            + "<!-- trim\tme -->\n"
-            + "<child attr=' trim me ' attr2='not me'>\n"
-            + " trim me \n"
-            + "</child><![CDATA[ trim me ]]>\n"
-            + "<?target  trim me ?>\n"
-            + "<![CDATA[          ]]>\n"
-            + "</root>").build());
+        return Convert.toDocument(Input.fromString(
+                "<root>\n"
+                        + "<!-- trim\tme -->\n"
+                        + "<child attr=' trim me ' attr2='not me'>\n"
+                        + " trim me \n"
+                        + "</child><![CDATA[ trim me ]]>\n"
+                        + "<?target  trim me ?>\n"
+                        + "<![CDATA[          ]]>\n"
+                        + "</root>").build());
     }
 
     private Map.Entry<Document, Node> stripWsSetup() {

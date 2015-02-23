@@ -106,12 +106,12 @@ public class InputTest {
     }
 
     @Test public void shouldParseString() throws Exception {
-        allIsWellFor(Input.fromMemory(new String(readTestFile(), "UTF-8"))
+        allIsWellFor(Input.fromString(new String(readTestFile(), "UTF-8"))
                      .build());
     }
 
     @Test public void shouldParseBytes() throws Exception {
-        allIsWellFor(Input.fromMemory(readTestFile()).build());
+        allIsWellFor(Input.fromByteArray(readTestFile()).build());
     }
 
     @Test public void shouldParseFileFromURIString() throws Exception {
@@ -129,7 +129,7 @@ public class InputTest {
     }
 
     @Test public void shouldParseATransformationFromSource() throws Exception {
-        Source input = Input.fromMemory("<animal>furry</animal>").build();
+        Source input = Input.fromString("<animal>furry</animal>").build();
         Source s = Input.byTransforming(input)
             .withStylesheet(Input.fromFile(TestResources.ANIMAL_XSL)
                             .build())
@@ -138,7 +138,7 @@ public class InputTest {
     }
 
     @Test public void shouldParseATransformationFromBuilder() throws Exception {
-        Input.Builder input = Input.fromMemory("<animal>furry</animal>");
+        Input.Builder input = Input.fromString("<animal>furry</animal>");
         Source s = Input.byTransforming(input)
             .withStylesheet(Input.fromFile(TestResources.ANIMAL_XSL))
             .build();
@@ -151,9 +151,9 @@ public class InputTest {
 
     @Test public void shouldParseUnknownToSource() throws Exception {
         // from Source
-        allIsWellFor(Input.from(Input.fromMemory(readTestFile()).build()).build());
+        allIsWellFor(Input.from(Input.fromByteArray(readTestFile()).build()).build());
         // from Builder
-        allIsWellFor(Input.from(Input.fromMemory(readTestFile())).build());
+        allIsWellFor(Input.from(Input.fromByteArray(readTestFile())).build());
         // from Document
         allIsWellFor(Input.from(parse(Input.fromFile(TestResources.ANIMAL_FILE).build())).build());
         // from File

@@ -47,7 +47,6 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXSource;
 import org.custommonkey.xmlunit.exceptions.ConfigurationException;
@@ -77,8 +76,8 @@ public class Transform {
      * @param stylesheet
      */
     public Transform(String input, String stylesheet) {
-        this(input == null ? null : Input.fromMemory(input),
-             stylesheet == null ? null : Input.fromMemory(stylesheet));
+        this(input == null ? null : Input.fromString(input),
+             stylesheet == null ? null : Input.fromString(stylesheet));
     }
 
     /**
@@ -87,7 +86,7 @@ public class Transform {
      * @param stylesheet
      */
     public Transform(String input, File stylesheet) {
-        this(input == null ? null : Input.fromMemory(input),
+        this(input == null ? null : Input.fromString(input),
              stylesheet == null ? null : Input.fromFile(stylesheet));
     }
 
@@ -127,7 +126,7 @@ public class Transform {
      */
     public Transform(Node sourceNode, String stylesheet) {
         this(sourceNode == null ? null : Input.fromNode(sourceNode),
-             stylesheet == null ? null : Input.fromMemory(stylesheet));
+             stylesheet == null ? null : Input.fromString(stylesheet));
     }
 
     /**
