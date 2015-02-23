@@ -69,7 +69,7 @@ These are some really small examples, more is to come in the [user guide](https:
 
 ```java
 Source control = Input.fromFile("test-data/good.xml").build();
-Source test = Input.fromMemory(createTestDocument()).build();
+Source test = Input.fromByteArray(createTestDocument()).build();
 DifferenceEngine diff = new DOMDifferenceEngine();
 diff.addDifferenceListener(new ComparisonListener() {
         public void comparisonPerformed(Comparison comparison, ComparisonResult outcome) {
@@ -99,7 +99,7 @@ assertThat(createTestDocument(), isIdenticalTo(Input.fromFile("test-data/good.xm
 ### Asserting an XPath Value
 
 ```java
-Source source = Input.fromMemory("<foo>bar</foo>").build();
+Source source = Input.fromString("<foo>bar</foo>").build();
 XPathEngine xpath = new JAXPXPathEngine();
 Iterable<Node> allMatches = xpath.selectNodes("/foo", source);
 String content = xpath.evaluate("/foo/text()", source);
