@@ -83,9 +83,9 @@
 
   <developers>
     <developer>
-      <id>bodewig</id>
-      <name>Stefan Bodewig</name>
-      <email>stefan.bodewig@freenet dot de</email>
+      <id>XMLUnit</id>
+      <name>XMLUnit Contributors</name>
+      <email>xmlunit-general@lists.sourceforge.net</email>
       <organization>XMLUnit</organization>
       <organizationUrl>http://www.xmlunit.org/</organizationUrl>
     </developer>
