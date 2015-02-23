@@ -111,7 +111,7 @@ public class Input {
         } else if (object instanceof Node) {
             xml = Input.fromNode((Node) object);
         } else if (object instanceof byte[]) {
-            xml = Input.fromMemory((byte[]) object);
+            xml = Input.fromByteArray((byte[]) object);
         } else if (object instanceof String) {
             xml = Input.fromString((String) object);
         } else if (object instanceof File) {
@@ -176,7 +176,7 @@ public class Input {
     /**
      * Build a Source from an array of bytes.
      */
-    public static Builder fromMemory(byte[] b) {
+    public static Builder fromByteArray(byte[] b) {
         return fromStream(new ByteArrayInputStream(b));
     }
 
@@ -204,7 +204,7 @@ public class Input {
                     }
                 }
                 StreamBuilder b =
-                    (StreamBuilder) fromMemory(baos.toByteArray());
+                    (StreamBuilder) fromByteArray(baos.toByteArray());
                 try {
                     b.setSystemId(url.toURI().toString());
                 } catch (URISyntaxException use) {

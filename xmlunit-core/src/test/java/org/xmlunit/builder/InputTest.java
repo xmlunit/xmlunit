@@ -111,7 +111,7 @@ public class InputTest {
     }
 
     @Test public void shouldParseBytes() throws Exception {
-        allIsWellFor(Input.fromMemory(readTestFile()).build());
+        allIsWellFor(Input.fromByteArray(readTestFile()).build());
     }
 
     @Test public void shouldParseFileFromURIString() throws Exception {
@@ -151,9 +151,9 @@ public class InputTest {
 
     @Test public void shouldParseUnknownToSource() throws Exception {
         // from Source
-        allIsWellFor(Input.from(Input.fromMemory(readTestFile()).build()).build());
+        allIsWellFor(Input.from(Input.fromByteArray(readTestFile()).build()).build());
         // from Builder
-        allIsWellFor(Input.from(Input.fromMemory(readTestFile())).build());
+        allIsWellFor(Input.from(Input.fromByteArray(readTestFile())).build());
         // from Document
         allIsWellFor(Input.from(parse(Input.fromFile(TestResources.ANIMAL_FILE).build())).build());
         // from File
