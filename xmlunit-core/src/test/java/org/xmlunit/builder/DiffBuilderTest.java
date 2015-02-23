@@ -115,8 +115,8 @@ public class DiffBuilderTest {
         String testXml = "<a>\n <b>\n  Test\n        Value\n </b>\n</a>";
 
         // run test
-        Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
-                      .withTest(Input.fromMemory(testXml).build())
+        Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml).build())
+                      .withTest(Input.fromString(testXml).build())
                       .normalizeWhitespace()
                       .ignoreWhitespace()
                       .build();
