@@ -113,7 +113,7 @@ public class Input {
         } else if (object instanceof byte[]) {
             xml = Input.fromMemory((byte[]) object);
         } else if (object instanceof String) {
-            xml = Input.fromMemory((String) object);
+            xml = Input.fromString((String) object);
         } else if (object instanceof File) {
             xml = Input.fromFile((File) object);
         } else if (object instanceof URL) {
@@ -169,7 +169,7 @@ public class Input {
     /**
      * Build a Source from a string.
      */
-    public static Builder fromMemory(String s) {
+    public static Builder fromString(String s) {
         return fromReader(new StringReader(s));
     }
 

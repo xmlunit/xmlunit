@@ -13,7 +13,6 @@
 */
 package org.xmlunit.diff;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.dom.DOMSource;
 import org.xmlunit.NullNode;
@@ -327,13 +326,13 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                 }
             });
         d.setComparisonController(ComparisonControllers.StopWhenDifferent);
-        Document d1 = Convert.toDocument(Input.fromMemory("<Book/>").build());
+        Document d1 = Convert.toDocument(Input.fromString("<Book/>").build());
         Document d2 =
-            Convert.toDocument(Input.fromMemory("<!DOCTYPE Book PUBLIC "
-                                                + "\"XMLUNIT/TEST/PUB\" "
-                                                + "\"" + TestResources.BOOK_DTD
-                                                + "\">"
-                                                + "<Book/>")
+            Convert.toDocument(Input.fromString("<!DOCTYPE Book PUBLIC "
+                    + "\"XMLUNIT/TEST/PUB\" "
+                    + "\"" + TestResources.BOOK_DTD
+                    + "\">"
+                    + "<Book/>")
                                .build());
         assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),
                      d.compareNodes(d1, new XPathContext(),
@@ -345,12 +344,12 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         d.addDifferenceListener(ex);
         d.setComparisonController(ComparisonControllers.StopWhenDifferent);
 
-        d1 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.0\""
-                                                 + " encoding=\"UTF-8\"?>"
-                                                 + "<Book/>").build());
-        d2 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.1\""
-                                                 + " encoding=\"UTF-8\"?>"
-                                                 + "<Book/>").build());
+        d1 = Convert.toDocument(Input.fromString("<?xml version=\"1.0\""
+                + " encoding=\"UTF-8\"?>"
+                + "<Book/>").build());
+        d2 = Convert.toDocument(Input.fromString("<?xml version=\"1.1\""
+                + " encoding=\"UTF-8\"?>"
+                + "<Book/>").build());
         assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),
                      d.compareNodes(d1, new XPathContext(),
                                     d2, new XPathContext()));
@@ -361,12 +360,12 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         d.addDifferenceListener(ex);
         d.setComparisonController(ComparisonControllers.StopWhenDifferent);
 
-        d1 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.0\""
-                                                 + " standalone=\"yes\"?>"
-                                                 + "<Book/>").build());
-        d2 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.0\""
-                                                 + " standalone=\"no\"?>"
-                                                 + "<Book/>").build());
+        d1 = Convert.toDocument(Input.fromString("<?xml version=\"1.0\""
+                + " standalone=\"yes\"?>"
+                + "<Book/>").build());
+        d2 = Convert.toDocument(Input.fromString("<?xml version=\"1.0\""
+                + " standalone=\"no\"?>"
+                + "<Book/>").build());
         assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),
                      d.compareNodes(d1, new XPathContext(),
                                     d2, new XPathContext()));
@@ -389,12 +388,12 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
             });
         d.setComparisonController(ComparisonControllers.StopWhenDifferent);
 
-        d1 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.0\""
-                                                 + " encoding=\"UTF-8\"?>"
-                                                 + "<Book/>").build());
-        d2 = Convert.toDocument(Input.fromMemory("<?xml version=\"1.0\""
-                                                 + " encoding=\"UTF-16\"?>"
-                                                 + "<Book/>").build());
+        d1 = Convert.toDocument(Input.fromString("<?xml version=\"1.0\""
+                + " encoding=\"UTF-8\"?>"
+                + "<Book/>").build());
+        d2 = Convert.toDocument(Input.fromString("<?xml version=\"1.0\""
+                + " encoding=\"UTF-16\"?>"
+                + "<Book/>").build());
         assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),
                      d.compareNodes(d1, new XPathContext(),
                                     d2, new XPathContext()));
@@ -918,6 +917,6 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
     }
 
     private Document documentForString(String s) {
-        return Convert.toDocument(Input.fromMemory(s).build());
+        return Convert.toDocument(Input.fromString(s).build());
     }
 }

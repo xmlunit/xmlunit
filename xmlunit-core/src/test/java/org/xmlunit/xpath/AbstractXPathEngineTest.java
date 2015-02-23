@@ -92,7 +92,7 @@ public abstract class AbstractXPathEngineTest {
 
     @Test public void selectNodesWithNS() {
         XPathEngine e = getEngine();
-        source = Input.fromMemory("<n:d xmlns:n='urn:test:1'><n:e/></n:d>")
+        source = Input.fromString("<n:d xmlns:n='urn:test:1'><n:e/></n:d>")
             .build();
         HashMap<String, String> m = new HashMap<String, String>();
         m.put("x", "urn:test:1");
@@ -103,7 +103,7 @@ public abstract class AbstractXPathEngineTest {
 
     @Test public void selectNodesWithDefaultNS() {
         XPathEngine e = getEngine();
-        source = Input.fromMemory("<d xmlns='urn:test:1'><e/></d>")
+        source = Input.fromString("<d xmlns='urn:test:1'><e/></d>")
             .build();
         HashMap<String, String> m = new HashMap<String, String>();
         m.put("x", "urn:test:1");
@@ -114,7 +114,7 @@ public abstract class AbstractXPathEngineTest {
 
     @Test public void selectNodesWithDefaultNSEmptyPrefix() {
         XPathEngine e = getEngine();
-        source = Input.fromMemory("<d xmlns='urn:test:1'><e/></d>")
+        source = Input.fromString("<d xmlns='urn:test:1'><e/></d>")
             .build();
         HashMap<String, String> m = new HashMap<String, String>();
         m.put("", "urn:test:1");
@@ -126,7 +126,7 @@ public abstract class AbstractXPathEngineTest {
     // doesn't match
     public void selectNodesWithDefaultNSNoPrefix() {
         XPathEngine e = getEngine();
-        source = Input.fromMemory("<d xmlns='urn:test:1'><e/></d>")
+        source = Input.fromString("<d xmlns='urn:test:1'><e/></d>")
             .build();
         HashMap<String, String> m = new HashMap<String, String>();
         m.put("", "urn:test:1");

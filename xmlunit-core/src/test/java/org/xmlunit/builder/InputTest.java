@@ -106,7 +106,7 @@ public class InputTest {
     }
 
     @Test public void shouldParseString() throws Exception {
-        allIsWellFor(Input.fromMemory(new String(readTestFile(), "UTF-8"))
+        allIsWellFor(Input.fromString(new String(readTestFile(), "UTF-8"))
                      .build());
     }
 
@@ -129,7 +129,7 @@ public class InputTest {
     }
 
     @Test public void shouldParseATransformationFromSource() throws Exception {
-        Source input = Input.fromMemory("<animal>furry</animal>").build();
+        Source input = Input.fromString("<animal>furry</animal>").build();
         Source s = Input.byTransforming(input)
             .withStylesheet(Input.fromFile(TestResources.ANIMAL_XSL)
                             .build())
@@ -138,7 +138,7 @@ public class InputTest {
     }
 
     @Test public void shouldParseATransformationFromBuilder() throws Exception {
-        Input.Builder input = Input.fromMemory("<animal>furry</animal>");
+        Input.Builder input = Input.fromString("<animal>furry</animal>");
         Source s = Input.byTransforming(input)
             .withStylesheet(Input.fromFile(TestResources.ANIMAL_XSL))
             .build();

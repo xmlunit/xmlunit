@@ -37,7 +37,6 @@ import org.w3c.dom.Node;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -50,8 +49,8 @@ public class DiffBuilderTest {
         String testXml = "<a>\n <b>\n  Test Value\n </b>\n</a>";
 
         // run test
-        Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
-                      .withTest(Input.fromMemory(testXml).build())
+        Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml).build())
+                      .withTest(Input.fromString(testXml).build())
                       .build();
 
         // validate result
@@ -66,8 +65,8 @@ public class DiffBuilderTest {
         String testXml = "<a>\n <b>\n  Test Value\n </b>\n</a>";
 
         // run test
-        Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
-                      .withTest(Input.fromMemory(testXml).build())
+        Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml).build())
+                      .withTest(Input.fromString(testXml).build())
                       .ignoreWhitespace()
                       .build();
 
@@ -83,8 +82,8 @@ public class DiffBuilderTest {
         String testXml = "<a>\n <b>\n  Test Value\n </b>\n</a>";
 
         // run test
-        Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
-                      .withTest(Input.fromMemory(testXml).build())
+        Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml).build())
+                      .withTest(Input.fromString(testXml).build())
                       .build();
 
         // validate result
@@ -99,8 +98,8 @@ public class DiffBuilderTest {
         String testXml = "<a>\n <b>\n  Test Value\n </b>\n</a>";
 
         // run test
-        Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
-                      .withTest(Input.fromMemory(testXml).build())
+        Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml).build())
+                      .withTest(Input.fromString(testXml).build())
                       .normalizeWhitespace()
                       .build();
 
@@ -116,8 +115,8 @@ public class DiffBuilderTest {
         String testXml = "<a><![CDATA[Test Value]]></a>";
 
         // run test
-        Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
-                      .withTest(Input.fromMemory(testXml).build())
+        Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml).build())
+                      .withTest(Input.fromString(testXml).build())
                       .checkForIdentical()
                       .build();
 
@@ -133,8 +132,8 @@ public class DiffBuilderTest {
         String testXml = "<a><![CDATA[Test Value]]></a>";
 
         // run test
-        Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
-                      .withTest(Input.fromMemory(testXml).build())
+        Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml).build())
+                      .withTest(Input.fromString(testXml).build())
                       .checkForSimilar()
                       .build();
 
@@ -149,8 +148,8 @@ public class DiffBuilderTest {
         String testXml = "<a><b><!-- An other comment -->Test Value</b></a>";
 
         // run test
-        Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
-                    .withTest(Input.fromMemory(testXml).build())
+        Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml).build())
+                    .withTest(Input.fromString(testXml).build())
                     .build();
 
         // validate result
@@ -165,8 +164,8 @@ public class DiffBuilderTest {
         String testXml = "<a><b><!-- An other comment -->Test Value</b></a>";
 
         // run test
-        Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build())
-                                .withTest(Input.fromMemory(testXml).build())
+        Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml).build())
+                                .withTest(Input.fromString(testXml).build())
                                 .ignoreComments()
                                 .build();
 
@@ -181,7 +180,7 @@ public class DiffBuilderTest {
         String controlXml = "<a><b>Test Value</b></a>";
 
         // run test
-        Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml).build()).withTest(controlXml)
+        Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml).build()).withTest(controlXml)
                 .build();
 
         // validate result
@@ -195,8 +194,8 @@ public class DiffBuilderTest {
         String controlXml = "<a><b>Test Value</b></a>";
 
         // run test
-        Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml))
-                .withTest(Input.fromMemory(controlXml))
+        Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml))
+                .withTest(Input.fromString(controlXml))
                 .build();
 
         // validate result

@@ -48,7 +48,7 @@ import java.util.Map;
  * <pre>
  * String controlXml = &quot;&lt;a&gt;&lt;b&gt;Test Value&lt;/b&gt;&lt;/a&gt;&quot;;
  * String testXml = &quot;&lt;a&gt;\n &lt;b&gt;\n  Test Value\n &lt;/b&gt;\n&lt;/a&gt;&quot;;
- * Diff myDiff = DiffBuilder.compare(Input.fromMemory(controlXml)).withTest(Input.fromMemory(testXml))
+ * Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml)).withTest(Input.fromString(testXml))
  *     .checkForSimilar()
  *     .ignoreWhitespace()
  *     .build();
