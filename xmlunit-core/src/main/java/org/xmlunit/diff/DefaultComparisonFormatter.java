@@ -204,12 +204,10 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
 
     @Override
     public String getDetails(Comparison.Detail difference, ComparisonType type, boolean formatXml) {
-        if (difference.getTarget() instanceof Node) {
-            return getFullFormattedXml((Node) difference.getTarget(), type, formatXml);
-        } else if (difference.getTarget() == null) {
+        if (difference.getTarget() == null) {
             return "<NULL>";
         }
-        return difference.getTarget().toString();
+        return getFullFormattedXml(difference.getTarget(), type, formatXml);
     }
 
     private String getFullFormattedXml(final Node node, ComparisonType type, boolean formatXml) {

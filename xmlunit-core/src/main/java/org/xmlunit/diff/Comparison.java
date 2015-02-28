@@ -13,6 +13,8 @@
 */
 package org.xmlunit.diff;
 
+import org.w3c.dom.Node;
+
 /**
  * Details of a single comparison XMLUnit has performed.
  */
@@ -23,11 +25,11 @@ public class Comparison {
      * Node) that took part in the comparison.
      */
     public static class Detail {
-        private final Object target;
+        private final Node target;
         private final String xpath;
         private final Object value;
 
-        private Detail(Object n, String x, Object v) {
+        private Detail(Node n, String x, Object v) {
             target = n;
             xpath = x;
             value = v;
@@ -36,7 +38,7 @@ public class Comparison {
         /**
          * The actual target.
          */
-        public Object getTarget() { return target; }
+        public Node getTarget() { return target; }
         /**
          * XPath leading to the target.
          */
@@ -50,9 +52,9 @@ public class Comparison {
     private final Detail control, test;
     private final ComparisonType type;
 
-    public Comparison(ComparisonType t, Object controlTarget,
+    public Comparison(ComparisonType t, Node controlTarget,
                       String controlXPath, Object controlValue,
-                      Object testTarget, String testXPath, Object testValue) {
+                      Node testTarget, String testXPath, Object testValue) {
         type = t;
         control = new Detail(controlTarget, controlXPath, controlValue);
         test = new Detail(testTarget, testXPath, testValue);
