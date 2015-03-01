@@ -465,8 +465,8 @@ public final class ElementSelectors {
     /**
      * Allows to build complex {@link ElementSelector}s by combining simpler blocks.
      *
-     * <p>All pairs created by the {@code when*}/{@code theUse} pairs
-     * are evaluated in prder until one returns true, finally the
+     * <p>All pairs created by the {@code when*}/{@code thenUse} pairs
+     * are evaluated in order until one returns true, finally the
      * {@code default}, if any, is consulted.</p>
      */
     public interface ConditionalSelectorBuilder {
@@ -495,8 +495,8 @@ public final class ElementSelectors {
     /**
      * Allows to build complex {@link ElementSelector}s by combining simpler blocks.
      *
-     * <p>All pairs created by the {@code when*}/{@code theUse} pairs
-     * are evaluated in prder until one returns true, finally the
+     * <p>All pairs created by the {@code when*}/{@code thenUse} pairs
+     * are evaluated in order until one returns true, finally the
      * {@code default}, if any, is consulted.</p>
      */
     public static ConditionalSelectorBuilder conditionalBuilder() {
