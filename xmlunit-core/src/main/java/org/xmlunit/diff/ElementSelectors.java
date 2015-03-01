@@ -509,6 +509,7 @@ public final class ElementSelectors {
         private final List<ElementSelector> conditionalSelectors = new LinkedList<ElementSelector>();
         private Predicate<? super Element> pendingCondition;
 
+        @Override
         public ConditionalSelectorBuilder thenUse(ElementSelector es) {
             if (pendingCondition == null) {
                 throw new IllegalArgumentException("missing condition");
@@ -517,6 +518,7 @@ public final class ElementSelectors {
             pendingCondition = null;
             return this;
         }
+        @Override
         public ConditionalSelectorBuilderThen when(Predicate<? super Element> predicate) {
             if (pendingCondition != null) {
                 throw new IllegalArgumentException("unbalanced conditions");
@@ -524,6 +526,7 @@ public final class ElementSelectors {
             pendingCondition = predicate;
             return this;
         }
+        @Override
         public ConditionalSelectorBuilder defaultTo(ElementSelector es) {
             if (defaultSelector != null) {
                 throw new IllegalArgumentException("can't have more than one default selector");
@@ -531,12 +534,15 @@ public final class ElementSelectors {
             defaultSelector = es;
             return this;
         }
+        @Override
         public ConditionalSelectorBuilderThen whenElementIsNamed(String expectedName) {
             return when(elementNamePredicate(expectedName));
         }
+        @Override
         public ConditionalSelectorBuilderThen whenElementIsNamed(QName expectedName) {
             return when(elementNamePredicate(expectedName));
         }
+        @Override
         public ElementSelector build() {
             if (pendingCondition != null) {
                 throw new IllegalArgumentException("unbalanced conditions");
