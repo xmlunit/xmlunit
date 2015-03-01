@@ -375,19 +375,7 @@ public final class ElementSelectors {
             throw new IllegalArgumentException("es must not be null");
         }
 
-        return conditionalSelector(new Predicate<Element>() {
-                @Override
-                public boolean test(Element e) {
-                    if (e == null) {
-                        return false;
-                    }
-                    String name = e.getLocalName();
-                    if (name == null) {
-                        name = e.getNodeName();
-                    }
-                    return expectedName.equals(name);
-                }
-            }, es);
+        return conditionalSelector(elementNamePredicate(expectedName), es);
     }
 
     /**
@@ -403,12 +391,7 @@ public final class ElementSelectors {
             throw new IllegalArgumentException("es must not be null");
         }
 
-        return conditionalSelector(new Predicate<Element>() {
-                @Override
-                public boolean test(Element e) {
-                    return e == null ? false : expectedName.equals(Nodes.getQName(e));
-                }
-            }, es);
+        return conditionalSelector(elementNamePredicate(expectedName), es);
     }
 
     /**
@@ -484,6 +467,31 @@ public final class ElementSelectors {
         return n instanceof Text || n instanceof CDATASection;
     }
 
+    private static Predicate<Element> elementNamePredicate(final String expectedName) {
+        return new Predicate<Element>() {
+            @Override
+            public boolean test(Element e) {
+                if (e == null) {
+                    return false;
+                }
+                String name = e.getLocalName();
+                if (name == null) {
+                    name = e.getNodeName();
+                }
+                return expectedName.equals(name);
+            }
+        };
+    }
+
+    private static Predicate<Element> elementNamePredicate(final QName expectedName) {
+        return new Predicate<Element>() {
+            @Override
+            public boolean test(Element e) {
+                return e == null ? false : expectedName.equals(Nodes.getQName(e));
+            }
+        };
+    }
+
     private static class CanBeComparedPredicate implements Predicate<ElementSelector> {
         private final Element e1, e2;
 
@@ -497,4 +505,5 @@ public final class ElementSelectors {
             return es.canBeCompared(e1, e2);
         }
     }
+
 }
