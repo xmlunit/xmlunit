@@ -16,10 +16,13 @@ package org.xmlunit.diff;
 import static org.xmlunit.util.Linqy.all;
 import static org.xmlunit.util.Linqy.any;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMSource;
@@ -446,6 +449,105 @@ public final class ElementSelectors {
                 return expected == matched;
             }
         };
+    }
+
+    /**
+     * {@code then}-part of conditional {@link ElementSelectors} built
+     * via {@link ConditionalSelectorBuilder}.
+     */
+    public interface ConditionalSelectorBuilderThen {
+        /**
+         * Specifies the ElementSelector to use when the condition holds true.
+         */
+        ConditionalSelectorBuilder thenUse(ElementSelector es);
+    }
+
+    /**
+     * Allows to build complex {@link ElementSelector}s by combining simpler blocks.
+     *
+     * <p>All pairs created by the {@code when*}/{@code theUse} pairs
+     * are evaluated in prder until one returns true, finally the
+     * {@code default}, if any, is consulted.</p>
+     */
+    public interface ConditionalSelectorBuilder {
+        /**
+         * Sets up a conditional ElementSelector.
+         */
+        ConditionalSelectorBuilderThen when(Predicate<? super Element> predicate);
+        /**
+         * Sets up a conditional ElementSelector.
+         */
+        ConditionalSelectorBuilderThen whenElementIsNamed(String expectedName);
+        /**
+         * Sets up a conditional ElementSelector.
+         */
+        ConditionalSelectorBuilderThen whenElementIsNamed(QName expectedName);
+        /**
+         * Assigns a default ElementSelector.
+         */
+        ConditionalSelectorBuilder defaultTo(ElementSelector es);
+        /**
+         * Builds a conditional ElementSelector.
+         */
+        ElementSelector build();
+    }
+
+    /**
+     * Allows to build complex {@link ElementSelector}s by combining simpler blocks.
+     *
+     * <p>All pairs created by the {@code when*}/{@code theUse} pairs
+     * are evaluated in prder until one returns true, finally the
+     * {@code default}, if any, is consulted.</p>
+     */
+    public static ConditionalSelectorBuilder conditionalBuilder() {
+        return new DefaultConditionalSelectorBuilder();
+    }
+
+    private static class DefaultConditionalSelectorBuilder
+        implements ConditionalSelectorBuilder, ConditionalSelectorBuilderThen {
+        private ElementSelector defaultSelector;
+        private final List<ElementSelector> conditionalSelectors = new LinkedList<ElementSelector>();
+        private Predicate<? super Element> pendingCondition;
+
+        public ConditionalSelectorBuilder thenUse(ElementSelector es) {
+            if (pendingCondition == null) {
+                throw new IllegalArgumentException("missing condition");
+            }
+            conditionalSelectors.add(conditionalSelector(pendingCondition, es));
+            pendingCondition = null;
+            return this;
+        }
+        public ConditionalSelectorBuilderThen when(Predicate<? super Element> predicate) {
+            if (pendingCondition != null) {
+                throw new IllegalArgumentException("unbalanced conditions");
+            }
+            pendingCondition = predicate;
+            return this;
+        }
+        public ConditionalSelectorBuilder defaultTo(ElementSelector es) {
+            if (defaultSelector != null) {
+                throw new IllegalArgumentException("can't have more than one default selector");
+            }
+            defaultSelector = es;
+            return this;
+        }
+        public ConditionalSelectorBuilderThen whenElementIsNamed(String expectedName) {
+            return when(elementNamePredicate(expectedName));
+        }
+        public ConditionalSelectorBuilderThen whenElementIsNamed(QName expectedName) {
+            return when(elementNamePredicate(expectedName));
+        }
+        public ElementSelector build() {
+            if (pendingCondition != null) {
+                throw new IllegalArgumentException("unbalanced conditions");
+            }
+            List<ElementSelector> es = new ArrayList<ElementSelector>();
+            es.addAll(conditionalSelectors);
+            if (defaultSelector != null) {
+                es.add(defaultSelector);
+            }
+            return or(es.toArray(new ElementSelector[es.size()]));
+        }
     }
 
     private static boolean bothNullOrEqual(Object o1, Object o2) {

@@ -441,4 +441,20 @@ public class ElementSelectorsTest {
         assertFalse(ElementSelectors.byXPath(".//BAZ", ElementSelectors.byNameAndText)
                     .canBeCompared(control, test2));
     }
+
+    @Test
+    public void conditionalBuilder() {
+        Element control = doc.createElement(FOO);
+        Element test = doc.createElement(BAR);
+
+        ElementSelectors.ConditionalSelectorBuilder builder =
+            ElementSelectors.conditionalBuilder()
+            .whenElementIsNamed(FOO).thenUse(ElementSelectors.byName);
+
+        assertFalse(builder.build().canBeCompared(control, test));
+
+        builder.defaultTo(ElementSelectors.Default);
+        assertTrue(builder.build().canBeCompared(control, test));
+    }
+
 }
