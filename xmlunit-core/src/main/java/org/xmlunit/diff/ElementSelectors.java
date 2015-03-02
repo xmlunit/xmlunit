@@ -512,7 +512,7 @@ public final class ElementSelectors {
         @Override
         public ConditionalSelectorBuilder thenUse(ElementSelector es) {
             if (pendingCondition == null) {
-                throw new IllegalArgumentException("missing condition");
+                throw new IllegalStateException("missing condition");
             }
             conditionalSelectors.add(conditionalSelector(pendingCondition, es));
             pendingCondition = null;
@@ -521,7 +521,7 @@ public final class ElementSelectors {
         @Override
         public ConditionalSelectorBuilderThen when(Predicate<? super Element> predicate) {
             if (pendingCondition != null) {
-                throw new IllegalArgumentException("unbalanced conditions");
+                throw new IllegalStateException("unbalanced conditions");
             }
             pendingCondition = predicate;
             return this;
@@ -529,7 +529,7 @@ public final class ElementSelectors {
         @Override
         public ConditionalSelectorBuilder defaultTo(ElementSelector es) {
             if (defaultSelector != null) {
-                throw new IllegalArgumentException("can't have more than one default selector");
+                throw new IllegalStateException("can't have more than one default selector");
             }
             defaultSelector = es;
             return this;
@@ -545,7 +545,7 @@ public final class ElementSelectors {
         @Override
         public ElementSelector build() {
             if (pendingCondition != null) {
-                throw new IllegalArgumentException("unbalanced conditions");
+                throw new IllegalStateException("unbalanced conditions");
             }
             List<ElementSelector> es = new ArrayList<ElementSelector>();
             es.addAll(conditionalSelectors);
