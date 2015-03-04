@@ -27,7 +27,6 @@ Java
 * CI builds on Windows
 * create API docs
 * additional NUnit constraints
-* NuGet packaging of constraints
 * build ISource from objects via XmlSerializer
 
 Claimed
