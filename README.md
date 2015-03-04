@@ -1,7 +1,7 @@
 XMLUnit for Java 2.x
 ====================
 
-[![Build Status XMLUnit 2.x for Java](https://travis-ci.org/xmlunit/xmlunit.svg?branch=master)](https://travis-ci.org/xmlunit/xmlunit)
+[![Build Status XMLUnit 2.x for Java](https://travis-ci.org/xmlunit/xmlunit.svg?branch=master)](https://travis-ci.org/xmlunit/xmlunit) [![Coverage Status](https://coveralls.io/repos/xmlunit/xmlunit/badge.svg)](https://coveralls.io/r/xmlunit/xmlunit)
 
 XMLUnit is a library that supports testing XML output in several ways.
 
