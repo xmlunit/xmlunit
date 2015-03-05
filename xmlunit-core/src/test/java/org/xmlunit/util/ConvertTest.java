@@ -16,7 +16,12 @@ package org.xmlunit.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -45,6 +50,7 @@ import org.xmlunit.TestResources;
 import org.xmlunit.XMLUnitException;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -243,9 +249,80 @@ public class ConvertTest {
         ctx.getPrefix(null);
     }
     
+    @Test
+    public void namespaceContextReturnsNsUri() {
+        NamespaceContext ctx = Convert.toNamespaceContext(new HashMap<String, String>());
+        assertEquals(XMLConstants.XML_NS_URI,
+                     ctx.getNamespaceURI(XMLConstants.XML_NS_PREFIX));
+    }
+
+    @Test
+    public void namespaceContextReturnsNsPrefix() {
+        NamespaceContext ctx = Convert.toNamespaceContext(new HashMap<String, String>());
+        assertEquals(XMLConstants.XML_NS_PREFIX,
+                     ctx.getPrefix(XMLConstants.XML_NS_URI));
+    }
+    
+    @Test
+    public void namespaceContextReturnsXmlAttributeNsUri() {
+        NamespaceContext ctx = Convert.toNamespaceContext(new HashMap<String, String>());
+        assertEquals(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+                     ctx.getNamespaceURI(XMLConstants.XMLNS_ATTRIBUTE));
+    }
+
+    @Test
+    public void namespaceContextReturnsXmlAttributeNsPrefix() {
+        NamespaceContext ctx = Convert.toNamespaceContext(new HashMap<String, String>());
+        assertEquals(XMLConstants.XMLNS_ATTRIBUTE,
+                     ctx.getPrefix(XMLConstants.XMLNS_ATTRIBUTE_NS_URI));
+    }
+
+    @Test
+    public void namespaceContextReturnsExpectedNsUri() {
+        Map<String, String> m = new HashMap<String, String>();
+        m.put("foo", "bar");
+        NamespaceContext ctx = Convert.toNamespaceContext(m);
+        assertEquals("bar", ctx.getNamespaceURI("foo"));
+    }
+
+    @Test
+    public void namespaceContextReturnsExpectedPrefix() {
+        Map<String, String> m = new HashMap<String, String>();
+        m.put("foo", "bar");
+        NamespaceContext ctx = Convert.toNamespaceContext(m);
+        assertEquals("foo", ctx.getPrefix("bar"));
+    }
+
+    @Test
+    public void namespaceContextReturnsFirstPrefix() {
+        Map<String, String> m = new LinkedHashMap<String, String>();
+        m.put("foo", "bar");
+        m.put("baz", "bar");
+        NamespaceContext ctx = Convert.toNamespaceContext(m);
+        assertEquals("foo", ctx.getPrefix("bar"));
+    }
+
+    @Test
+    public void namespaceContextReturnsAllPrefixes() {
+        Map<String, String> m = new LinkedHashMap<String, String>();
+        m.put("foo", "bar");
+        m.put("baz", "bar");
+        NamespaceContext ctx = Convert.toNamespaceContext(m);
+        assertArrayEquals(new String[] { "foo", "baz" },
+                          toArray(ctx.getPrefixes("bar")));
+    }
+
     private static Document animalDocument() throws Exception {
         DocumentBuilder b =
             DocumentBuilderFactory.newInstance().newDocumentBuilder();
         return b.parse(new File(TestResources.ANIMAL_FILE));
+    }
+
+    private static String[] toArray(Iterator<String> i) {
+        ArrayList<String> al = new ArrayList<String>();
+        while (i.hasNext()) {
+            al.add(i.next());
+        }
+        return al.toArray(new String[al.size()]);
     }
 }
