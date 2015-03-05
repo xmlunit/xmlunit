@@ -144,9 +144,25 @@ public class ConvertTest {
         assertSame(d, Convert.toNode(new DOMSource(d)));
     }
 
+    private static void convertToNodeWithDocBuilderFactoryAndAssert(Source s) {
+        Node n = Convert.toNode(s, DocumentBuilderFactory.newInstance());
+        Document d = n instanceof Document ? (Document) n : n.getOwnerDocument();
+        documentAsserts(d);
+    }
+
+    @Test public void streamSourceToNodeWithDocBuilderFactory() throws Exception {
+        convertToNodeAndAssert(new StreamSource(new File(TestResources.ANIMAL_FILE)));
+    }
+
+    @Test public void domSourceToNodeWithDocBuilderFactory() throws Exception {
+        Document d = animalDocument();
+        convertToNodeWithDocBuilderFactoryAndAssert(new DOMSource(d));
+        assertSame(d, Convert.toNode(new DOMSource(d)));
+    }
+
     @Test public void saxSourceToNode() throws Exception {
         InputSource s = new InputSource(new FileInputStream(TestResources.ANIMAL_FILE));
-        convertToNodeAndAssert(new SAXSource(s));
+        convertToNodeWithDocBuilderFactoryAndAssert(new SAXSource(s));
     }
 
     @Test public void domElementToNode() throws Exception {
