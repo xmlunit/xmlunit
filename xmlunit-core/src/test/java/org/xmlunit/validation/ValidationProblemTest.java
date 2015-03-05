@@ -14,6 +14,9 @@
 package org.xmlunit.validation;
 
 import org.junit.Test;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.LocatorImpl;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -41,4 +44,12 @@ public class ValidationProblemTest {
         assertThat(s, containsString("message='foo'"));
     }
 
+    @Test
+    public void shouldSubstituteUNKNOWNForUnknownLocations() {
+        ValidationProblem p = ValidationProblem
+            .fromException(new SAXParseException("foo", new LocatorImpl()),
+                           ValidationProblem.ProblemType.ERROR);
+        assertEquals(ValidationProblem.UNKNOWN, p.getLine());
+        assertEquals(ValidationProblem.UNKNOWN, p.getColumn());
+    }
 }
