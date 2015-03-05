@@ -392,9 +392,6 @@ public final class ElementSelectors {
         if (expectedName == null) {
             throw new IllegalArgumentException("expectedName must not be null");
         }
-        if (es == null) {
-            throw new IllegalArgumentException("es must not be null");
-        }
 
         return conditionalSelector(elementNamePredicate(expectedName), es);
     }
@@ -407,9 +404,6 @@ public final class ElementSelectors {
                                                           final ElementSelector es) {
         if (expectedName == null) {
             throw new IllegalArgumentException("expectedName must not be null");
-        }
-        if (es == null) {
-            throw new IllegalArgumentException("es must not be null");
         }
 
         return conditionalSelector(elementNamePredicate(expectedName), es);
