@@ -41,6 +41,26 @@ public class ValidationMatcherTest {
                    is(not(valid(new StreamSource(new File("../test-resources/Book.xsd"))))));
     }
 
+    @Test(expected = AssertionError.class)
+    public void shouldThrowOnBrokenInstance() {
+        assertThat(new StreamSource(new File("../test-resources/invalidBook.xml")),
+                   is(valid(new StreamSource(new File("../test-resources/Book.xsd")))));
+    }
+
+    @Test
+    public void shouldSuccessfullyValidateInstanceWithoutExplicitSchemaSource() {
+        assertThat(new StreamSource(new File("../test-resources/BookXsdGenerated.xml")),
+                   is(new ValidationMatcher()));
+
+    }
+
+    @Test(expected = AssertionError.class)
+    public void shouldThrowOnBrokenInstanceWithoutExplicitSchemaSource() {
+        assertThat(new StreamSource(new File("../test-resources/invalidBook.xml")),
+                   is(new ValidationMatcher()));
+
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowWhenSchemaSourcesContainsNull() {
         valid(null);

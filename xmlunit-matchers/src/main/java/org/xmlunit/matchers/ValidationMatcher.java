@@ -62,9 +62,7 @@ public class ValidationMatcher extends BaseMatcher {
     public boolean matches(Object instance) {
         this.instance = Input.from(instance).build();
         JAXPValidator v = new JAXPValidator(Languages.W3C_XML_SCHEMA_NS_URI);
-        if (schemaSource.length <= 1) {
-            v.setSchemaSource(schemaSource[0]);
-        } else {
+        if (schemaSource.length > 0) {
             v.setSchemaSources(schemaSource);
         }
         this.result = v.validateInstance(this.instance);
@@ -74,8 +72,12 @@ public class ValidationMatcher extends BaseMatcher {
     @Override
     public void describeTo(Description description) {
         description.appendText(" that ")
-                .appendValue(instance.getSystemId())
-                .appendText(" validates against ");
+            .appendValue(instance.getSystemId());
+        if (schemaSource.length > 0) {
+            description.appendText(" validates against ");
+        } else {
+            description.appendText(" validates");
+        }
         for (Source schema : Arrays.asList(schemaSource)) {
             description.appendValue(schema.getSystemId());
         }
