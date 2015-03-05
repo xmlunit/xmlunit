@@ -46,7 +46,7 @@ public class ValidationMatcher extends BaseMatcher {
         }
         Iterable<Object> schemaSourceList = Arrays.asList(schemaSource);
         if (any(schemaSourceList, new IsNullPredicate())) {
-            throw new IllegalArgumentException("schemaSource must contain null values");
+            throw new IllegalArgumentException("schemaSource must not contain null values");
         }
         this.schemaSource = asList(map(schemaSourceList,
                                        new Mapper<Object, Source>() {
