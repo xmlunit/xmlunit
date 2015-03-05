@@ -24,6 +24,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
+import org.xmlunit.util.IsNullPredicate;
 import org.xmlunit.util.Predicate;
 
 import static org.junit.Assert.*;
@@ -455,6 +456,132 @@ public class ElementSelectorsTest {
 
         builder.defaultTo(ElementSelectors.Default);
         assertTrue(builder.build().canBeCompared(control, test));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void byNameAndAttributesDoesntLikeNullArgumentStringVersion() {
+        ElementSelectors.byNameAndAttributes((String[]) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void byNameAndAttributesControlNSDoesntLikeNullArgument() {
+        ElementSelectors.byNameAndAttributesControlNS((String[]) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void byNameAndAttributesDoesntLikeNullArgumentQNameVersion() {
+        ElementSelectors.byNameAndAttributes((QName[]) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void byNameAndAttributesDoesntLikeNullNameStringVersion() {
+        ElementSelectors.byNameAndAttributes(new String[] { null });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void byNameAndAttributesControlNSDoesntLikeNullName() {
+        ElementSelectors.byNameAndAttributesControlNS(new String[] { null });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void byNameAndAttributesDoesntLikeNullNameQNameVersion() {
+        ElementSelectors.byNameAndAttributes(new QName[] { null });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void notDoesntLikeNullElementSelector() {
+        ElementSelectors.not(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void orDoesntLikeNullElementSelectorList() {
+        ElementSelectors.or((ElementSelector[]) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void orDoesntLikeNullElementSelector() {
+        ElementSelectors.or(new ElementSelector[] { null });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void andDoesntLikeNullElementSelectorList() {
+        ElementSelectors.and((ElementSelector[]) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void andDoesntLikeNullElementSelector() {
+        ElementSelectors.and(new ElementSelector[] { null });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void xorDoesntLikeNullElementSelector1() {
+        ElementSelectors.xor(null, ElementSelectors.byName);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void xorDoesntLikeNullElementSelector2() {
+        ElementSelectors.xor(ElementSelectors.byName, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void conditionalSelectorDoesntLikeNullElementSelector() {
+        ElementSelectors.conditionalSelector(new IsNullPredicate(), null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void conditionalSelectorDoesntLikeNullPredicate() {
+        ElementSelectors.conditionalSelector(null, ElementSelectors.byName);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void selectorForElementNamedDoesntLikeNullElementSelectorStringVersion() {
+        ElementSelectors.selectorForElementNamed("foo", null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void selectorForElementNamedDoesntLikeNullNameStringVersion() {
+        ElementSelectors.selectorForElementNamed((String) null, ElementSelectors.byName);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void selectorForElementNamedDoesntLikeNullElementSelectorQNameVersion() {
+        ElementSelectors.selectorForElementNamed(new QName("foo"), null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void selectorForElementNamedDoesntLikeNullNameQNameVersion() {
+        ElementSelectors.selectorForElementNamed((QName) null, ElementSelectors.byName);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void conditionalSelectorBuilderWontAllowThenWithoutWhen() {
+        ElementSelectors.ConditionalSelectorBuilderThen t =
+            (ElementSelectors.ConditionalSelectorBuilderThen) ElementSelectors.conditionalBuilder();
+        t.thenUse(ElementSelectors.byName);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void conditionalSelectorBuilderWontAllowWhensWithoutThens() {
+        ElementSelectors.ConditionalSelectorBuilder b =
+            ElementSelectors.conditionalBuilder();
+        b.when(new IsNullPredicate());
+        b.build();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void conditionalSelectorBuilderWontAllowMultipleWhensWithoutInterleavingThens() {
+        ElementSelectors.ConditionalSelectorBuilder b =
+            ElementSelectors.conditionalBuilder();
+        b.when(new IsNullPredicate());
+        b.whenElementIsNamed(new QName("foo"));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void conditionalSelectorBuilderWontAllowMultipleDefaults() {
+        ElementSelectors.ConditionalSelectorBuilder b =
+            ElementSelectors.conditionalBuilder();
+        b.defaultTo(ElementSelectors.byName);
+        b.defaultTo(ElementSelectors.byName);
     }
 
 }

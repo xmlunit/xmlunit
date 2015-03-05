@@ -49,14 +49,32 @@ public final class Convert {
      *
      * <p>May use an XSLT identity transformation if SAXSource cannot
      * convert it directly.</p>
+     *
+     * @param s the source to convert
      */
     public static InputSource toInputSource(Source s) {
+        return toInputSource(s, null);
+    }
+
+    /**
+     * Creates a SAX InputSource from a TraX Source.
+     *
+     * <p>May use an XSLT identity transformation if SAXSource cannot
+     * convert it directly.</p>
+     *
+     * @param s the source to convert
+     * @param fac the TransformerFactory to use, will use the defaul
+     * factory if the value is null.
+     */
+    public static InputSource toInputSource(Source s, TransformerFactory fac) {
         try {
             InputSource is = SAXSource.sourceToInputSource(s);
             if (is == null) {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 StreamResult r = new StreamResult(bos);
-                TransformerFactory fac = TransformerFactory.newInstance();
+                if (fac == null) {
+                    fac = TransformerFactory.newInstance();
+                }
                 Transformer t = fac.newTransformer();
                 t.transform(s, r);
                 s = new StreamSource(new ByteArrayInputStream(bos

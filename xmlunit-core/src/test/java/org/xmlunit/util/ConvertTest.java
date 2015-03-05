@@ -15,26 +15,66 @@ package org.xmlunit.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
-import org.xmlunit.TestResources;
+
 import org.hamcrest.core.IsNull;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xmlunit.ConfigurationException;
+import org.xmlunit.TestResources;
+import org.xmlunit.XMLUnitException;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 public class ConvertTest {
 
+    @Mock
+    private TransformerFactory tFac;
+
+    @Mock
+    private Transformer transformer;
+
+    @Mock
+    private DocumentBuilderFactory dFac;
+
+    @Mock
+    private DocumentBuilder builder;
+
+    @Before
+    public void setupMocks() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        when(tFac.newTransformer()).thenReturn(transformer);
+        when(dFac.newDocumentBuilder()).thenReturn(builder);
+    }
+    
     private static void convertToInputSourceAndAssert(Source s)
         throws Exception {
         DocumentBuilder b =
@@ -53,9 +93,7 @@ public class ConvertTest {
     }
 
     @Test public void domSourceToInputSource() throws Exception {
-        DocumentBuilder b =
-            DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document d = b.parse(new File(TestResources.ANIMAL_FILE));
+        Document d = animalDocument();
         convertToInputSourceAndAssert(new DOMSource(d));
     }
 
@@ -73,9 +111,7 @@ public class ConvertTest {
     }
 
     @Test public void domSourceToDocument() throws Exception {
-        DocumentBuilder b =
-            DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document d = b.parse(new File(TestResources.ANIMAL_FILE));
+        Document d = animalDocument();
         convertToDocumentAndAssert(new DOMSource(d));
         assertSame(d, Convert.toDocument(new DOMSource(d)));
     }
@@ -86,9 +122,7 @@ public class ConvertTest {
     }
 
     @Test public void domElementToDocument() throws Exception {
-        DocumentBuilder b =
-            DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document d = b.parse(new File(TestResources.ANIMAL_FILE));
+        Document d = animalDocument();
         convertToDocumentAndAssert(new DOMSource(d.getDocumentElement()));
         assertNotSame(d,
                       Convert.toDocument(new DOMSource(d.getDocumentElement())));
@@ -105,9 +139,7 @@ public class ConvertTest {
     }
 
     @Test public void domSourceToNode() throws Exception {
-        DocumentBuilder b =
-            DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document d = b.parse(new File(TestResources.ANIMAL_FILE));
+        Document d = animalDocument();
         convertToNodeAndAssert(new DOMSource(d));
         assertSame(d, Convert.toNode(new DOMSource(d)));
     }
@@ -118,12 +150,86 @@ public class ConvertTest {
     }
 
     @Test public void domElementToNode() throws Exception {
-        DocumentBuilder b =
-            DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document d = b.parse(new File(TestResources.ANIMAL_FILE));
-        convertToNodeAndAssert(new DOMSource(d.getDocumentElement()));
+        Document d = animalDocument();
+        convertToNodeAndAssert(new DOMSource(d));
         assertSame(d.getDocumentElement(),
                    Convert.toNode(new DOMSource(d.getDocumentElement())));
     }
 
+    @Test(expected=ConfigurationException.class)
+    public void shouldMapTransformerConfigurationException() throws Exception {
+        when(tFac.newTransformer())
+            .thenThrow(new TransformerConfigurationException());
+        Convert.toInputSource(new DOMSource(animalDocument()), tFac);
+    }
+
+    @Test
+    public void shouldMapTransformerException() throws Exception {
+        doThrow(new TransformerException("foo"))
+            .when(transformer)
+            .transform(any(Source.class), any(Result.class));
+        try {
+            Convert.toInputSource(new DOMSource(animalDocument()), tFac);
+            fail("should have thrown XMLUnitException");
+        } catch (XMLUnitException ex) {
+            // assert this is not a XMLUnitException subclass
+            assertEquals(XMLUnitException.class, ex.getClass());
+        }
+    }
+
+    @Test(expected=ConfigurationException.class)
+    public void shouldMapParserConfigurationException() throws Exception {
+        when(dFac.newDocumentBuilder())
+            .thenThrow(new ParserConfigurationException());
+        Convert.toDocument(new StreamSource(new File(TestResources.ANIMAL_FILE)),
+                           dFac);
+    }
+    
+    @Test
+    public void shouldMapSAXException() throws Exception {
+        doThrow(new SAXException())
+            .when(builder)
+            .parse(any(InputSource.class));
+
+        try {
+            Convert.toDocument(new StreamSource(new File(TestResources.ANIMAL_FILE)),
+                               dFac);
+        } catch (XMLUnitException ex) {
+            // assert this is not a XMLUnitException subclass
+            assertEquals(XMLUnitException.class, ex.getClass());
+        }
+    }
+
+    @Test
+    public void shouldMapIOException() throws Exception {
+        doThrow(new IOException())
+            .when(builder)
+            .parse(any(InputSource.class));
+
+        try {
+            Convert.toDocument(new StreamSource(new File(TestResources.ANIMAL_FILE)),
+                               dFac);
+        } catch (XMLUnitException ex) {
+            // assert this is not a XMLUnitException subclass
+            assertEquals(XMLUnitException.class, ex.getClass());
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void namespaceContextWontReturnNamespaceForNullPrefix() {
+        NamespaceContext ctx = Convert.toNamespaceContext(new HashMap<String, String>());
+        ctx.getNamespaceURI(null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void namespaceContextWontReturnPrefixForNullURI() {
+        NamespaceContext ctx = Convert.toNamespaceContext(new HashMap<String, String>());
+        ctx.getPrefix(null);
+    }
+    
+    private static Document animalDocument() throws Exception {
+        DocumentBuilder b =
+            DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        return b.parse(new File(TestResources.ANIMAL_FILE));
+    }
 }
