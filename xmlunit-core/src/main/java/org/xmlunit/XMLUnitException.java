@@ -17,6 +17,8 @@ package org.xmlunit;
  * Base class of any Exception thrown within XMLUnit.
  */
 public class XMLUnitException extends RuntimeException {
+    private static final long serialVersionUID = 673558045568231955L;
+
     /**
      * Inititializes the exception.
      *

@@ -18,6 +18,8 @@ package org.xmlunit;
  * *ConfigurationException.
  */
 public class ConfigurationException extends XMLUnitException {
+    private static final long serialVersionUID = 3976394040594872937L;
+
     public ConfigurationException(Throwable cause) {
         super(cause);
     }
