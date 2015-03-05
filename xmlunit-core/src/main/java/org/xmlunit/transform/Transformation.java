@@ -148,7 +148,8 @@ public final class Transformation {
      * Perform the transformation.
      *
      * @param r where to send the transformation result - must not be null
-     * @exception IllegalArgumentException if source or result are null
+     * @exception IllegalStateException if source is null
+     * @exception IllegalArgumentException if result is null
      * @exception ConfigurationException if the TraX system isn't
      * configured properly
      * @exception XMLUnitException if the transformation throws an
@@ -156,7 +157,7 @@ public final class Transformation {
      */
     public void transformTo(Result r) {
         if (source == null) {
-            throw new IllegalArgumentException("source must not be null");
+            throw new IllegalStateException("source must not be null");
         }
         if (r == null) {
             throw new IllegalArgumentException("result must not be null");

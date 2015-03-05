@@ -83,7 +83,7 @@ public class TransformationTest {
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void shouldRejectNullSource() {
+    public void shouldRejectNullSourceInSetSource() {
         Transformation t = new Transformation();
         t.setSource(null);
     }
@@ -200,5 +200,16 @@ public class TransformationTest {
         t.transformToString();
 
         verify(transformer).setErrorListener(e);
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void shouldRejectNullSourceInTransform() {
+        Transformation t = new Transformation();
+        t.transformToString();
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void shouldRejectNullResult() {
+        t.transformTo(null);
     }
 }
