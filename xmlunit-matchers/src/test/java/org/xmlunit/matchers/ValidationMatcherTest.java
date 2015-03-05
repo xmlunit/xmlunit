@@ -40,4 +40,14 @@ public class ValidationMatcherTest {
         assertThat(new StreamSource(new File("../test-resources/invalidBook.xml")),
                 is(not(valid(new StreamSource(new File("../test-resources/Book.xsd"))))));
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowWhenSchemaSourcesContainsNull() {
+        valid(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowWhenSchemaSourcesIsNull() {
+        new ValidationMatcher(null);
+    }
 }

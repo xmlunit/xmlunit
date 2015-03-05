@@ -13,10 +13,12 @@
 */
 package org.xmlunit.matchers;
 
+import static org.xmlunit.util.Linqy.any;
 import static org.xmlunit.util.Linqy.asList;
 import static org.xmlunit.util.Linqy.map;
 
 import org.xmlunit.builder.Input;
+import org.xmlunit.util.IsNullPredicate;
 import org.xmlunit.util.Linqy.Mapper;
 import org.xmlunit.validation.JAXPValidator;
 import org.xmlunit.validation.Languages;
@@ -39,7 +41,14 @@ public class ValidationMatcher extends BaseMatcher {
     private ValidationResult result;
 
     public ValidationMatcher(Object... schemaSource) {
-        this.schemaSource = asList(map(Arrays.asList(schemaSource),
+        if (schemaSource == null) {
+            throw new IllegalArgumentException("schemaSource must not be null");
+        }
+        Iterable<Object> schemaSourceList = Arrays.asList(schemaSource);
+        if (any(schemaSourceList, new IsNullPredicate())) {
+            throw new IllegalArgumentException("schemaSource must contain null values");
+        }
+        this.schemaSource = asList(map(schemaSourceList,
                                        new Mapper<Object, Source>() {
                                            @Override
                                            public Source apply(Object source) {
