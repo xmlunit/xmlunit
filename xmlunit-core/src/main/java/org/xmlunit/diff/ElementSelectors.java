@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMSource;
+import org.xmlunit.util.IsNullPredicate;
 import org.xmlunit.util.Linqy;
 import org.xmlunit.util.Nodes;
 import org.xmlunit.util.Predicate;
@@ -98,6 +99,9 @@ public final class ElementSelectors {
         if (attribs == null) {
             throw new IllegalArgumentException("attributes must not be null");
         }
+        if (any(Arrays.asList(attribs), new IsNullPredicate())) {
+            throw new IllegalArgumentException("attributes must not contain null values");
+        }
         QName[] qs = new QName[attribs.length];
         for (int i = 0; i < attribs.length; i++) {
             qs[i] = new QName(attribs[i]);
@@ -120,7 +124,11 @@ public final class ElementSelectors {
         if (attribs == null) {
             throw new IllegalArgumentException("attributes must not be null");
         }
-        final HashSet<String> as = new HashSet(Arrays.asList(attribs));
+        final Collection<String> qs = Arrays.asList(attribs);
+        if (any(qs, new IsNullPredicate())) {
+            throw new IllegalArgumentException("attributes must not contain null values");
+        }
+        final HashSet<String> as = new HashSet(qs);
         return new ElementSelector() {
             @Override
             public boolean canBeCompared(Element controlElement,
@@ -160,6 +168,9 @@ public final class ElementSelectors {
             throw new IllegalArgumentException("attributes must not be null");
         }
         final Collection<QName> qs = Arrays.asList(attribs);
+        if (any(qs, new IsNullPredicate())) {
+            throw new IllegalArgumentException("attributes must not contain null values");
+        }
         return new ElementSelector() {
             @Override
             public boolean canBeCompared(Element controlElement,
@@ -297,12 +308,15 @@ public final class ElementSelectors {
         if (selectors == null) {
             throw new IllegalArgumentException("selectors must not be null");
         }
+        final Collection<ElementSelector> s = Arrays.asList(selectors);
+        if (any(s, new IsNullPredicate())) {
+            throw new IllegalArgumentException("selectors must not contain null values");
+        }
         return new ElementSelector() {
             @Override
             public boolean canBeCompared(Element controlElement,
                                          Element testElement) {
-                return any(Arrays.asList(selectors),
-                           new CanBeComparedPredicate(controlElement, testElement));
+                return any(s, new CanBeComparedPredicate(controlElement, testElement));
             }
         };
     }
@@ -314,11 +328,15 @@ public final class ElementSelectors {
         if (selectors == null) {
             throw new IllegalArgumentException("selectors must not be null");
         }
+        final Collection<ElementSelector> s = Arrays.asList(selectors);
+        if (any(s, new IsNullPredicate())) {
+            throw new IllegalArgumentException("selectors must not contain null values");
+        }
         return new ElementSelector() {
             @Override
             public boolean canBeCompared(Element controlElement,
                                          Element testElement) {
-                return all(Arrays.asList(selectors),
+                return all(s,
                            new CanBeComparedPredicate(controlElement, testElement));
             }
         };
