@@ -31,14 +31,14 @@ public class ValidationMatcherTest {
     @Test
     public void shouldSuccessfullyValidateInstance() {
         assertThat(new StreamSource(new File("../test-resources/BookXsdGenerated.xml")),
-                is(valid(new StreamSource(new File("../test-resources/Book.xsd")))));
+                   is(valid(new StreamSource(new File("../test-resources/Book.xsd")))));
 
     }
 
     @Test
     public void shouldFailOnBrokenInstance() {
         assertThat(new StreamSource(new File("../test-resources/invalidBook.xml")),
-                is(not(valid(new StreamSource(new File("../test-resources/Book.xsd"))))));
+                   is(not(valid(new StreamSource(new File("../test-resources/Book.xsd"))))));
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -67,8 +67,8 @@ public class test_Validator extends XMLTestCase {
         try {
             validator = new Validator(new InputSource(xmlFile));
 
-        validator.useXMLSchema(true);
-        assertTrue("Schema " + validator.toString(), validator.isValid());
+            validator.useXMLSchema(true);
+            assertTrue("Schema " + validator.toString(), validator.isValid());
         } finally {
             xmlFile.close();
         }
