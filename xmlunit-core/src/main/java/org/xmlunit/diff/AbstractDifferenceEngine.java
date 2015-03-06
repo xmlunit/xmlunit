@@ -133,7 +133,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
             getDifferenceEvaluator().evaluate(comp, initial);
         listeners.fireComparisonPerformed(comp, altered);
         return altered != ComparisonResult.EQUAL
-            && comparisonController.stopDiffing(new Difference(comp, altered))
+            && getComparisonController().stopDiffing(new Difference(comp, altered))
             ? new FinishedComparisonState(altered)
             : new OngoingComparisonState(altered);
     }
