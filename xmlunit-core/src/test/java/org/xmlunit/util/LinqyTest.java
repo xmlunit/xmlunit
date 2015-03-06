@@ -15,10 +15,39 @@ package org.xmlunit.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class LinqyTest {
+
+    @Test
+    public void castContract() {
+        ArrayList al = new ArrayList();
+        al.add((Object) "");
+        Iterable<String> s = Linqy.<String>cast(al);
+        Assert.assertTrue(s.iterator().next() instanceof String);
+    }
+
+    @Test
+    public void canRemoveFromMapIterator() {
+        ArrayList al = new ArrayList();
+        al.add("foo");
+        Iterator i = Linqy.map(al, new IdentityMapper()).iterator();
+        i.next();
+        i.remove();
+        Assert.assertEquals(0, al.size());
+    }
+
+    @Test
+    public void canRemoveFromFilterIterator() {
+        ArrayList al = new ArrayList();
+        al.add("foo");
+        Iterator i = Linqy.filter(al, new IsNotNullPredicate()).iterator();
+        i.next();
+        i.remove();
+        Assert.assertEquals(0, al.size());
+    }
 
     @Test
     public void allShouldReturnTrueOnEmptySequence() {
@@ -56,6 +85,20 @@ public class LinqyTest {
         @Override
         public boolean test(Boolean b) {
             return b;
+        }
+    }
+
+    private static class IdentityMapper implements Linqy.Mapper<Object, Object> {
+        @Override
+        public Object apply(Object s) {
+            return s;
+        }
+    }
+
+    private class IsNotNullPredicate implements Predicate<Object> {
+        @Override
+        public boolean test(Object toTest) {
+            return toTest != null;
         }
     }
 }

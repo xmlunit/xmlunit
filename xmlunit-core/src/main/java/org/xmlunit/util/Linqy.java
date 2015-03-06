@@ -191,6 +191,7 @@ public final class Linqy {
         private FilteringIterator(Iterator<T> i, Predicate<? super T> filter) {
             this.i = i;
             this.filter = filter;
+            hasNext(); // allow next() to be called without hasNext()
         }
         @Override
         public void remove() {
