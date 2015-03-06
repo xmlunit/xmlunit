@@ -58,9 +58,13 @@ public class ParsingValidator extends Validator {
                                    + " ParsingValidator");
     }
 
-    @Override public ValidationResult validateInstance(Source s) {
+    @Override
+    public ValidationResult validateInstance(Source s) {
+        return validateInstance(s, SAXParserFactory.newInstance());
+    }
+
+    ValidationResult validateInstance(Source s, SAXParserFactory factory) {
         try {
-            SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setNamespaceAware(true);
             factory.setValidating(true);
             SAXParser parser = factory.newSAXParser();

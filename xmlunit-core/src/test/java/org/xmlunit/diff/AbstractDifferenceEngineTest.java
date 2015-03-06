@@ -227,6 +227,11 @@ public abstract class AbstractDifferenceEngineTest {
         getDifferenceEngine().setComparisonController(null);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void cantSetNullDifferenceEvaluator() {
+        getDifferenceEngine().setDifferenceEvaluator(null);
+    }
+
     protected static AbstractDifferenceEngine.ComparisonState wrap(ComparisonResult c) {
         return new WrapHelper().wrap(c);
     }
