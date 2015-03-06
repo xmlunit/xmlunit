@@ -28,6 +28,7 @@ import javax.xml.transform.TransformerFactory;
 
 import org.w3c.dom.Document;
 
+import org.xmlunit.NullNode;
 import org.xmlunit.TestResources;
 import org.xmlunit.XMLUnitException;
 import org.xmlunit.builder.jaxb.ComplexNode;
@@ -177,6 +178,21 @@ public class InputTest {
         } finally {
             if (is != null) {
                 is.close();
+                is = null;
+            }
+        }
+        assertNotNull(Input.from(new NullNode()).build());
+        FileChannel fc = null;
+        try {
+            is = new FileInputStream(TestResources.ANIMAL_FILE);
+            fc = is.getChannel();
+            allIsWellFor(Input.from(fc).build());
+        } finally {
+            if (fc != null) {
+                fc.close();
+            }
+            if (is != null) {
+                is.close();
             }
         }
     }
@@ -195,6 +211,11 @@ public class InputTest {
     public void shouldTranslateIOException() throws Exception {
         // openStream throws an IOException
         Input.fromURL(new URL("mailto:info@example.org"));
+    }
+
+    @Test
+    public void canCreateInputFromNode() {
+        assertNotNull(Input.fromNode(new NullNode()).build());
     }
 
     private static void allIsWellFor(Source s) throws Exception {

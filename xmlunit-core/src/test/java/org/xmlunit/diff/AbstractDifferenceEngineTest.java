@@ -18,6 +18,7 @@ import java.util.AbstractMap;
 import java.util.Map;
 import javax.xml.transform.Source;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.*;
 
 public abstract class AbstractDifferenceEngineTest {
@@ -88,7 +89,7 @@ public abstract class AbstractDifferenceEngineTest {
         assertEquals(ComparisonResult.EQUAL, g.outcome);
     }
 
-    @Test public void compareNotifiesListener() {
+    @Test public void compareNotifiesComparisonListener() {
         AbstractDifferenceEngine d = getDifferenceEngine();
         ComparisonListenerSupportTest.Listener l =
             new ComparisonListenerSupportTest.Listener(ComparisonResult.EQUAL);
@@ -97,6 +98,32 @@ public abstract class AbstractDifferenceEngineTest {
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
                                               null, null, new Short("2"),
                                               null, null, new Short("2"))));
+        assertEquals(1, l.getInvocations());
+    }
+
+    @Test
+    public void compareNotifiesMatchListener() {
+        AbstractDifferenceEngine d = getDifferenceEngine();
+        ComparisonListenerSupportTest.Listener l =
+            new ComparisonListenerSupportTest.Listener(ComparisonResult.EQUAL);
+        d.addMatchListener(l);
+        assertEquals(wrap(ComparisonResult.EQUAL),
+                     d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
+                                              null, null, new Short("2"),
+                                              null, null, new Short("2"))));
+        assertEquals(1, l.getInvocations());
+    }
+
+    @Test
+    public void compareNotifiesDifferenceListener() {
+        AbstractDifferenceEngine d = getDifferenceEngine();
+        ComparisonListenerSupportTest.Listener l =
+            new ComparisonListenerSupportTest.Listener(ComparisonResult.SIMILAR);
+        d.addDifferenceListener(l);
+        assertEquals(wrap(ComparisonResult.SIMILAR),
+                     d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
+                                              null, null, new Short("2"),
+                                              null, null, new Short("3"))));
         assertEquals(1, l.getInvocations());
     }
 
@@ -232,6 +259,30 @@ public abstract class AbstractDifferenceEngineTest {
         getDifferenceEngine().setDifferenceEvaluator(null);
     }
 
+    @Test
+    public void comparisonStateEqualsLooksAtType() {
+        WrapHelper w = new WrapHelper();
+        assertNotEquals(w.wrap(ComparisonResult.SIMILAR), w.myOngoing());
+    }
+
+    @Test
+    public void comparisonStateEqualsLooksAtResult() {
+        assertNotEquals(wrap(ComparisonResult.SIMILAR), wrap(ComparisonResult.DIFFERENT));
+    }
+
+    @Test
+    public void hashCodeLooksAtFinished() {
+        assertNotEquals(wrap(ComparisonResult.SIMILAR).hashCode(),
+                        wrapAndStop(ComparisonResult.SIMILAR).hashCode());
+    }
+
+    @Test
+    public void trivialComparisonStateToString() {
+        String s = wrap(ComparisonResult.SIMILAR).toString();
+        assertThat(s, containsString("OngoingComparisonState"));
+        assertThat(s, containsString("SIMILAR"));
+    }
+
     protected static AbstractDifferenceEngine.ComparisonState wrap(ComparisonResult c) {
         return new WrapHelper().wrap(c);
     }
@@ -249,6 +300,10 @@ public abstract class AbstractDifferenceEngineTest {
         }
         private ComparisonState wrapAndStop(ComparisonResult r) {
             return new FinishedComparisonState(r);
+        }
+        private ComparisonState myOngoing() {
+            return new ComparisonState(false, ComparisonResult.SIMILAR) {
+            };
         }
         @Override
         public void compare(Source control, Source test) {

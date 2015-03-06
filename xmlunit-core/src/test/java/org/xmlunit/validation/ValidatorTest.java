@@ -1,0 +1,54 @@
+/*
+  This file is licensed to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+package org.xmlunit.validation;
+
+import javax.xml.transform.Source;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+public class ValidatorTest {
+    @Test
+    public void shouldReturnEmptyArrayForNullSchemaSources() {
+        Validator v = new Validator() {
+                @Override
+                public Source[] getSchemaSources() {
+                    return super.getSchemaSources();
+                }
+                @Override
+                public ValidationResult validateInstance(Source s) {
+                    return null;
+                }
+                @Override
+                public ValidationResult validateSchema() {
+                    return null;
+                }
+            };
+        v.setSchemaSources((Source[]) null);
+        Assert.assertNotNull(v.getSchemaSources());
+        Assert.assertEquals(0, v.getSchemaSources().length);
+    }
+
+    @Test
+    public void shouldUseJAXPForXMLSchema() {
+        Assert.assertTrue(Validator.forLanguage(Languages.W3C_XML_SCHEMA_NS_URI)
+                          instanceof JAXPValidator);
+    }
+
+    @Test
+    public void shouldUseParsingForDTD() {
+        Assert.assertTrue(Validator.forLanguage(Languages.XML_DTD_NS_URI)
+                          instanceof ParsingValidator);
+    }
+}

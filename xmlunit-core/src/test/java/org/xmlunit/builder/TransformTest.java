@@ -14,6 +14,7 @@
 package org.xmlunit.builder;
 
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.dom.DOMResult;
 import org.xmlunit.TestResources;
 import org.xmlunit.builder.Input;
 import org.junit.Test;
@@ -40,6 +41,7 @@ public class TransformTest {
             .source(Input.fromFile(TestResources.DOG_FILE).build())
             .withStylesheet(Input.fromFile(TestResources.ANIMAL_XSL)
                             .build())
+            .withParameter("foo", "bar")
             .build()
             .toDocument();
         assertEquals("dog", doc.getDocumentElement().getTagName());
@@ -54,6 +56,17 @@ public class TransformTest {
                    .build()
                    .toString(),
                    not("<?xml version=\"1.0\" encoding=\"UTF-8\"?><dog/>"));
+    }
+
+    @Test public void transformAnimalToDOMResult() {
+        DOMResult r = new DOMResult();
+        Transform
+            .source(Input.fromFile(TestResources.DOG_FILE).build())
+            .withStylesheet(Input.fromFile(TestResources.ANIMAL_XSL)
+                            .build())
+            .build()
+            .to(r);
+        assertEquals("dog", ((Document) r.getNode()).getDocumentElement().getTagName());
     }
 
 }
