@@ -22,6 +22,7 @@ import java.io.File;
 import javax.xml.transform.stream.StreamSource;
 import org.junit.Test;
 import org.xmlunit.TestResources;
+import org.xmlunit.XMLUnitException;
 
 public class ParsingValidatorTest {
 
@@ -64,4 +65,19 @@ public class ParsingValidatorTest {
         assertFalse(r.isValid());
         assertTrue(r.getProblems().iterator().hasNext());
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldRejectRelaxNG() {
+        new ParsingValidator(Languages.RELAXNG_NS_URI);
+    }
+
+    @Test(expected = XMLUnitException.class)
+    public void shouldNotAllowSchemaValidation() {
+        ParsingValidator v =
+            new ParsingValidator(Languages.XML_DTD_NS_URI);
+        v.setSchemaSource(new StreamSource(new File(BOOK_DTD)));
+        v.validateSchema();
+    }
+
+
 }

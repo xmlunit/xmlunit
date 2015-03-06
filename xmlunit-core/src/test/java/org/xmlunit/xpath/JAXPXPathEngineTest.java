@@ -13,8 +13,32 @@
 */
 package org.xmlunit.xpath;
 
+import static org.mockito.Mockito.when;
+
+import javax.xml.xpath.XPathFactory;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.xmlunit.ConfigurationException;
+
 public class JAXPXPathEngineTest extends AbstractXPathEngineTest {
+    @Mock
+    private XPathFactory fac;
+
+    @Before
+    public void setupMocks() {
+        MockitoAnnotations.initMocks(this);
+    }
+
     @Override protected XPathEngine getEngine() {
         return new JAXPXPathEngine();
+    }
+
+    @Test(expected=ConfigurationException.class)
+    public void shouldTranslateExceptionInConstructor() throws Exception {
+        when(fac.newXPath()).thenThrow(new NullPointerException());
+        new JAXPXPathEngine(fac);
     }
 }

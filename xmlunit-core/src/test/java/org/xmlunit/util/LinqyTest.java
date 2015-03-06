@@ -16,6 +16,7 @@ package org.xmlunit.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -79,6 +80,26 @@ public class LinqyTest {
         Assert.assertFalse(Linqy.all(Arrays.asList(true, true, false),
                                      new IdentityPredicate()));
         Assert.assertFalse(Linqy.all(Arrays.asList(false, false), new IdentityPredicate()));
+    }
+
+    @Test(expected=NoSuchElementException.class)
+    public void cantReadPastFirstElementForSingleton() {
+        Iterator<String> i = Linqy.singleton("foo").iterator();
+        i.next();
+        i.next();
+    }
+
+    @Test(expected=UnsupportedOperationException.class)
+    public void cantRemoveFromSingletonIterator() {
+        Iterator<String> i = Linqy.singleton("foo").iterator();
+        i.remove();
+    }
+
+    @Test(expected=NoSuchElementException.class)
+    public void cantReadPastLastFilterElement() {
+        Iterator<String> i = Linqy.filter(Arrays.asList("foo"), new IsNullPredicate())
+            .iterator();
+        i.next();
     }
 
     private static class IdentityPredicate implements Predicate<Boolean> {

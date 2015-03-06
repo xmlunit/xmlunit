@@ -202,6 +202,31 @@ public abstract class AbstractDifferenceEngineTest {
                          }));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void cantAddNullComparisonListener() {
+        getDifferenceEngine().addComparisonListener(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void cantAddNullMatchListener() {
+        getDifferenceEngine().addMatchListener(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void cantAddNullDifferenceListener() {
+        getDifferenceEngine().addDifferenceListener(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void cantSetNullNodeMatcher() {
+        getDifferenceEngine().setNodeMatcher(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void cantSetNullComparisonController() {
+        getDifferenceEngine().setComparisonController(null);
+    }
+
     protected static AbstractDifferenceEngine.ComparisonState wrap(ComparisonResult c) {
         return new WrapHelper().wrap(c);
     }

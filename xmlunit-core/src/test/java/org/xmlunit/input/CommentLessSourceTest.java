@@ -38,4 +38,9 @@ public class CommentLessSourceTest {
         assertEquals(0, d.getChildNodes().item(0).getChildNodes().getLength());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void cantWrapNullSource() {
+        new CommentLessSource(null);
+    }
+
 }

@@ -91,7 +91,7 @@ public class JAXPValidator extends Validator {
 
     private Schema createSchema() throws SAXException {
         Source[] sources = getSchemaSources();
-        return sources.length > 0 ? getFactory().newSchema(getSchemaSources())
+        return sources.length > 0 ? getFactory().newSchema(sources)
             : getFactory().newSchema();
     }
 }

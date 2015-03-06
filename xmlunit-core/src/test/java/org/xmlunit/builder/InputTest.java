@@ -29,6 +29,7 @@ import javax.xml.transform.TransformerFactory;
 import org.w3c.dom.Document;
 
 import org.xmlunit.TestResources;
+import org.xmlunit.XMLUnitException;
 import org.xmlunit.builder.jaxb.ComplexNode;
 import org.xmlunit.util.Convert;
 
@@ -178,6 +179,22 @@ public class InputTest {
                 is.close();
             }
         }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldRejectNonURLsStringVersion() {
+        Input.fromURI("foo bar");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldRejectNonURLsURIVersion() throws Exception {
+        Input.fromURI(new URI("urn:xmlunit:foo"));
+    }
+
+    @Test(expected = XMLUnitException.class)
+    public void shouldTranslateIOException() throws Exception {
+        // openStream throws an IOException
+        Input.fromURL(new URL("mailto:info@example.org"));
     }
 
     private static void allIsWellFor(Source s) throws Exception {
