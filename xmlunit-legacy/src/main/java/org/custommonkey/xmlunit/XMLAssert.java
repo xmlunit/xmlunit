@@ -808,9 +808,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
                 fail("Expected test value NOT to be equal to control but both were "
                      + test);
             }
-        } else if (test != null) {
-            fail("control xPath evaluated to empty node set, "
-                 + "but test xPath evaluated to " + test);
+        } else if (test == null) {
+            fail("Expected test value NOT to be equal to control but both were empty");
         }
     }
 
