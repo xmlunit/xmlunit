@@ -206,7 +206,7 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
         assertEquals("11th control xpath", "/stuff[1]/list[1]/item[1]", 
                      listener.controlXpath);
         assertEquals("11th test xpath", "/stuff[1]/list[1]/text()[1]", 
-                     listener.testXpath);       
+                     listener.testXpath);
     }
 
     public void testXpathLocation12() throws Exception {
@@ -234,7 +234,23 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
                      listener.comparingWhat);
         assertEquals("13th control xpath", "/stuff[1]/item[2]", 
                      listener.controlXpath);
-        assertNull("13th test xpath", listener.testXpath);       
+        assertNull("13th test xpath", listener.testXpath);
+    }
+
+    public void testXpathLocation13Reversed() throws Exception {
+        engine = new NewDifferenceEngine(PSEUDO_DETAILED_DIFF);
+        String control = "<stuff><?item data?></stuff>";
+        String test = "<stuff><item id=\"1\"/><item id=\"2\"/></stuff>";
+        listenToDifferences(control, test);
+        // mutiple Differences, we only see the last one, missing second element
+        assertEquals("null", listener.expected);
+        assertEquals("item", listener.actual);
+        assertEquals("13 difference type",
+                     DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
+                     listener.comparingWhat);
+        assertNull("13th-r control xpath", listener.controlXpath);
+        assertEquals("13th-r test xpath", "/stuff[1]/item[2]", 
+                     listener.testXpath);
     }
 
     public void testMissingChildNS() throws Exception {
@@ -265,7 +281,7 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
         assertEquals("14th control xpath", "/stuff[1]/item[1]", 
                      listener.controlXpath);
         assertEquals("14th test xpath", "/stuff[1]/item[1]", 
-                     listener.testXpath);       
+                     listener.testXpath);
     }
 
     public void testIssue1027863() throws Exception {
@@ -544,6 +560,17 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
         listenToDifferences(test, control);
         assertFalse("unexpected difference: " + listener.comparingWhat,
                     listener.different);
+    }
+
+    public void testDoctypeDifferences() throws Exception {
+        String control = "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+            + "<!DOCTYPE Book PUBLIC \"XMLUNIT/TEST/PUB1\" \"../test-resources/Book.dtd\">"
+            + "<Book/>";
+        String test = "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+            + "<!DOCTYPE Book PUBLIC \"XMLUNIT/TEST/PUB2\" \"../test-resources/Book.dtd\">"
+            + "<Book/>";
+        listenToDifferences(control, test);
+        assertTrue(listener.different);
     }
 
     private void listenToDifferences(String control, String test)
