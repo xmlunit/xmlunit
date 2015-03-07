@@ -50,7 +50,7 @@ import java.io.Reader;
  */
 public class DoctypeReader extends Reader {
 
-    private final Reader originalReader;
+    private final BufferedReader originalReader;
     private final StringBuffer sourceBuffer = new StringBuffer(1024);
 
     private final DoctypeSupport support;
@@ -66,12 +66,12 @@ public class DoctypeReader extends Reader {
     public DoctypeReader(Reader originalSource, String doctypeName,
                          String systemID) {
         originalReader = originalSource instanceof BufferedReader
-            ? originalSource : new BufferedReader(originalSource);
+            ? (BufferedReader) originalSource : new BufferedReader(originalSource);
         support =
             new DoctypeSupport(doctypeName, systemID,
                                new DoctypeSupport.Readable() {
                                    public int read() throws IOException {
-                                       return originalReader.read();
+                                       return DoctypeReader.this.originalReader.read();
                                    }
                                },
                                true, null);
@@ -91,19 +91,13 @@ public class DoctypeReader extends Reader {
      * @return the contents of the originalSource within a StringBuffer
      * @throws IOException if thrown while reading from the original source
      */
-    private StringBuffer getContent(Reader originalSource)
+    private StringBuffer getContent(BufferedReader originalSource)
         throws IOException {
         if (sourceBuffer.length() == 0) {
-            BufferedReader bufferedReader;
-            if (originalSource instanceof BufferedReader) {
-                bufferedReader = (BufferedReader) originalSource;
-            } else {
-                bufferedReader = new BufferedReader(originalSource);
-            }
             String newline = System.getProperty("line.separator");
             String source;
             boolean atFirstLine = true;
-            while ((source = bufferedReader.readLine()) != null) {
+            while ((source = originalSource.readLine()) != null) {
                 if (atFirstLine) {
                     atFirstLine = false;
                 } else {
@@ -112,7 +106,7 @@ public class DoctypeReader extends Reader {
                 sourceBuffer.append(source);
             }
 
-            bufferedReader.close();
+            originalSource.close();
         }
 
         return sourceBuffer;
