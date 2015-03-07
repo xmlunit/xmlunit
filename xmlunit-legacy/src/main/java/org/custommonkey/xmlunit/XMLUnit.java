@@ -178,6 +178,13 @@ public final class XMLUnit {
     }
 
     /**
+     * Obtains the EntityResolver to be added to all new control parsers.
+     */
+    public static EntityResolver getTestEntityResolver() {
+        return testEntityResolver;
+    }
+
+    /**
      * Get the <code>DocumentBuilderFactory</code> instance used to instantiate
      * parsers for the control XML in an XMLTestCase.
      * @return factory for control parsers
