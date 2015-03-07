@@ -135,4 +135,24 @@ public class test_XMLUnit extends TestCase{
             XMLUnit.setXSLTVersion("1.0");
         }
     }
+
+    public void testCantSetNullControlDocumentBuilderFactory() throws Exception {
+        try {
+            XMLUnit.setControlDocumentBuilderFactory(null);
+            fail("should have thrown an exception");
+        } catch (IllegalArgumentException f) {
+            // expected
+            return;
+        }
+    }
+
+    public void testCantSetNullTestDocumentBuilderFactory() throws Exception {
+        try {
+            XMLUnit.setTestDocumentBuilderFactory(null);
+            fail("should have thrown an exception");
+        } catch (IllegalArgumentException f) {
+            // expected
+            return;
+        }
+    }
 }

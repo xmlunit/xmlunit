@@ -47,6 +47,7 @@ import junit.framework.TestSuite;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 /**
  * Test case used to test the XMLTestCase
@@ -99,6 +100,78 @@ public class test_XMLTestCase extends XMLTestCase {
     }
 
     /**
+     *  Test for the compareXML method for readers.
+     */
+    public void testCompareXMLReaders() throws Exception {
+        for(int i=0;i<control.length;i++){
+            assertEquals("compareXML case " + i + " failed", true,
+                         compareXML(new StringReader(control[i]),
+                                    new StringReader(control[i])).similar());
+            assertEquals("!compareXML case " + i + " failed", false,
+                         compareXML(new StringReader(control[i]),
+                                    new StringReader(test[i])).similar());
+        }
+    }
+
+    /**
+     *  Test for the compareXML method for InputSources.
+     */
+    public void testCompareXMLInputSources() throws Exception {
+        for(int i=0;i<control.length;i++){
+            assertEquals("compareXML case " + i + " failed", true,
+                         compareXML(new InputSource(new StringReader(control[i])),
+                                    new InputSource(new StringReader(control[i])))
+                         .similar());
+            assertEquals("!compareXML case " + i + " failed", false,
+                         compareXML(new InputSource(new StringReader(control[i])),
+                                    new InputSource(new StringReader(test[i])))
+                         .similar());
+        }
+    }
+
+    /**
+     *  Test for the compareXML method for Reader/String combination.
+     */
+    public void testCompareXMLStringReader() throws Exception {
+        for(int i=0;i<control.length;i++){
+            assertEquals("compareXML case " + i + " failed", true,
+                         compareXML(new StringReader(control[i]),
+                                    control[i]).similar());
+            assertEquals("!compareXML case " + i + " failed", false,
+                         compareXML(new StringReader(control[i]),
+                                    test[i]).similar());
+        }
+    }
+
+    /**
+     *  Test for the compareXML method for String/Reader combination.
+     */
+    public void testCompareXMLReaderString() throws Exception {
+        for(int i=0;i<control.length;i++){
+            assertEquals("compareXML case " + i + " failed", true,
+                         compareXML(control[i],
+                                    new StringReader(control[i])).similar());
+            assertEquals("!compareXML case " + i + " failed", false,
+                         compareXML(control[i],
+                                    new StringReader(test[i])).similar());
+        }
+    }
+
+    /**
+     *  Test for the compareXML method for Documents.
+     */
+    public void testCompareXMLDocumentss() throws Exception {
+        for(int i=0;i<control.length;i++){
+            Document controlDocument = XMLUnit.buildControlDocument(control[i]);
+            assertEquals("compareXML case " + i + " failed", true,
+                         compareXML(controlDocument, controlDocument).similar());
+            Document testDocument = XMLUnit.buildTestDocument(test[i]);
+            assertEquals("!compareXML case " + i + " failed", false,
+                         compareXML(controlDocument, testDocument).similar());
+        }
+    }
+
+    /**
      * Test the comparision of two files
      */
     public void testXMLEqualsFiles() throws Exception {
@@ -129,29 +202,142 @@ public class test_XMLTestCase extends XMLTestCase {
     }
 
     /**
-     *  Test for the assertXMLEquals method.
+     *  Test for the assertXMLEqual method.
      */
     public void testXMLEqualsStrings() throws Exception {
         for(int i=0;i<control.length;i++){
-            assertXMLEqual("assertXMLEquals test case " + i + " failed",
+            assertXMLEqual("assertXMLEqual test case " + i + " failed",
                            control[i], control[i]);
-            assertXMLNotEqual("assertXMLNotEquals test case" + i + " failed",
+            assertXMLNotEqual("assertXMLNotEqual test case" + i + " failed",
                               control[i], test[i]);
         }
     }
 
     /**
-     *  Test for the assertXMLEquals method.
+     *  Test for the assertXMLEqual method for String and InputSources.
+     */
+    public void testXMLEqualsStringInputSources() throws Exception {
+        for(int i=0;i<control.length;i++){
+            assertXMLEqual("assertXMLEqual test case " + i + " failed",
+                           new InputSource(new StringReader(control[i])),
+                           new InputSource(new StringReader(control[i])));
+            assertXMLNotEqual("assertXMLNotEqual test case" + i + " failed",
+                              new InputSource(new StringReader(control[i])),
+                              new InputSource(new StringReader(test[i])));
+        }
+    }
+
+    /**
+     *  Test for the assertXMLEqual method for InputSources.
+     */
+    public void testXMLEqualsInputSources() throws Exception {
+        for(int i=0;i<control.length;i++){
+            assertXMLEqual(new InputSource(new StringReader(control[i])),
+                           new InputSource(new StringReader(control[i])));
+            assertXMLNotEqual(new InputSource(new StringReader(control[i])),
+                              new InputSource(new StringReader(test[i])));
+        }
+    }
+
+    /**
+     *  Test for the assertXMLEqual method.
+     */
+    public void testXMLEqualsStringDocuments() throws Exception {
+        Document controlDocument, testDocument;
+        for(int i=0;i<control.length;i++){
+            controlDocument = XMLUnit.buildControlDocument(control[i]);
+            assertXMLEqual("assertXMLEqual test case " + i + " failed",
+                           controlDocument, controlDocument);
+            testDocument = XMLUnit.buildTestDocument(test[i]);
+            assertXMLNotEqual("assertXMLNotEqual test case" + i + " failed",
+                              controlDocument, testDocument);
+        }
+    }
+
+    /**
+     *  Test for the assertXMLEqual method.
      */
     public void testXMLEqualsDocuments() throws Exception {
         Document controlDocument, testDocument;
         for(int i=0;i<control.length;i++){
             controlDocument = XMLUnit.buildControlDocument(control[i]);
-            assertXMLEqual("assertXMLEquals test case " + i + " failed",
-                           controlDocument, controlDocument);
+            assertXMLEqual(controlDocument, controlDocument);
             testDocument = XMLUnit.buildTestDocument(test[i]);
-            assertXMLNotEqual("assertXMLNotEquals test case" + i + " failed",
-                              controlDocument, testDocument);
+            assertXMLNotEqual(controlDocument, testDocument);
+        }
+    }
+
+    /**
+     *  Test for the assertXMLEqual method with Diff and boolean.
+     */
+    public void testXMLEqualDiffBoolean() throws Exception {
+        for(int i=0;i<control.length;i++){
+            Diff d = compareXML(control[i], control[i]);
+            assertXMLEqual(d, true);
+            d = compareXML(control[i], test[i]);
+            assertXMLEqual(d, false);
+        }
+    }
+
+    /**
+     *  Test for the assertXMLEqual method with String, Diff and boolean.
+     */
+    public void testXMLEqualStringDiffBoolean() throws Exception {
+        for(int i=0;i<control.length;i++){
+            Diff d = compareXML(control[i], control[i]);
+            assertXMLEqual("assertXMLEqual test case " + i + " failed",
+                           d, true);
+            d = compareXML(control[i], test[i]);
+            assertXMLEqual("assertXMLEqual test case " + i + " failed",
+                           d, false);
+        }
+    }
+
+    public void testXMLEqualThrows() throws Exception {
+        Diff d = compareXML(control[0], test[0]);
+        try {
+            assertXMLEqual("should throw exception", d, true);
+        } catch (AssertionFailedError f) {
+            // expected
+            return;
+        }
+        fail("should have thrown an exception");
+    }
+    
+    public void testXMLIdenticalThrows() throws Exception {
+        Diff d = compareXML(control[0], test[0]);
+        try {
+            assertXMLIdentical("should throw exception", d, true);
+        } catch (AssertionFailedError f) {
+            // expected
+            return;
+        }
+        fail("should have thrown an exception");
+    }
+    
+    /**
+     *  Test for the assertXMLIdentical method with Diff and boolean.
+     */
+    public void testXMLIdenticalDiffBoolean() throws Exception {
+        for(int i=0;i<control.length;i++){
+            Diff d = compareXML(control[i], control[i]);
+            assertXMLIdentical(d, true);
+            d = compareXML(control[i], test[i]);
+            assertXMLIdentical(d, false);
+        }
+    }
+
+    /**
+     *  Test for the assertXMLIdentical method with String, Diff and boolean.
+     */
+    public void testXMLIdenticalStringDiffBoolean() throws Exception {
+        for(int i=0;i<control.length;i++){
+            Diff d = compareXML(control[i], control[i]);
+            assertXMLIdentical("assertXMLIdentical test case " + i + " failed",
+                           d, true);
+            d = compareXML(control[i], test[i]);
+            assertXMLIdentical("assertXMLIdentical test case " + i + " failed",
+                           d, false);
         }
     }
 
@@ -231,6 +417,22 @@ public class test_XMLTestCase extends XMLTestCase {
                                   "//text()", xpathValuesTestXMLNS);
     }
 
+    public void testXpathValuesEqualUsingInputSource() throws Exception {
+        assertXpathValuesEqual("//text()", "//inner/text()",
+                               new InputSource(new StringReader(xpathValuesControlXML)));
+        assertXpathValuesEqual("//inner/@attr",
+                               new InputSource(new StringReader(xpathValuesControlXML)),
+                               "//outer/@attr",
+                               new InputSource(new StringReader(xpathValuesTestXML)));
+
+        assertXpathValuesNotEqual("//inner/text()", "//outer/@attr",
+                                  new InputSource(new StringReader(xpathValuesControlXML)));
+        assertXpathValuesNotEqual("//inner/text()",
+                                  new InputSource(new StringReader(xpathValuesControlXML)),
+                                  "//text()",
+                                  new InputSource(new StringReader(xpathValuesTestXML)));
+    }
+
     public void testXpathEvaluatesTo() throws Exception {
         assertXpathEvaluatesTo("urk", "//outer/@attr", xpathValuesControlXML);
         try {
@@ -245,6 +447,15 @@ public class test_XMLTestCase extends XMLTestCase {
         try {
             assertXpathEvaluatesTo("yeah", "//outer/@attr", testDocument);
             fail("Expected assertion to fail #2");
+        } catch (AssertionFailedError e) {
+        }
+
+        assertXpathEvaluatesTo("ugh", "//inner/@attr",
+                               new InputSource(new StringReader(xpathValuesTestXML)));
+        try {
+            assertXpathEvaluatesTo("yeah", "//outer/@attr",
+                                   new InputSource(new StringReader(xpathValuesTestXML)));
+            fail("Expected assertion to fail #3");
         } catch (AssertionFailedError e) {
         }
 
@@ -308,8 +519,16 @@ public class test_XMLTestCase extends XMLTestCase {
         }
     }
 
-    public void testXMLValid() {
-        // see test_Validator class
+    public void testNodeTestInputSource() throws Exception {
+        NodeTester tester = new CountingNodeTester(1);
+        assertNodeTestPasses(new InputSource(new StringReader(xpathValuesControlXML)),
+                             tester, Node.TEXT_NODE);
+        try {
+            assertNodeTestPasses(new InputSource(new StringReader(xpathValuesControlXML)),
+                                 tester, Node.ELEMENT_NODE);
+            fail("Expected node test failure #1!");
+        } catch (AssertionFailedError e) {
+        }
     }
 
     private static final String TREES_OPEN = "<trees>";
@@ -460,6 +679,20 @@ public class test_XMLTestCase extends XMLTestCase {
         }
     }
 
+    public void testInputSourceAssertXpathExists() throws Exception {
+        assertXpathExists("/trees/fruit/apples/yum",
+                          new InputSource(new StringReader(xpathNodesControlXML)));
+        assertXpathExists("//tree[@evergreen='false']",
+                          new InputSource(new StringReader(xpathNodesControlXML)));
+        try {
+            assertXpathExists("//tree[@evergreen='idunno']",
+                              new InputSource(new StringReader(xpathNodesControlXML)));
+            fail("Xpath does not exist");
+        } catch (AssertionFailedError e) {
+            // expected
+        }
+    }
+    
     public void testDocumentAssertNotXpathExists() throws Exception {
         Document controlDoc = XMLUnit.buildControlDocument(xpathNodesControlXML);
         assertXpathNotExists("//tree[@evergreen='idunno']", controlDoc);
@@ -493,6 +726,25 @@ public class test_XMLTestCase extends XMLTestCase {
         }
     }
 
+    public void testInputSourceAssertNotXpathExists() throws Exception {
+        assertXpathNotExists("//tree[@evergreen='idunno']",
+                             new InputSource(new StringReader(xpathNodesControlXML)));
+        try {
+            assertXpathNotExists("/trees/fruit/apples/yum",
+                                 new InputSource(new StringReader(xpathNodesControlXML)));
+            fail("Xpath does exist, once");
+        } catch (AssertionFailedError e) {
+            // expected
+        }
+        try {
+            assertXpathNotExists("//tree[@evergreen='false']",
+                                 new InputSource(new StringReader(xpathNodesControlXML)));
+            fail("Xpath does exist many times");
+        } catch (AssertionFailedError e) {
+            // expected
+        }
+    }
+    
     // Bug 585555
     public void testUnusedNamespacesDontMatter() throws Exception
     {
@@ -583,6 +835,15 @@ public class test_XMLTestCase extends XMLTestCase {
                           "<foo><Bar a=\"1\" b=\"2\"/></foo>");
     }
 
+    public void testAssertXpathEqualsInputSource() throws Exception {
+        InputSource control = new InputSource(new StringReader("<foo><Bar a=\"1\" /></foo>"));
+        assertXpathsNotEqual("/foo/Bar/@a", "/foo/Bar", control);
+        control = new InputSource(new StringReader("<foo><Bar a=\"1\" b=\"1\"/></foo>"));
+        assertXpathsNotEqual("/foo/Bar/@a", "/foo/Bar/@b", control);
+        control = new InputSource(new StringReader("<foo><Bar a=\"1\" b=\"2\"/></foo>"));
+        assertXpathsEqual("/foo/Bar/@a", "/foo/Bar/@a", control);
+    }
+    
     // https://sourceforge.net/p/xmlunit/feature-requests/25/
     public void testXpathEvaluatesToQualifiedName() throws Exception {
         String faultDocument = "<env:Envelope "
