@@ -577,6 +577,10 @@ public class test_XMLTestCase extends XMLTestCase {
                               testXpath[i], testDoc);
             assertXpathsEqual(controlXpath[i], xpathNodesControlXML,
                               testXpath[i], xpathNodesTestXML);
+            assertXpathsEqual(controlXpath[i],
+                              new InputSource(new StringReader(xpathNodesControlXML)),
+                              testXpath[i],
+                              new InputSource(new StringReader(xpathNodesTestXML)));
             assertXpathsEqual(controlXpath[i], testXpath[i], controlDoc);
             assertXpathsEqual(controlXpath[i], testXpath[i], xpathNodesControlXML);
         }
@@ -591,6 +595,14 @@ public class test_XMLTestCase extends XMLTestCase {
             try {
                 assertXpathsNotEqual(controlXpath[i], xpathNodesControlXML,
                                      testXpath[i], xpathNodesTestXML);
+                fail("should not be notEqual!");
+            } catch (AssertionFailedError e) {
+            }
+            try {
+                assertXpathsNotEqual(controlXpath[i],
+                                     new InputSource(new StringReader(xpathNodesControlXML)),
+                                     testXpath[i],
+                                     new InputSource(new StringReader(xpathNodesTestXML)));
                 fail("should not be notEqual!");
             } catch (AssertionFailedError e) {
             }
@@ -858,10 +870,6 @@ public class test_XMLTestCase extends XMLTestCase {
                                          "//env11:Envelope/env11:Body/"
                                          + "env11:Fault/faultcode",
                                          faultDocument);
-    }
-
-    public test_XMLTestCase(String name) {
-        super(name);
     }
 
     private static String addNamespaceToDocument(String original) {
