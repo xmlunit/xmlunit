@@ -294,7 +294,7 @@ public class Transform {
         transformation.setErrorListener(errorListener);
     }
 
-    private static <R> R withExceptionHandling(Trans<R> trans)
+    static <R> R withExceptionHandling(Trans<R> trans)
         throws TransformerException {
         try {
             return trans.transform();
@@ -309,7 +309,7 @@ public class Transform {
         }
     }
 
-    private interface Trans<R> {
+    interface Trans<R> {
         R transform();
     }
 }

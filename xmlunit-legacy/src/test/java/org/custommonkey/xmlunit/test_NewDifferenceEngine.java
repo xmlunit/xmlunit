@@ -58,6 +58,10 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
+import org.xmlunit.diff.Comparison;
+import org.xmlunit.diff.ComparisonResult;
+import org.xmlunit.diff.ComparisonType;
+
 /**
  * JUnit test for NewDifferenceEngine
  */
@@ -571,6 +575,58 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
             + "<Book/>";
         listenToDifferences(control, test);
         assertTrue(listener.different);
+    }
+
+    public void testTextAndCDATA() throws Exception {
+        String control = "<stuff><![CDATA[foo]]></stuff>";
+        String test = "<stuff>foo</stuff>";
+        listenToDifferences(control, test);
+        assertTrue(listener.different);
+        assertEquals("textAndCdata control xpath", "/stuff[1]/text()[1]",
+                     listener.controlXpath);
+        assertEquals("textAndCdata test xpath", "/stuff[1]/text()[1]",
+                     listener.testXpath);
+    }
+
+    public void testIgnoreDiffBetweenTextAndCDATA() throws Exception {
+        String control = "<stuff><![CDATA[foo]]></stuff>";
+        String test = "<stuff>foo</stuff>";
+        try {
+            XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+            listenToDifferences(control, test);
+            assertFalse(listener.different);
+        } finally {
+            XMLUnit.setIgnoreDiffBetweenTextAndCDATA(false);
+        }
+    }
+
+    public void testDifferenceEvaluatorMakesTheStrongerDifferenceWin() {
+        NewDifferenceEngine.DifferenceListener2DifferenceEvaluator d =
+            new NewDifferenceEngine.DifferenceListener2DifferenceEvaluator(new DifferenceListener() {
+                    @Override
+                    public int differenceFound(Difference difference) {
+                        return RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
+                    }
+                    @Override
+                    public void skippedComparison(Node control, Node test) {
+                    }
+                });
+        Comparison c = new Comparison(ComparisonType.ELEMENT_TAG_NAME,
+                                      document.createElement("foo"), "/foo", "foo",
+                                      document.createElement("foo"), "/foo", "foo");
+        ComparisonResult r = d.evaluate(c, ComparisonResult.SIMILAR);
+        assertEquals(ComparisonResult.SIMILAR, r);
+        d = new NewDifferenceEngine.DifferenceListener2DifferenceEvaluator(new DifferenceListener() {
+                @Override
+                public int differenceFound(Difference difference) {
+                    return RETURN_UPGRADE_DIFFERENCE_NODES_DIFFERENT;
+                }
+                @Override
+                public void skippedComparison(Node control, Node test) {
+                }
+            });
+        r = d.evaluate(c, ComparisonResult.SIMILAR);
+        assertEquals(ComparisonResult.DIFFERENT, r);
     }
 
     private void listenToDifferences(String control, String test)

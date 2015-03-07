@@ -48,6 +48,7 @@ public abstract class AbstractDoctypeTests extends TestCase {
     private static final String COMMENT = "<!-- comment -->";
     protected static final String NO_DTD =
         "<document><element>one</element></document>";
+    private static final String PI = "<?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>";
 
     public abstract void testGetContent() throws IOException;
 
@@ -95,6 +96,30 @@ public abstract class AbstractDoctypeTests extends TestCase {
                      "ni", "shrubbery");
     }
 
+    public void testInternalDTDWithTwoComments() throws IOException {
+        assertEquals(test_Constants.XML_DECLARATION
+                     + "<!DOCTYPE ni SYSTEM \"shrubbery\">"
+                     + COMMENT
+                     + COMMENT,
+                     test_Constants.XML_DECLARATION
+                     + COMMENT
+                     + COMMENT
+                     + test_Constants.CHUCK_JONES_RIP_DTD_DECL,
+                     "ni", "shrubbery");
+    }
+
+    public void testInternalDTDWithPIAfterComments() throws IOException {
+        assertEquals(test_Constants.XML_DECLARATION
+                     + "<!DOCTYPE ni SYSTEM \"shrubbery\">"
+                     + COMMENT
+                     + PI,
+                     test_Constants.XML_DECLARATION
+                     + COMMENT
+                     + PI
+                     + test_Constants.CHUCK_JONES_RIP_DTD_DECL,
+                     "ni", "shrubbery");
+    }
+
     public void testExternalDTDWithComment() throws IOException {
         assertEquals("<!DOCTYPE ni SYSTEM \"shrubbery\">"
                      + COMMENT,
@@ -112,6 +137,18 @@ public abstract class AbstractDoctypeTests extends TestCase {
                      + "<!DOCTYPE ni SYSTEM \"shrubbery\">" + COMMENT + NO_DTD,
                      test_Constants.XML_DECLARATION + COMMENT + NO_DTD,
                      "ni", "shrubbery");
+    }
+
+    public void testLeadingWhitespace() throws IOException {
+        assertEquals(" <!DOCTYPE ni SYSTEM \"shrubbery\">" + NO_DTD,
+                     " " + NO_DTD, "ni", "shrubbery");
+    }
+
+    public void testWhitespaceAfterComment() throws IOException {
+        assertEquals("<!DOCTYPE ni SYSTEM \"shrubbery\">"
+                     + COMMENT + " "
+                     + NO_DTD,
+                     COMMENT + " " + NO_DTD, "ni", "shrubbery");
     }
 
     public AbstractDoctypeTests(String name) {

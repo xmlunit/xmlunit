@@ -131,6 +131,11 @@ public class test_TolerantSaxDocumentBuilder extends XMLTestCase {
         assertTrue(builder.getTrace(), builder.getTrace().indexOf("WARNING") != -1);
     }
 
+    // silly, but a no-op
+    public void testCharactersWithNegativeLength() {
+        builder.characters(null, 0, -1);
+    }
+    
     public void setUp() throws Exception {
         builder = new TolerantSaxDocumentBuilder(XMLUnit.newTestParser());
         parser = SAXParserFactory.newInstance().newSAXParser();

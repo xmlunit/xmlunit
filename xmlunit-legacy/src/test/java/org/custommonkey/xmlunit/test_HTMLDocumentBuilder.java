@@ -36,14 +36,26 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit;
 
-import junit.framework.TestSuite;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 
+import java.io.StringReader;
 import org.w3c.dom.Document;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+
+import junit.framework.TestSuite;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * JUnit test for HTMLDocumentBuilder
  */
 public class test_HTMLDocumentBuilder extends XMLTestCase {
+    @Mock
+    private ContentHandler handler;
+
     private static final String xHtml =
         "<html><head><title>test</title></head>" +
         "<body><h1>hello</h1><p>world</p><hr/><div><img src=\"foo.bar\"/>" +
@@ -75,6 +87,35 @@ public class test_HTMLDocumentBuilder extends XMLTestCase {
         assertEquals(parser.getTrace(),-1, parser.getTrace().indexOf("WARNING"));
     }
 
+    public void testCharactersAfterSimpleElement() throws Exception {
+        HTMLDocumentBuilder.SwingEvent2SaxAdapter adapter =
+            new MyHTMLDocumentBuilder().create();
+        adapter.parse(new StringReader("<foo/>"), handler);
+        adapter.handleSimpleTag(javax.swing.text.html.HTML.Tag.BR,
+                                new javax.swing.text.SimpleAttributeSet(),
+                                0);
+        char[] foo = ">foo".toCharArray();
+        adapter.handleText(foo, 0);
+        verify(handler).characters(foo, 1, 3);
+    }
+
+    public void testHandlingOfSAXExceptions() throws Exception {
+        SAXException e = new SAXException();
+        doThrow(e).when(handler).endDocument();
+        HTMLDocumentBuilder.SwingEvent2SaxAdapter adapter =
+            new MyHTMLDocumentBuilder().create();
+        try {
+            adapter.parse(new StringReader("<foo/>"), handler);
+        } catch (SAXException ex) {
+            assertSame(e, ex);
+        }
+    }
+
+    public void testParseWithComment() throws Exception {
+        String h = "<!-- comment -->" + xHtml;
+        assertParsedDocumentEqual(XMLUnit.buildControlDocument(h), h);
+    }
+
     private void assertParsedDocumentEqual(Document control, String test)
         throws Exception {
         assertXMLEqual(control, parser.parse(test));
@@ -88,10 +129,20 @@ public class test_HTMLDocumentBuilder extends XMLTestCase {
         xHtmlDocument = XMLUnit.buildControlDocument(xHtml);
         builder = new TolerantSaxDocumentBuilder(XMLUnit.newTestParser());
         parser = new HTMLDocumentBuilder(builder);
-
+        MockitoAnnotations.initMocks(this);
     }
+
     public static TestSuite suite() {
         return new TestSuite(test_HTMLDocumentBuilder.class);
+    }
+
+    private class MyHTMLDocumentBuilder extends HTMLDocumentBuilder {
+        private MyHTMLDocumentBuilder() {
+            super(builder);
+        }
+        public SwingEvent2SaxAdapter create() {
+            return new SwingEvent2SaxAdapter();
+        }
     }
 }
 

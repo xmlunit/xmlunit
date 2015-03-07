@@ -38,8 +38,11 @@ package org.custommonkey.xmlunit;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.StringReader;
 
 import org.custommonkey.xmlunit.exceptions.ConfigurationException;
+import org.custommonkey.xmlunit.exceptions.XMLUnitRuntimeException;
+import org.xmlunit.XMLUnitException;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.OutputKeys;
@@ -50,6 +53,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 /**
  * Test a Transform
@@ -65,6 +69,17 @@ public class test_Transform extends TestCase{
 
     public void testGetResultString() throws Exception {
         transform = new Transform(FLEABALL, animal);
+        assertEquals(DOG, stripLineFeeds(transform.getResultString()));
+    }
+
+    public void testGetResultStringViaInputSource() throws Exception {
+        transform = new Transform(new InputSource(new StringReader(FLEABALL)), animal);
+        assertEquals(DOG, stripLineFeeds(transform.getResultString()));
+    }
+
+    public void testGetResultStringViaTwoInputSources() throws Exception {
+        transform = new Transform(new InputSource(new StringReader(FLEABALL)),
+                                  new InputSource(new FileReader(animal)));
         assertEquals(DOG, stripLineFeeds(transform.getResultString()));
     }
 
@@ -170,6 +185,63 @@ public class test_Transform extends TestCase{
         } finally {
             XMLUnit.setURIResolver(null);
             XMLUnit.getTransformerFactory().setErrorListener(def);
+        }
+    }
+
+    public void testParameterHandling() {
+        transform = new Transform(FLEABALL, animal);
+        transform.setParameter("foo", "bar");
+        assertEquals("bar", transform.getParameter("foo"));
+        transform.clearParameters();
+        assertNull(transform.getParameter("foo"));
+    }
+
+    public void testUnwrappingOfConfigurationException() throws Exception {
+        final Exception inner = new NullPointerException();
+        Transform.Trans<String> t = new Transform.Trans<String>() {
+                @Override
+                public String transform() {
+                    throw new org.xmlunit.ConfigurationException(inner);
+                }
+            };
+        try {
+            Transform.withExceptionHandling(t);
+            fail("should have thrown an exception");
+        } catch (ConfigurationException ex) {
+            assertSame(inner, ex.getCause());
+        }
+    }
+
+    public void testUnwrappingOfXMLUnitException() throws Exception {
+        final Exception inner = new NullPointerException();
+        Transform.Trans<String> t = new Transform.Trans<String>() {
+                @Override
+                public String transform() {
+                    throw new XMLUnitException(inner);
+                }
+            };
+        try {
+            Transform.withExceptionHandling(t);
+            fail("should have thrown an exception");
+        } catch (XMLUnitRuntimeException ex) {
+            assertFalse(ex instanceof ConfigurationException);
+            assertSame(inner, ex.getCause());
+        }
+    }
+
+    public void testUnwrappingOfXMLUnitExceptionWithTransformerException() throws Exception {
+        final Exception inner = new TransformerException("foo");
+        Transform.Trans<String> t = new Transform.Trans<String>() {
+                @Override
+                public String transform() {
+                    throw new XMLUnitException(inner);
+                }
+            };
+        try {
+            Transform.withExceptionHandling(t);
+            fail("should have thrown an exception");
+        } catch (TransformerException ex) {
+            assertSame(inner, ex);
         }
     }
 

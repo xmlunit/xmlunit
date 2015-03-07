@@ -1031,6 +1031,29 @@ public class test_DifferenceEngine extends TestCase implements DifferenceConstan
         assertTrue(listener.different);
     }
 
+    public void testTextAndCDATA() throws Exception {
+        String control = "<stuff><![CDATA[foo]]></stuff>";
+        String test = "<stuff>foo</stuff>";
+        listenToDifferences(control, test);
+        assertTrue(listener.different);
+        assertEquals("textAndCdata control xpath", "/stuff[1]/text()[1]",
+                     listener.controlXpath);
+        assertEquals("textAndCdata test xpath", "/stuff[1]/text()[1]",
+                     listener.testXpath);
+    }
+
+    public void testIgnoreDiffBetweenTextAndCDATA() throws Exception {
+        String control = "<stuff><![CDATA[foo]]></stuff>";
+        String test = "<stuff>foo</stuff>";
+        try {
+            XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+            listenToDifferences(control, test);
+            assertFalse(listener.different);
+        } finally {
+            XMLUnit.setIgnoreDiffBetweenTextAndCDATA(false);
+        }
+    }
+
     private void listenToDifferences(String control, String test)
         throws SAXException, IOException {
         Document controlDoc = XMLUnit.buildControlDocument(control);
