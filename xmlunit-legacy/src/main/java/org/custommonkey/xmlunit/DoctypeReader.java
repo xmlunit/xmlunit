@@ -119,37 +119,6 @@ public class DoctypeReader extends Reader {
     }
 
     /**
-     * Determine where to place the DOCTYPE declaration within some marked-up
-     * content
-     * @param withinContent
-     * @return index where to insert the doctype
-     */
-    private int obsoleteFindStartDoctype(StringBuffer withinContent) {
-        int startAt = -1;
-        char curChar;
-        boolean canInsert = true;
-        for (int i = 0; startAt == -1; ++i) {
-            curChar = withinContent.charAt(i);
-            if (curChar == '<') {
-                switch (withinContent.charAt(i + 1)) {
-                case '?':
-                case '!':
-                case '-':
-                    canInsert = false;
-                    break;
-                default:
-                    startAt = i;
-                }
-            } else if (curChar == '>') {
-                canInsert = true;
-            } else if (canInsert) {
-                startAt = i;
-            }
-        }
-        return startAt;
-    }
-
-    /**
      * Read DOCTYPE-replaced content from the wrapped Reader
      * @param cbuf
      * @param off
