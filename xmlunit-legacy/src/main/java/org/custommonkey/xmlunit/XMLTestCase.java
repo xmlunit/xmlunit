@@ -41,7 +41,6 @@ import org.custommonkey.xmlunit.exceptions.XpathException;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
@@ -112,7 +111,7 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
      */
     public Diff compareXML(String control, Reader test)
         throws SAXException, IOException {
-        return XMLUnit.compareXML(new StringReader(control), test);
+        return XMLUnit.compareXML(control, test);
     }
 
     /**
@@ -125,7 +124,7 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
      */
     public Diff compareXML(Reader control, String test)
         throws SAXException, IOException {
-        return XMLUnit.compareXML(control, new StringReader(test));
+        return XMLUnit.compareXML(control, test);
     }
 
     /**
