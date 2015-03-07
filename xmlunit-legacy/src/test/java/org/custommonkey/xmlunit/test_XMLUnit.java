@@ -36,19 +36,41 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.custommonkey.xmlunit.exceptions.ConfigurationException;
+import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.helpers.DefaultHandler;
+
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import org.custommonkey.xmlunit.exceptions.ConfigurationException;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Test case for XMLUnit
  */
 public class test_XMLUnit extends TestCase{
+    @Mock
+    private DocumentBuilderFactory dbFactory;
+
+    @Mock
+    private DocumentBuilder builder;
+
+    @Mock
+    private EntityResolver eResolver;
+    
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        when(dbFactory.newDocumentBuilder()).thenReturn(builder);
+    }
+
     /**
      * Contructs a new test case.
      */
@@ -155,4 +177,63 @@ public class test_XMLUnit extends TestCase{
             return;
         }
     }
+
+    public void testTranslatesParserConfigurationExceptionControl() throws Exception {
+        when(dbFactory.newDocumentBuilder()).thenThrow(new ParserConfigurationException());
+        DocumentBuilderFactory orig = XMLUnit.getControlDocumentBuilderFactory();
+        try {
+            XMLUnit.setControlDocumentBuilderFactory(dbFactory);
+            XMLUnit.newControlParser();
+            fail("should have thrown an exception");
+        } catch (ConfigurationException f) {
+            // expected
+            return;
+        } finally {
+            XMLUnit.setControlDocumentBuilderFactory(orig);
+        }
+    }
+
+    public void testSetsControlEntityResolver() throws Exception {
+        DocumentBuilderFactory orig = XMLUnit.getControlDocumentBuilderFactory();
+        EntityResolver origResolver = XMLUnit.getControlEntityResolver();
+        try {
+            XMLUnit.setControlDocumentBuilderFactory(dbFactory);
+            XMLUnit.setControlEntityResolver(eResolver);
+            XMLUnit.newControlParser();
+        } finally {
+            XMLUnit.setControlEntityResolver(origResolver);
+            XMLUnit.setControlDocumentBuilderFactory(orig);
+        }
+        verify(builder).setEntityResolver(eResolver);
+    }
+
+    public void testTranslatesParserConfigurationExceptionTest() throws Exception {
+        when(dbFactory.newDocumentBuilder()).thenThrow(new ParserConfigurationException());
+        DocumentBuilderFactory orig = XMLUnit.getTestDocumentBuilderFactory();
+        try {
+            XMLUnit.setTestDocumentBuilderFactory(dbFactory);
+            XMLUnit.newTestParser();
+            fail("should have thrown an exception");
+        } catch (ConfigurationException f) {
+            // expected
+            return;
+        } finally {
+            XMLUnit.setTestDocumentBuilderFactory(orig);
+        }
+    }
+
+    public void testSetsTestEntityResolver() throws Exception {
+        DocumentBuilderFactory orig = XMLUnit.getTestDocumentBuilderFactory();
+        EntityResolver origResolver = XMLUnit.getTestEntityResolver();
+        try {
+            XMLUnit.setTestDocumentBuilderFactory(dbFactory);
+            XMLUnit.setTestEntityResolver(eResolver);
+            XMLUnit.newTestParser();
+        } finally {
+            XMLUnit.setTestEntityResolver(origResolver);
+            XMLUnit.setTestDocumentBuilderFactory(orig);
+        }
+        verify(builder).setEntityResolver(eResolver);
+    }
+
 }
