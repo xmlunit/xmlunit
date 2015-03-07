@@ -655,19 +655,7 @@ public final class XMLUnit {
      * Obtains an XpathEngine to use in XPath tests.
      */
     public static XpathEngine newXpathEngine() {
-        XpathEngine eng = null;
-        try {
-            Class.forName("javax.xml.xpath.XPath");
-            Class c = Class.forName("org.custommonkey.xmlunit.jaxp13"
-                                    + ".Jaxp13XpathEngine");
-            eng = (XpathEngine) c.newInstance();
-        } catch (Throwable ex) {
-            // should probably only catch ClassNotFoundException, but some
-            // constellations - like Ant shipping a more recent version of
-            // xml-apis than the JDK - may contain the JAXP 1.3 interfaces
-            // without implementations
-            eng = new SimpleXpathEngine();
-        }
+        XpathEngine eng = new org.custommonkey.xmlunit.jaxp13.Jaxp13XpathEngine();
         if (namespaceContext != null) {
             eng.setNamespaceContext(namespaceContext);
         }
