@@ -91,15 +91,6 @@ public class Validator extends DefaultHandler {
     private Boolean isValid;
 
     /**
-     * Kept for backwards compatibility.
-     * @deprecated Use the protected three arg constructor instead.
-     */
-    protected Validator(InputSource inputSource,
-                        boolean usingDoctypeReader) {
-        this(inputSource, null, usingDoctypeReader);
-    }
-
-    /**
      * Baseline constructor: called by all others
      * 
      * @param inputSource

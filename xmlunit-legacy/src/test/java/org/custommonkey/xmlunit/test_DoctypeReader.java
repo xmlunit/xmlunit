@@ -67,37 +67,6 @@ public class test_DoctypeReader extends AbstractDoctypeTests {
                                           "yabba", "don\'t");
     }
 
-    public void testReplaceDoctypeInternalDTD() {
-        initDummyDoctypeReader();
-        StringBuffer buf = new StringBuffer(test_Constants.CHUCK_JONES_RIP_DTD_DECL);
-        assertEquals("<!DOCTYPE ni SYSTEM \"shrubbery\">",
-                     doctypeReader.replaceDoctype(buf, "ni", "shrubbery"));
-    }
-
-    public void testReplaceDoctypeExternalDTD() {
-        initDummyDoctypeReader();
-        StringBuffer buf = new StringBuffer(
-                                            "<! DOCTYPE PUBLIC \"yak\" SYSTEM \"llama\">");
-        assertEquals("<! DOCTYPE ni SYSTEM \"shrubbery\">",
-                     doctypeReader.replaceDoctype(buf, "ni", "shrubbery"));
-    }
-
-    public void testReplaceDoctypeNoDTD() {
-        initDummyDoctypeReader();
-        StringBuffer buf = new StringBuffer(NO_DTD);
-        assertEquals("<!DOCTYPE ni SYSTEM \"shrubbery\">" + NO_DTD,
-                     doctypeReader.replaceDoctype(buf, "ni", "shrubbery"));
-    }
-
-    public void testReplaceDoctypeNoDTDButXMLDecl() {
-        initDummyDoctypeReader();
-        StringBuffer buf = new StringBuffer(test_Constants.XML_DECLARATION
-                                            + NO_DTD);
-        assertEquals(test_Constants.XML_DECLARATION +
-                     "<!DOCTYPE ni SYSTEM \"shrubbery\">" + NO_DTD,
-                     doctypeReader.replaceDoctype(buf, "ni", "shrubbery"));
-    }
-
     private static String readFully(DoctypeReader reader)
         throws IOException {
         StringBuffer buf = new StringBuffer();

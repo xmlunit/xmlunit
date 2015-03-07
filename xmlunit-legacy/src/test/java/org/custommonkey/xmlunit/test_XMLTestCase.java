@@ -49,6 +49,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
+import org.custommonkey.xmlunit.examples.CountingNodeTester;
+
 /**
  * Test case used to test the XMLTestCase
  */

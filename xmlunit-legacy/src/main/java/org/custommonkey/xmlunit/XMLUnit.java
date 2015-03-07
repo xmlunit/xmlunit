@@ -232,30 +232,6 @@ public final class XMLUnit {
     }
 
     /**
-     * Get the <code>DocumentBuilder</code> instance used to parse the test XML
-     * in an XMLTestCase.
-     * @return parser for test values
-     * @throws ConfigurationException
-     * @deprecated use newTestParser()
-     */
-    public static DocumentBuilder getTestParser()
-        throws ConfigurationException {
-        return newTestParser();
-    }
-
-    /**
-     * Get the <code>DocumentBuilder</code> instance used to parse the test XML
-     * in an XMLTestCase.
-     * @return parser for control values
-     * @deprecated use newControlParser()
-     * @throws ConfigurationException
-     */
-    public static DocumentBuilder getControlParser()
-        throws ConfigurationException {
-        return newControlParser();
-    }
-
-    /**
      * Get the <code>DocumentBuilderFactory</code> instance used to instantiate
      * parsers for the test XML in an XMLTestCase.
      * @return factory for test parsers

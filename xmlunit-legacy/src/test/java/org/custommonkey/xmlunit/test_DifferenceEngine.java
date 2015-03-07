@@ -427,7 +427,8 @@ public class test_DifferenceEngine extends TestCase implements DifferenceConstan
     private void assertDifferentNodeLists(Node control, Node test,
                                           Difference expectedDifference, boolean fatal) {
         try {
-            engine.compareNodeList(control.getChildNodes(), test.getChildNodes(),
+            engine.compareNodeList(DifferenceEngine.nodeList2List(control.getChildNodes()),
+                                   DifferenceEngine.nodeList2List(test.getChildNodes()),
                                    control.getChildNodes().getLength(), listener, DEFAULT_ELEMENT_QUALIFIER);
             if (fatal) {
                 fail("Expected fatal difference");

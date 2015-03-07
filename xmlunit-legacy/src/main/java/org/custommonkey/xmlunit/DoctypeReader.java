@@ -150,60 +150,6 @@ public class DoctypeReader extends Reader {
     }
 
     /**
-     * Perform DOCTYPE amendment / addition within some marked-up content
-     * @param withinContent
-     * @param doctypeName
-     * @param systemId
-     * @return the content, after DOCTYPE amendment / addition
-     * @deprecated this method is only here for BWC, it is no longer
-     * used by this class
-     */
-    public String replaceDoctype(StringBuffer withinContent,
-                                 String doctypeName, String systemId) {
-        String content = withinContent.toString();
-        int startDoctype = content.indexOf(DoctypeSupport.DOCTYPE);
-        boolean noCurrentDoctype = false;
-        if (startDoctype == -1) {
-            startDoctype = obsoleteFindStartDoctype(withinContent);
-            noCurrentDoctype = true;
-        }
-
-        int endDoctype = startDoctype + DoctypeSupport.DOCTYPE.length();
-
-        if (noCurrentDoctype) {
-            withinContent.insert(startDoctype,
-                                 DoctypeSupport.DOCTYPE_OPEN_DECL);
-            withinContent.insert(startDoctype
-                                 + DoctypeSupport.DOCTYPE_OPEN_DECL.length(),
-                                 DoctypeSupport.DOCTYPE);
-            endDoctype += DoctypeSupport.DOCTYPE_OPEN_DECL.length();
-        } else {
-            int startInternalDecl = content.indexOf('[', endDoctype);
-            if (startInternalDecl > 0) {
-                int endInternalDecl = content.indexOf(']', startInternalDecl);
-                withinContent.delete(endDoctype, endInternalDecl + 1);
-            } else {
-                int endDoctypeTag = content.indexOf('>', endDoctype);
-                withinContent.delete(endDoctype, endDoctypeTag);
-            }
-        }
-
-        int atPos = endDoctype;
-        withinContent.insert(atPos, doctypeName);
-        atPos += doctypeName.length();
-        withinContent.insert(atPos, DoctypeSupport.SYSTEM);
-        atPos += DoctypeSupport.SYSTEM.length();
-        withinContent.insert(atPos, systemId);
-        atPos += systemId.length();
-        withinContent.insert(atPos, '"');
-
-        if (noCurrentDoctype) {
-            withinContent.insert(++atPos, DoctypeSupport.DOCTYPE_CLOSE_DECL);
-        }
-        return withinContent.toString();
-    }
-
-    /**
      * Read DOCTYPE-replaced content from the wrapped Reader
      * @param cbuf
      * @param off
