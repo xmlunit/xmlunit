@@ -336,22 +336,6 @@ public class NewDifferenceEngine
         }
     }
 
-    public static class DifferenceListener2ComparisonListener
-        implements ComparisonListener {
-        private final DifferenceListener dl;
-
-        public DifferenceListener2ComparisonListener(DifferenceListener dl) {
-            this.dl = dl;
-        }
-
-        public void comparisonPerformed(Comparison comparison,
-                                        ComparisonResult outcome) {
-            for (Difference diff : toDifference(comparison)) {
-                dl.differenceFound(diff);
-            }
-        }
-    }
-
     private static final Short TEXT_TYPE = Short.valueOf(Node.TEXT_NODE);
     private static final Short CDATA_TYPE =
         Short.valueOf(Node.CDATA_SECTION_NODE);
