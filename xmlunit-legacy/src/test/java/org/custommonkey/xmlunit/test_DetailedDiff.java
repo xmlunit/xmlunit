@@ -41,6 +41,7 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
+import javax.xml.transform.dom.DOMSource;
 
 import org.custommonkey.xmlunit.examples.MultiLevelElementNameAndTextQualifier;
 import org.w3c.dom.Document;
@@ -294,6 +295,10 @@ public class test_DetailedDiff extends test_Diff {
     protected Diff buildDiff(String control, String test,
                              DifferenceEngineContract engine) throws Exception {
         return new DetailedDiff(super.buildDiff(control, test, engine));
+    }
+
+    protected Diff buildDiff(DOMSource control, DOMSource test) {
+        return new DetailedDiff(super.buildDiff(control, test));
     }
 
     public test_DetailedDiff(String name) {

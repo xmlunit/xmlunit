@@ -131,8 +131,7 @@ public class Diff
      * Construct a Diff that compares the XML in two JAXP DOMSources
      */
     public Diff(DOMSource control, DOMSource test) {
-        this(control.getNode().getOwnerDocument(),
-             test.getNode().getOwnerDocument());
+        this(toDocument(control), toDocument(test));
     }
 
     /**
@@ -443,5 +442,10 @@ public class Diff
             && !(elementQualifierDelegate instanceof ElementNameQualifier)
             && !(elementQualifierDelegate instanceof ElementNameAndTextQualifier)
             && !(elementQualifierDelegate instanceof ElementNameAndAttributeQualifier);
+    }
+
+    private static Document toDocument(DOMSource d) {
+        Node n = d.getNode();
+        return n instanceof Document ? (Document) n : n.getOwnerDocument();
     }
 }

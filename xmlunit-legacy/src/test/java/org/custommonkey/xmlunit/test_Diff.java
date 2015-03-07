@@ -42,6 +42,7 @@ import java.io.FileWriter;
 import java.io.Reader;
 import java.util.HashSet;
 import java.util.Set;
+import javax.xml.transform.dom.DOMSource;
 
 import junit.framework.TestCase;
 
@@ -491,6 +492,10 @@ public class test_Diff extends TestCase{
                              DifferenceEngineContract engine) throws Exception {
         return new Diff(XMLUnit.buildControlDocument(control),
                         XMLUnit.buildTestDocument(test), engine);
+    }
+
+    protected Diff buildDiff(DOMSource control, DOMSource test) {
+        return new Diff(control, test);
     }
 
     /**
@@ -967,7 +972,7 @@ public class test_Diff extends TestCase{
             "<child amount=\"100\" />" +
             "</tag>";
 
-        Diff diff = new Diff(control, test);
+        Diff diff = buildDiff(control, test);
         diff.overrideElementQualifier(new
                                         ElementNameAndAttributeQualifier());
         assertTrue(diff.toString(), diff.similar());
@@ -980,10 +985,33 @@ public class test_Diff extends TestCase{
         Document test =
             XMLUnit.buildControlDocument("<!DOCTYPE skinconfig [<!--abcd-->]>"
                                          + "<root></root>");
-        Diff diff = new Diff(control, test);
+        Diff diff = buildDiff(control, test);
         assertTrue(diff.toString(), diff.identical());
 
-        diff = new Diff(test, control);
+        diff = buildDiff(test, control);
+        assertTrue(diff.toString(), diff.identical());
+    }
+
+    public void testUsingDOMSourceFromDocument() throws Exception {
+        Document control =
+            XMLUnit.buildTestDocument("<!DOCTYPE skinconfig []>"
+                                      + "<!--abcd--><root></root>");
+        Document test =
+            XMLUnit.buildControlDocument("<!DOCTYPE skinconfig [<!--abcd-->]>"
+                                         + "<root></root>");
+        Diff diff = buildDiff(new DOMSource(control), new DOMSource(test));
+        assertTrue(diff.toString(), diff.identical());
+    }
+
+    public void testUsingDOMSourceFromElement() throws Exception {
+        Document control =
+            XMLUnit.buildTestDocument("<!DOCTYPE skinconfig []>"
+                                      + "<!--abcd--><root></root>");
+        Document test =
+            XMLUnit.buildControlDocument("<!DOCTYPE skinconfig [<!--abcd-->]>"
+                                         + "<root></root>");
+        Diff diff = buildDiff(new DOMSource(control.getDocumentElement()),
+                              new DOMSource(test.getDocumentElement()));
         assertTrue(diff.toString(), diff.identical());
     }
 
@@ -998,7 +1026,7 @@ public class test_Diff extends TestCase{
         String control = "<ns2:Square xsi:type=\"ns2:Shape\" "
             + "xmlns:ns2=\"http://example.com/\" "
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
-        Diff diff = new Diff(control, test);
+        Diff diff = buildDiff(control, test);
         assertTrue(diff.toString(), diff.similar());
     }
 
@@ -1010,7 +1038,7 @@ public class test_Diff extends TestCase{
         String control = "<ns2:Square xsi:type=\"ns2:a\" "
             + "xmlns:ns2=\"http://example.com/\" "
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
-        Diff diff = new Diff(control, test);
+        Diff diff = buildDiff(control, test);
         assertTrue(diff.toString(), diff.similar());
     }
 
@@ -1022,7 +1050,7 @@ public class test_Diff extends TestCase{
         String control = "<ns2:Square xsi:type=\"ns2:Shape\" "
             + "xmlns:ns2=\"http://example.com/\" "
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
-        Diff diff = new Diff(control, test);
+        Diff diff = buildDiff(control, test);
         assertTrue(diff.toString(), diff.similar());
     }
 
@@ -1036,7 +1064,7 @@ public class test_Diff extends TestCase{
             + "<ns2:Square xsi:type=\"ns2:Shape\" "
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>"
             + "</ns2:Shapes>";
-        Diff diff = new Diff(control, test);
+        Diff diff = buildDiff(control, test);
         assertTrue(diff.toString(), diff.similar());
     }
 
@@ -1050,7 +1078,7 @@ public class test_Diff extends TestCase{
             + "xmlns:ns1=\"http://example.com/\" "
             + "xmlns:ns2=\"http://example.com/another-uri/\" "
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
-        Diff diff = new Diff(control, test);
+        Diff diff = buildDiff(control, test);
         assertFalse(diff.toString(), diff.similar());
     }
 
@@ -1060,7 +1088,7 @@ public class test_Diff extends TestCase{
 
         String control = "<foo xsi:nil=\"false\" "
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
-        Diff diff = new Diff(control, test);
+        Diff diff = buildDiff(control, test);
         assertFalse(diff.toString(), diff.similar());
     }
 }
