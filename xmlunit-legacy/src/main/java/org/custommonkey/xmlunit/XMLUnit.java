@@ -558,7 +558,8 @@ public final class XMLUnit {
      * @return current version
      */
     public static String getVersion() {
-        return "1.3alpha"; 
+        // FIXME should read a property
+        return "2.0.0-SNAPSHOT"; 
     }
 
    /**
@@ -715,7 +716,7 @@ public final class XMLUnit {
     public static boolean getIgnoreComments() {
         return ignoreComments;
     }
-    
+
     /**
      * Whether Text nodes should be normalized.
      *
