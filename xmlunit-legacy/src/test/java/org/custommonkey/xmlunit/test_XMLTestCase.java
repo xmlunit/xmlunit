@@ -346,7 +346,7 @@ public class test_XMLTestCase extends XMLTestCase {
     private static final String xpathValuesControlXML =
         "<root><outer attr=\"urk\"><inner attr=\"urk\">"
         + "controlDocument</inner></outer></root>";
-    private static final String xpathValuesTestXML =
+    static final String xpathValuesTestXML =
         "<root><outer attr=\"urk\"><inner attr=\"ugh\">"
         + "testDocument</inner></outer></root>";
     private static final String xpathValuesControlXMLNS =
