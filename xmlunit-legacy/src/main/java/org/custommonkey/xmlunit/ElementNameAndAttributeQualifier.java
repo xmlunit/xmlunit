@@ -106,8 +106,12 @@ public class ElementNameAndAttributeQualifier extends ElementNameQualifier {
      * @param test
      * @return true if all qualifying attributes are present with the same
      * values, false otherwise
+     * @deprecated this method is no longer used by this class and is
+     *             only kept for backwards compatibility, overriding
+     *             it won't have any effect anymore
      */
-    protected boolean areAttributesComparable(Element control, Element test) {
+    @Deprecated
+    protected final boolean areAttributesComparable(Element control, Element test) {
         String controlValue, testValue;
         Attr[] qualifyingAttributes;
         NamedNodeMap namedNodeMap = control.getAttributes();
