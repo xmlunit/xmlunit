@@ -46,7 +46,7 @@ import java.io.IOException;
  * conforms to a different DTD.
  * Combines InputStream semantics with the ability to specify a target doctype
  * for a byte stream containing XML markup.
- * Used by Validator class to wrap an InputStrea, when performing validation of a
+ * Used by Validator class to wrap an InputStream, when performing validation of a
  * document against a DTD.
  */
 public class DoctypeInputStream extends InputStream {
