@@ -178,7 +178,7 @@ public final class XMLUnit {
     }
 
     /**
-     * Obtains the EntityResolver to be added to all new control parsers.
+     * Obtains the EntityResolver to be added to all new test parsers.
      */
     public static EntityResolver getTestEntityResolver() {
         return testEntityResolver;
