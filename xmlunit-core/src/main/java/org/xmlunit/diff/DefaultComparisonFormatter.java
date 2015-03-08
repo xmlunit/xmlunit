@@ -70,7 +70,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         return type == ComparisonType.NODE_TYPE ? nodeType((Short) value) : value;
     }
 
-    private String getShortString(Object node, String xpath, ComparisonType type) {
+    private String getShortString(Node node, String xpath, ComparisonType type) {
         StringBuilder sb = new StringBuilder();
         if (type == ComparisonType.HAS_DOCTYPE_DECLARATION) {
             Document doc = (Document)  node;
@@ -94,16 +94,14 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
             appendComment(sb, (Comment)  node);
         } else if (node instanceof ProcessingInstruction) {
             appendProcessingInstruction(sb, (ProcessingInstruction)  node);
-        } else if (node instanceof Node) {
+        } else if (node == null) {
+            sb.append("<NULL>");
+        } else {
             Node unknownNode = (Node) node;
             sb.append("<!--NodeType ").append(unknownNode.getNodeType())
             .append(' ').append(unknownNode.getNodeName())
             .append('/').append(unknownNode.getNodeValue())
             .append("-->");
-        } else if (node == null) {
-            sb.append("<NULL>");
-        } else {
-            sb.append("<!-- ").append(node).append(" -->");
         }
         if (xpath != null && xpath.length() > 0) {
             sb.append(" at ").append(xpath);
