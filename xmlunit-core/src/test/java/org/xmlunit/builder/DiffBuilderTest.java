@@ -359,7 +359,7 @@ public class DiffBuilderTest {
 
         @Override
         public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
-            final Node controlNode = (Node) comparison.getControlDetails().getTarget();
+            final Node controlNode = comparison.getControlDetails().getTarget();
             if (controlNode instanceof Attr) {
                 Attr attr = (Attr) controlNode;
                 if (attr.getName().equals(attributeName)) {

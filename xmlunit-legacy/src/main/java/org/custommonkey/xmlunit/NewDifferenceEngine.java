@@ -52,7 +52,6 @@ import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DOMDifferenceEngine;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.DifferenceEvaluator;
-import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelector;
 import org.xmlunit.diff.ElementSelectors;
 import org.xmlunit.diff.NodeMatcher;
@@ -280,13 +279,13 @@ public class NewDifferenceEngine
                                                         .valueOf(!ZERO
                                                                  .equals(cd
                                                                          .getValue())),
-                                                        (Node) cd.getTarget(),
+                                                        cd.getTarget(),
                                                         cd.getXPath()),
                                          new NodeDetail(String
                                                         .valueOf(!ZERO
                                                                  .equals(td
                                                                          .getValue())),
-                                                        (Node) td.getTarget(),
+                                                        td.getTarget(),
                                                         td.getXPath())));
             }
             proto = CHILD_NODELIST_LENGTH;
@@ -316,7 +315,7 @@ public class NewDifferenceEngine
         if (detail.getValue() instanceof Node) {
             value = ((Node) detail.getValue()).getNodeName();
         }
-        return new NodeDetail(value, (Node) detail.getTarget(),
+        return new NodeDetail(value, detail.getTarget(),
                               detail.getXPath());
     }
 
@@ -377,9 +376,9 @@ public class NewDifferenceEngine
     }
 
     private static boolean isNonElementDocumentChild(Comparison.Detail detail) {
-        return detail != null && detail.getTarget() instanceof Node
+        return detail != null && detail.getTarget() != null
             && !(detail.getTarget() instanceof Element)
-            && ((Node) detail.getTarget()).getParentNode() instanceof Document;
+            && detail.getTarget().getParentNode() instanceof Document;
     }
 
     public static class ComparisonController2ComparisonController
