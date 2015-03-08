@@ -97,11 +97,10 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         } else if (node == null) {
             sb.append("<NULL>");
         } else {
-            Node unknownNode = (Node) node;
-            sb.append("<!--NodeType ").append(unknownNode.getNodeType())
-            .append(' ').append(unknownNode.getNodeName())
-            .append('/').append(unknownNode.getNodeValue())
-            .append("-->");
+            sb.append("<!--NodeType ").append(node.getNodeType())
+                .append(' ').append(node.getNodeName())
+                .append('/').append(node.getNodeValue())
+                .append("-->");
         }
         if (xpath != null && xpath.length() > 0) {
             sb.append(" at ").append(xpath);
