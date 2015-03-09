@@ -13,8 +13,9 @@ In General
 * Validate the API - this is paramount to get 2.0 final out but should
   probably be complete before the first alpha release
 * work on the open issues
-* maybe provide convenient APIs for ignoring complete subtrees when
-  comparing pieces of XML.
+* provide convenient APIs for ignoring complete subtrees or certain
+  attributes (see [#2](https://github.com/xmlunit/xmlunit/issues/2))
+  when comparing pieces of XML.
 
 Java
 ----
@@ -32,8 +33,8 @@ Java
 Claimed
 -------
 
-* [@bodewig](https://github.com/bodewig) has started to work on more
-  generic `ElementSelectors` and intends to add a fluent builder for
-  them - this is a generalization of
-  [#4](https://github.com/xmlunit/xmlunit/issues/4)
+* [@bodewig](https://github.com/bodewig) has added some more generic
+  `ElementSelectors` and a fluent builder for them - this is a
+  generalization of [#4](https://github.com/xmlunit/xmlunit/issues/4)
+  but isn't completely satisfied, yet.
 
