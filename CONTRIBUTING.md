@@ -27,6 +27,14 @@ XMLUnit's users guide is developed (or rather will be developed)
 inside [a github Wiki](https://github.com/xmlunit/user-guide/wiki) -
 a lot of help is needed here, before we can cut a new release.
 
+### test-resources
+
+Because XmlUnit is developed for Java and .NET, both Projects shares the same test-resources.
+The test-resources folder is integrated as git submodule.
+This means you need to run 'git submodule update --init' once inside your
+working copies after merging github's master branches of xmlunit or
+xmlunit.net.
+
 ### Preparing a Pull Request
 
 + Create a topic branch from where you want to base your work (this is
