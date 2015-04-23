@@ -1,0 +1,12 @@
+*.dtd    text
+*.html   text diff=html
+*.java   text diff=java
+*.md     text
+*.rng    text
+*.rngc   text
+*.xml    text
+*.xsd    text
+*.xsl    text
+*.yml    text
+KEY      text
+LICENSE* text
