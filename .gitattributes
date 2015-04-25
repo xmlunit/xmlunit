@@ -8,5 +8,6 @@
 *.xsd    text
 *.xsl    text
 *.yml    text
+.gitattributes text
 KEY      text
 LICENSE* text
