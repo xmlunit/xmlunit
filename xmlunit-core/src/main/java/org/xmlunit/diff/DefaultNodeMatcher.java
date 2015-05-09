@@ -87,15 +87,19 @@ public class DefaultNodeMatcher implements NodeMatcher {
                                    final int indexOfLastMatch,
                                    final Set<Integer> availableIndexes) {
         final int searchSize = searchIn.size();
-        for (int i = indexOfLastMatch + 1; i < searchSize; i++) {
-            if (!availableIndexes.contains(Integer.valueOf(i))) {
-                continue;
-            }
-            if (nodesMatch(searchFor, searchIn.get(i))) {
-                return new Match(searchIn.get(i), i);
-            }
-        }
-        for (int i = 0; i < indexOfLastMatch; i++) {
+        Match m = searchIn(searchFor, searchIn,
+                           availableIndexes,
+                           indexOfLastMatch + 1, searchSize);
+        return m != null ? m : searchIn(searchFor, searchIn,
+                                        availableIndexes,
+                                        0, indexOfLastMatch);
+    }
+
+    private Match searchIn(final Node searchFor,
+                           final List<Node> searchIn,
+                           final Set<Integer> availableIndexes,
+                           final int fromInclusive, final int toExclusive) {
+        for (int i = fromInclusive; i < toExclusive; i++) {
             if (!availableIndexes.contains(Integer.valueOf(i))) {
                 continue;
             }
