@@ -19,7 +19,7 @@ import static org.xmlunit.util.Linqy.map;
 
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.IsNullPredicate;
-import org.xmlunit.util.Linqy.Mapper;
+import org.xmlunit.util.Mapper;
 import org.xmlunit.validation.JAXPValidator;
 import org.xmlunit.validation.Languages;
 import org.xmlunit.validation.ValidationProblem;

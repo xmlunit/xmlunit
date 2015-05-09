@@ -74,13 +74,6 @@ public final class Linqy {
     }
 
     /**
-     * A function mapping from one type to another.
-     */
-    public interface Mapper<F, T> {
-        T apply(F from);
-    }
-
-    /**
      * Exclude all elements from an iterable that don't match a given
      * predicate.
      */

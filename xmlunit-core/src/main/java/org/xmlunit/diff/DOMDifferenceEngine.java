@@ -26,6 +26,7 @@ import org.xmlunit.XMLUnitException;
 import org.xmlunit.util.Convert;
 import org.xmlunit.util.IterableNodeList;
 import org.xmlunit.util.Linqy;
+import org.xmlunit.util.Mapper;
 import org.xmlunit.util.Nodes;
 import org.xmlunit.util.Predicate;
 import org.w3c.dom.Attr;
@@ -188,9 +189,9 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             @Override
             public ComparisonState apply() {
                 controlContext
-                    .setChildren(Linqy.map(controlChildren, TO_NODE_INFO));
+                    .setChildren(Linqy.map(controlChildren, ElementSelectors.TO_NODE_INFO));
                 testContext
-                    .setChildren(Linqy.map(testChildren, TO_NODE_INFO));
+                    .setChildren(Linqy.map(testChildren, ElementSelectors.TO_NODE_INFO));
                 return compareNodeLists(controlChildren, controlContext,
                                         testChildren, testContext);
             }
@@ -790,21 +791,10 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     /**
      * Maps Nodes to their QNames.
      */
-    private static final Linqy.Mapper<Node, QName> QNAME_MAPPER =
-        new Linqy.Mapper<Node, QName>() {
+    private static final Mapper<Node, QName> QNAME_MAPPER =
+        new Mapper<Node, QName>() {
             @Override
             public QName apply(Node n) { return Nodes.getQName(n); }
-        };
-
-    /**
-     * Maps Nodes to their NodeInfo equivalent.
-     */
-    private static final Linqy.Mapper<Node, XPathContext.NodeInfo> TO_NODE_INFO =
-        new Linqy.Mapper<Node, XPathContext.NodeInfo>() {
-            @Override
-            public XPathContext.NodeInfo apply(Node n) {
-                return new XPathContext.DOMNodeInfo(n);
-            }
         };
 
     /**

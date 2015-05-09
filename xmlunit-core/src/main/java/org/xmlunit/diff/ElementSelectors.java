@@ -16,6 +16,7 @@ package org.xmlunit.diff;
 import static org.xmlunit.util.Linqy.all;
 import static org.xmlunit.util.Linqy.any;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +29,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMSource;
 import org.xmlunit.util.IsNullPredicate;
 import org.xmlunit.util.Linqy;
+import org.xmlunit.util.Mapper;
 import org.xmlunit.util.Nodes;
 import org.xmlunit.util.Predicate;
 import org.xmlunit.xpath.JAXPXPathEngine;
@@ -625,5 +627,97 @@ public final class ElementSelectors {
             return es.canBeCompared(e1, e2);
         }
     }
+
+    private static class ByNameAndTextRecSelector implements ElementSelector {
+        @Override
+        public boolean canBeCompared(Element controlElement,
+                                     Element testElement) {
+            if (!byNameAndText.canBeCompared(controlElement,
+                                             testElement)) {
+                return false;
+            }
+            NodeList controlChildren = controlElement.getChildNodes();
+            NodeList testChildren = testElement.getChildNodes();
+            final int controlLen = controlChildren.getLength();
+            final int testLen = testChildren.getLength();
+            int controlIndex, testIndex;
+            for (controlIndex = testIndex = 0;
+                 controlIndex < controlLen && testIndex < testLen;
+                 ) {
+                // find next non-text child nodes
+                Map.Entry<Integer, Node> control = findNonText(controlChildren,
+                                                               controlIndex,
+                                                               controlLen);
+                controlIndex = control.getKey();
+                Node c = control.getValue();
+                if (isText(c)) {
+                    break;
+                }
+                Map.Entry<Integer, Node> test = findNonText(testChildren,
+                                                            testIndex,
+                                                            testLen);
+                testIndex = test.getKey();
+                Node t = test.getValue();
+                if (isText(t)) {
+                    break;
+                }
+
+                // different types of children make elements
+                // non-comparable
+                if (c.getNodeType() != t.getNodeType()) {
+                    return false;
+                }
+                // recurse for child elements
+                if (c instanceof Element && !byNameAndTextRec.canBeCompared((Element) c,
+                                                                            (Element) t)) {
+                    return false;
+                }
+                controlIndex++;
+                testIndex++;
+            }
+
+            // child lists exhausted?
+            if (controlIndex < controlLen) {
+                Map.Entry<Integer, Node> p = findNonText(controlChildren,
+                                                         controlIndex,
+                                                         controlLen);
+                controlIndex = p.getKey();
+                // some non-Text children remained
+                if (controlIndex < controlLen) {
+                    return false;
+                }
+            }
+            if (testIndex < testLen) {
+                Map.Entry<Integer, Node> p = findNonText(testChildren,
+                                                         testIndex,
+                                                         testLen);
+                testIndex = p.getKey();
+                // some non-Text children remained
+                if (testIndex < testLen) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private Map.Entry<Integer, Node> findNonText(NodeList nl, int current, int len) {
+            Node n = nl.item(current);
+            while (isText(n) && ++current < len) {
+                n = nl.item(current);
+            }
+            return new AbstractMap.SimpleImmutableEntry<Integer, Node>(current, n);
+        }
+    }
+
+    /**
+     * Maps Nodes to their NodeInfo equivalent.
+     */
+    static final Mapper<Node, XPathContext.NodeInfo> TO_NODE_INFO =
+        new Mapper<Node, XPathContext.NodeInfo>() {
+            @Override
+            public XPathContext.NodeInfo apply(Node n) {
+                return new XPathContext.DOMNodeInfo(n);
+            }
+        };
 
 }

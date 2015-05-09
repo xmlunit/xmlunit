@@ -109,7 +109,7 @@ public class LinqyTest {
         }
     }
 
-    private static class IdentityMapper implements Linqy.Mapper<Object, Object> {
+    private static class IdentityMapper implements Mapper<Object, Object> {
         @Override
         public Object apply(Object s) {
             return s;
