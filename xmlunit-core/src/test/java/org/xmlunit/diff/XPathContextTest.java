@@ -59,6 +59,24 @@ public class XPathContextTest {
         assertEquals("/foo[3]", ctx.getXPath());
     }
 
+    @Test public void shouldCreateCopyOnClone() {
+        ArrayList<Element> l = new ArrayList<Element>();
+        l.add(new Element("foo"));
+        l.add(new Element("foo"));
+        l.add(new Element("bar"));
+        XPathContext ctx = new XPathContext();
+        ctx.setChildren(l);
+        ctx.navigateToChild(1);
+        assertEquals("/foo[2]", ctx.getXPath());
+        XPathContext clone = ctx.clone();
+        assertEquals("/foo[2]", clone.getXPath());
+        assertNotSame(clone, ctx);
+        clone.navigateToParent();
+        clone.navigateToChild(2);
+        assertEquals("/bar[1]", clone.getXPath());
+        assertEquals("/foo[2]", ctx.getXPath());
+    }
+
     @Test public void appendChildren() {
         ArrayList<Element> l = new ArrayList<Element>();
         l.add(new Element("foo"));

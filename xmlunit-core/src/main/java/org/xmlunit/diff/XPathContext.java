@@ -33,8 +33,8 @@ import org.w3c.dom.Node;
  * Helper class that keeps track of the XPath of matched nodes during
  * comparison.
  */
-public class XPathContext {
-    private final Deque<Level> path = new LinkedList<Level>();
+public class XPathContext implements Cloneable {
+    private Deque<Level> path = new LinkedList<Level>();
     private final Map<String, String> uri2Prefix;
 
     private static final String COMMENT = "comment()";
@@ -196,6 +196,24 @@ public class XPathContext {
         return getXPath(path.descendingIterator());
     }
 
+    /**
+     * Creates a deep copy of this XPathContext.
+     */
+    @Override
+    public XPathContext clone() {
+        try {
+            XPathContext c = (XPathContext) super.clone();
+            c.path = new LinkedList<Level>();
+            for (Level l: path) {
+                c.path.addLast(l.clone());
+            }
+            return c;
+        } catch (CloneNotSupportedException e) {
+            // impossible
+            throw new RuntimeException("XPathContext cannot be cloned?", e);
+        }
+    }
+
     private String getXPath(Iterator<Level> dIterator) {
         if (!dIterator.hasNext()) {
             return EMPTY;
@@ -234,13 +252,31 @@ public class XPathContext {
         return index;
     }
 
-    private static class Level {
+    private static class Level implements Cloneable {
         private final String expression;
         private List<Level> children = new ArrayList<Level>();
         private Map<QName, Level> attributes = new HashMap<QName, Level>();
         private String xpath;
         private Level(String expression) {
             this.expression = expression;
+        }
+        @Override
+        public Level clone() {
+            try {
+                Level l = (Level) super.clone();
+                l.children = new ArrayList<Level>(children.size());
+                for (Level c : children) {
+                    l.children.add(c.clone());
+                }
+                l.attributes = new HashMap<QName, Level>(attributes.size());
+                for (Map.Entry<QName, Level> e : attributes.entrySet()) {
+                    l.attributes.put(e.getKey(), e.getValue().clone());
+                }
+                return l;
+            } catch (CloneNotSupportedException e) {
+                // impossible
+                throw new RuntimeException("Level cannot be cloned?", e);
+            }
         }
     }
 
