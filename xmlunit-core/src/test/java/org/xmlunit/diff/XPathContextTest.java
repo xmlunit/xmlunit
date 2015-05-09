@@ -100,6 +100,40 @@ public class XPathContextTest {
         assertEquals("/foo[3]", ctx.getXPath());
     }
 
+    @Test public void appendChildrenWithNonElements() {
+        ArrayList<XPathContext.NodeInfo> l = new ArrayList<XPathContext.NodeInfo>();
+        l.add(new Text());
+        l.add(new Comment());
+        l.add(new CDATA());
+        l.add(new PI());
+        XPathContext ctx = new XPathContext();
+        ctx.setChildren(l);
+        ctx.appendChildren(l);
+        ctx.navigateToChild(0);
+        assertEquals("/text()[1]", ctx.getXPath());
+        ctx.navigateToParent();
+        ctx.navigateToChild(1);
+        assertEquals("/comment()[1]", ctx.getXPath());
+        ctx.navigateToParent();
+        ctx.navigateToChild(2);
+        assertEquals("/text()[2]", ctx.getXPath());
+        ctx.navigateToParent();
+        ctx.navigateToChild(3);
+        assertEquals("/processing-instruction()[1]", ctx.getXPath());
+        ctx.navigateToParent();
+        ctx.navigateToChild(4);
+        assertEquals("/text()[3]", ctx.getXPath());
+        ctx.navigateToParent();
+        ctx.navigateToChild(5);
+        assertEquals("/comment()[2]", ctx.getXPath());
+        ctx.navigateToParent();
+        ctx.navigateToChild(6);
+        assertEquals("/text()[4]", ctx.getXPath());
+        ctx.navigateToParent();
+        ctx.navigateToChild(7);
+        assertEquals("/processing-instruction()[2]", ctx.getXPath());
+    }
+
     @Test public void twoLevelsOfElements() {
         ArrayList<Element> l = new ArrayList<Element>();
         l.add(new Element("foo"));
