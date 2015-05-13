@@ -129,6 +129,54 @@ public class ElementSelectorsTest {
         assertFalse(s.canBeCompared(control, differentElement));
         assertFalse(s.canBeCompared(control, differentText));
     }
+    
+	
+    @Test public void byNameAndTextRec_Multilevel() {
+		Element control = doc.createElement("root");
+		{
+			Element controlSub = doc.createElement("sub");
+			control.appendChild(controlSub);
+			Element controlSubSubValue = doc.createElement("value");
+			controlSub.appendChild(controlSubSubValue);
+			controlSubSubValue.appendChild(doc.createTextNode("1"));
+			controlSubSubValue = doc.createElement("value");
+			controlSub.appendChild(controlSubSubValue);
+			controlSubSubValue.appendChild(doc.createTextNode("2"));
+
+			controlSub = doc.createElement("sub");
+			control.appendChild(controlSub);
+			controlSubSubValue = doc.createElement("value");
+			controlSub.appendChild(controlSubSubValue);
+			controlSubSubValue.appendChild(doc.createTextNode("3"));
+			controlSubSubValue = doc.createElement("value");
+			controlSub.appendChild(controlSubSubValue);
+			controlSubSubValue.appendChild(doc.createTextNode("4"));
+		}
+
+		Element test = doc.createElement("root");
+		{
+			Element testSub = doc.createElement("sub");
+			test.appendChild(testSub);
+			Element testSubValue = doc.createElement("value");
+			testSub.appendChild(testSubValue);
+			testSubValue.appendChild(doc.createTextNode("3"));
+			testSubValue = doc.createElement("value");
+			testSub.appendChild(testSubValue);
+			testSubValue.appendChild(doc.createTextNode("4"));
+
+			testSub = doc.createElement("sub");
+			test.appendChild(testSub);
+			testSubValue = doc.createElement("value");
+			testSub.appendChild(testSubValue);
+			testSubValue.appendChild(doc.createTextNode("1"));
+			testSubValue = doc.createElement("value");
+			testSub.appendChild(testSubValue);
+			testSubValue.appendChild(doc.createTextNode("2"));
+		}
+
+		ElementSelector s = ElementSelectors.byNameAndTextRec;
+		assertTrue(s.canBeCompared(control, test));
+	}
 
     @Test public void byNameAndAllAttributes_NamePart() {
         pureElementNameComparisons(ElementSelectors.byNameAndAllAttributes);
