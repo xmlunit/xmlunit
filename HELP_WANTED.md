@@ -39,5 +39,9 @@ Claimed
 * [@bodewig](https://github.com/bodewig) has added some more generic
   `ElementSelectors` and a fluent builder for them - this is a
   generalization of [#4](https://github.com/xmlunit/xmlunit/issues/4)
-  but isn't completely satisfied, yet.
+  but isn't completely satisfied, yet.  The (two-arg-element-selector
+  branch)[https://github.com/xmlunit/xmlunit/tree/two-arg-element-selector]
+  contains a more elaborated version which changes the
+  `ElementSelector` API to also provide the XPath of the `Element`s to
+  compare - feedback is needed badly.
 
