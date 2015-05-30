@@ -44,7 +44,7 @@ import org.w3c.dom.Node;
  * Simple interface implementation that tests two elements for name
  * comparability. This class provides the default behaviour within a
  * DifferenceEngine (for backwards compatibility)
- * @see DifferenceEngine#compareNodeList(NodeList, NodeList, int, DifferenceListener, ElementQualifier)
+ * @see DifferenceEngine#compareNodeList(List, List, int, DifferenceListener, ElementQualifier)
  * @see Diff#overrideElementQualifier(ElementQualifier)
  */
 public class ElementNameQualifier implements ElementQualifier {

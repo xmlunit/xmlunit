@@ -36,6 +36,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit.examples;
 
+import org.custommonkey.xmlunit.ElementNameAndTextQualifier;
 import org.custommonkey.xmlunit.ElementQualifier;
 import org.xmlunit.diff.MultiLevelByNameAndTextSelector;
 import org.xmlunit.diff.ElementSelector;

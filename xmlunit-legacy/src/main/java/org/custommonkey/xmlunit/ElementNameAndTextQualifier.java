@@ -45,7 +45,7 @@ import org.w3c.dom.Text;
 /**
  * More complex interface implementation that tests two elements for tag name
  * and text content comparability. 
- * @see DifferenceEngine#compareNodeList(NodeList, NodeList, int, DifferenceListener, ElementQualifier)
+ * @see DifferenceEngine#compareNodeList(List, List, int, DifferenceListener, ElementQualifier)
  * @see Diff#overrideElementQualifier(ElementQualifier)
  */
 public class ElementNameAndTextQualifier extends ElementNameQualifier {
