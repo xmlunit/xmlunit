@@ -36,12 +36,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit.examples;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
-import org.custommonkey.xmlunit.ElementNameAndTextQualifier;
-import org.custommonkey.xmlunit.ElementNameQualifier;
 import org.custommonkey.xmlunit.ElementQualifier;
+import org.xmlunit.diff.MultiLevelByNameAndTextSelector;
+import org.xmlunit.diff.ElementSelector;
+
+import org.w3c.dom.Element;
 
 /**
  * Per popular request an interface implementation that uses element
@@ -60,13 +59,7 @@ import org.custommonkey.xmlunit.ElementQualifier;
 public class MultiLevelElementNameAndTextQualifier
     implements ElementQualifier {
 
-    private final int levels;
-    private final boolean ignoreEmptyTexts;
-
-    private static final ElementNameQualifier NAME_QUALIFIER =
-        new ElementNameQualifier();
-    private static final ElementNameAndTextQualifier NAME_AND_TEXT_QUALIFIER =
-        new ElementNameAndTextQualifier();
+    private final ElementSelector es;
 
     /**
      * Uses element names and the text nested <code>levels</code>
@@ -87,62 +80,10 @@ public class MultiLevelElementNameAndTextQualifier
      */
     public MultiLevelElementNameAndTextQualifier(int levels,
                                                  boolean ignoreEmptyTexts) {
-        if (levels < 1) {
-            throw new IllegalArgumentException("levels must be equal or"
-                                               + " greater than one");
-        }
-        this.levels = levels;
-        this.ignoreEmptyTexts = ignoreEmptyTexts;
+        es = new MultiLevelByNameAndTextSelector(levels, ignoreEmptyTexts);
     }
 
     public boolean qualifyForComparison(Element control, Element test) {
-        boolean stillSimilar = true;
-        Element currentControl = control;
-        Element currentTest = test;
-
-        // match on element names only for leading levels
-        for (int currentLevel = 0; stillSimilar && currentLevel <= levels - 2;
-             currentLevel++) {
-            stillSimilar = NAME_QUALIFIER.qualifyForComparison(currentControl,
-                                                               currentTest);
-
-            if (stillSimilar) {
-                if (currentControl.hasChildNodes()
-                    && currentTest.hasChildNodes()) {
-                    Node n1 = getFirstEligibleChild(currentControl);
-                    Node n2 = getFirstEligibleChild(currentTest);
-                    if (n1.getNodeType() == Node.ELEMENT_NODE
-                        && n2.getNodeType() == Node.ELEMENT_NODE) {
-                        currentControl = (Element) n1;
-                        currentTest = (Element) n2;
-                    } else {
-                        stillSimilar = false;
-                    }                        
-                } else {
-                    stillSimilar = false;
-                }
-            }
-        }
-
-        // finally compare the level containing the text child node
-        if (stillSimilar) {
-            stillSimilar = NAME_AND_TEXT_QUALIFIER
-                .qualifyForComparison(currentControl, currentTest);
-        }
-
-        return stillSimilar;
-    }
-
-    private Node getFirstEligibleChild(Node parent) {
-        Node n1 = parent.getFirstChild();
-        if (ignoreEmptyTexts) {
-            while (n1.getNodeType() == Node.TEXT_NODE
-                   && n1.getNodeValue().trim().length() == 0) {
-                Node n2 = n1.getNextSibling();
-                if (n2 == null) break;
-                n1 = n2;
-            }
-        }
-        return n1;
+        return es.canBeCompared(control, test);
     }
 }
