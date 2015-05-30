@@ -82,10 +82,11 @@ public class NewDifferenceEngine
     implements DifferenceConstants, DifferenceEngineContract {
 
     private static final Integer ZERO = Integer.valueOf(0);
-    private static final Map<Class<?>, ElementSelector> KNOWN_SELECTORS;
+    private static final Map<Class<? extends ElementQualifier>, ElementSelector>
+        KNOWN_SELECTORS;
     static {
-        Map<Class<?>, ElementSelector> m =
-            new HashMap<Class<?>, ElementSelector>();
+        Map<Class<? extends ElementQualifier>, ElementSelector> m =
+            new HashMap<Class<? extends ElementQualifier>, ElementSelector>();
         m.put(ElementNameAndTextQualifier.class,
               ElementSelectors.byNameAndText);
         m.put(ElementQualifier.class, ElementSelectors.byName);
