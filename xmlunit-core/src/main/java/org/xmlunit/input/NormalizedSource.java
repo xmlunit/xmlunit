@@ -37,6 +37,9 @@ import org.xmlunit.util.Convert;
  */
 public class NormalizedSource extends DOMSource {
 
+    public NormalizedSource() {
+    }
+
     public NormalizedSource(Source originalSource) {
         if (originalSource != null) {
             Document doc = Convert.toDocument(originalSource);
@@ -47,14 +50,24 @@ public class NormalizedSource extends DOMSource {
     }
 
     public NormalizedSource(Document doc) {
+        this(doc, null);
+    }
+
+    public NormalizedSource(Document doc, String systemId) {
         if (doc != null) {
             doc.normalizeDocument();
         }
         super.setNode(doc);
+        setSystemId(systemId);
     }
 
     public NormalizedSource(Node n) {
+        this(n, null);
+    }
+
+    public NormalizedSource(Node n, String systemId) {
         setNormalizedNode(n);
+        setSystemId(systemId);
     }
 
     @Override

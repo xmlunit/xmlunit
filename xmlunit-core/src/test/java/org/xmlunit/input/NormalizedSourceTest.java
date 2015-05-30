@@ -62,6 +62,18 @@ public class NormalizedSourceTest {
     }
 
     @Test
+    public void normalizesNodeAfterSetNode() {
+        Element control = doc.createElement("e");
+        control.appendChild(doc.createTextNode("a"));
+        control.appendChild(doc.createTextNode(""));
+        control.appendChild(doc.createTextNode("b"));
+        NormalizedSource s = new NormalizedSource();
+        s.setNode(control);
+        assertEquals(1, s.getNode().getChildNodes().getLength());
+        assertEquals("ab", s.getNode().getFirstChild().getNodeValue());
+    }
+
+    @Test
     public void normalizesDocument() {
         Element control = doc.createElement("e");
         doc.appendChild(control);
