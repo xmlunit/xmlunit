@@ -45,6 +45,7 @@ import java.util.Map;
 import javax.xml.transform.Source;
 
 import org.xmlunit.builder.Input;
+import org.xmlunit.diff.ByNameAndTextRecSelector;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonListener;
 import org.xmlunit.diff.ComparisonResult;
@@ -89,7 +90,7 @@ public class NewDifferenceEngine
               ElementSelectors.byNameAndText);
         m.put(ElementQualifier.class, ElementSelectors.byName);
         m.put(RecursiveElementNameAndTextQualifier.class,
-              ElementSelectors.byNameAndTextRec);
+              new ByNameAndTextRecSelector());
         KNOWN_SELECTORS = Collections.unmodifiableMap(m);
     }
 

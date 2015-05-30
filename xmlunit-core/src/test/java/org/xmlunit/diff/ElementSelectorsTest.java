@@ -30,18 +30,23 @@ import org.xmlunit.util.Predicate;
 import static org.junit.Assert.*;
 
 public class ElementSelectorsTest {
-    private static final String FOO = "foo";
-    private static final String BAR = "bar";
-    private static final String SOME_URI = "urn:some:uri";
+    static final String FOO = "foo";
+    static final String BAR = "bar";
+    static final String SOME_URI = "urn:some:uri";
 
     private Document doc;
 
-    @Before public void createDoc() throws Exception {
+    @Before
+    public void createDoc() throws Exception {
         doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
             .newDocument();
     }
 
     private void pureElementNameComparisons(ElementSelector s) {
+        pureElementNameComparisons(s, doc);
+    }
+
+    static void pureElementNameComparisons(ElementSelector s, Document doc) {
         Element control = doc.createElement(FOO);
         Element equal = doc.createElement(FOO);
         Element different = doc.createElement(BAR);
@@ -66,7 +71,7 @@ public class ElementSelectorsTest {
         pureElementNameComparisons(ElementSelectors.byNameAndText);
     }
 
-    private void byNameAndText_SingleLevel(ElementSelector s) {
+    static void byNameAndText_SingleLevel(ElementSelector s, Document doc) {
         Element control = doc.createElement(FOO);
         control.appendChild(doc.createTextNode(BAR));
         Element equal = doc.createElement(FOO);
@@ -85,49 +90,7 @@ public class ElementSelectorsTest {
     }
 
     @Test public void byNameAndText() {
-        byNameAndText_SingleLevel(ElementSelectors.byNameAndText);
-    }
-
-    @Test public void byNameAndTextRec_NamePart() {
-        pureElementNameComparisons(ElementSelectors.byNameAndTextRec);
-    }
-
-    @Test public void byNameAndTextRec_Single() {
-        byNameAndText_SingleLevel(ElementSelectors.byNameAndTextRec);
-    }
-
-    @Test public void byNameAndTextRec() {
-        Element control = doc.createElement(FOO);
-        Element child = doc.createElement(BAR);
-        control.appendChild(child);
-        child.appendChild(doc.createTextNode(BAR));
-        Element equal = doc.createElement(FOO);
-        Element child2 = doc.createElement(BAR);
-        equal.appendChild(child2);
-        child2.appendChild(doc.createTextNode(BAR));
-        Element equalC = doc.createElement(FOO);
-        Element child3 = doc.createElement(BAR);
-        equalC.appendChild(child3);
-        child3.appendChild(doc.createCDATASection(BAR));
-        Element noText = doc.createElement(FOO);
-        Element differentLevel = doc.createElement(FOO);
-        differentLevel.appendChild(doc.createTextNode(BAR));
-        Element differentElement = doc.createElement(FOO);
-        Element child4 = doc.createElement(FOO);
-        differentElement.appendChild(child4);
-        child4.appendChild(doc.createTextNode(BAR));
-        Element differentText = doc.createElement(FOO);
-        Element child5 = doc.createElement(BAR);
-        differentText.appendChild(child5);
-        child5.appendChild(doc.createTextNode(FOO));
-
-        ElementSelector s = ElementSelectors.byNameAndTextRec;
-        assertTrue(s.canBeCompared(control, equal));
-        assertTrue(s.canBeCompared(control, equalC));
-        assertFalse(s.canBeCompared(control, noText));
-        assertFalse(s.canBeCompared(control, differentLevel));
-        assertFalse(s.canBeCompared(control, differentElement));
-        assertFalse(s.canBeCompared(control, differentText));
+        byNameAndText_SingleLevel(ElementSelectors.byNameAndText, doc);
     }
 
     @Test public void byNameAndAllAttributes_NamePart() {

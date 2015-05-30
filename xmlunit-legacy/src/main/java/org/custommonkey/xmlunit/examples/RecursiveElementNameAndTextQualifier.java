@@ -36,7 +36,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit.examples;
 
-import org.xmlunit.diff.ElementSelectors;
+import org.xmlunit.diff.ByNameAndTextRecSelector;
+import org.xmlunit.diff.ElementSelector;
 import org.w3c.dom.Element;
 import org.custommonkey.xmlunit.ElementQualifier;
 
@@ -48,6 +49,8 @@ import org.custommonkey.xmlunit.ElementQualifier;
  * @author Frank Callahan 
  */
 public class RecursiveElementNameAndTextQualifier implements ElementQualifier {
+
+    private final ElementSelector es = new ByNameAndTextRecSelector();
 
     /**
      * Uses element names and the text nested an arbitrary level of
@@ -65,7 +68,6 @@ public class RecursiveElementNameAndTextQualifier implements ElementQualifier {
      */
     public boolean qualifyForComparison(Element currentControl,
                                         Element currentTest) {
-        return ElementSelectors.byNameAndTextRec.canBeCompared(currentControl,
-                                                               currentTest);
+        return es.canBeCompared(currentControl, currentTest);
     }
 }
