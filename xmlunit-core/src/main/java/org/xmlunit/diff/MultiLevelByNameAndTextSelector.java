@@ -69,7 +69,6 @@ public class MultiLevelByNameAndTextSelector implements ElementSelector {
     @Override
     public boolean canBeCompared(Element controlElement,
                                  Element testElement) {
-        boolean stillSimilar = true;
         Element currentControl = controlElement;
         Element currentTest = testElement;
 
