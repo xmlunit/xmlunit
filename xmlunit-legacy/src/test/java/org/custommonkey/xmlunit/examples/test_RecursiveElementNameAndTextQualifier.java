@@ -312,19 +312,19 @@ public class test_RecursiveElementNameAndTextQualifier extends TestCase {
 			root.appendChild(testSub);
 			Element testSubValue = test.createElement("value");
 			testSub.appendChild(testSubValue);
-			testSubValue.appendChild(test.createTextNode("3"));
+			testSubValue.appendChild(test.createTextNode("1"));
 			testSubValue = test.createElement("value");
 			testSub.appendChild(testSubValue);
-			testSubValue.appendChild(test.createTextNode("4"));
+			testSubValue.appendChild(test.createTextNode("2"));
 
 			testSub = test.createElement("sub");
 			root.appendChild(testSub);
 			testSubValue = test.createElement("value");
 			testSub.appendChild(testSubValue);
-			testSubValue.appendChild(test.createTextNode("1"));
+			testSubValue.appendChild(test.createTextNode("4"));
 			testSubValue = test.createElement("value");
 			testSub.appendChild(testSubValue);
-			testSubValue.appendChild(test.createTextNode("2"));
+			testSubValue.appendChild(test.createTextNode("3"));
 		}
 				
 		Diff d = new Diff(control, test);
