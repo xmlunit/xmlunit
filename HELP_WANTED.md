@@ -28,7 +28,6 @@ Java
 .NET
 ----
 
-* CI builds on Windows
 * additional NUnit constraints
 * build ISource from objects via XmlSerializer
 
