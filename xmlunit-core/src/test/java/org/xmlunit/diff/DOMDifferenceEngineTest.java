@@ -916,6 +916,26 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                                     d2, new XPathContext()));
     }
 
+    @Test
+    public void shouldDetectMissingXsiType() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        Document d1 = Convert.toDocument(Input.fromString("<doc xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+                                                          + "<effectiveTime xsi:type=\"IVL_TS\"></effectiveTime></doc>")
+                                         .build());
+        Document d2 = Convert.toDocument(Input.fromString("<doc xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+                                                          + "<effectiveTime></effectiveTime></doc>")
+                                         .build());
+
+        DiffExpecter ex = new DiffExpecter(ComparisonType.ATTR_NAME_LOOKUP,
+                                           "/doc[1]/effectiveTime[1]/@type",
+                                           "/doc[1]/effectiveTime[1]");
+        d.addDifferenceListener(ex);
+        d.setComparisonController(ComparisonControllers.StopWhenDifferent);
+        assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),
+                     d.compareNodes(d1, new XPathContext(),
+                                    d2, new XPathContext()));
+    }
+
     private Document documentForString(String s) {
         return Convert.toDocument(Input.fromString(s).build());
     }

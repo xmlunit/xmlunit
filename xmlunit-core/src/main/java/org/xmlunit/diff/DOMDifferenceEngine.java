@@ -731,6 +731,9 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     }
 
     private static QName valueAsQName(Attr attribute) {
+        if (attribute == null) {
+            return null;
+        }
         // split QName into prefix and local name
         String[] pieces = attribute.getValue().split(":");
         if (pieces.length < 2) {
