@@ -41,7 +41,7 @@ import junit.framework.TestCase;
 import org.w3c.dom.Node;
 
 /**
- * @see http://sf.net/forum/message.php?msg_id=4406472
+ * @see <a href="http://sf.net/forum/message.php?msg_id=4406472"/>
  */
 public class test_ForumMessage4406472 extends TestCase {
 

@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * Interface used by the DifferenceEngine class to determine which elements can
  * be compared within a NodeList of child nodes.
  * 
- * @see DifferenceEngine#compareNodeList(List, List, int, DifferenceListener, ElementQualifier)
+ * @see DifferenceEngine#compareNodeList(java.util.List, java.util.List, int, DifferenceListener, ElementQualifier)
  * @see Diff#overrideElementQualifier(ElementQualifier)
  */
 

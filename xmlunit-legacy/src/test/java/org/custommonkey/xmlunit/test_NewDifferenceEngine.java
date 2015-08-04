@@ -471,7 +471,7 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
     }
 
     /**
-     * @see http://sourceforge.net/forum/forum.php?thread_id=3284504&forum_id=73274
+     * @see <a href="http://sourceforge.net/forum/forum.php?thread_id=3284504&forum_id=73274"/>
      */
     public void testNamespaceAttributeDifferences() throws Exception {
         String control = "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"

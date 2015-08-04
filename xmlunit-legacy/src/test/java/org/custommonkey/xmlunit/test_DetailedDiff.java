@@ -197,7 +197,7 @@ public class test_DetailedDiff extends test_Diff {
     }
 
     /**
-     * @see http://sourceforge.net/forum/forum.php?thread_id=1691528&forum_id=73274
+     * @see <a href="http://sourceforge.net/forum/forum.php?thread_id=1691528&forum_id=73274"/>
      */
     public void testHelpForumThread1691528() throws Exception {
         String control = "<table border=\"1\">" 
@@ -227,7 +227,7 @@ public class test_DetailedDiff extends test_Diff {
 
     /**
      * Bug 1860681
-     * @see https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1860681&amp;group_id=23187&amp;atid=377768
+     * @see <a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1860681&amp;group_id=23187&amp;atid=377768"/>
      */
     public void testXpathOfMissingNode() throws Exception {
         String control = 
@@ -364,7 +364,7 @@ public class test_DetailedDiff extends test_Diff {
     }
 
     /**
-     * @see https://sourceforge.net/tracker/index.php?func=detail&amp;aid=3062518&amp;group_id=23187&amp;atid=377768
+     * @see <a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=3062518&amp;group_id=23187&amp;atid=377768"/>
      */
     public void testIssue3062518() throws Exception {
         String control = "<Fruits>"

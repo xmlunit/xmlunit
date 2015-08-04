@@ -51,7 +51,7 @@ import org.custommonkey.xmlunit.XMLUnit;
 /**
  * JUnit testcase for RecursiveElementNameAndTextQualifier with most
  * tests copied from MultiLevelElementNameAndTextQualifier' test.
- * @see test_Diff#testRepeatedElementNamesWithTextQualification()
+ * @see org.custommonkey.xmlunit.test_Diff#testRepeatedElementNamesWithTextQualification()
  */
 public class test_RecursiveElementNameAndTextQualifier extends TestCase {
     private static final String TAG_NAME = "tagYoureIt";
@@ -122,7 +122,7 @@ public class test_RecursiveElementNameAndTextQualifier extends TestCase {
     }
         
     /**
-     * @see https://sourceforge.net/forum/forum.php?thread_id=1440169&forum_id=73274
+     * @see <a href="https://sourceforge.net/forum/forum.php?thread_id=1440169&forum_id=73274"/>
      */
     public void testThread1440169() throws Exception {
         String s1 = "<a><b><c>foo</c></b><b><c>bar</c></b></a>";
@@ -191,7 +191,7 @@ public class test_RecursiveElementNameAndTextQualifier extends TestCase {
     }
 
     /**
-     * @see https://sourceforge.net/forum/forum.php?thread_id=2948005&amp;forum_id=73273
+     * @see <a href="https://sourceforge.net/forum/forum.php?thread_id=2948005&amp;forum_id=73273"/>
      */
     public void testOpenDiscussionThread2948995_1() throws Exception {
         Diff myDiff = new Diff("<root>"
@@ -235,7 +235,7 @@ public class test_RecursiveElementNameAndTextQualifier extends TestCase {
     }
 
     /**
-     * @see https://sourceforge.net/forum/forum.php?thread_id=2948005&amp;forum_id=73273
+     * @see <a href="https://sourceforge.net/forum/forum.php?thread_id=2948005&amp;forum_id=73273"/>
      */
     public void testOpenDiscussionThread2948995_2() throws Exception {
         Diff myDiff = new Diff("<root>"

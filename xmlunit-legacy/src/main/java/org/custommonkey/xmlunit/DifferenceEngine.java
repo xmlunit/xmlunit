@@ -818,7 +818,7 @@ public class DifferenceEngine
      * @param control
      * @param test
      * @param listener
-     * @param differenceType
+     * @param difference
      * @throws DifferenceFoundException
      */
     private void compareCharacterData(CharacterData control, CharacterData test,

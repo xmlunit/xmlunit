@@ -336,7 +336,7 @@ public class XpathNodeTracker implements XMLConstants {
 
         /**
          * Keep a reference to the visited attribute at the current visited node
-         * @param value the attribute visited
+         * @param visited the attribute visited
          */
         private void trackAttribute(QName visited) {
             if (atAttribute) {
