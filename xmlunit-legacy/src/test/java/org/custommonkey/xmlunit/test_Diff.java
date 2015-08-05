@@ -719,7 +719,7 @@ public class test_Diff extends TestCase{
 
     /**
      * Bug Report 1779701
-     * @see http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1779701&amp;group_id=23187&amp;atid=377768
+     * @see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1779701&amp;group_id=23187&amp;atid=377768"/>
      */
     public void testWhitespaceAndNamespaces() throws Exception {
 	String control =
@@ -741,7 +741,7 @@ public class test_Diff extends TestCase{
 
     /**
      * Bug Report 1863632
-     * @see http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1863632&amp;group_id=23187&amp;atid=377768
+     * @see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1863632&amp;group_id=23187&amp;atid=377768"/>
      */
     public void testBasicWhitespaceHandling() throws Exception {
 	String control = "<a><b/></a>";
@@ -953,7 +953,7 @@ public class test_Diff extends TestCase{
     }
 
     /**
-     * @see https://sourceforge.net/tracker/?func=detail&aid=2807167&group_id=23187&atid=377768
+     * @see <a href="https://sourceforge.net/tracker/?func=detail&aid=2807167&group_id=23187&atid=377768"/>
      */
     public void testIssue2807167() throws Exception {
         String test = "<tag>" +
@@ -1016,7 +1016,7 @@ public class test_Diff extends TestCase{
     }
 
     /**
-     * @see http://sourceforge.net/tracker/?func=detail&atid=377768&aid=3602981&group_id=23187
+     * @see <a href="http://sourceforge.net/tracker/?func=detail&atid=377768&aid=3602981&group_id=23187"/>
      */
     public void testXsiTypeSpecialCase() throws Exception {
         String test = "<ns1:Square xsi:type=\"ns1:Shape\" "

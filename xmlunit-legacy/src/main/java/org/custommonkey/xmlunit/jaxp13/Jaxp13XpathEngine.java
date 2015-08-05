@@ -106,8 +106,7 @@ public class Jaxp13XpathEngine implements XpathEngine {
      * @param select
      * @param document
      * @return evaluated result
-     * @throws TransformerException
-     * @throws TransformerConfigurationException
+     * @throws XpathException
      */
     public String evaluate(String select, Document document)
         throws XpathException {

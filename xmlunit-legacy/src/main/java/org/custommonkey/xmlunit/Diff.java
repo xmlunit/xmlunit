@@ -188,10 +188,10 @@ public class Diff
      *
      * <p>This may involve:</p>
      * <ul>
-     *   <li>{@link XMLUnit.setIgnoreWhitespace stripping redundant
+     *   <li>{@link XMLUnit#setIgnoreWhitespace stripping redundant
      *   whitespace}</li>
-     *   <li>{@link XMLUnit.setIgnoreComments stripping comments}</li>
-     *   <li>{@link XMLUnit.setNormalize normalizing Text nodes}</li>
+     *   <li>{@link XMLUnit#setIgnoreComments stripping comments}</li>
+     *   <li>{@link XMLUnit#setNormalize normalizing Text nodes}</li>
      * </ul>
      *     
      * @param orig a document making up one half of this difference
@@ -202,10 +202,10 @@ public class Diff
     }
 
     /**
-     * Removes all comment nodes if {@link XMLUnit.getIgnoreComments
+     * Removes all comment nodes if {@link XMLUnit#getIgnoreComments
      * comments are ignored}.
      *     
-     * @param originalDoc a document making up one half of this difference
+     * @param orig a document making up one half of this difference
      * @return manipulated doc
      */
     private Document getCommentlessDocument(Document orig) {
@@ -264,10 +264,6 @@ public class Diff
     /**
      * Append a meaningful message to the buffer of messages
      * @param appendTo the messages buffer
-     * @param expected
-     * @param actual
-     * @param control
-     * @param test
      * @param difference
      */
     private void appendDifference(StringBuffer appendTo, Difference difference) {

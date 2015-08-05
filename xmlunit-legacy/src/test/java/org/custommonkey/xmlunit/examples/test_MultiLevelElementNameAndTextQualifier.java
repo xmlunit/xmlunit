@@ -49,7 +49,7 @@ import org.custommonkey.xmlunit.XMLUnit;
 
 /**
  * JUnit testcase for MultiLevelElementNameAndTextQualifier
- * @see test_Diff#testRepeatedElementNamesWithTextQualification()
+ * @see org.custommonkey.xmlunit.test_Diff#testRepeatedElementNamesWithTextQualification()
  */
 public class test_MultiLevelElementNameAndTextQualifier extends TestCase {
     private static final String TAG_NAME = "tagYoureIt";
@@ -120,7 +120,7 @@ public class test_MultiLevelElementNameAndTextQualifier extends TestCase {
     }
         
     /**
-     * @see https://sourceforge.net/forum/forum.php?thread_id=1440169&forum_id=73274
+     * @see <a href="https://sourceforge.net/forum/forum.php?thread_id=1440169&forum_id=73274"/>
      */
     public void testThread1440169() throws Exception {
         String s1 = "<a><b><c>foo</c></b><b><c>bar</c></b></a>";

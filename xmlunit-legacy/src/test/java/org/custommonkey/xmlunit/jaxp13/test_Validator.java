@@ -179,7 +179,7 @@ public class test_Validator extends TestCase {
      * latest nightly build (2008-02-13, actually).  The same jars do
      * not work with Java6.</p>
      *
-     * @see http://weblogs.java.net/blog/kohsuke/archive/2006/02/validate_xml_us.html
+     * @see <a href="http://weblogs.java.net/blog/kohsuke/archive/2006/02/validate_xml_us.html"/>
      */
     public void XtestGoodRelaxNGSchemaIsValid() throws Exception {
         Validator v = new Validator(javax.xml.XMLConstants.RELAXNG_NS_URI);

@@ -217,7 +217,7 @@ public class test_ElementNameAndAttributeQualifier extends TestCase {
     }
 
     /**
-     * @see https://sourceforge.net/forum/forum.php?thread_id=1135716&forum_id=73274l
+     * @see <a href="https://sourceforge.net/forum/forum.php?thread_id=1135716&forum_id=73274l"/>
      */
     public void testHelpForumThread1135716() throws Exception {
         String control = "<class id=\"c0\"> "

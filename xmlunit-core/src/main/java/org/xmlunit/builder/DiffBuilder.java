@@ -91,7 +91,6 @@ public class DiffBuilder {
      * 
      * @see DiffBuilder
      * @param controlSource the expected reference Result.
-     * @param testSource the test result which must be compared with the control source.
      */
     private DiffBuilder(final Source controlSource) {
         this.controlSource = controlSource;
