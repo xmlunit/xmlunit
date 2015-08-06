@@ -41,6 +41,7 @@ import org.custommonkey.xmlunit.SimpleNamespaceContext;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import javax.xml.XMLConstants;
 
 import junit.framework.TestCase;
@@ -65,9 +66,9 @@ public class test_XMLUnitNamespaceContext2Jaxp13 extends TestCase {
     }
 
     public void testCannotOverrideStandardPrefixes() {
-        HashMap m = setupMap();
-        for (int i = 0; i < STANDARD_PREFIXES.length; i++) {
-            m.put(STANDARD_PREFIXES[i], URI);
+        Map<String, String> m = setupMap();
+        for (String standardPrefix : STANDARD_PREFIXES) {
+            m.put(standardPrefix, URI);
         }
         XMLUnitNamespaceContext2Jaxp13 ctx =
             new XMLUnitNamespaceContext2Jaxp13(new SimpleNamespaceContext(m));
@@ -75,7 +76,7 @@ public class test_XMLUnitNamespaceContext2Jaxp13 extends TestCase {
     }
 
     public void testCannotOverrideStandardURIs() {
-        HashMap m = setupMap();
+        Map<String, String> m = setupMap();
         for (int i = 0; i < STANDARD_PREFIXES.length; i++) {
             m.put(STANDARD_PREFIXES[i] + "1", STANDARD_URIS[i]);
         }
@@ -85,7 +86,7 @@ public class test_XMLUnitNamespaceContext2Jaxp13 extends TestCase {
     }
 
     public void testDefaultNamespaceHandling() {
-        HashMap m = setupMap();
+        Map<String, String> m = setupMap();
         m.put("", URI);
         XMLUnitNamespaceContext2Jaxp13 ctx =
             new XMLUnitNamespaceContext2Jaxp13(new SimpleNamespaceContext(m));
@@ -100,10 +101,10 @@ public class test_XMLUnitNamespaceContext2Jaxp13 extends TestCase {
         assertAllPrefixesFound(it);
     }
 
-    private static HashMap setupMap() {
-        HashMap map = new HashMap();
-        for (int i = 0; i < PREFIXES.length; i++) {
-            map.put(PREFIXES[i], URI);
+    private static Map<String, String> setupMap() {
+        Map<String, String> map = new HashMap<String, String>();
+        for (String prefix : PREFIXES) {
+            map.put(prefix, URI);
         }
         return map;
     }

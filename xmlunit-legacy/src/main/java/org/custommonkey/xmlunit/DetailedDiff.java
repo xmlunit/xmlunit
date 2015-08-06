@@ -48,7 +48,7 @@ import java.util.ArrayList;
  * necessarily be the same as when <i>B</i> is compared to <i>A</i>.
  */
 public class DetailedDiff extends Diff {
-    private final List allDifferences;
+    private final List<Difference> allDifferences;
 
     /**
      * Create a new instance based on a prototypical Diff instance
@@ -57,7 +57,7 @@ public class DetailedDiff extends Diff {
      */
     public DetailedDiff(Diff prototype) {
         super(prototype);
-        allDifferences = new ArrayList();
+        allDifferences = new ArrayList<Difference>();
     }
 
     /**
@@ -102,7 +102,7 @@ public class DetailedDiff extends Diff {
      * Obtain all the differences found by this instance
      * @return a list of {@link Difference differences}
      */
-    public List getAllDifferences() {
+    public List<Difference> getAllDifferences() {
         compare();
         return allDifferences;
     }

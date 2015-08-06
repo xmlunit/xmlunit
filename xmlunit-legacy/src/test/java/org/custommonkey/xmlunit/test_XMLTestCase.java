@@ -59,7 +59,7 @@ public class test_XMLTestCase extends XMLTestCase {
     private static final String TEST_NS = "urn:org.example";
     private static final NamespaceContext NS_CONTEXT;
     static {
-        HashMap m = new HashMap();
+        Map<String, String> m = new HashMap<String, String>();
         m.put(PREFIX, TEST_NS);
         NS_CONTEXT = new SimpleNamespaceContext(m);
     }
@@ -865,7 +865,7 @@ public class test_XMLTestCase extends XMLTestCase {
             + "<env:Body><env:Fault><faultcode>env:Server</faultcode>"
             + "<faultstring>marche pas</faultstring><detail/></env:Fault>"
             + "</env:Body></env:Envelope>";
-        Map namespaces = new HashMap();
+        Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("env11", "http://schemas.xmlsoap.org/soap/envelope/");
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
         XMLAssert.assertXpathEvaluatesTo(QualifiedName.valueOf("env11:Server"),

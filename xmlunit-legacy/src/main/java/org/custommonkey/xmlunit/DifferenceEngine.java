@@ -296,9 +296,9 @@ public class DifferenceEngine
      * Returns the NodeList's Nodes as List, taking ignoreComments
      * into account.
      */
-    static List nodeList2List(NodeList nl) {
+    static List<Node> nodeList2List(NodeList nl) {
         int len = nl.getLength();
-        ArrayList l = new ArrayList(len);
+        List<Node> l = new ArrayList<Node>(len);
         for (int i = 0; i < len; i++) {
             Node n = nl.item(i);
             if (!XMLUnit.getIgnoreComments() || !(n instanceof Comment)) {
@@ -321,8 +321,8 @@ public class DifferenceEngine
                                        DifferenceListener listener, ElementQualifier elementQualifier) 
         throws DifferenceFoundException {
 
-        List controlChildren = nodeList2List(control.getChildNodes());
-        List testChildren = nodeList2List(test.getChildNodes());
+        List<Node> controlChildren = nodeList2List(control.getChildNodes());
+        List<Node> testChildren = nodeList2List(test.getChildNodes());
 
         Integer controlLength = new Integer(controlChildren.size());
         Integer testLength = new Integer(testChildren.size());
@@ -331,12 +331,12 @@ public class DifferenceEngine
 
         if (control.hasChildNodes() || test.hasChildNodes()) {
             if (!control.hasChildNodes()) {
-                for (Iterator iter = testChildren.iterator(); iter.hasNext();) {
-                    missingNode(null, (Node) iter.next(), listener);
+                for (Node aTestChildren : testChildren) {
+                    missingNode(null, aTestChildren, listener);
                 }
             } else if (!test.hasChildNodes()) {
-                for (Iterator iter = controlChildren.iterator(); iter.hasNext();) {
-                    missingNode((Node) iter.next(), null, listener);
+                for (Node aControlChildren : controlChildren) {
+                    missingNode(aControlChildren, null, listener);
                 }
              } else {
                 compareNodeList(controlChildren, testChildren,
@@ -359,8 +359,8 @@ public class DifferenceEngine
      * control NodeList.
      * @throws DifferenceFoundException
      */
-    protected void compareNodeList(final List controlChildren,
-                                   final List testChildren,
+    protected void compareNodeList(final List<Node> controlChildren,
+                                   final List<Node> testChildren,
                                    final int numNodes,
                                    final DifferenceListener listener,
                                    final ElementQualifier elementQualifier) 
@@ -370,14 +370,14 @@ public class DifferenceEngine
         final int lastTestNode = testChildren.size() - 1;
         testTracker.preloadChildList(testChildren);
 
-        HashMap/*<Node, Node>*/ matchingNodes = new HashMap();
-        HashMap/*<Node, Integer>*/ matchingNodeIndexes = new HashMap();
+        HashMap<Node, Node> matchingNodes = new HashMap<Node, Node>();
+        HashMap<Node, Integer> matchingNodeIndexes = new HashMap<Node, Integer>();
 
-        List/*<Node>*/ unmatchedTestNodes = new ArrayList(testChildren);
+        List<Node> unmatchedTestNodes = new ArrayList<Node>(testChildren);
 
         // first pass to find the matching nodes in control and test docs
         for (int i=0; i < numNodes; ++i) {
-            Node nextControl = (Node) controlChildren.get(i);
+            Node nextControl = controlChildren.get(i);
             boolean matchOnElement = nextControl instanceof Element;
             short findNodeType = nextControl.getNodeType();
             int startAt = ( i > lastTestNode ? lastTestNode : i);
@@ -410,7 +410,7 @@ public class DifferenceEngine
             int fallbackMatch = -1;
 
             while (!matchFound) {
-                Node t = (Node) testChildren.get(j);
+                Node t = testChildren.get(j);
                 if (findNodeType == t.getNodeType()
                     || comparingTextAndCDATA(findNodeType, t.getNodeType())) {
                     matchFound = !matchOnElement
@@ -458,12 +458,12 @@ public class DifferenceEngine
         // match them against the first test nodes that didn't match
         // any other control nodes
         for (int i=0; i < numNodes; ++i) {
-            Node nextControl = (Node) controlChildren.get(i);
-            Node nextTest = (Node) matchingNodes.get(nextControl);
-            Integer testIndex = (Integer) matchingNodeIndexes.get(nextControl);
+            Node nextControl = controlChildren.get(i);
+            Node nextTest = matchingNodes.get(nextControl);
+            Integer testIndex = matchingNodeIndexes.get(nextControl);
             if (nextTest == null && XMLUnit.getCompareUnmatched()
                 && !unmatchedTestNodes.isEmpty()) {
-                nextTest = (Node) unmatchedTestNodes.get(0);
+                nextTest = unmatchedTestNodes.get(0);
                 testIndex = new Integer(testChildren.indexOf(nextTest));
                 unmatchedTestNodes.remove(0);
             }
@@ -478,8 +478,8 @@ public class DifferenceEngine
         }
 
         // now handle remaining unmatched test nodes
-        for (Iterator iter = unmatchedTestNodes.iterator(); iter.hasNext();) {
-            missingNode(null, (Node) iter.next(), listener);
+        for (Node node : unmatchedTestNodes) {
+            missingNode(null, node, listener);
         }
     }
 
@@ -551,7 +551,7 @@ public class DifferenceEngine
                                   NamedNodeMap testAttr,
                                   DifferenceListener listener)
         throws DifferenceFoundException {
-        ArrayList unmatchedTestAttrs = new ArrayList();
+        ArrayList<Attr> unmatchedTestAttrs = new ArrayList<Attr>();
         for (int i=0; i < testAttr.getLength(); ++i) {
             Attr nextAttr = (Attr) testAttr.item(i);
             if (!isXMLNSAttribute(nextAttr)) {
@@ -608,8 +608,7 @@ public class DifferenceEngine
             }
         }
 
-        for (Iterator iter = unmatchedTestAttrs.iterator(); iter.hasNext(); ) {
-            Attr nextAttr = (Attr) iter.next();
+        for (Attr nextAttr : unmatchedTestAttrs) {
             if (isRecognizedXMLSchemaInstanceAttribute(nextAttr)) {
                 compareRecognizedXMLSchemaInstanceAttribute(null, nextAttr,
                                                             listener);

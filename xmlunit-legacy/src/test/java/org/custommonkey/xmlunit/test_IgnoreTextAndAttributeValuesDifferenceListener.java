@@ -36,7 +36,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit;
 
-import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -145,13 +144,12 @@ public class test_IgnoreTextAndAttributeValuesDifferenceListener
         DetailedDiff dissimilarDetailedDiff = new DetailedDiff(
                                                                new Diff(control, dissimilarTest));
         dissimilarDetailedDiff.overrideDifferenceListener(listener);
-        List differences = dissimilarDetailedDiff.getAllDifferences();
+        List<Difference> differences = dissimilarDetailedDiff.getAllDifferences();
         assertEquals("has children, wrong number of attributes, missing attribute, different attribute value, number of children and missing text node. "
                      + dissimilarDetailedDiff.toString(), 
                      6, differences.size());
         int recoverable = 0;
-        for (Iterator iter = differences.iterator(); iter.hasNext(); ) {
-            Difference aDifference = (Difference) iter.next();
+        for (Difference aDifference : differences) {
             if (aDifference.isRecoverable()) {
                 recoverable++;
             }

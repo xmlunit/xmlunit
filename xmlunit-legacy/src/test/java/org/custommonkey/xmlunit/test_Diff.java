@@ -519,14 +519,14 @@ public class test_Diff extends TestCase{
     }
     
     private class ExpectedDifferenceListener implements DifferenceListener {
-        private final Set expectedIds;
+        private final Set<Integer> expectedIds;
         private ExpectedDifferenceListener(int expectedIdValue) {
             this(new int[] {expectedIdValue});
         }
         private ExpectedDifferenceListener(int[] expectedIdValues) {
-            this.expectedIds = new HashSet(expectedIdValues.length);
-            for (int i=0; i < expectedIdValues.length; ++i) {
-                expectedIds.add(new Integer(expectedIdValues[i]));
+            this.expectedIds = new HashSet<Integer>(expectedIdValues.length);
+            for (int expectedIdValue : expectedIdValues) {
+                expectedIds.add(new Integer(expectedIdValue));
             }
         }
         public int differenceFound(Difference difference) {

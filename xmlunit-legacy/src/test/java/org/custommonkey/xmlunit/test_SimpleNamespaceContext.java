@@ -38,6 +38,8 @@ package org.custommonkey.xmlunit;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 /**
@@ -58,7 +60,7 @@ public class test_SimpleNamespaceContext extends TestCase {
     }
 
     public void testCopyOfMap() {
-        HashMap map = setupMap();
+        Map<String, String> map = setupMap();
         SimpleNamespaceContext ctx = new SimpleNamespaceContext(map);
         // change a mapping
         map.put(PREFIXES[0], URI + PREFIXES[0]);
@@ -67,10 +69,10 @@ public class test_SimpleNamespaceContext extends TestCase {
         validate(ctx);
     }
 
-    private static HashMap setupMap() {
-        HashMap map = new HashMap();
-        for (int i = 0; i < PREFIXES.length; i++) {
-            map.put(PREFIXES[i], URI);
+    private static Map<String, String> setupMap() {
+        Map<String, String> map = new HashMap<String, String>();
+        for (String prefix : PREFIXES) {
+            map.put(prefix, URI);
         }
         return map;
     }

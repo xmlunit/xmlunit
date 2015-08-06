@@ -41,6 +41,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
@@ -703,18 +704,17 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
     }
 
     private class OrderPreservingNamedNodeMap implements NamedNodeMap {
-        private ArrayList/* Attr */ nodes = new ArrayList();
+        private List<Attr> nodes = new ArrayList<Attr>();
 
         void add(Attr attr) {
             nodes.add(attr);
         }
 
         public int getLength() { return nodes.size(); }
-        public Node item(int index) { return (Node) nodes.get(index); }
+        public Node item(int index) { return nodes.get(index); }
 
         public Node getNamedItem(String name) {
-            for (Iterator iter = nodes.iterator(); iter.hasNext(); ) {
-                Attr a = (Attr) iter.next();
+            for (Attr a : nodes) {
                 if (a.getName().equals(name)) {
                     return a;
                 }
@@ -723,10 +723,9 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
         }
 
         public Node getNamedItemNS(String ns, String localName) {
-            for (Iterator iter = nodes.iterator(); iter.hasNext(); ) {
-                Attr a = (Attr) iter.next();
+            for (Attr a : nodes) {
                 if (a.getLocalName().equals(localName)
-                    && a.getNamespaceURI().equals(ns)) {
+                        && a.getNamespaceURI().equals(ns)) {
                     return a;
                 }
             }

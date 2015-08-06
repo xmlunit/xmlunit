@@ -46,13 +46,13 @@ import java.util.Map;
  */
 public class SimpleNamespaceContext implements NamespaceContext {
     /* prefix -> NS URI */
-    private final Map/*<String, String>*/ prefixMap;
+    private final Map<String, String> prefixMap;
 
     /**
      * An empty context containing no prefixes at all.
      */
     public static final SimpleNamespaceContext EMPTY_CONTEXT =
-        new SimpleNamespaceContext(Collections.EMPTY_MAP);
+        new SimpleNamespaceContext(Collections.<String, String>emptyMap());
 
     /**
      * Creates a NamespaceContext backed by the given map.
@@ -63,15 +63,15 @@ public class SimpleNamespaceContext implements NamespaceContext {
      *
      * @param prefixMap maps prefix to Namespace URI
      */
-    public SimpleNamespaceContext(Map prefixMap) {
-        this.prefixMap = new HashMap(prefixMap);
+    public SimpleNamespaceContext(Map<String, String> prefixMap) {
+        this.prefixMap = new HashMap<String, String>(prefixMap);
     }
 
     public String getNamespaceURI(String prefix) {
-        return (String) prefixMap.get(prefix);
+        return prefixMap.get(prefix);
     }
 
-    public Iterator getPrefixes() {
+    public Iterator<String> getPrefixes() {
         return prefixMap.keySet().iterator();
     }
 }

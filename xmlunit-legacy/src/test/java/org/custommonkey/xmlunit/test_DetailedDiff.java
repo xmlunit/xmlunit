@@ -39,7 +39,6 @@ package org.custommonkey.xmlunit;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
-import java.util.Iterator;
 import java.util.List;
 import javax.xml.transform.dom.DOMSource;
 
@@ -58,11 +57,11 @@ public class test_DetailedDiff extends test_Diff {
         Diff multipleDifferences = new Diff(firstForecast, secondForecast);
         DetailedDiff detailedDiff = new DetailedDiff(multipleDifferences);
 
-        List differences = detailedDiff.getAllDifferences();
+        List<Difference> differences = detailedDiff.getAllDifferences();
         assertExpectedDifferencesFirstForecastControl(differences, detailedDiff);
     }
 
-    private void assertExpectedDifferencesFirstForecastControl(List differences,
+    private void assertExpectedDifferencesFirstForecastControl(List<Difference> differences,
                                                                DetailedDiff detailedDiff) {
         assertEquals("size: " + detailedDiff, 6, differences.size());
         assertEquals("first: " + detailedDiff,
@@ -83,7 +82,7 @@ public class test_DetailedDiff extends test_Diff {
         Diff multipleDifferences = new Diff(secondForecast, firstForecast);
         DetailedDiff detailedDiff = new DetailedDiff(multipleDifferences);
 
-        List differences = detailedDiff.getAllDifferences();
+        List<Difference> differences = detailedDiff.getAllDifferences();
 
         assertEquals("size: " + detailedDiff, 6, differences.size());
         assertEquals("first: " + detailedDiff,
@@ -106,7 +105,7 @@ public class test_DetailedDiff extends test_Diff {
         DetailedDiff detailedDiff = new DetailedDiff(
                                                      new DetailedDiff(multipleDifferences));
 
-        List differences = detailedDiff.getAllDifferences();
+        List<Difference> differences = detailedDiff.getAllDifferences();
         assertExpectedDifferencesFirstForecastControl(differences, detailedDiff);
     }
 
@@ -122,7 +121,7 @@ public class test_DetailedDiff extends test_Diff {
             Diff prototype =
                 new Diff(new FileReader(control), new FileReader(test));
             DetailedDiff detailedDiff = new DetailedDiff(prototype);
-            List differences = detailedDiff.getAllDifferences();
+            List<Difference> differences = detailedDiff.getAllDifferences();
 
             SimpleXpathEngine xpathEngine = new SimpleXpathEngine();
             Document controlDoc =
@@ -132,10 +131,8 @@ public class test_DetailedDiff extends test_Diff {
                 XMLUnit.buildTestDocument(
                                           new InputSource(new FileReader(test)));
 
-            Difference aDifference;
             String value;
-            for (Iterator iter = differences.iterator(); iter.hasNext();) {
-                aDifference = (Difference) iter.next();
+            for (Difference aDifference : differences) {
                 if (aDifference.equals(DifferenceConstants.ATTR_VALUE)
                     || aDifference.equals(DifferenceConstants.CDATA_VALUE)
                     || aDifference.equals(DifferenceConstants.COMMENT_VALUE)
@@ -176,7 +173,7 @@ public class test_DetailedDiff extends test_Diff {
         Diff d = new Diff(control, test);
         DetailedDiff dd = new DetailedDiff(d);
 
-        List l = dd.getAllDifferences();
+        List<Difference> l = dd.getAllDifferences();
         // number of children is different, didn't find <b/>, wrong
         // sequence of nodes
         assertEquals(3, l.size());
@@ -190,7 +187,7 @@ public class test_DetailedDiff extends test_Diff {
         d.similar();
         DetailedDiff dd = new DetailedDiff(d);
 
-        List l = dd.getAllDifferences();
+        List<Difference> l = dd.getAllDifferences();
         // number of children is different, didn't find <b/>, wrong
         // sequence of nodes
         assertEquals(3, l.size());
@@ -219,7 +216,7 @@ public class test_DetailedDiff extends test_Diff {
             + "</table>";
 
         DetailedDiff diff = new DetailedDiff(new Diff(control, test));
-        List changes = diff.getAllDifferences();
+        List<Difference> changes = diff.getAllDifferences();
         // number of children, text of first child, unexpected second
         // test child
         assertEquals(3, changes.size());
@@ -250,10 +247,10 @@ public class test_DetailedDiff extends test_Diff {
             Diff diff = new Diff(control, test);
             diff.overrideElementQualifier(new MultiLevelElementNameAndTextQualifier(2));
             DetailedDiff dd = new DetailedDiff(diff); 
-            List l = dd.getAllDifferences();
+            List<Difference> l = dd.getAllDifferences();
             assertEquals(3, l.size());
             // (0) number of children, (1) order different, (2) node not found
-            Difference d = (Difference) l.get(2);
+            Difference d = l.get(2);
             assertEquals(DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
                          d.getId());
             assertEquals("/books[1]/book[1]",
@@ -269,7 +266,7 @@ public class test_DetailedDiff extends test_Diff {
             l = dd.getAllDifferences();
             assertEquals(3, l.size());
             // (0) number of children, (1) order different, (2) node not found
-            d = (Difference) l.get(2);
+            d = l.get(2);
             assertEquals(DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
                          d.getId());
             assertEquals("/books[1]/book[1]",
@@ -323,9 +320,9 @@ public class test_DetailedDiff extends test_Diff {
             + "<d>1</d>"
             + "<e>1</e></root>";
         DetailedDiff d = (DetailedDiff) buildDiff(control, test);
-        List l = d.getAllDifferences();
+        List<Difference> l = d.getAllDifferences();
         assertEquals(1, l.size());
-        Difference diff = (Difference) l.get(0);
+        Difference diff = l.get(0);
         assertEquals(DifferenceConstants.ELEMENT_TAG_NAME_ID, diff.getId());
     }
 
@@ -346,14 +343,14 @@ public class test_DetailedDiff extends test_Diff {
         try {
             XMLUnit.setCompareUnmatched(false);
             DetailedDiff d = (DetailedDiff) buildDiff(control, test);
-            List l = d.getAllDifferences();
+            List<Difference> l = d.getAllDifferences();
             assertEquals(2, l.size());
-            Difference diff = (Difference) l.get(0);
+            Difference diff = l.get(0);
             assertEquals(DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
                          diff.getId());
             assertNotNull(diff.getControlNodeDetail().getNode());
             assertNull(diff.getTestNodeDetail().getNode());
-            diff = (Difference) l.get(1);
+            diff = l.get(1);
             assertEquals(DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
                          diff.getId());
             assertNull(diff.getControlNodeDetail().getNode());
@@ -379,10 +376,10 @@ public class test_DetailedDiff extends test_Diff {
         try {
             XMLUnit.setCompareUnmatched(false);
             DetailedDiff d = (DetailedDiff) buildDiff(control, test);
-            List l = d.getAllDifferences();
+            List<Difference> l = d.getAllDifferences();
             assertEquals(4, l.size());
             // expected 3 children is 2
-            Difference diff = (Difference) l.get(0);
+            Difference diff = l.get(0);
             assertEquals(DifferenceConstants.CHILD_NODELIST_LENGTH_ID,
                          diff.getId());
             assertEquals("3", diff.getControlNodeDetail().getValue());
@@ -393,7 +390,7 @@ public class test_DetailedDiff extends test_Diff {
                          diff.getTestNodeDetail().getXpathLocation());
 
             // Banana is the third child in control but the second one in test
-            diff = (Difference) l.get(1);
+            diff = l.get(1);
             assertEquals("2", diff.getControlNodeDetail().getValue());
             assertEquals("1", diff.getTestNodeDetail().getValue());
             assertEquals("/Fruits[1]/Banana[1]",
@@ -402,7 +399,7 @@ public class test_DetailedDiff extends test_Diff {
                          diff.getTestNodeDetail().getXpathLocation());
 
             // Banana's size attribute doesn't match
-            diff = (Difference) l.get(2);
+            diff = l.get(2);
             assertEquals(DifferenceConstants.ATTR_VALUE_ID,
                          diff.getId());
             assertEquals("10", diff.getControlNodeDetail().getValue());
@@ -413,7 +410,7 @@ public class test_DetailedDiff extends test_Diff {
                          diff.getTestNodeDetail().getXpathLocation());
 
             // didn't find the second Apple element
-            diff = (Difference) l.get(3);
+            diff = l.get(3);
             assertEquals(DifferenceConstants.CHILD_NODE_NOT_FOUND_ID,
                          diff.getId());
             assertEquals("Apple", diff.getControlNodeDetail().getValue());

@@ -126,7 +126,7 @@ public class Jaxp13XpathEngine implements XpathEngine {
         private final List<Node> l;
 
         private NodeListForIterable(Iterable<Node> it) {
-            ArrayList<Node> a = new ArrayList<Node>();
+            List<Node> a = new ArrayList<Node>();
             for (Node n : it) {
                 a.add(n);
             }

@@ -54,7 +54,7 @@ public class test_QualifiedName extends TestCase {
     }
 
     public void testParsePrefixStyle() {
-        Map m = new HashMap();
+        Map<String, String> m = new HashMap<String, String>();
         m.put("pre", "foo");
         NamespaceContext ctx = new SimpleNamespaceContext(m);
         Assert.assertEquals(new QualifiedName("foo", "bar"),
@@ -62,7 +62,7 @@ public class test_QualifiedName extends TestCase {
     }
 
     public void testParsePrefixStyleImplicitContext() {
-        Map m = new HashMap();
+        Map<String, String> m = new HashMap<String, String>();
         m.put("pre", "foo");
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(m));
         try {
@@ -90,7 +90,7 @@ public class test_QualifiedName extends TestCase {
     }
 
     public void testPrefixMustBeKnownToContext() {
-        Map m = new HashMap();
+        Map<String, String> m = new HashMap<String, String>();
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(m));
         try {
             shouldThrowWithMessage("foo:bar", "foo is unknown");

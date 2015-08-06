@@ -125,7 +125,7 @@ public abstract class AbstractXpathEngineTests extends TestCase {
     public void testXpathPrefixChange() throws Exception {
         String testDoc = "<t:test xmlns:t=\"urn:foo\"><t:bar/></t:test>";
         Document d = XMLUnit.buildControlDocument(testDoc);
-        HashMap m = new HashMap();
+        HashMap<String, String> m = new HashMap<String, String>();
         m.put("foo", "urn:foo");
         NamespaceContext ctx = new SimpleNamespaceContext(m);
         XpathEngine engine = newXpathEngine();

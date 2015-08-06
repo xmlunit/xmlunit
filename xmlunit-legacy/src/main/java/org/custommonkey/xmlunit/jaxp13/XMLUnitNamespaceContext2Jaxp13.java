@@ -41,6 +41,7 @@ import org.custommonkey.xmlunit.NamespaceContext;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 import javax.xml.XMLConstants;
 
@@ -52,7 +53,7 @@ import javax.xml.XMLConstants;
 public class XMLUnitNamespaceContext2Jaxp13
     implements javax.xml.namespace.NamespaceContext {
 
-    private final Map/*<String, String>*/ nsMap;
+    private final Map<String, String> nsMap;
 
     public XMLUnitNamespaceContext2Jaxp13(NamespaceContext ctx) {
         nsMap = turnIntoMap(ctx);
@@ -62,7 +63,7 @@ public class XMLUnitNamespaceContext2Jaxp13
         if (prefix == null) {
             throw new IllegalArgumentException("prefix must not be null");
         }
-        String uri = (String) nsMap.get(prefix);
+        String uri = nsMap.get(prefix);
         if (uri == null) {
             uri = XMLConstants.NULL_NS_URI;
         }
@@ -76,9 +77,8 @@ public class XMLUnitNamespaceContext2Jaxp13
 
         // ensure that the empty string comes out first when asked for
         // the default namespace URI's prefix
-        TreeSet/*<String>*/ ts = new TreeSet();
-        for (Iterator it = nsMap.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry/*<String,String>*/ entry = (Map.Entry) it.next();
+        Set<String> ts = new TreeSet<String>();
+        for (Map.Entry<String, String> entry : nsMap.entrySet()) {
             if (uri.equals(entry.getValue())) {
                 ts.add(entry.getKey());
             }
@@ -91,8 +91,8 @@ public class XMLUnitNamespaceContext2Jaxp13
         return i.hasNext() ? (String) i.next() : null;
     }
 
-    static Map turnIntoMap(NamespaceContext ctx) {
-        HashMap/*<String, String>*/ m = new HashMap();
+    static Map<String, String> turnIntoMap(NamespaceContext ctx) {
+        Map<String, String> m = new HashMap<String, String>();
         for (Iterator i = ctx.getPrefixes(); i.hasNext(); ) {
             String prefix = (String) i.next();
             String uri = ctx.getNamespaceURI(prefix);
