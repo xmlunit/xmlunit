@@ -63,7 +63,7 @@ public class SimpleNamespaceContext implements NamespaceContext {
      *
      * @param prefixMap maps prefix to Namespace URI
      */
-    public SimpleNamespaceContext(Map<String, String> prefixMap) {
+    public SimpleNamespaceContext(Map prefixMap) {
         this.prefixMap = new HashMap<String, String>(prefixMap);
     }
 
