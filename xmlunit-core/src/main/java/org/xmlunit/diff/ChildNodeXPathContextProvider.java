@@ -25,7 +25,7 @@ import org.xmlunit.util.Mapper;
  * passed in are child nodes of the same parent node who's
  * XPathContext is provided as argument to the constructor.
  */
-public class ChildNodeXPathContextProvider implements Mapper<Node, XPathContext> {
+class ChildNodeXPathContextProvider implements Mapper<Node, XPathContext> {
     private final XPathContext xpathContext;
     private final Map<Node, Integer> childIndex;
 
@@ -39,8 +39,7 @@ public class ChildNodeXPathContextProvider implements Mapper<Node, XPathContext>
      * @param children all child nodes of the parent in the same order
      * they are known to the XPathContext.
      */
-    public ChildNodeXPathContextProvider(XPathContext parentContext,
-                                         Iterable<Node> children) {
+    ChildNodeXPathContextProvider(XPathContext parentContext, Iterable<Node> children) {
         this.xpathContext = parentContext.clone();
         Map<Node, Integer> index = new HashMap<Node, Integer>();
         int i = 0;
