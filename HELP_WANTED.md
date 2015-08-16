@@ -35,8 +35,4 @@ Java
 Claimed
 -------
 
-* [@bodewig](https://github.com/bodewig) has added some more generic
-  `ElementSelectors` and a fluent builder for them - this is a
-  generalization of [#4](https://github.com/xmlunit/xmlunit/issues/4)
-  but isn't completely satisfied, yet.
 
