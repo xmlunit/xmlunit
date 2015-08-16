@@ -23,6 +23,11 @@ We are in the process of finalizing the API for XMLUnit 2.x.  XMLUnit
 1.x for Java is still supported and will stay at
 [sourceforge](https://sourceforge.net/projects/xmlunit/).
 
+## Documentation
+
+* [Developer Guide](https://github.com/xmlunit/xmlunit/wiki)
+* [User's Guide](https://github.com/xmlunit/user-guide/wiki)
+
 ## Help Wanted!
 
 If you are looking for something to work on, we've compiled a
