@@ -29,7 +29,6 @@ Java
 ----
 
 * additional NUnit constraints
-* NuGet packaging
 * build ISource from objects via XmlSerializer
 
 Claimed
