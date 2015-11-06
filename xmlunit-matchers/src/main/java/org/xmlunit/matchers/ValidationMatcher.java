@@ -20,6 +20,7 @@ import static org.xmlunit.util.Linqy.map;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.IsNullPredicate;
 import org.xmlunit.util.Mapper;
+import org.xmlunit.util.Predicate;
 import org.xmlunit.validation.JAXPValidator;
 import org.xmlunit.validation.Languages;
 import org.xmlunit.validation.ValidationProblem;
@@ -72,14 +73,20 @@ public class ValidationMatcher extends BaseMatcher {
     @Override
     public void describeTo(Description description) {
         description.appendText(" that ")
-            .appendValue(instance.getSystemId());
-        if (schemaSource.length > 0) {
+            .appendValue(instance.getSystemId() != null ? instance.getSystemId() : "instance");
+        if (any(Arrays.asList(schemaSource), new HasSystemIdPredicate())) {
             description.appendText(" validates against ");
+            boolean first = true;
+            for (Source schema : Arrays.asList(schemaSource)) {
+                if (!first) {
+                    description.appendValue(", ");
+                }
+                first = false;
+                description.appendValue(schema.getSystemId() != null
+                                        ? schema.getSystemId() : "schema without systemId");
+            }
         } else {
             description.appendText(" validates");
-        }
-        for (Source schema : Arrays.asList(schemaSource)) {
-            description.appendValue(schema.getSystemId());
         }
     }
 
@@ -100,5 +107,10 @@ public class ValidationMatcher extends BaseMatcher {
         return new ValidationMatcher(schemaSource);
     }
 
-
+    private static class HasSystemIdPredicate implements Predicate<Source> {
+        @Override
+        public boolean test(Source s) {
+            return s.getSystemId() != null;
+        }
+    }
 }
