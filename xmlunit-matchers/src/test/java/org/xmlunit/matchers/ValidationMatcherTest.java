@@ -13,7 +13,6 @@
 */
 package org.xmlunit.matchers;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.xml.transform.stream.StreamSource;
@@ -49,7 +48,6 @@ public class ValidationMatcherTest {
     }
 
     @Test
-    @Ignore("Java8's Validator doesn't seem to like https URIs") 
     public void shouldSuccessfullyValidateInstanceWithoutExplicitSchemaSource() {
         assertThat(new StreamSource(new File("../test-resources/BookXsdGenerated.xml")),
                    is(new ValidationMatcher()));
