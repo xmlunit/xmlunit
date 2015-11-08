@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.util.IsNullPredicate;
 import org.xmlunit.util.Predicate;
 
@@ -545,60 +544,4 @@ public class ElementSelectorsTest {
         b.defaultTo(ElementSelectors.byName);
         b.defaultTo(ElementSelectors.byName);
     }
-
-	@Test
-	public void byNameAndTextRec_Multilevel() throws Exception {
-		Document control = DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder().newDocument();
-		{
-			Element root = control.createElement("root");
-			control.appendChild(root);
-			
-			Element controlSub = control.createElement("sub");
-			root.appendChild(controlSub);
-			Element controlSubSubValue = control.createElement("value");
-			controlSub.appendChild(controlSubSubValue);
-			controlSubSubValue.appendChild(control.createTextNode("1"));
-			controlSubSubValue = control.createElement("value");
-			controlSub.appendChild(controlSubSubValue);
-			controlSubSubValue.appendChild(control.createTextNode("2"));
-
-			controlSub = control.createElement("sub");
-			root.appendChild(controlSub);
-			controlSubSubValue = control.createElement("value");
-			controlSub.appendChild(controlSubSubValue);
-			controlSubSubValue.appendChild(control.createTextNode("3"));
-			controlSubSubValue = control.createElement("value");
-			controlSub.appendChild(controlSubSubValue);
-			controlSubSubValue.appendChild(control.createTextNode("4"));
-		}
-		Document test = DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder().newDocument();
-		{
-			Element root = test.createElement("root");
-			test.appendChild(root);
-			
-			Element testSub = test.createElement("sub");
-			root.appendChild(testSub);
-			Element testSubValue = test.createElement("value");
-			testSub.appendChild(testSubValue);
-			testSubValue.appendChild(test.createTextNode("1"));
-			testSubValue = test.createElement("value");
-			testSub.appendChild(testSubValue);
-			testSubValue.appendChild(test.createTextNode("2"));
-
-			testSub = test.createElement("sub");
-			root.appendChild(testSub);
-			testSubValue = test.createElement("value");
-			testSub.appendChild(testSubValue);
-			testSubValue.appendChild(test.createTextNode("4"));
-			testSubValue = test.createElement("value");
-			testSub.appendChild(testSubValue);
-			testSubValue.appendChild(test.createTextNode("3"));
-		}
-
-		DiffBuilder builder = DiffBuilder.compare(control).withTest(test).withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.or(ElementSelectors.byNameAndTextRec, ElementSelectors.byName)));
-		Diff d = builder.build();
-		assertFalse(d.toString(new DefaultComparisonFormatter()),d.hasDifferences());
-	}
 }
