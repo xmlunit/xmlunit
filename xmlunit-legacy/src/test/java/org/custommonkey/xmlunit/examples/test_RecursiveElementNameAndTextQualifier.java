@@ -39,8 +39,9 @@ package org.custommonkey.xmlunit.examples;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import junit.framework.TestCase;
-import junit.framework.TestSuite; 
 
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLAssert;
@@ -277,4 +278,57 @@ public class test_RecursiveElementNameAndTextQualifier extends TestCase {
         myDiff.overrideElementQualifier(new RecursiveElementNameAndTextQualifier()); 
         XMLAssert.assertXMLEqual("Not similar", myDiff, true); 
     }
+    
+	public void testByNameAndTextRec_Multilevel() throws Exception {
+		Document control = DocumentBuilderFactory.newInstance()
+				.newDocumentBuilder().newDocument();
+		{
+			Element root = control.createElement("root");
+			control.appendChild(root);
+			Element controlSub = control.createElement("sub");
+			root.appendChild(controlSub);
+			Element controlSubSubValue = control.createElement("value");
+			controlSub.appendChild(controlSubSubValue);
+			controlSubSubValue.appendChild(control.createTextNode("1"));
+			controlSubSubValue = control.createElement("value");
+			controlSub.appendChild(controlSubSubValue);
+			controlSubSubValue.appendChild(control.createTextNode("2"));
+
+			controlSub = control.createElement("sub");
+			root.appendChild(controlSub);
+			controlSubSubValue = control.createElement("value");
+			controlSub.appendChild(controlSubSubValue);
+			controlSubSubValue.appendChild(control.createTextNode("3"));
+			controlSubSubValue = control.createElement("value");
+			controlSub.appendChild(controlSubSubValue);
+			controlSubSubValue.appendChild(control.createTextNode("4"));
+		}
+		Document test = DocumentBuilderFactory.newInstance()
+				.newDocumentBuilder().newDocument();
+		{
+			Element root = test.createElement("root");
+			test.appendChild(root);
+			Element testSub = test.createElement("sub");
+			root.appendChild(testSub);
+			Element testSubValue = test.createElement("value");
+			testSub.appendChild(testSubValue);
+			testSubValue.appendChild(test.createTextNode("1"));
+			testSubValue = test.createElement("value");
+			testSub.appendChild(testSubValue);
+			testSubValue.appendChild(test.createTextNode("2"));
+
+			testSub = test.createElement("sub");
+			root.appendChild(testSub);
+			testSubValue = test.createElement("value");
+			testSub.appendChild(testSubValue);
+			testSubValue.appendChild(test.createTextNode("4"));
+			testSubValue = test.createElement("value");
+			testSub.appendChild(testSubValue);
+			testSubValue.appendChild(test.createTextNode("3"));
+		}
+				
+		Diff d = new Diff(control, test);
+		d.overrideElementQualifier(new RecursiveElementNameAndTextQualifier());
+		XMLAssert.assertXMLEqual("Not similar", d, true);
+	}
 }
