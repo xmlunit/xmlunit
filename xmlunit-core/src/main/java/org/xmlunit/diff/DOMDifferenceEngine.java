@@ -708,7 +708,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     /**
      * Separates XML namespace related attributes from "normal" attributes.xb
      */
-    private static Attributes splitAttributes(final NamedNodeMap map) {
+    private Attributes splitAttributes(final NamedNodeMap map) {
         Attr sLoc = (Attr) map.getNamedItemNS(XMLConstants
                                               .W3C_XML_SCHEMA_INSTANCE_NS_URI,
                                               "schemaLocation");
@@ -723,7 +723,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         for (int i = 0; i < len; i++) {
             Attr a = (Attr) map.item(i);
             if (!XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(a.getNamespaceURI())
-                && a != sLoc && a != nNsLoc && a != type) {
+                && a != sLoc && a != nNsLoc && a != type
+                && getAttributeSelector().test(a)) {
                 rest.add(a);
             }
         }

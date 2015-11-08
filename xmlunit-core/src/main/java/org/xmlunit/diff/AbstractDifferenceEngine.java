@@ -15,6 +15,8 @@ package org.xmlunit.diff;
 
 import java.util.Collections;
 import java.util.Map;
+import org.w3c.dom.Attr;
+import org.xmlunit.util.Predicate;
 
 /**
  * Useful base-implementation of some parts of the DifferenceEngine
@@ -27,6 +29,12 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     private DifferenceEvaluator diffEvaluator = DifferenceEvaluators.Default;
     private ComparisonController comparisonController = ComparisonControllers.Default;
     private Map<String, String> uri2Prefix = Collections.emptyMap();
+    private Predicate<Attr> attributeSelector = new Predicate<Attr>() {
+            @Override
+            public boolean test(Attr a) {
+                return true;
+            }
+        };
 
     protected AbstractDifferenceEngine() { }
 
@@ -112,6 +120,22 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
      */
     protected Map<String, String> getNamespaceContext() {
         return uri2Prefix;
+    }
+
+    @Override
+    public void setAttributeSelector(Predicate<Attr> as) {
+        if (as == null) {
+            throw new IllegalArgumentException("attribute selector must"
+                                               + " not be null");
+        }
+        this.attributeSelector = as;
+    }
+
+    /**
+     * Provides access to the configured ComparisonController.
+     */
+    protected Predicate<Attr> getAttributeSelector() {
+        return attributeSelector;
     }
 
     /**

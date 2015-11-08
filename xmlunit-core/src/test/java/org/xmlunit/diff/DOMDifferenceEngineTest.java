@@ -19,6 +19,7 @@ import org.xmlunit.NullNode;
 import org.xmlunit.TestResources;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
+import org.xmlunit.util.Predicate;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Attr;
@@ -563,6 +564,37 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),
                      d.compareNodes(a1, new XPathContext(),
                                     a3, new XPathContext()));
+        assertEquals(1, ex.invoked);
+    }
+
+    @Test public void compareAttributesWithAttributeSelector() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        d.setAttributeSelector(new Predicate<Attr>() {
+                @Override
+                public boolean test(Attr a) {
+                    return "x".equals(a.getName());
+                }
+            });
+        DiffExpecter ex = new DiffExpecter(ComparisonType.ATTR_VALUE);
+        d.addDifferenceListener(ex);
+        d.setComparisonController(ComparisonControllers.StopWhenDifferent);
+
+        Element e1 = doc.createElement("foo");
+        e1.setAttribute("x", "1");
+        e1.setAttribute("a", "xxx");
+        Element e2 = doc.createElement("foo");
+        e2.setAttribute("x", "1");
+        e2.setAttribute("b", "xxx");
+        e2.setAttribute("c", "xxx");
+        Element e3 = doc.createElement("foo");
+        e3.setAttribute("x", "3");
+
+        assertEquals(wrap(ComparisonResult.EQUAL),
+                     d.compareNodes(e1, new XPathContext(),
+                                    e2, new XPathContext()));
+        assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),
+                     d.compareNodes(e1, new XPathContext(),
+                                    e3, new XPathContext()));
         assertEquals(1, ex.invoked);
     }
 

@@ -15,6 +15,8 @@ package org.xmlunit.diff;
 
 import java.util.Map;
 import javax.xml.transform.Source;
+import org.w3c.dom.Attr;
+import org.xmlunit.util.Predicate;
 
 /**
  * XMLUnit's difference engine.
@@ -41,6 +43,19 @@ public interface DifferenceEngine {
      * Sets the strategy for selecting nodes to compare.
      */
     void setNodeMatcher(NodeMatcher n);
+
+    /**
+     * Sets the optional strategy that decides which attributes to
+     * consider and which to ignore during comparison.
+     *
+     * <p>By default all attributes are considered.</p>
+     *
+     * <p>The "special" namespace, namespace-location and
+     * schema-instance-type attributes can not be ignored this way.
+     * If you want to suppress comparison of them you'll need to
+     * implement {@link DifferenceEvaluator}.</p>
+     */
+    void setAttributeSelector(Predicate<Attr> attributeSelector);
 
     /**
      * Evaluates the severity of a difference.

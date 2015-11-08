@@ -259,6 +259,11 @@ public abstract class AbstractDifferenceEngineTest {
         getDifferenceEngine().setDifferenceEvaluator(null);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void cantSetNullAttributeSelector() {
+        getDifferenceEngine().setAttributeSelector(null);
+    }
+
     @Test
     public void comparisonStateEqualsLooksAtType() {
         WrapHelper w = new WrapHelper();
