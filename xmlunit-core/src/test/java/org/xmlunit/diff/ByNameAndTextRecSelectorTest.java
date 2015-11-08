@@ -131,17 +131,17 @@ public class ByNameAndTextRecSelectorTest {
         }
 
         DiffBuilder builder = DiffBuilder.compare(control)
-            .withTest(test)
+            .withTest(test).checkForSimilar()
             .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.or(new ByNameAndTextRecSelector(),
                                                                         ElementSelectors.byName)));
         Diff d = builder.build();
         assertTrue(d.toString(new DefaultComparisonFormatter()), d.hasDifferences());
 
         builder = DiffBuilder.compare(control)
-            .withTest(test)
+            .withTest(test).checkForSimilar()
             .withNodeMatcher(new DefaultNodeMatcher(new ByNameAndTextRecSelector(),
                                                     ElementSelectors.byName));
         d = builder.build();
-        assertTrue(d.toString(new DefaultComparisonFormatter()), d.hasDifferences());
+        assertFalse(d.toString(new DefaultComparisonFormatter()), d.hasDifferences());
     }
 }
