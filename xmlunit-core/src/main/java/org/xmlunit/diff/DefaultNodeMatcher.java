@@ -25,10 +25,33 @@ import org.w3c.dom.Node;
 /**
  * Default implemetation of {@link NodeMatcher} that matches control
  * and tests nodes for comparison with the help of {@link
- * NodeTypeMatcher} and {@link ElementSelector}.
+ * NodeTypeMatcher} and {@link ElementSelector}s.
+ *
+ * <p>There is an important difference between using {@link
+ * ElementSelectors#or} to combine multiple {@link ElementSelector}s
+ * and using {@link DefaultNodeMatcher}'s constructor with multiple
+ * {@link ElementSelector}s:</p>
+ *
+ * <p>Consider {@link ElementSelector}s {@code e1} and {@code e2} and
+ * two control and test nodes each.  Assume {@code e1} would match the
+ * first control node to the second test node and vice versa if used
+ * alone, while {@code e2} would match the nodes in order (the first
+ * control node to the first test and so on).</p>
+ *
+ * <p>{@link ElementSelectors#or} creates a combined {@link
+ * ElementSelector} that is willing to match the first control node to
+ * both of the test nodes - and the same for the second control node.
+ * Since nodes are compared in order when possible the result will be
+ * the same as running {@code e2} alone.</p>
+ *
+ * <p>{@link DefaultNodeMatcher} with two {@link ElementSelector}s
+ * will consult the {@link ElementSelector}s separately and only
+ * invoke {@code e2} if there are any nodes not matched by {@code e1}
+ * at all.  In this case the result will be the same as running {@code
+ * e1} alone.</p>
  */
 public class DefaultNodeMatcher implements NodeMatcher {
-    private final ElementSelector elementSelector;
+    private final ElementSelector[] elementSelectors;
     private final NodeTypeMatcher nodeTypeMatcher;
 
     /**
@@ -40,20 +63,25 @@ public class DefaultNodeMatcher implements NodeMatcher {
     }
 
     /**
-     * Creates a matcher using the given {@link ElementSelector} and
+     * Creates a matcher using the given {@link ElementSelector}s and
      * {@link DefaultNodeTypeMatcher}.
      */
-    public DefaultNodeMatcher(ElementSelector es) {
-        this(es, new DefaultNodeTypeMatcher());
+    public DefaultNodeMatcher(ElementSelector... es) {
+        this(new DefaultNodeTypeMatcher(), es);
     }
 
     /**
-     * Creates a matcher using the given {@link ElementSelector} and
+     * Creates a matcher using the given {@link ElementSelector}s and
      * {@link NodeTypeMatcher}.
+     *
+     * <p>The {@link ElementSelector}s are consulted in order so that
+     * the second {@link ElementSelector} only gets to match the nodes
+     * that the first one couldn't match to any test nodes ate all and
+     * so on.</p>
      */
-    public DefaultNodeMatcher(ElementSelector es, NodeTypeMatcher ntm) {
-        elementSelector = es;
+    public DefaultNodeMatcher(NodeTypeMatcher ntm, ElementSelector... es) {
         nodeTypeMatcher = ntm;
+        elementSelectors = es;
     }
 
     @Override
@@ -99,18 +127,34 @@ public class DefaultNodeMatcher implements NodeMatcher {
                            final List<Node> searchIn,
                            final Set<Integer> availableIndexes,
                            final int fromInclusive, final int toExclusive) {
+        for (ElementSelector e : elementSelectors) {
+            Match m = searchIn(searchFor, searchIn, availableIndexes, fromInclusive, toExclusive, e);
+            if (m != null) {
+                return m;
+            }
+        }
+        return null;
+    }
+
+
+    private Match searchIn(final Node searchFor,
+                           final List<Node> searchIn,
+                           final Set<Integer> availableIndexes,
+                           final int fromInclusive, final int toExclusive,
+                           final ElementSelector e) {
         for (int i = fromInclusive; i < toExclusive; i++) {
             if (!availableIndexes.contains(Integer.valueOf(i))) {
                 continue;
             }
-            if (nodesMatch(searchFor, searchIn.get(i))) {
+            if (nodesMatch(searchFor, searchIn.get(i), e)) {
                 return new Match(searchIn.get(i), i);
             }
         }
         return null;
     }
 
-    private boolean nodesMatch(final Node n1, final Node n2) {
+    private boolean nodesMatch(final Node n1, final Node n2,
+                               final ElementSelector elementSelector) {
         if (n1 instanceof Element && n2 instanceof Element) {
             return elementSelector.canBeCompared((Element) n1, (Element) n2);
         }

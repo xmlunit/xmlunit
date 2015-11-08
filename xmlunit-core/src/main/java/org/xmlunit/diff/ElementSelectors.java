@@ -224,6 +224,29 @@ public final class ElementSelectors {
 
     /**
      * Accepts two elements if at least one of the given ElementSelectors does.
+     *
+     * <p>There is an important difference between using {@link
+     * ElementSelectors#or} to combine multiple {@link
+     * ElementSelector}s and using {@link DefaultNodeMatcher}'s
+     * constructor with multiple {@link ElementSelector}s:</p>
+     *
+     * <p>Consider {@link ElementSelector}s {@code e1} and {@code e2}
+     * and two control and test nodes each.  Assume {@code e1} would
+     * match the first control node to the second test node and vice
+     * versa if used alone, while {@code e2} would match the nodes in
+     * order (the first control node to the first test and so on).</p>
+     *
+     * <p>{@link ElementSelectors#or} creates a combined {@link
+     * ElementSelector} that is willing to match the first control
+     * node to both of the test nodes - and the same for the second
+     * control node.  Since nodes are compared in order when possible
+     * the result will be the same as running {@code e2} alone.</p>
+     *
+     * <p>{@link DefaultNodeMatcher} with two {@link ElementSelector}s
+     * will consult the {@link ElementSelector}s separately and only
+     * invoke {@code e2} if there are any nodes not matched by {@code
+     * e1} at all.  In this case the result will be the same as
+     * running {@code e1} alone.</p>
      */
     public static ElementSelector or(final ElementSelector... selectors) {
         if (selectors == null) {
