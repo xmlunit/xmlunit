@@ -349,27 +349,6 @@ public class DiffBuilderTest {
 
     }
 
-    private final class IgnoreAttributeDifferenceEvaluator implements DifferenceEvaluator {
-
-        private String attributeName;
-
-        public IgnoreAttributeDifferenceEvaluator(String attributeName) {
-            this.attributeName = attributeName;
-        }
-
-        @Override
-        public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
-            final Node controlNode = comparison.getControlDetails().getTarget();
-            if (controlNode instanceof Attr) {
-                Attr attr = (Attr) controlNode;
-                if (attr.getName().equals(attributeName)) {
-                    return ComparisonResult.EQUAL;
-                }
-            }
-            return outcome;
-        }
-    }
-
     @Test
     public void testDiff_withDefaultComparisonController_shouldReturnAllDifferences() {
         // prepare testData
@@ -400,6 +379,27 @@ public class DiffBuilderTest {
         // validate result
         Assert.assertTrue(myDiff.hasDifferences());
         assertThat(count(myDiff.getDifferences()), is(1));
+    }
+
+    private final class IgnoreAttributeDifferenceEvaluator implements DifferenceEvaluator {
+
+        private String attributeName;
+
+        public IgnoreAttributeDifferenceEvaluator(String attributeName) {
+            this.attributeName = attributeName;
+        }
+
+        @Override
+        public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
+            final Node controlNode = comparison.getControlDetails().getTarget();
+            if (controlNode instanceof Attr) {
+                Attr attr = (Attr) controlNode;
+                if (attr.getName().equals(attributeName)) {
+                    return ComparisonResult.EQUAL;
+                }
+            }
+            return outcome;
+        }
     }
 
 }
