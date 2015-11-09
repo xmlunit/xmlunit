@@ -29,7 +29,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     private DifferenceEvaluator diffEvaluator = DifferenceEvaluators.Default;
     private ComparisonController comparisonController = ComparisonControllers.Default;
     private Map<String, String> uri2Prefix = Collections.emptyMap();
-    private Predicate<Attr> attributeSelector = new Predicate<Attr>() {
+    private Predicate<Attr> attributeFilter = new Predicate<Attr>() {
             @Override
             public boolean test(Attr a) {
                 return true;
@@ -123,19 +123,19 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     }
 
     @Override
-    public void setAttributeSelector(Predicate<Attr> as) {
-        if (as == null) {
-            throw new IllegalArgumentException("attribute selector must"
+    public void setAttributeFilter(Predicate<Attr> af) {
+        if (af == null) {
+            throw new IllegalArgumentException("attribute filter must"
                                                + " not be null");
         }
-        this.attributeSelector = as;
+        this.attributeFilter = af;
     }
 
     /**
      * Provides access to the configured ComparisonController.
      */
-    protected Predicate<Attr> getAttributeSelector() {
-        return attributeSelector;
+    protected Predicate<Attr> getAttributeFilter() {
+        return attributeFilter;
     }
 
     /**

@@ -260,8 +260,8 @@ public abstract class AbstractDifferenceEngineTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void cantSetNullAttributeSelector() {
-        getDifferenceEngine().setAttributeSelector(null);
+    public void cantSetNullAttributeFilter() {
+        getDifferenceEngine().setAttributeFilter(null);
     }
 
     @Test

@@ -567,9 +567,9 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         assertEquals(1, ex.invoked);
     }
 
-    @Test public void compareAttributesWithAttributeSelector() {
+    @Test public void compareAttributesWithAttributeFilter() {
         DOMDifferenceEngine d = new DOMDifferenceEngine();
-        d.setAttributeSelector(new Predicate<Attr>() {
+        d.setAttributeFilter(new Predicate<Attr>() {
                 @Override
                 public boolean test(Attr a) {
                     return "x".equals(a.getName());

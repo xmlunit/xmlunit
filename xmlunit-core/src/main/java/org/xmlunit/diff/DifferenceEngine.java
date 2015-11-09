@@ -48,14 +48,16 @@ public interface DifferenceEngine {
      * Sets the optional strategy that decides which attributes to
      * consider and which to ignore during comparison.
      *
-     * <p>By default all attributes are considered.</p>
+     * <p>Only attributes for which the predicate returns true are
+     * part of the comparison.  By default all attributes are
+     * considered.</p>
      *
      * <p>The "special" namespace, namespace-location and
      * schema-instance-type attributes can not be ignored this way.
      * If you want to suppress comparison of them you'll need to
      * implement {@link DifferenceEvaluator}.</p>
      */
-    void setAttributeSelector(Predicate<Attr> attributeSelector);
+    void setAttributeFilter(Predicate<Attr> attributeFilter);
 
     /**
      * Evaluates the severity of a difference.

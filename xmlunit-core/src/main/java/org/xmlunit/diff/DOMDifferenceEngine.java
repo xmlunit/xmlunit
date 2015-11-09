@@ -724,7 +724,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             Attr a = (Attr) map.item(i);
             if (!XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(a.getNamespaceURI())
                 && a != sLoc && a != nNsLoc && a != type
-                && getAttributeSelector().test(a)) {
+                && getAttributeFilter().test(a)) {
                 rest.add(a);
             }
         }
