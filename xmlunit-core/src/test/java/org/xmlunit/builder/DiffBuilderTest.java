@@ -29,6 +29,7 @@ import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.Difference;
 import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.diff.DifferenceEvaluators;
+import org.xmlunit.util.Predicate;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -380,6 +381,36 @@ public class DiffBuilderTest {
         Assert.assertTrue(myDiff.hasDifferences());
         assertThat(count(myDiff.getDifferences()), is(1));
     }
+
+    @Test
+    public void testDiff_withAttributeDifferences() {
+        // prepare testData
+        final String control = "<a><b attr1=\"abc\" attr2=\"def\"></b></a>";
+        final String test = "<a><b attr1=\"uvw\" attr2=\"def\"></b></a>";
+
+        // run test
+        Diff myDiff = DiffBuilder.compare(control).withTest(test)
+                .withComparisonController(ComparisonControllers.StopWhenDifferent)
+                .build();
+
+        // validate result
+        Assert.assertTrue(myDiff.hasDifferences());
+        assertThat(count(myDiff.getDifferences()), is(1));
+
+            // run test
+        Diff myDiffWithFilter = DiffBuilder.compare(control).withTest(test)
+                .withAttributeFilter(new Predicate<Attr>() {
+                        @Override
+                        public boolean test(Attr a) {
+                            return !"attr1".equals(a.getName());
+                        }
+                    })
+                .withComparisonController(ComparisonControllers.StopWhenDifferent)
+                .build();
+
+        // validate result
+        Assert.assertFalse(myDiffWithFilter.hasDifferences());
+}
 
     private final class IgnoreAttributeDifferenceEvaluator implements DifferenceEvaluator {
 

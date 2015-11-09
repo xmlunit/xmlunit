@@ -14,6 +14,7 @@
 
 package org.xmlunit.builder;
 
+import org.w3c.dom.Attr;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonController;
 import org.xmlunit.diff.ComparisonControllers;
@@ -28,6 +29,7 @@ import org.xmlunit.diff.NodeMatcher;
 import org.xmlunit.input.CommentLessSource;
 import org.xmlunit.input.WhitespaceNormalizedSource;
 import org.xmlunit.input.WhitespaceStrippedSource;
+import org.xmlunit.util.Predicate;
 
 import javax.xml.transform.Source;
 
@@ -79,6 +81,8 @@ public class DiffBuilder {
     private ComparisonResult[] comparisonResultsToCheck = CHECK_FOR_IDENTICAL;
 
     private Map<String, String> namespaceContext;
+
+    private Predicate<Attr> attributeFilter;
 
     private boolean ignoreWhitespace;
 
@@ -263,6 +267,23 @@ public class DiffBuilder {
     }
 
     /**
+     * Registers a filter for attributes.
+     *
+     * <p>Only attributes for which the predicate returns true are
+     * part of the comparison.  By default all attributes are
+     * considered.</p>
+     *
+     * <p>The "special" namespace, namespace-location and
+     * schema-instance-type attributes can not be ignored this way.
+     * If you want to suppress comparison of them you'll need to
+     * implement {@link DifferenceEvaluator}.</p>
+     */
+    public DiffBuilder withAttributeFilter(Predicate<Attr> attributeFilter) {
+        this.attributeFilter = attributeFilter;
+        return this;
+    }
+
+    /**
      * Compare the Test-XML {@link #withTest(Object)} with the Control-XML {@link #compare(Object)} and return the
      * collected differences in a {@link Diff} object.
      */
@@ -284,6 +305,9 @@ public class DiffBuilder {
         }
         if (namespaceContext != null) {
             d.setNamespaceContext(namespaceContext);
+        }
+        if (attributeFilter != null) {
+            d.setAttributeFilter(attributeFilter);
         }
         d.compare(wrap(controlSource), wrap(testSource));
 
