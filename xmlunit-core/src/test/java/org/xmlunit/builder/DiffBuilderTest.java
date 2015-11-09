@@ -410,7 +410,7 @@ public class DiffBuilderTest {
 
         // validate result
         Assert.assertFalse(myDiffWithFilter.hasDifferences());
-}
+    }
 
     private final class IgnoreAttributeDifferenceEvaluator implements DifferenceEvaluator {
 
