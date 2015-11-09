@@ -27,6 +27,7 @@ import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelector;
 import org.xmlunit.diff.NodeMatcher;
+import org.xmlunit.util.Predicate;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -35,7 +36,7 @@ import org.hamcrest.Matcher;
 
 import java.lang.reflect.Constructor;
 import java.util.logging.Logger;
-
+import org.w3c.dom.Attr;
 
 /**
  * This Hamcrest {@link Matcher} compares two XML sources with each others.
@@ -193,6 +194,14 @@ public final class CompareMatcher extends BaseMatcher<Object> {
      */
     public CompareMatcher withDifferenceListeners(ComparisonListener... comparisonListeners) {
         diffBuilder.withDifferenceListeners(comparisonListeners);
+        return this;
+    }
+
+    /**
+     * @see DiffBuilder#withAttributeFilter
+     */
+    public CompareMatcher withAttributeFilter(Predicate<Attr> attributeFilter) {
+        diffBuilder.withAttributeFilter(attributeFilter);
         return this;
     }
 

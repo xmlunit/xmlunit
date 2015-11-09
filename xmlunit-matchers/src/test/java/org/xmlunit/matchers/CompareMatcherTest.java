@@ -32,6 +32,7 @@ import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.diff.ElementSelectors;
+import org.xmlunit.util.Predicate;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -261,6 +262,27 @@ public class CompareMatcherTest {
         
         // validate that the written File contains the right data:
         assertThat(new File(getTestResultFolder(), fileName), isSimilarTo(test));
+    }
+
+    @Test
+    public void testDiff_withAttributeDifferences() {
+        final String control = "<a><b attr1=\"abc\" attr2=\"def\"></b></a>";
+        final String test = "<a><b attr1=\"xyz\" attr2=\"def\"></b></a>";
+
+        try {
+            assertThat(test, isSimilarTo(control));
+            Assert.fail("Should throw AssertionError");
+        } catch (AssertionError e) {
+            assertThat(e.getMessage(), containsString("Expected attribute value 'abc' but was 'xyz'"));
+        }
+
+        assertThat(test, isSimilarTo(control)
+                   .withAttributeFilter(new Predicate<Attr>() {
+                           @Override
+                           public boolean test(Attr a) {
+                               return !"attr1".equals(a.getName());
+                           }
+                       }));
     }
 
     public void expect(Class<? extends Throwable> type) {
