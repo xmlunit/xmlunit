@@ -16,8 +16,7 @@ In General
   probably be complete before the first alpha release
 * work on the open issues
 * provide convenient APIs for ignoring complete subtrees (see
-  [#26](https://github.com/xmlunit/xmlunit/issues/26)) or certain
-  attributes (see [#2](https://github.com/xmlunit/xmlunit/issues/2))
+  [#26](https://github.com/xmlunit/xmlunit/issues/26))
   when comparing pieces of XML.
 
 Java
@@ -34,4 +33,3 @@ Java
 Claimed
 -------
 
-* @bodewig is working on #2
