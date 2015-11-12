@@ -33,3 +33,4 @@ Java
 Claimed
 -------
 
+* @bodewig is working on [#26](https://github.com/xmlunit/xmlunit/issues/26)
