@@ -15,9 +15,6 @@ In General
 * Validate the API - this is paramount to get 2.0 final out but should
   probably be complete before the first alpha release
 * work on the open issues
-* provide convenient APIs for ignoring complete subtrees (see
-  [#26](https://github.com/xmlunit/xmlunit/issues/26))
-  when comparing pieces of XML.
 
 Java
 ----
@@ -33,4 +30,4 @@ Java
 Claimed
 -------
 
-* @bodewig is working on [#26](https://github.com/xmlunit/xmlunit/issues/26)
+

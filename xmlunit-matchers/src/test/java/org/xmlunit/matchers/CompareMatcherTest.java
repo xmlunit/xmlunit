@@ -285,6 +285,27 @@ public class CompareMatcherTest {
                        }));
     }
 
+    @Test
+    public void testDiff_withExtraNodes() {
+        String control = "<a><b></b><c/></a>";
+        String test = "<a><b></b><c/><d/></a>";
+
+        try {
+            assertThat(test, isSimilarTo(control));
+        } catch (AssertionError e) {
+            assertThat(e.getMessage(), containsString("Expected child nodelist length '2' but was '3'"));
+        }
+
+        assertThat(test,
+                   isSimilarTo(control)
+                   .withNodeFilter(new Predicate<Node>() {
+                           @Override
+                           public boolean test(Node n) {
+                               return !"d".equals(n.getNodeName());
+                           }
+                       }));
+    }
+
     public void expect(Class<? extends Throwable> type) {
         if (letExceptionTestFail) return;
         thrown.expect(type);

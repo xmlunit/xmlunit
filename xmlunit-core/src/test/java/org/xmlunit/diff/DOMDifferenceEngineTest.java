@@ -598,6 +598,39 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         assertEquals(1, ex.invoked);
     }
 
+    @Test public void compareNodesWithNodeFilter() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        d.setNodeFilter(new Predicate<Node>() {
+                @Override
+                public boolean test(Node n) {
+                    return "x".equals(n.getNodeName())
+                        || "foo".equals(n.getNodeName());
+                }
+            });
+        DiffExpecter ex = new DiffExpecter(ComparisonType.CHILD_NODELIST_LENGTH,
+                                           "/", "/");
+        d.addDifferenceListener(ex);
+        d.setComparisonController(ComparisonControllers.StopWhenDifferent);
+
+        Element e1 = doc.createElement("foo");
+        e1.appendChild(doc.createElement("x"));
+        e1.appendChild(doc.createElement("y"));
+        Element e2 = doc.createElement("foo");
+        e2.appendChild(doc.createElement("x"));
+        e2.appendChild(doc.createElement("y"));
+        e2.appendChild(doc.createElement("z"));
+        Element e3 = doc.createElement("foo");
+        e3.appendChild(doc.createElement("y"));
+
+        assertEquals(wrap(ComparisonResult.EQUAL),
+                     d.compareNodes(e1, new XPathContext(),
+                                    e2, new XPathContext()));
+        assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),
+                     d.compareNodes(e1, new XPathContext(),
+                                    e3, new XPathContext()));
+        assertEquals(1, ex.invoked);
+    }
+
     @Test public void naiveRecursion() {
         Element e1 = doc.createElement("foo");
         Element e2 = doc.createElement("foo");

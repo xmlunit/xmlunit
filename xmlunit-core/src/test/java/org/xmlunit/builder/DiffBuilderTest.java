@@ -412,6 +412,36 @@ public class DiffBuilderTest {
         Assert.assertFalse(myDiffWithFilter.hasDifferences());
     }
 
+    @Test
+    public void testDiff_withExtraNodes() {
+        // prepare testData
+        String control = "<a><b></b><c/></a>";
+        String test = "<a><b></b><c/><d/></a>";
+
+        // run test
+        Diff myDiff = DiffBuilder.compare(control).withTest(test)
+            .withComparisonController(ComparisonControllers.StopWhenDifferent)
+            .build();
+
+        // validate result
+        Assert.assertTrue(myDiff.hasDifferences());
+        assertThat(count(myDiff.getDifferences()), is(1));
+
+        // run test
+        Diff myDiffWithFilter = DiffBuilder.compare(control).withTest(test)
+            .withNodeFilter(new Predicate<Node>() {
+                        @Override
+                        public boolean test(Node n) {
+                            return !"d".equals(n.getNodeName());
+                        }
+                })
+            .withComparisonController(ComparisonControllers.StopWhenDifferent)
+            .build();
+
+        // validate result
+        Assert.assertFalse(myDiffWithFilter.hasDifferences());
+    }
+
     private final class IgnoreAttributeDifferenceEvaluator implements DifferenceEvaluator {
 
         private String attributeName;

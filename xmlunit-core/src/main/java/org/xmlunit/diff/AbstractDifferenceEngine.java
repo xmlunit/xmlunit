@@ -16,6 +16,7 @@ package org.xmlunit.diff;
 import java.util.Collections;
 import java.util.Map;
 import org.w3c.dom.Attr;
+import org.w3c.dom.Node;
 import org.xmlunit.util.Predicate;
 
 /**
@@ -35,6 +36,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
                 return true;
             }
         };
+    private Predicate<Node> nodeFilter = NodeFilters.Default;
 
     protected AbstractDifferenceEngine() { }
 
@@ -136,6 +138,21 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
      */
     protected Predicate<Attr> getAttributeFilter() {
         return attributeFilter;
+    }
+
+    @Override
+    public void setNodeFilter(Predicate<Node> nf) {
+        if (nf == null) {
+            throw new IllegalArgumentException("node filter must not be null");
+        }
+        this.nodeFilter = nf;
+    }
+
+    /**
+     * Provides access to the configured ComparisonController.
+     */
+    protected Predicate<Node> getNodeFilter() {
+        return nodeFilter;
     }
 
     /**

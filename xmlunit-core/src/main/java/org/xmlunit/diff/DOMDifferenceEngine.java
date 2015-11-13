@@ -83,10 +83,10 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                  final Node test, final XPathContext testContext) {
         final Iterable<Node> controlChildren =
             Linqy.filter(new IterableNodeList(control.getChildNodes()),
-                         INTERESTING_NODES);
+                         getNodeFilter());
         final Iterable<Node> testChildren =
             Linqy.filter(new IterableNodeList(test.getChildNodes()),
-                         INTERESTING_NODES);
+                         getNodeFilter());
 
         return compare(new Comparison(ComparisonType.NODE_TYPE,
                                       control, getXPath(controlContext),
@@ -799,17 +799,6 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         new Mapper<Node, QName>() {
             @Override
             public QName apply(Node n) { return Nodes.getQName(n); }
-        };
-
-    /**
-     * Suppresses document-type nodes.
-     */
-    private static final Predicate<Node> INTERESTING_NODES =
-        new Predicate<Node>() {
-            @Override
-            public boolean test(Node n) {
-                return n.getNodeType() != Node.DOCUMENT_TYPE_NODE;
-            }
         };
 
 }

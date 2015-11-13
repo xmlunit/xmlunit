@@ -37,6 +37,7 @@ import org.hamcrest.Matcher;
 import java.lang.reflect.Constructor;
 import java.util.logging.Logger;
 import org.w3c.dom.Attr;
+import org.w3c.dom.Node;
 
 /**
  * This Hamcrest {@link Matcher} compares two XML sources with each others.
@@ -202,6 +203,14 @@ public final class CompareMatcher extends BaseMatcher<Object> {
      */
     public CompareMatcher withAttributeFilter(Predicate<Attr> attributeFilter) {
         diffBuilder.withAttributeFilter(attributeFilter);
+        return this;
+    }
+
+    /**
+     * @see DiffBuilder#withNodeFilter
+     */
+    public CompareMatcher withNodeFilter(Predicate<Node> nodeFilter) {
+        diffBuilder.withNodeFilter(nodeFilter);
         return this;
     }
 

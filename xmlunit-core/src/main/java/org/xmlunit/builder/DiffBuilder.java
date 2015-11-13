@@ -15,6 +15,7 @@
 package org.xmlunit.builder;
 
 import org.w3c.dom.Attr;
+import org.w3c.dom.Node;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonController;
 import org.xmlunit.diff.ComparisonControllers;
@@ -83,6 +84,8 @@ public class DiffBuilder {
     private Map<String, String> namespaceContext;
 
     private Predicate<Attr> attributeFilter;
+
+    private Predicate<Node> nodeFilter;
 
     private boolean ignoreWhitespace;
 
@@ -284,6 +287,18 @@ public class DiffBuilder {
     }
 
     /**
+     * Registers a filter for nodes.
+     *
+     * <p>Only nodes for which the predicate returns true are part of
+     * the comparison.  By default nodes that are not document types
+     * are considered.</p>
+     */
+    public DiffBuilder withNodeFilter(Predicate<Node> nodeFilter) {
+        this.nodeFilter = nodeFilter;
+        return this;
+    }
+
+    /**
      * Compare the Test-XML {@link #withTest(Object)} with the Control-XML {@link #compare(Object)} and return the
      * collected differences in a {@link Diff} object.
      */
@@ -308,6 +323,9 @@ public class DiffBuilder {
         }
         if (attributeFilter != null) {
             d.setAttributeFilter(attributeFilter);
+        }
+        if (nodeFilter != null) {
+            d.setNodeFilter(nodeFilter);
         }
         d.compare(wrap(controlSource), wrap(testSource));
 

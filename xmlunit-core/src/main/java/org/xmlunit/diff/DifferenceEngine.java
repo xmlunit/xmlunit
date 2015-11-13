@@ -16,6 +16,7 @@ package org.xmlunit.diff;
 import java.util.Map;
 import javax.xml.transform.Source;
 import org.w3c.dom.Attr;
+import org.w3c.dom.Node;
 import org.xmlunit.util.Predicate;
 
 /**
@@ -58,6 +59,16 @@ public interface DifferenceEngine {
      * implement {@link DifferenceEvaluator}.</p>
      */
     void setAttributeFilter(Predicate<Attr> attributeFilter);
+
+    /**
+     * Sets the optional strategy that decides which nodes to
+     * consider and which to ignore during comparison.
+     *
+     * <p>Only nodes for which the predicate returns true are part of
+     * the comparison.  By default nodes that are not document types
+     * are considered.</p>
+     */
+    void setNodeFilter(Predicate<Node> nodeFilter);
 
     /**
      * Evaluates the severity of a difference.
