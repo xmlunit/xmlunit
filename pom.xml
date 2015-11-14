@@ -233,18 +233,6 @@
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>0.7.4.201502262128</version>
         </plugin>
-        <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.6</version>
-          <inherited>true</inherited>
-          <configuration>
-            <descriptorRefs>
-              <descriptorRef>bin</descriptorRef>
-              <descriptorRef>src</descriptorRef>
-            </descriptorRefs>
-            <attach>false</attach>
-          </configuration>
-        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -292,6 +280,17 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.6</version>
+        <inherited>false</inherited>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>project</descriptorRef>
+          </descriptorRefs>
+          <attach>false</attach>
+          <finalName>xmlunit-${project.version}-src</finalName>
+          <tarLongFileMode>posix</tarLongFileMode>
+          <appendAssemblyId>false</appendAssemblyId>
+        </configuration>
         <executions>
           <execution>
             <id>make-assembly</id>
