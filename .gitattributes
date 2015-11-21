@@ -4,6 +4,7 @@
 *.md     text
 *.rng    text
 *.rngc   text
+*.sh     eol=lf
 *.xml    text
 *.xsd    text
 *.xsl    text
