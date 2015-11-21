@@ -1,7 +1,7 @@
 XMLUnit for Java 2.x
 ====================
 
-[![Build Status XMLUnit 2.x for Java](https://travis-ci.org/xmlunit/xmlunit.svg?branch=master)](https://travis-ci.org/xmlunit/xmlunit) [![Coverage Status](https://coveralls.io/repos/xmlunit/xmlunit/badge.svg)](https://coveralls.io/r/xmlunit/xmlunit)
+[![Build Status XMLUnit 2.x for Java](https://travis-ci.org/xmlunit/xmlunit.svg?branch=master)](https://travis-ci.org/xmlunit/xmlunit) [![Coverage Status](https://coveralls.io/repos/xmlunit/xmlunit/badge.svg)](https://coveralls.io/r/xmlunit/xmlunit)[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.xmlunit/xmlunit-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.xmlunit/xmlunit-core)
 
 XMLUnit is a library that supports testing XML output in several ways.
 
@@ -19,8 +19,9 @@ Some goals for XMLUnit 2.x:
   - comparisons
 * be independent of any test framework
 
-We are in the process of finalizing the API for XMLUnit 2.x.  XMLUnit
-1.x for Java is still supported and will stay at
+We are in the process of finalizing the API for XMLUnit 2.x so the
+current release is an alpha release.  XMLUnit 1.x for Java is still
+supported and will stay at
 [sourceforge](https://sourceforge.net/projects/xmlunit/).
 
 ## Documentation
@@ -37,11 +38,23 @@ If you are looking for something to work on, we've compiled a
 Please see the [contributing guide](CONTRIBUTING.md) for details on
 how to contribute.
 
-## SNAPSHOT builds
+## Latest Release
 
-There is no released version of XMLUnit for Java 2.x, we'll need to
-hash out a few remaining API questions before we can think about
-cutting an alpha version.
+The latest releases are available as
+[GitHub releases](https://github.com/xmlunit/xmlunit/releases) or via
+[Maven Central](http://search.maven.org/#search|ga|1|org.xmlunit).
+
+The core library is
+
+```xml
+<dependency>
+  <groupId>org.xmlunit</groupId>
+  <artifactId>xmlunit-core</artifactId>
+  <version>x.y.z</version>
+</dependency>
+```
+
+## SNAPSHOT builds
 
 We are providing SNAPSHOT builds from
 [Sonatypes OSS Nexus Repository](https://oss.sonatype.org/content/repositories/snapshots/org/xmlunit/),
@@ -56,15 +69,7 @@ you need to add
 </repository>
 ```
 
-to your Maven settings.  The core library is
-
-```xml
-<dependency>
-  <groupId>org.xmlunit</groupId>
-  <artifactId>xmlunit-core</artifactId>
-  <version>2.0.0-SNAPSHOT</version>
-</dependency>
-```
+to your Maven settings.
 
 ## Examples
 
