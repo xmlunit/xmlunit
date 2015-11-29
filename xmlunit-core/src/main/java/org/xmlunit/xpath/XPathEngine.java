@@ -31,6 +31,15 @@ public interface XPathEngine {
      */
     String evaluate(String xPath, Source s);
     /**
+     * Returns a potentially empty collection of Nodes matching an
+     * XPath expression.
+     */
+    Iterable<Node> selectNodes(String xPath, Node n);
+    /**
+     * Evaluates an XPath expression and stringifies the result.
+     */
+    String evaluate(String xPath, Node n);
+    /**
      * Establish a namespace context.
      *
      * @param prefix2Uri maps from prefix to namespace URI.

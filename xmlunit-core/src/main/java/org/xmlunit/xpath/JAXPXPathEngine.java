@@ -76,6 +76,29 @@ public class JAXPXPathEngine implements XPathEngine {
     /**
      * {@inheritDoc}
      */
+    public Iterable<Node> selectNodes(String xPath, Node n) {
+        try {
+            return new IterableNodeList(
+                (NodeList) xpath.evaluate(xPath, n, XPathConstants.NODESET));
+        } catch (XPathExpressionException ex) {
+            throw new XMLUnitException(ex);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String evaluate(String xPath, Node n) {
+        try {
+            return xpath.evaluate(xPath, n);
+        } catch (XPathExpressionException ex) {
+            throw new XMLUnitException(ex);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void setNamespaceContext(Map<String, String> prefix2Uri) {
         xpath.setNamespaceContext(Convert.toNamespaceContext(prefix2Uri));
     }
