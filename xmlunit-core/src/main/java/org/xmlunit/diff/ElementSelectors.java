@@ -26,7 +26,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
-import javax.xml.transform.dom.DOMSource;
 import org.xmlunit.util.IsNullPredicate;
 import org.xmlunit.util.Linqy;
 import org.xmlunit.util.Mapper;
@@ -395,13 +394,11 @@ public final class ElementSelectors {
             @Override
             public boolean canBeCompared(Element controlElement,
                                          Element testElement) {
-                Iterable<Node> controlChildren =
-                    engine.selectNodes(xpath, new DOMSource(controlElement));
+                Iterable<Node> controlChildren = engine.selectNodes(xpath, controlElement);
                 int expected = Linqy.count(controlChildren);
                 int matched =
                     Linqy.count(nm.match(controlChildren,
-                                         engine.selectNodes(xpath,
-                                                            new DOMSource(testElement))));
+                                         engine.selectNodes(xpath, testElement)));
                 return expected == matched;
             }
         };

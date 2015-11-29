@@ -52,7 +52,6 @@ public class SelectElementsByNameOfChildTest {
         + "</root>";
 
     @Test
-    @Ignore("doesn't work with alpha-02")
     public void tryToSelectMatchingChildNodesUsingXPath() throws Exception {
         ElementSelector childSelector = selectorForElementNamed("child", byXPath("./*[1]", byName));
         assertThat(fromString(test1),
@@ -61,6 +60,7 @@ public class SelectElementsByNameOfChildTest {
     }
 
     @Test
+    @Ignore("doesn't work with XMLUnit > 2.0.0-alpha-02")
     public void tryToSelectMatchingChildNodesUsingXPathAlpha02() throws Exception {
         ElementSelector childSelector = selectorForElementNamed("child", byXPath("./child/*[1]", byName));
         assertThat(fromString(test1),
