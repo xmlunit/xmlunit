@@ -416,9 +416,9 @@ public final class ElementSelectors {
      * Allows to build complex {@link ElementSelector}s by combining simpler blocks.
      *
      * <p>All {@code when*}s are consulted in order and if one returns
-     * {@code true} than the associated {@code ElementSelector} is
-     * used.  If all of the return {@code false}, the default set up
-     * with {@code elseUs} if any is used.</p>
+     * {@code true} then the associated {@code ElementSelector} is
+     * used.  If all of the, return {@code false}, the default set up
+     * with {@code elseUse} if any is used.</p>
      */
     public interface ConditionalSelectorBuilder {
         /**

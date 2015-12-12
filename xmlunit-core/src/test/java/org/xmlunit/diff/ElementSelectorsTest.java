@@ -419,7 +419,7 @@ public class ElementSelectorsTest {
         // not or-ed
         assertFalse(builder.build().canBeCompared(control, test));
 
-        Element control2 = doc.createElement(BAR);
+        Element control2 = doc.createElement("baz");
         assertTrue(builder.build().canBeCompared(control2, test));
     }
 

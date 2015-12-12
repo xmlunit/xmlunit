@@ -75,7 +75,7 @@ class DefaultConditionalSelectorBuilder
 
         private ConditionalSelector(Map<Predicate<? super Element>, ElementSelector> conditionalSelectors,
                                     ElementSelector defaultSelector) {
-            this.conditionalSelectors = conditionalSelectors;
+            this.conditionalSelectors = new LinkedHashMap<Predicate<? super Element>, ElementSelector>(conditionalSelectors);
             this.defaultSelector = defaultSelector;
         }
 
