@@ -415,8 +415,12 @@ public class ElementSelectorsTest {
 
         assertFalse(builder.build().canBeCompared(control, test));
 
-        builder.defaultTo(ElementSelectors.Default);
-        assertTrue(builder.build().canBeCompared(control, test));
+        builder.elseUse(ElementSelectors.Default);
+        // not or-ed
+        assertFalse(builder.build().canBeCompared(control, test));
+
+        Element control2 = doc.createElement(BAR);
+        assertTrue(builder.build().canBeCompared(control2, test));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -541,7 +545,7 @@ public class ElementSelectorsTest {
     public void conditionalSelectorBuilderWontAllowMultipleDefaults() {
         ElementSelectors.ConditionalSelectorBuilder b =
             ElementSelectors.conditionalBuilder();
-        b.defaultTo(ElementSelectors.byName);
-        b.defaultTo(ElementSelectors.byName);
+        b.elseUse(ElementSelectors.byName);
+        b.elseUse(ElementSelectors.byName);
     }
 }

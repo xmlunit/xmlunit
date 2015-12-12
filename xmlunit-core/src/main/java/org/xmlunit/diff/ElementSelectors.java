@@ -17,13 +17,10 @@ import static org.xmlunit.util.Linqy.all;
 import static org.xmlunit.util.Linqy.any;
 
 import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import org.xmlunit.util.IsNullPredicate;
@@ -418,9 +415,10 @@ public final class ElementSelectors {
     /**
      * Allows to build complex {@link ElementSelector}s by combining simpler blocks.
      *
-     * <p>All pairs created by the {@code when*}/{@code thenUse} pairs
-     * are evaluated in order until one returns true, finally the
-     * {@code default}, if any, is consulted.</p>
+     * <p>All {@code when*}s are consulted in order and if one returns
+     * {@code true} than the associated {@code ElementSelector} is
+     * used.  If all of the return {@code false}, the default set up
+     * with {@code elseUs} if any is used.</p>
      */
     public interface ConditionalSelectorBuilder {
         /**
@@ -436,9 +434,10 @@ public final class ElementSelectors {
          */
         ConditionalSelectorBuilderThen whenElementIsNamed(QName expectedName);
         /**
-         * Assigns a default ElementSelector.
+         * Assigns a default ElementSelector that is used if all
+         * {@code when}s have returned false.
          */
-        ConditionalSelectorBuilder defaultTo(ElementSelector es);
+        ConditionalSelectorBuilder elseUse(ElementSelector es);
         /**
          * Builds a conditional ElementSelector.
          */
@@ -456,59 +455,6 @@ public final class ElementSelectors {
         return new DefaultConditionalSelectorBuilder();
     }
 
-    private static class DefaultConditionalSelectorBuilder
-        implements ConditionalSelectorBuilder, ConditionalSelectorBuilderThen {
-        private ElementSelector defaultSelector;
-        private final List<ElementSelector> conditionalSelectors = new LinkedList<ElementSelector>();
-        private Predicate<? super Element> pendingCondition;
-
-        @Override
-        public ConditionalSelectorBuilder thenUse(ElementSelector es) {
-            if (pendingCondition == null) {
-                throw new IllegalStateException("missing condition");
-            }
-            conditionalSelectors.add(conditionalSelector(pendingCondition, es));
-            pendingCondition = null;
-            return this;
-        }
-        @Override
-        public ConditionalSelectorBuilderThen when(Predicate<? super Element> predicate) {
-            if (pendingCondition != null) {
-                throw new IllegalStateException("unbalanced conditions");
-            }
-            pendingCondition = predicate;
-            return this;
-        }
-        @Override
-        public ConditionalSelectorBuilder defaultTo(ElementSelector es) {
-            if (defaultSelector != null) {
-                throw new IllegalStateException("can't have more than one default selector");
-            }
-            defaultSelector = es;
-            return this;
-        }
-        @Override
-        public ConditionalSelectorBuilderThen whenElementIsNamed(String expectedName) {
-            return when(elementNamePredicate(expectedName));
-        }
-        @Override
-        public ConditionalSelectorBuilderThen whenElementIsNamed(QName expectedName) {
-            return when(elementNamePredicate(expectedName));
-        }
-        @Override
-        public ElementSelector build() {
-            if (pendingCondition != null) {
-                throw new IllegalStateException("unbalanced conditions");
-            }
-            List<ElementSelector> es = new ArrayList<ElementSelector>();
-            es.addAll(conditionalSelectors);
-            if (defaultSelector != null) {
-                es.add(defaultSelector);
-            }
-            return or(es.toArray(new ElementSelector[es.size()]));
-        }
-    }
-
     private static boolean bothNullOrEqual(Object o1, Object o2) {
         return o1 == null ? o2 == null : o1.equals(o2);
     }
@@ -524,7 +470,7 @@ public final class ElementSelectors {
         return true;
     }
 
-    private static Predicate<Element> elementNamePredicate(final String expectedName) {
+    static Predicate<Element> elementNamePredicate(final String expectedName) {
         return new Predicate<Element>() {
             @Override
             public boolean test(Element e) {
@@ -540,7 +486,7 @@ public final class ElementSelectors {
         };
     }
 
-    private static Predicate<Element> elementNamePredicate(final QName expectedName) {
+    static Predicate<Element> elementNamePredicate(final QName expectedName) {
         return new Predicate<Element>() {
             @Override
             public boolean test(Element e) {

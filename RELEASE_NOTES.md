@@ -8,6 +8,10 @@
 * fixed the XPath context used by the `byXPath` element selector so
   that "." now refers to the current element.
   Issue [#39](https://github.com/xmlunit/xmlunit/issues/39)
+* `ElementSelectors#conditionalBuilder` now stops at the forst
+  predicate returining true, even it the associated `ElementSelector`
+  returns false.
+  Issue [#40](https://github.com/xmlunit/xmlunit/issues/40)
 
 ## XMLUnit for Java 2.0.0-alpha-02 - /Released 2015-11-21/
 
