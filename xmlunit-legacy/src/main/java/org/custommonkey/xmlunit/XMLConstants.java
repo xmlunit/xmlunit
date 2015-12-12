@@ -130,7 +130,7 @@ public interface XMLConstants {
     public static final String XPATH_CHARACTER_NODE_IDENTIFIER = "text()";
 
     /**
-     * "&at;"
+     * "@"
      */
     public static final String XPATH_ATTRIBUTE_IDENTIFIER = "@";
 

@@ -218,8 +218,8 @@ public final class CompareMatcher extends BaseMatcher<Object> {
      * Instead of Matcher returning <code>false</code> a {@link org.junit.ComparisonFailure} will be thrown.
      * <p>
      * The advantage over the standard Matcher behavior is, that the ComparisonFailure can provide the effected
-     * Control-Node and Test-Node in separate Properties.<br />
-     * Eclipse, NetBeans and IntelliJ can provide a nice DIFF-View for the two values.<br />
+     * Control-Node and Test-Node in separate Properties.<br>
+     * Eclipse, NetBeans and IntelliJ can provide a nice DIFF-View for the two values.<br>
      * ComparisonFailure is also used in {@link org.junit.Assert#assertEquals(Object, Object)} if both values are
      * {@link String}s.
      * <p>

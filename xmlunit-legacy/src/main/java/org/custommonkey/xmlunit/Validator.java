@@ -66,15 +66,15 @@ import javax.xml.transform.stream.StreamSource;
  *  different DOCTYPE.
  * Usage:
  * <ul>
- * <li><code>new Validator(readerForXML);</code> <br/>
+ * <li><code>new Validator(readerForXML);</code> <br>
  *   to validate some XML that contains or references an accessible DTD or
  *   schema
  * </li>
- * <li><code>new Validator(readerForXML, systemIdForValidation);</code> <br/>
+ * <li><code>new Validator(readerForXML, systemIdForValidation);</code> <br>
  *   to validate some XML that references a DTD but using a local systemId
  *   to perform the validation
  * </li>
- * <li><code>new Validator(readerForXML, systemIdForValidation, doctypeName);</code> <br/>
+ * <li><code>new Validator(readerForXML, systemIdForValidation, doctypeName);</code> <br>
  *   to validate some XML against a completely different DTD
  * </li>
  * </ul>

@@ -61,39 +61,39 @@ import org.xml.sax.SAXException;
 /**
  * Collection of static methods so that XML assertion facilities are available
  * in any class, not just test suites. Thanks to Andrew McCormick and others for
- * suggesting this refactoring.<br/>
+ * suggesting this refactoring.<br>
  * Available assertion methods are:
  * <ul>
- * <li><strong><code>assertXMLEqual</code></strong><br/>
+ * <li><strong><code>assertXMLEqual</code></strong><br>
  *  assert that two pieces of XML markup are <i>similar</i></li>
- * <li><strong><code>assertXMLNotEqual</code></strong><br/>
+ * <li><strong><code>assertXMLNotEqual</code></strong><br>
  *  assert that two pieces of XML markup are <i>different</i></li>
- * <li><strong><code>assertXMLIdentical</code></strong><br/>
+ * <li><strong><code>assertXMLIdentical</code></strong><br>
  *  assert that two pieces of XML markup are <i>identical</i>. In most cases
  *  this assertion is too strong and <code>assertXMLEqual</code> is sufficient</li>
- * <li><strong><code>assertXpathExists</code></strong><br/> 
+ * <li><strong><code>assertXpathExists</code></strong><br> 
  * assert that an XPath expression matches at least one node</li>
- * <li><strong><code>assertXpathNotExists</code></strong><br/> 
+ * <li><strong><code>assertXpathNotExists</code></strong><br> 
  * assert that an XPath expression does not match any nodes</li>
- * <li><strong><code>assertXpathsEqual</code></strong><br/>
+ * <li><strong><code>assertXpathsEqual</code></strong><br>
  *  assert that the nodes obtained by executing two Xpaths
  *  are <i>similar</i></li>
- * <li><strong><code>assertXpathsNotEqual</code></strong><br/>
+ * <li><strong><code>assertXpathsNotEqual</code></strong><br>
  *  assert that the nodes obtained by executing two Xpaths
  *  are <i>different</i></li>
- * <li><strong><code>assertXpathValuesEqual</code></strong><br/>
+ * <li><strong><code>assertXpathValuesEqual</code></strong><br>
  *  assert that the flattened String obtained by executing two Xpaths
  *  are <i>similar</i></li>
- * <li><strong><code>assertXpathValuesNotEqual</code></strong><br/>
+ * <li><strong><code>assertXpathValuesNotEqual</code></strong><br>
  *  assert that the flattened String obtained by executing two Xpaths
  *  are <i>different</i></li>
- * <li><strong><code>assertXpathEvaluatesTo</code></strong><br/>
+ * <li><strong><code>assertXpathEvaluatesTo</code></strong><br>
  *  assert that the flattened String obtained by executing an Xpath
  *  is a particular value</li>
- * <li><strong><code>assertXMLValid</code></strong><br/>
+ * <li><strong><code>assertXMLValid</code></strong><br>
  *  assert that a piece of XML markup is valid with respect to a DTD: either
  *  by using the markup's own DTD or a different DTD</li>
- * <li><strong><code>assertNodeTestPasses</code></strong><br/>
+ * <li><strong><code>assertNodeTestPasses</code></strong><br>
  *  assert that a piece of XML markup passes a {@link NodeTest NodeTest}</li>
  * </ul>
  * All underlying similarity and difference testing is done using 
@@ -1112,7 +1112,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
     }
 
     /**
-     * Execute a <code>NodeTest<code> for a single node type
+     * Execute a <code>NodeTest</code> for a single node type
      * and assert that it passes
      * @param xml XML to be tested
      * @param tester The test strategy
@@ -1131,7 +1131,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
     }
 
     /**
-     * Execute a <code>NodeTest<code> for a single node type
+     * Execute a <code>NodeTest</code> for a single node type
      * and assert that it passes
      * @param xmlString XML to be tested
      * @param tester The test strategy
@@ -1150,7 +1150,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
     }
 
     /**
-     * Execute a <code>NodeTest<code> for multiple node types and make an
+     * Execute a <code>NodeTest</code> for multiple node types and make an
      * assertion about it whether it is expected to pass
      * @param test a NodeTest instance containing the XML source to be tested
      * @param tester The test strategy

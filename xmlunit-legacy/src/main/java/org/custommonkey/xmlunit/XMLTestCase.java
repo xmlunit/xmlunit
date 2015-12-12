@@ -984,7 +984,7 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     }
 
     /**
-     * Execute a <code>NodeTest<code> for a single node type
+     * Execute a <code>NodeTest</code> for a single node type
      * and assert that it passes
      * @param xml XML to be tested
      * @param tester The test strategy
@@ -1002,7 +1002,7 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     }
 
     /**
-     * Execute a <code>NodeTest<code> for a single node type
+     * Execute a <code>NodeTest</code> for a single node type
      * and assert that it passes
      * @param xmlString XML to be tested
      * @param tester The test strategy
@@ -1020,7 +1020,7 @@ public abstract class XMLTestCase extends TestCase implements XSLTConstants {
     }
 
     /**
-     * Execute a <code>NodeTest<code> for multiple node types and make an
+     * Execute a <code>NodeTest</code> for multiple node types and make an
      * assertion about it whether it is expected to pass
      * @param test a NodeTest instance containing the XML source to be tested
      * @param tester The test strategy

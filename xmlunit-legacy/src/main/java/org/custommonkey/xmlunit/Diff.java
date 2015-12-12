@@ -52,7 +52,7 @@ import org.xml.sax.SAXException;
 /**
  * Compares and describes any difference between XML documents.
  * Two documents are either:
- * <br /><ul>
+ * <ul>
  * <li><i>identical</i>: the content and sequence of the nodes in the documents
  * are exactly the same</li>
  * <li><i>similar</i>: the content of the nodes in the documents are the same,
@@ -61,7 +61,6 @@ import org.xml.sax.SAXException;
  * <li><i>different</i>: the contents of the documents are fundamentally
  * different</li>
  * </ul>
- * <br />
  * The difference between compared documents is contained in a  message buffer
  * held in this class, accessible either through the  <code>appendMessage</code>
  * or <code>toString</code> methods.  NB: When comparing documents, the
@@ -371,7 +370,7 @@ public class Diff
     /**
      * Get the result of this Diff instance as a String
      *
-     * <p><b>Note:</b></p> This method will perform the comparison and
+     * <p><b>Note:</b> This method will perform the comparison and
      * cache the result if it hasn't been performed already.  Any
      * configuration changes made after calling this method will be
      * ignored.</p>
