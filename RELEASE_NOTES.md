@@ -8,8 +8,8 @@
 * fixed the XPath context used by the `byXPath` element selector so
   that "." now refers to the current element.
   Issue [#39](https://github.com/xmlunit/xmlunit/issues/39)
-* `ElementSelectors#conditionalBuilder` now stops at the forst
-  predicate returining true, even it the associated `ElementSelector`
+* `ElementSelectors#conditionalBuilder` now stops at the first
+  predicate returning `true`, even if the associated `ElementSelector`
   returns false.
   Issue [#40](https://github.com/xmlunit/xmlunit/issues/40)
 
