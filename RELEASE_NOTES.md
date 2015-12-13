@@ -1,5 +1,7 @@
 # Release Notes
 
+## Next Release
+
 ## XMLUnit for Java 2.0.0-alpha-03 - /Released 2015-12-13/
 
 * the xmlunit-parent POM no longer uses the deprecated
