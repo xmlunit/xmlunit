@@ -62,22 +62,23 @@ public class XPathContext implements Cloneable {
 
     /**
      * Starts with an empty context and a given namespace mapping.
+     * @param prefix2Uri maps from prefix to namespace URI.
      */
-    public XPathContext(Map<String, String> uri2Prefix) {
-        this(uri2Prefix, null);
+    public XPathContext(Map<String, String> prefix2uri) {
+        this(prefix2uri, null);
     }
 
     /**
      * Starts with the context of an optional root node and an
      * optional namespace mapping.
-     * @param uri2Prefix maps from namespace URI to prefix.
+     * @param prefix2Uri maps from prefix to namespace URI.
      * @param root optional root node that determines the initial XPath
      */
-    public XPathContext(Map<String, String> uri2Prefix, Node root) {
-        if (uri2Prefix == null) {
+    public XPathContext(Map<String, String> prefix2uri, Node root) {
+        if (prefix2uri == null) {
             this.uri2Prefix = Collections.emptyMap();
         } else {
-            this.uri2Prefix = Collections.unmodifiableMap(uri2Prefix);
+            this.uri2Prefix = Collections.unmodifiableMap(invert(prefix2uri));
         }
         path.addLast(new Level(EMPTY));
         if (root != null) {
@@ -302,5 +303,13 @@ public class XPathContext implements Cloneable {
         public QName getName() { return name; }
         @Override
         public short getType() { return type; }
+    }
+
+    private static Map<String, String> invert(Map<String, String> m) {
+        Map<String, String> inverted = new HashMap<String, String>();
+        for (Map.Entry<String, String> entry : m.entrySet()) {
+            inverted.put(entry.getValue(), entry.getKey());
+        }
+        return inverted;
     }
 }

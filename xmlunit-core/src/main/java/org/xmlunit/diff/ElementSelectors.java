@@ -375,16 +375,15 @@ public final class ElementSelectors {
      *
      * @param xpath XPath expression applied in the context of the
      * elements to chose from that selects the children to compare.
-     * @param namespaceContext provides prefix mapping for namespace
-     * prefixes used inside the xpath expression
+     * @param prefix2Uri maps from prefix to namespace URI.
      * @param childSelector ElementSelector to apply to the selected children.
      */
     public static ElementSelector byXPath(final String xpath,
-                                          Map<String, String> namespaceContext,
+                                          Map<String, String> prefix2Uri,
                                           ElementSelector childSelector) {
         final XPathEngine engine = new JAXPXPathEngine();
-        if (namespaceContext != null) {
-            engine.setNamespaceContext(namespaceContext);
+        if (prefix2Uri != null) {
+            engine.setNamespaceContext(prefix2Uri);
         }
         final NodeMatcher nm = new DefaultNodeMatcher(childSelector);
         return new ElementSelector() {

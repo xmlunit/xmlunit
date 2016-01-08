@@ -217,7 +217,7 @@ public class XPathContextTest {
         l.add(new Element("foo"));
         l.add(new Element("foo", "urn:foo:bar"));
         HashMap<String, String> m = new HashMap<String, String>();
-        m.put("urn:foo:bar", "bar");
+        m.put("bar", "urn:foo:bar");
         XPathContext ctx = new XPathContext(m);
         ctx.setChildren(l);
         ctx.navigateToChild(0);
@@ -232,7 +232,7 @@ public class XPathContextTest {
 
     @Test public void attributesAndNs() {
         HashMap<String, String> m = new HashMap<String, String>();
-        m.put("urn:foo:bar", "bar");
+        m.put("bar", "urn:foo:bar");
         XPathContext ctx = new XPathContext(m);
         ctx.setChildren(Linqy.singleton(new Element("foo", "urn:foo:bar")));
         ctx.navigateToChild(0);

@@ -89,9 +89,9 @@ public interface DifferenceEngine {
      * XPath expressions will only use local names for elements and
      * attributes.</p>
      *
-     * @param uri2Prefix maps from namespace URI to prefix.
+     * @param prefix2Uri maps from prefix to namespace URI.
      */
-    void setNamespaceContext(Map<String, String> uri2Prefix);
+    void setNamespaceContext(Map<String, String> prefix2uri);
 
     /**
      * Compares two pieces of XML and invokes the registered listeners.

@@ -30,7 +30,7 @@ import org.xmlunit.util.Nodes;
  */
 public class RecursiveXPathBuilder implements Mapper<Node, XPathContext> {
 
-    private Map<String, String> uri2Prefix;
+    private Map<String, String> prefix2uri;
 
     /**
      * Establish a namespace context that will be used in for the
@@ -40,12 +40,12 @@ public class RecursiveXPathBuilder implements Mapper<Node, XPathContext> {
      * XPath expressions will only use local names for elements and
      * attributes.</p>
      *
-     * @param uri2Prefix maps from namespace URI to prefix.
+     * @param prefix2Uri maps from prefix to namespace URI.
      */
-    public void setNamespaceContext(Map<String, String> uri2Prefix) {
-        this.uri2Prefix = uri2Prefix == null
+    public void setNamespaceContext(Map<String, String> prefix2uri) {
+        this.prefix2uri = prefix2uri == null
             ? Collections.<String, String> emptyMap()
-            : Collections.unmodifiableMap(uri2Prefix);
+            : Collections.unmodifiableMap(prefix2uri);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class RecursiveXPathBuilder implements Mapper<Node, XPathContext> {
     private XPathContext getXPathForNonAttribute(Node n) {
         Node parent = n.getParentNode();
         if (parent == null || parent instanceof Document) {
-            return new XPathContext(uri2Prefix, n);
+            return new XPathContext(prefix2uri, n);
         }
         XPathContext parentContext = getXPathForNonAttribute(parent);
         IterableNodeList nl = new IterableNodeList(parent.getChildNodes());

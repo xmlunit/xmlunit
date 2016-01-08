@@ -4,6 +4,9 @@
 
 * the `schemaURI` in `Validator` has been pushed down to
   `ParsingValidator` since it is only used inside this class.
+* the mapping of `DifferenceEngine#setNamespaceContext` has been
+  inverted from prefix -> URI to URI -> prefix in order to be
+  consistent with the same concept in `XPathEngine`.
 
 ## XMLUnit for Java 2.0.0-alpha-03 - /Released 2015-12-13/
 

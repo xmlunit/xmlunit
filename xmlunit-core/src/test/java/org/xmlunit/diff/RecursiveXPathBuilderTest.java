@@ -90,8 +90,8 @@ public class RecursiveXPathBuilderTest {
         Element e = doc.createElementNS("http://www.xmlunit.org/test", "foo");
         e.setAttributeNS("http://www.xmlunit.org/test", "foo", "bar");
         e.setAttributeNS("http://www.xmlunit.org/test", "baz", "xyzzy");
-        Map<String, String> u2p = Collections.singletonMap("http://www.xmlunit.org/test", "x");
-        builder.setNamespaceContext(u2p);
+        Map<String, String> p2u = Collections.singletonMap("x", "http://www.xmlunit.org/test");
+        builder.setNamespaceContext(p2u);
         assertEquals("/x:foo[1]/@x:foo",
                      builder.apply(e.getAttributeNode("foo")).getXPath());
     }

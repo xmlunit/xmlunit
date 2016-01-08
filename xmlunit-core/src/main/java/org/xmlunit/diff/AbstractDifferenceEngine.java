@@ -29,7 +29,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     private NodeMatcher nodeMatcher = new DefaultNodeMatcher();
     private DifferenceEvaluator diffEvaluator = DifferenceEvaluators.Default;
     private ComparisonController comparisonController = ComparisonControllers.Default;
-    private Map<String, String> uri2Prefix = Collections.emptyMap();
+    private Map<String, String> prefix2uri = Collections.emptyMap();
     private Predicate<Attr> attributeFilter = new Predicate<Attr>() {
             @Override
             public boolean test(Attr a) {
@@ -113,15 +113,15 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     }
 
     @Override
-    public void setNamespaceContext(Map<String, String> uri2Prefix) {
-        this.uri2Prefix = Collections.unmodifiableMap(uri2Prefix);
+    public void setNamespaceContext(Map<String, String> prefix2uri) {
+        this.prefix2uri = Collections.unmodifiableMap(prefix2uri);
     }
 
     /**
      * Provides access to the configured namespace context.
      */
     protected Map<String, String> getNamespaceContext() {
-        return uri2Prefix;
+        return prefix2uri;
     }
 
     @Override
