@@ -37,6 +37,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class ParsingValidator extends Validator {
     private final String language;
+    private String schemaURI;
 
     public ParsingValidator(String language) {
         if (!Languages.W3C_XML_SCHEMA_NS_URI.equals(language)
@@ -46,6 +47,22 @@ public class ParsingValidator extends Validator {
                                                + " ParsingValidator");
         }
         this.language = language;
+    }
+
+    /**
+     * The URI (or for example the System ID in case of a DTD) that
+     * identifies the schema to validate or use during validation.
+     */
+    public void setSchemaURI(String uri) {
+        this.schemaURI = uri;
+    }
+
+    /**
+     * The URI (or for example the System ID in case of a DTD) that
+     * identifies the schema validated or used during validation.
+     */
+    protected String getSchemaURI() {
+        return schemaURI;
     }
 
     /**

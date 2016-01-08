@@ -1,6 +1,9 @@
 # Release Notes
 
-## Next Release
+## XMLUnit for Java 2.0.0-alpha-04
+
+* the `schemaURI` in `Validator` has been pushed down to
+  `ParsingValidator` since it is only used inside this class.
 
 ## XMLUnit for Java 2.0.0-alpha-03 - /Released 2015-12-13/
 

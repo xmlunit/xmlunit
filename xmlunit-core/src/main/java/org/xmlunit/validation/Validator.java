@@ -18,29 +18,12 @@ import javax.xml.transform.Source;
 
 /**
  * Validates a piece of XML against a schema given in a supported
- * language or the defintion of such a schema itself.
+ * language or the definition of such a schema itself.
  */
 public abstract class Validator {
-    private String schemaURI;
     private Source[] sourceLocations;
 
     protected Validator() {
-    }
-
-    /**
-     * The URI (or for example the System ID in case of a DTD) that
-     * identifies the schema to validate or use during validation.
-     */
-    public void setSchemaURI(String uri) {
-        this.schemaURI = uri;
-    }
-
-    /**
-     * The URI (or for example the System ID in case of a DTD) that
-     * identifies the schema validated or used during validation.
-     */
-    protected String getSchemaURI() {
-        return schemaURI;
     }
 
     /**
