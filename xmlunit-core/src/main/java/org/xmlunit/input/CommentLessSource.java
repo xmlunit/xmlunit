@@ -36,7 +36,7 @@ public final class CommentLessSource extends DOMSource {
     }
 
     private static final String STYLE =
-        "<stylesheet xmlns=\"http://www.w3.org/1999/XSL/Transform\">"
+        "<stylesheet version=\"1.0\" xmlns=\"http://www.w3.org/1999/XSL/Transform\">"
         + "<template match=\"node()[not(self::comment())]|@*\"><copy>"
         + "<apply-templates select=\"node()[not(self::comment())]|@*\"/>"
         + "</copy></template>"
