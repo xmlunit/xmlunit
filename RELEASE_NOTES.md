@@ -7,6 +7,10 @@
 * the mapping of `DifferenceEngine#setNamespaceContext` has been
   inverted from prefix -> URI to URI -> prefix in order to be
   consistent with the same concept in `XPathEngine`.
+* `CommentLessSource` uses an XSLT stylesheet internally which lacked
+  the required `version` attribute. PR
+  [#47](https://github.com/xmlunit/xmlunit/pull/47) by
+  [@phbenisc](https://github.com/phbenisc).
 
 ## XMLUnit for Java 2.0.0-alpha-03 - /Released 2015-12-13/
 
