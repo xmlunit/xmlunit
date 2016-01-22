@@ -40,8 +40,8 @@ public abstract class AbstractDifferenceEngineTest {
         d.setDifferenceEvaluator(g);
         assertEquals(wrap(ComparisonResult.EQUAL),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, null,
-                                              null, null, null)));
+                                              null, null, null, null,
+                                              null, null, null, null)));
         assertEquals(ComparisonResult.EQUAL, g.outcome);
     }
 
@@ -51,8 +51,8 @@ public abstract class AbstractDifferenceEngineTest {
         d.setDifferenceEvaluator(g);
         assertEquals(wrap(ComparisonResult.DIFFERENT),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, null,
-                                              null, null, "")));
+                                              null, null, null, null,
+                                              null, null, "", null)));
         assertEquals(ComparisonResult.DIFFERENT, g.outcome);
     }
 
@@ -62,8 +62,8 @@ public abstract class AbstractDifferenceEngineTest {
         d.setDifferenceEvaluator(g);
         assertEquals(wrap(ComparisonResult.DIFFERENT),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, "",
-                                              null, null, null)));
+                                              null, null, "", null,
+                                              null, null, null, null)));
         assertEquals(ComparisonResult.DIFFERENT, g.outcome);
     }
 
@@ -73,8 +73,8 @@ public abstract class AbstractDifferenceEngineTest {
         d.setDifferenceEvaluator(g);
         assertEquals(wrap(ComparisonResult.DIFFERENT),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, new Short("1"),
-                                              null, null, new Short("2"))));
+                                              null, null, new Short("1"), null,
+                                              null, null, new Short("2"), null)));
         assertEquals(ComparisonResult.DIFFERENT, g.outcome);
     }
 
@@ -84,8 +84,8 @@ public abstract class AbstractDifferenceEngineTest {
         d.setDifferenceEvaluator(g);
         assertEquals(wrap(ComparisonResult.EQUAL),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, new Short("2"),
-                                              null, null, new Short("2"))));
+                                              null, null, new Short("2"), null,
+                                              null, null, new Short("2"), null)));
         assertEquals(ComparisonResult.EQUAL, g.outcome);
     }
 
@@ -96,8 +96,8 @@ public abstract class AbstractDifferenceEngineTest {
         d.addComparisonListener(l);
         assertEquals(wrap(ComparisonResult.EQUAL),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, new Short("2"),
-                                              null, null, new Short("2"))));
+                                              null, null, new Short("2"), null,
+                                              null, null, new Short("2"), null)));
         assertEquals(1, l.getInvocations());
     }
 
@@ -109,8 +109,8 @@ public abstract class AbstractDifferenceEngineTest {
         d.addMatchListener(l);
         assertEquals(wrap(ComparisonResult.EQUAL),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, new Short("2"),
-                                              null, null, new Short("2"))));
+                                              null, null, new Short("2"), null,
+                                              null, null, new Short("2"), null)));
         assertEquals(1, l.getInvocations());
     }
 
@@ -122,8 +122,8 @@ public abstract class AbstractDifferenceEngineTest {
         d.addDifferenceListener(l);
         assertEquals(wrap(ComparisonResult.SIMILAR),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, new Short("2"),
-                                              null, null, new Short("3"))));
+                                              null, null, new Short("2"), null,
+                                              null, null, new Short("3"), null)));
         assertEquals(1, l.getInvocations());
     }
 
@@ -140,8 +140,8 @@ public abstract class AbstractDifferenceEngineTest {
             });
         assertEquals(wrap(ComparisonResult.SIMILAR),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, new Short("2"),
-                                              null, null, new Short("2"))));
+                                              null, null, new Short("2"), null,
+                                              null, null, new Short("2"), null)));
         assertEquals(1, l.getInvocations());
     }
 
@@ -158,8 +158,8 @@ public abstract class AbstractDifferenceEngineTest {
             });
         assertEquals(wrapAndStop(ComparisonResult.SIMILAR),
                      d.compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                              null, null, new Short("1"),
-                                              null, null, new Short("2"))));
+                                              null, null, new Short("1"), null,
+                                              null, null, new Short("2"), null)));
         assertEquals(1, l.getInvocations());
     }
 

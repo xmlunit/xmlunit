@@ -24,8 +24,8 @@ public class DifferenceTest {
     @Test
     public void trivialToStringTest() {
         Difference d = new Difference(new Comparison(ComparisonType.NODE_TYPE,
-                                                     new NullNode(), "/", new Short("2"),
-                                                     new NullNode(), "/", new Short("2")),
+                                                     new NullNode(), "/", new Short("2"), "",
+                                                     new NullNode(), "/", new Short("2"), ""),
                                       ComparisonResult.EQUAL);
         assertThat(d.toString(), containsString(" (EQUAL)"));
     }

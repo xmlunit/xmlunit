@@ -613,8 +613,8 @@ public class test_NewDifferenceEngine extends TestCase implements DifferenceCons
                     }
                 });
         Comparison c = new Comparison(ComparisonType.ELEMENT_TAG_NAME,
-                                      document.createElement("foo"), "/foo", "foo",
-                                      document.createElement("foo"), "/foo", "foo");
+                                      document.createElement("foo"), "/foo", "foo", "/",
+                                      document.createElement("foo"), "/foo", "foo", "/");
         ComparisonResult r = d.evaluate(c, ComparisonResult.SIMILAR);
         assertEquals(ComparisonResult.SIMILAR, r);
         d = new NewDifferenceEngine.DifferenceListener2DifferenceEvaluator(new DifferenceListener() {

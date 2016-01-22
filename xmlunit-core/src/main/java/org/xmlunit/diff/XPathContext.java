@@ -62,7 +62,7 @@ public class XPathContext implements Cloneable {
 
     /**
      * Starts with an empty context and a given namespace mapping.
-     * @param prefix2Uri maps from prefix to namespace URI.
+     * @param prefix2uri maps from prefix to namespace URI.
      */
     public XPathContext(Map<String, String> prefix2uri) {
         this(prefix2uri, null);
@@ -71,7 +71,7 @@ public class XPathContext implements Cloneable {
     /**
      * Starts with the context of an optional root node and an
      * optional namespace mapping.
-     * @param prefix2Uri maps from prefix to namespace URI.
+     * @param prefix2uri maps from prefix to namespace URI.
      * @param root optional root node that determines the initial XPath
      */
     public XPathContext(Map<String, String> prefix2uri, Node root) {
@@ -195,6 +195,14 @@ public class XPathContext implements Cloneable {
      */
     public String getXPath() {
         return getXPath(path.descendingIterator());
+    }
+
+    public String getParentXPath() {
+        Iterator<Level> levelIterator = path.descendingIterator();
+        if(levelIterator.hasNext()) {
+            levelIterator.next();
+        }
+        return getXPath(levelIterator);
     }
 
     /**
