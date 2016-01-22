@@ -95,7 +95,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                 assertEquals("Test XPath", testXPath,
                              comparison.getTestDetails().getXPath());
             }
-            if(withParentXPath) {
+            if (withParentXPath) {
                 assertEquals("Control Parent XPath", controlParentXPath,
                       comparison.getControlDetails().getParentXPath());
                 assertEquals("Test Parent XPath", testParentXPath,

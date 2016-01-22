@@ -50,9 +50,9 @@ public class Comparison {
          */
         public Object getValue() { return value; }
 
-       /**
-        * XPath leading to the targets parent.
-        */
+        /**
+         * XPath leading to the target's parent.
+         */
         public String getParentXPath() {
             return parentXPath;
         }

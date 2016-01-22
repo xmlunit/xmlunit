@@ -197,6 +197,9 @@ public class XPathContext implements Cloneable {
         return getXPath(path.descendingIterator());
     }
 
+    /**
+     * Stringifies the XPath of the current node's parent.
+     */
     public String getParentXPath() {
         Iterator<Level> levelIterator = path.descendingIterator();
         if(levelIterator.hasNext()) {
