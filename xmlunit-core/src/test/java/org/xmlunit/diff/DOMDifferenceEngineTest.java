@@ -48,6 +48,9 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         private final boolean withXPath;
         private final String controlXPath;
         private final String testXPath;
+        private boolean withParentXPath;
+        private String controlParentXPath;
+        private String testParentXPath;
         private DiffExpecter(ComparisonType type) {
             this(type, 1);
         }
@@ -66,7 +69,18 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
             this.withXPath = withXPath;
             this.controlXPath = controlXPath;
             this.testXPath = testXPath;
+            withParentXPath = withXPath;
+            controlParentXPath = getParentXPath(controlXPath);
+            testParentXPath = getParentXPath(testXPath);
         }
+
+        public DiffExpecter withParentXPath(String controlParentXPath, String testParentXPath) {
+            withParentXPath = true;
+            this.controlParentXPath = controlParentXPath;
+            this.testParentXPath = testParentXPath;
+            return this;
+        }
+
         @Override
         public void comparisonPerformed(Comparison comparison,
                                         ComparisonResult outcome) {
@@ -81,6 +95,26 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                 assertEquals("Test XPath", testXPath,
                              comparison.getTestDetails().getXPath());
             }
+            if(withParentXPath) {
+                assertEquals("Control Parent XPath", controlParentXPath,
+                      comparison.getControlDetails().getParentXPath());
+                assertEquals("Test Parent XPath", testParentXPath,
+                      comparison.getTestDetails().getParentXPath());
+            }
+        }
+
+        private String getParentXPath(String xPath) {
+            if(xPath == null) {
+                return null;
+            }
+            if(xPath.equals("/") || xPath.equals("")) {
+                return "";
+            }
+            int i = xPath.lastIndexOf('/');
+            if(i == xPath.indexOf('/')) {
+                return "/";
+            }
+            return i >= 0 ? xPath.substring(0, i) : xPath;
         }
     }
 
@@ -89,6 +123,17 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
     @Before public void createDoc() throws Exception {
         doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
             .newDocument();
+    }
+
+    @Test public void diffExpecterParentXPath() {
+        DiffExpecter ex = new DiffExpecter(ComparisonType.ATTR_NAME_LOOKUP);
+        assertEquals("/bla/blubb", ex.getParentXPath("/bla/blubb/x[1]"));
+        assertEquals("/bla/blubb", ex.getParentXPath("/bla/blubb/@attr"));
+        assertEquals("/", ex.getParentXPath("/bla[1]"));
+        assertEquals("/", ex.getParentXPath("/@attr"));
+        assertEquals("", ex.getParentXPath("/"));
+        assertEquals("", ex.getParentXPath(""));
+        assertEquals(null, ex.getParentXPath(null));
     }
 
     @Test public void compareXPathOfDifferentRootElements() {
@@ -638,7 +683,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         e1.appendChild(c1);
         DOMDifferenceEngine d = new DOMDifferenceEngine();
         DiffExpecter ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP,
-                                           "/bar[1]", null);
+                                           "/bar[1]", null).withParentXPath("/", "/");
         d.addDifferenceListener(ex);
         DifferenceEvaluator ev = new DifferenceEvaluator() {
                 public ComparisonResult evaluate(Comparison comparison,
@@ -658,7 +703,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
 
         // symmetric?
         d = new DOMDifferenceEngine();
-        ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP, null, "/bar[1]");
+        ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP, null, "/bar[1]").withParentXPath("/", "/");
         d.addDifferenceListener(ex);
         d.setDifferenceEvaluator(ev);
         d.setComparisonController(ComparisonControllers.StopWhenDifferent);
@@ -717,7 +762,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
 
         d = new DOMDifferenceEngine();
         d.setNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byName));
-        ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP, "/bar[1]", null);
+        ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP, "/bar[1]", null).withParentXPath("/", "/");
         d.addDifferenceListener(ex);
         d.setComparisonController(ComparisonControllers.StopWhenDifferent);
         assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),

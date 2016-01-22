@@ -187,6 +187,13 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     }
 
     /**
+     * Returns a string representation of the given XPathContext parent context.
+     */
+    protected static String getParentXPath(XPathContext ctx) {
+        return ctx == null ? null : ctx.getParentXPath();
+    }
+
+    /**
      * Encapsulates a comparison that may or may not be performed.
      */
     protected interface DeferredComparison {

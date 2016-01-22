@@ -40,7 +40,7 @@ public class RecursiveXPathBuilder implements Mapper<Node, XPathContext> {
      * XPath expressions will only use local names for elements and
      * attributes.</p>
      *
-     * @param prefix2Uri maps from prefix to namespace URI.
+     * @param prefix2uri maps from prefix to namespace URI.
      */
     public void setNamespaceContext(Map<String, String> prefix2uri) {
         this.prefix2uri = prefix2uri == null

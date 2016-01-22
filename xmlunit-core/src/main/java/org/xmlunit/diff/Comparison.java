@@ -28,11 +28,13 @@ public class Comparison {
         private final Node target;
         private final String xpath;
         private final Object value;
+        private final String parentXPath;
 
-        private Detail(Node n, String x, Object v) {
+        private Detail(Node n, String x, Object v, String parentX) {
             target = n;
             xpath = x;
             value = v;
+            parentXPath = parentX;
         }
 
         /**
@@ -47,17 +49,24 @@ public class Comparison {
          * The value for comparison found at the current target.
          */
         public Object getValue() { return value; }
+
+       /**
+        * XPath leading to the targets parent.
+        */
+        public String getParentXPath() {
+            return parentXPath;
+        }
     }
 
     private final Detail control, test;
     private final ComparisonType type;
 
-    public Comparison(ComparisonType t, Node controlTarget,
-                      String controlXPath, Object controlValue,
-                      Node testTarget, String testXPath, Object testValue) {
+    public Comparison(ComparisonType t,
+                      Node controlTarget, String controlXPath, Object controlValue, String controlParentXPath,
+                      Node testTarget, String testXPath, Object testValue, String testParentXPath) {
         type = t;
-        control = new Detail(controlTarget, controlXPath, controlValue);
-        test = new Detail(testTarget, testXPath, testValue);
+        control = new Detail(controlTarget, controlXPath, controlValue, controlParentXPath);
+        test = new Detail(testTarget, testXPath, testValue, testParentXPath);
     }
 
     /**
