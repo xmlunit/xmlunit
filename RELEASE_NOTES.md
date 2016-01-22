@@ -11,6 +11,13 @@
   the required `version` attribute. PR
   [#47](https://github.com/xmlunit/xmlunit/pull/47) by
   [@phbenisc](https://github.com/phbenisc).
+* `Comparison` now also contains the XPath of the parent of the
+  compared nodes or attributes which is most useful in cases of
+  missing nodes/attributes because the XPath on one side is `null` in
+  these cases.
+  Issue [#48](https://github.com/xmlunit/xmlunit/issues/48)
+  implemented via PR [#50](https://github.com/xmlunit/xmlunit/pull/50)
+  by [@eguib](https://github.com/eguib).
 
 ## XMLUnit for Java 2.0.0-alpha-03 - /Released 2015-12-13/
 
