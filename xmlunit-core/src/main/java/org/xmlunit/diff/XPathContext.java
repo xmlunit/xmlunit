@@ -202,7 +202,7 @@ public class XPathContext implements Cloneable {
      */
     public String getParentXPath() {
         Iterator<Level> levelIterator = path.descendingIterator();
-        if(levelIterator.hasNext()) {
+        if (levelIterator.hasNext()) {
             levelIterator.next();
         }
         return getXPath(levelIterator);
