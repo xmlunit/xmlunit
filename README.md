@@ -75,7 +75,8 @@ to your Maven settings.
 
 ## Examples
 
-These are some really small examples, more is to come in the [user guide](https://github.com/xmlunit/user-guide/wiki)
+These are some really small examples, more is available as part of the
+[user guide](https://github.com/xmlunit/user-guide/wiki)
 
 ### Comparing Two Documents
 

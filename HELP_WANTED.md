@@ -10,8 +10,6 @@ list so we can avoid duplicate or wasted effort.
 In General
 ----------
 
-* provide a User's Guide - at least a first sketch that explains how
-  to use parts of the API - [here](https://github.com/xmlunit/user-guide/wiki)
 * Validate the API - this is paramount to get 2.0 final out but should
   probably be complete before the first alpha release
 * work on the open issues
