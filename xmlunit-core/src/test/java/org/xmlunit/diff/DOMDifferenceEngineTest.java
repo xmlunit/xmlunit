@@ -104,14 +104,14 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         }
 
         private String getParentXPath(String xPath) {
-            if(xPath == null) {
+            if (xPath == null) {
                 return null;
             }
-            if(xPath.equals("/") || xPath.equals("")) {
+            if (xPath.equals("/") || xPath.equals("")) {
                 return "";
             }
             int i = xPath.lastIndexOf('/');
-            if(i == xPath.indexOf('/')) {
+            if (i == xPath.indexOf('/')) {
                 return "/";
             }
             return i >= 0 ? xPath.substring(0, i) : xPath;
