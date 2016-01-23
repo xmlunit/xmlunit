@@ -48,15 +48,19 @@ public class XPathContextTest {
         ctx.setChildren(l);
         ctx.navigateToChild(0);
         assertEquals("/foo[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(1);
         assertEquals("/foo[2]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(2);
         assertEquals("/bar[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(3);
         assertEquals("/foo[3]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
     }
 
     @Test public void shouldCreateCopyOnClone() {
@@ -68,13 +72,17 @@ public class XPathContextTest {
         ctx.setChildren(l);
         ctx.navigateToChild(1);
         assertEquals("/foo[2]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         XPathContext clone = ctx.clone();
         assertEquals("/foo[2]", clone.getXPath());
+        assertEquals("/", clone.getParentXPath());
         assertNotSame(clone, ctx);
         clone.navigateToParent();
         clone.navigateToChild(2);
         assertEquals("/bar[1]", clone.getXPath());
+        assertEquals("/", clone.getParentXPath());
         assertEquals("/foo[2]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
     }
 
     @Test public void appendChildren() {
@@ -89,15 +97,19 @@ public class XPathContextTest {
         ctx.appendChildren(l);
         ctx.navigateToChild(0);
         assertEquals("/foo[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(1);
         assertEquals("/foo[2]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(2);
         assertEquals("/bar[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(3);
         assertEquals("/foo[3]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
     }
 
     @Test public void appendChildrenWithNonElements() {
@@ -111,27 +123,35 @@ public class XPathContextTest {
         ctx.appendChildren(l);
         ctx.navigateToChild(0);
         assertEquals("/text()[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(1);
         assertEquals("/comment()[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(2);
         assertEquals("/text()[2]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(3);
         assertEquals("/processing-instruction()[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(4);
         assertEquals("/text()[3]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(5);
         assertEquals("/comment()[2]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(6);
         assertEquals("/text()[4]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(7);
         assertEquals("/processing-instruction()[2]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
     }
 
     @Test public void twoLevelsOfElements() {
@@ -144,14 +164,18 @@ public class XPathContextTest {
         ctx.setChildren(l);
         ctx.navigateToChild(0);
         assertEquals("/foo[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.setChildren(l);
         ctx.navigateToChild(3);
         assertEquals("/foo[1]/foo[3]", ctx.getXPath());
+        assertEquals("/foo[1]", ctx.getParentXPath());
         ctx.navigateToParent();
         assertEquals("/foo[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(2);
         assertEquals("/bar[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
     }
 
     @Test public void attributes() {
@@ -163,6 +187,7 @@ public class XPathContextTest {
         ctx.addAttributes(l);
         ctx.navigateToAttribute(new QName("bar"));
         assertEquals("/foo[1]/@bar", ctx.getXPath());
+        assertEquals("/foo[1]", ctx.getParentXPath());
     }
 
     @Test public void singleAttribute() {
@@ -172,6 +197,7 @@ public class XPathContextTest {
         ctx.addAttribute(new QName("bar"));
         ctx.navigateToAttribute(new QName("bar"));
         assertEquals("/foo[1]/@bar", ctx.getXPath());
+        assertEquals("/foo[1]", ctx.getParentXPath());
     }
 
     @Test public void mixed() {
@@ -188,27 +214,35 @@ public class XPathContextTest {
         ctx.setChildren(l);
         ctx.navigateToChild(0);
         assertEquals("/text()[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(1);
         assertEquals("/comment()[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(2);
         assertEquals("/text()[2]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(3);
         assertEquals("/processing-instruction()[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(4);
         assertEquals("/text()[3]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(5);
         assertEquals("/comment()[2]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(6);
         assertEquals("/processing-instruction()[2]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(7);
         assertEquals("/text()[4]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
     }
 
     @Test public void elementsAndNs() {
@@ -222,12 +256,15 @@ public class XPathContextTest {
         ctx.setChildren(l);
         ctx.navigateToChild(0);
         assertEquals("/foo[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(1);
         assertEquals("/foo[2]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToChild(2);
         assertEquals("/bar:foo[1]", ctx.getXPath());
+        assertEquals("/", ctx.getParentXPath());
     }
 
     @Test public void attributesAndNs() {
@@ -242,10 +279,18 @@ public class XPathContextTest {
         ctx.addAttributes(l);
         ctx.navigateToAttribute(new QName("baz"));
         assertEquals("/bar:foo[1]/@baz", ctx.getXPath());
+        assertEquals("/bar:foo[1]", ctx.getParentXPath());
         ctx.navigateToParent();
         ctx.navigateToAttribute(new QName("urn:foo:bar", "baz"));
         assertEquals("/bar:foo[1]/@bar:baz", ctx.getXPath());
+        assertEquals("/bar:foo[1]", ctx.getParentXPath());
         ctx.navigateToParent();
+    }
+
+    @Test
+    public void parentXPathEdgeCases() {
+        XPathContext ctx = new XPathContext();
+        assertEquals("", ctx.getParentXPath());
     }
 
     private static class Element implements XPathContext.NodeInfo {
