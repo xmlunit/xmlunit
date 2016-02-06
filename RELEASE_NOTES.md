@@ -1,5 +1,7 @@
 # Release Notes
 
+## Next Release
+
 ## XMLUnit for Java 2.0.0-alpha-04 - /Released 2016-02-06/
 
 * the `schemaURI` in `Validator` has been pushed down to
