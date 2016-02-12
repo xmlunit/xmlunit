@@ -22,6 +22,7 @@ import static org.xmlunit.util.Linqy.count;
 import org.xmlunit.TestResources;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonControllers;
+import org.xmlunit.diff.ComparisonFormatter;
 import org.xmlunit.diff.ComparisonListener;
 import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.ComparisonType;
@@ -440,6 +441,30 @@ public class DiffBuilderTest {
 
         // validate result
         Assert.assertFalse(myDiffWithFilter.hasDifferences());
+    }
+
+    @Test
+    public void usesCustomComparisonFormatter() {
+        String control = "<a><b></b><c/></a>";
+        String test = "<a><b></b><c/><d/></a>";
+
+        Diff myDiff = DiffBuilder.compare(control).withTest(test)
+            .withComparisonController(ComparisonControllers.StopWhenDifferent)
+            .withComparisonFormatter(new ComparisonFormatter() {
+                    @Override
+                    public String getDescription(Comparison difference) {
+                        return "foo";
+                    }
+
+                    @Override
+                    public String getDetails(Comparison.Detail details, ComparisonType type,
+                                             boolean formatXml) {
+                        return "bar";
+                    }
+                })
+            .build();
+
+        Assert.assertEquals("foo", myDiff.toString());
     }
 
     private final class IgnoreAttributeDifferenceEvaluator implements DifferenceEvaluator {

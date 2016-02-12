@@ -22,18 +22,26 @@ import javax.xml.transform.Source;
  */
 public class Diff {
 
+    private static final ComparisonFormatter DEFAULT_FORMATTER =
+        new DefaultComparisonFormatter();
+
     private final Iterable<Difference> differences;
 
     private final Source controlSource;
 
     private final Source testSource;
 
-    private static final ComparisonFormatter DEFAULT_FORMATTER =
-        new DefaultComparisonFormatter();
+    private final ComparisonFormatter formatter;
 
     public Diff(Source controlSource, Source testSource, Iterable<Difference> differences) {
+        this(controlSource, testSource, DEFAULT_FORMATTER, differences);
+    }
+
+    public Diff(Source controlSource, Source testSource,
+                ComparisonFormatter formatter, Iterable<Difference> differences) {
         this.controlSource = controlSource;
         this.testSource = testSource;
+        this.formatter = formatter;
         this.differences = differences;
     }
 
@@ -63,7 +71,7 @@ public class Diff {
 
     @Override
     public String toString() {
-        return toString(DEFAULT_FORMATTER);
+        return toString(formatter);
     }
 
     public String toString(ComparisonFormatter formatter) {

@@ -2,6 +2,10 @@
 
 ## Next Release
 
+* implemented `DiffBuilder.withComparisonFormatter` mentioned in user
+  guide.
+  Issue [#51](https://github.com/xmlunit/xmlunit/issues/51)
+
 ## XMLUnit for Java 2.0.0-alpha-04 - /Released 2016-02-06/
 
 * the `schemaURI` in `Validator` has been pushed down to

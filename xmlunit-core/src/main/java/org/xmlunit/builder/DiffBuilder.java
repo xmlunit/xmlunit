@@ -19,6 +19,7 @@ import org.w3c.dom.Node;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonController;
 import org.xmlunit.diff.ComparisonControllers;
+import org.xmlunit.diff.ComparisonFormatter;
 import org.xmlunit.diff.ComparisonListener;
 import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.DOMDifferenceEngine;
@@ -86,6 +87,8 @@ public class DiffBuilder {
     private Predicate<Attr> attributeFilter;
 
     private Predicate<Node> nodeFilter;
+
+    private ComparisonFormatter formatter;
 
     private boolean ignoreWhitespace;
 
@@ -299,6 +302,14 @@ public class DiffBuilder {
     }
 
     /**
+     * Sets a non-default formatter for the differences found.
+     */
+    public DiffBuilder withComparisonFormatter(ComparisonFormatter formatter) {
+        this.formatter = formatter;
+        return this;
+    }
+
+    /**
      * Compare the Test-XML {@link #withTest(Object)} with the Control-XML {@link #compare(Object)} and return the
      * collected differences in a {@link Diff} object.
      */
@@ -329,7 +340,10 @@ public class DiffBuilder {
         }
         d.compare(wrap(controlSource), wrap(testSource));
 
-        return new Diff(controlSource, testSource, collectResultsListener.getDifferences());
+        return formatter == null
+            ? new Diff(controlSource, testSource, collectResultsListener.getDifferences())
+            : new Diff(controlSource, testSource, formatter,
+                       collectResultsListener.getDifferences());
     }
 
     private Source wrap(final Source source) {
