@@ -366,7 +366,7 @@ public class DifferenceEngine
                                    final ElementQualifier elementQualifier) 
         throws DifferenceFoundException {
 
-        int j = 0;
+        int j;
         final int lastTestNode = testChildren.size() - 1;
         testTracker.preloadChildList(testChildren);
 
@@ -566,7 +566,7 @@ public class DifferenceEngine
             } else {
                 boolean isNamespacedAttr = isNamespaced(nextAttr);
                 String attrName = getUnNamespacedNodeName(nextAttr, isNamespacedAttr);
-                Attr compareTo = null;
+                Attr compareTo;
                 
                 if (isNamespacedAttr) {
                     compareTo = (Attr) testAttr.getNamedItemNS(

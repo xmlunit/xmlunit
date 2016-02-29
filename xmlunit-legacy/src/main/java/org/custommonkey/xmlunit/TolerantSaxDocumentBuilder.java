@@ -157,7 +157,7 @@ public class TolerantSaxDocumentBuilder
             return;
         }
 
-        Node parentNode = null;
+        Node parentNode;
         boolean atDocumentRoot = false, foundTagToEnd = false;
         Element startElement = currentElement;
 
