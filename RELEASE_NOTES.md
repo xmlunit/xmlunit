@@ -5,6 +5,9 @@
 * implemented `DiffBuilder.withComparisonFormatter` mentioned in user
   guide.
   Issue [#51](https://github.com/xmlunit/xmlunit/issues/51)
+* eliminated dead-stores.
+  PR [#52](https://github.com/xmlunit/xmlunit/pull/52) by
+  [@georgekankava](https://github.com/georgekankava).
 
 ## XMLUnit for Java 2.0.0-alpha-04 - /Released 2016-02-06/
 
