@@ -238,7 +238,7 @@ final class DoctypeSupport {
 
     private int[] readUntilCloseCharIsReached() throws IOException {
         IntegerBuffer i = new IntegerBuffer();
-        int intRead = -1;
+        int intRead;
         int openCount = 1;
         while (openCount > 0 && (intRead = original.read()) != -1) {
             i.append(intRead);

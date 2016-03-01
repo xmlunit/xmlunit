@@ -303,7 +303,7 @@ public class XpathNodeTracker implements XMLConstants {
                 nodeReferenceMap.put(visited, nextIndex++);
             }
 
-            int currentIndex = 0;
+            int currentIndex;
             if (nodeReferenceMap == null || visited == null ||
                 !nodeReferenceMap.containsKey(visited)) {
                 currentIndex = nextIndex++;
@@ -313,7 +313,7 @@ public class XpathNodeTracker implements XMLConstants {
             reset();
 
             if (trackNodeReferences || nodeReferenceMap == null) {
-                XPathContext.NodeInfo i = null;
+                XPathContext.NodeInfo i;
                 if (visited != null) {
                     i = new XPathContext.DOMNodeInfo(visited);
                 } else {

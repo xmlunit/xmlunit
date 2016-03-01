@@ -85,7 +85,7 @@ public class DoctypeInputStream extends InputStream {
     protected String getContent(String encoding) throws IOException {
         if (baos.size() == 0) {
             byte[] buffer = new byte[8192];
-            int bytesRead = -1;
+            int bytesRead;
             while ((bytesRead = wrappedStream.read(buffer)) > -1) {
                 baos.write(buffer, 0, bytesRead);
             }
