@@ -21,9 +21,8 @@ Some goals for XMLUnit 2.x:
   - comparisons
 * be independent of any test framework
 
-We are in the process of finalizing the API for XMLUnit 2.x so the
-current release is an alpha release.  XMLUnit 1.x for Java is still
-supported and will stay at
+Even though active development happens for XMLUnit 2.x, XMLUnit 1.x
+for Java is still supported and will stay at
 [sourceforge](https://sourceforge.net/projects/xmlunit/).
 
 ## Documentation

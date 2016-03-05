@@ -10,8 +10,6 @@ list so we can avoid duplicate or wasted effort.
 In General
 ----------
 
-* Validate the API - this is paramount to get 2.0 final out but should
-  probably be complete before the first alpha release
 * work on the open issues
 
 Java
