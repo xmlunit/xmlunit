@@ -1,5 +1,7 @@
 # Release Notes
 
+## Next Release
+
 ## XMLUnit for Java 2.0.0 - /Released 2016-03-06/
 
 * implemented `DiffBuilder.withComparisonFormatter` mentioned in user
