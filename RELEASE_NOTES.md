@@ -6,6 +6,10 @@
   PR [#53](https://github.com/xmlunit/xmlunit/pull/53) by
   [@cboehme](https://github.com/cboehme).
 
+* added `CompareMatcher#withNamespaceContext`
+  PR [#54](https://github.com/xmlunit/xmlunit/pull/54) by
+  [@cboehme](https://github.com/cboehme).
+
 ## XMLUnit for Java 2.0.0 - /Released 2016-03-06/
 
 * implemented `DiffBuilder.withComparisonFormatter` mentioned in user
