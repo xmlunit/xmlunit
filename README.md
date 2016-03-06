@@ -33,8 +33,7 @@ for Java is still supported and will stay at
 ## Help Wanted!
 
 If you are looking for something to work on, we've compiled a
-[list](HELP_WANTED.md) of things that should be done before XMLUnit
-2.0 can be released.
+[list](HELP_WANTED.md) of known issues.
 
 Please see the [contributing guide](CONTRIBUTING.md) for details on
 how to contribute.
