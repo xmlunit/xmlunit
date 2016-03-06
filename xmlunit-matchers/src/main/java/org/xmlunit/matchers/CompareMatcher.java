@@ -35,6 +35,7 @@ import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 
 import java.lang.reflect.Constructor;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
@@ -195,6 +196,14 @@ public final class CompareMatcher extends BaseMatcher<Object> {
      */
     public CompareMatcher withDifferenceListeners(ComparisonListener... comparisonListeners) {
         diffBuilder.withDifferenceListeners(comparisonListeners);
+        return this;
+    }
+
+    /**
+     * @see DiffBuilder#withNamespaceContext(Map)
+     */
+    public CompareMatcher withNamespaceContext(Map<String, String> uri2Prefix) {
+        diffBuilder.withNamespaceContext(uri2Prefix);
         return this;
     }
 
