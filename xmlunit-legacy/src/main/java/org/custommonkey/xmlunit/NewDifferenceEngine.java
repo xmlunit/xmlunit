@@ -89,7 +89,7 @@ public class NewDifferenceEngine
             new HashMap<Class<? extends ElementQualifier>, ElementSelector>();
         m.put(ElementNameAndTextQualifier.class,
               ElementSelectors.byNameAndText);
-        m.put(ElementQualifier.class, ElementSelectors.byName);
+        m.put(ElementNameQualifier.class, ElementSelectors.byName);
         m.put(RecursiveElementNameAndTextQualifier.class,
               new ByNameAndTextRecSelector());
         KNOWN_SELECTORS = Collections.unmodifiableMap(m);
