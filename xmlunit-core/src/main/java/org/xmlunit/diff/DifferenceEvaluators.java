@@ -122,23 +122,25 @@ public final class DifferenceEvaluators {
      * Creates a DifferenceEvaluator that returns a EQUAL result for
      * differences found in one of the given ComparisonTypes.
      */
-    public static DifferenceEvaluator recordDifferencesAsEqual(ComparisonType... types) {
+    public static DifferenceEvaluator downgradeDifferencesToEqual(ComparisonType... types) {
         return recordDifferencesAs(ComparisonResult.EQUAL, types);
     }
 
     /**
      * Creates a DifferenceEvaluator that returns a SIMILAR result for
-     * differences found in one of the given ComparisonTypes.
+     * differences (Comparisons that are not EQUAL) found in one of
+     * the given ComparisonTypes.
      */
-    public static DifferenceEvaluator recordDifferencesAsSimilar(ComparisonType... types) {
+    public static DifferenceEvaluator downgradeDifferencesToSimilar(ComparisonType... types) {
         return recordDifferencesAs(ComparisonResult.SIMILAR, types);
     }
 
     /**
-     * Creates a DifferenceEvaluator that returns a DIFFERENT result for
-     * differences found in one of the given ComparisonTypes.
+     * Creates a DifferenceEvaluator that returns a DIFFERENT result
+     * for differences (Comparisons that are not EQUAL) found in one
+     * of the given ComparisonTypes.
      */
-    public static DifferenceEvaluator recordDifferencesAsDifferent(ComparisonType... types) {
+    public static DifferenceEvaluator upgradeDifferencesToDifferent(ComparisonType... types) {
         return recordDifferencesAs(ComparisonResult.DIFFERENT, types);
     }
 
@@ -149,7 +151,8 @@ public final class DifferenceEvaluators {
         return new DifferenceEvaluator() {
             @Override
             public ComparisonResult evaluate(Comparison comparison, ComparisonResult orig) {
-                return comparisonTypes.contains(comparison.getType())
+                return orig != ComparisonResult.EQUAL
+                    && comparisonTypes.contains(comparison.getType())
                     ? outcome : orig;
             }
         };
