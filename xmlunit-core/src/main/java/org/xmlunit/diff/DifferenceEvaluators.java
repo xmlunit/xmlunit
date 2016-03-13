@@ -13,6 +13,9 @@
 */
 package org.xmlunit.diff;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+
 import org.w3c.dom.Node;
 
 /**
@@ -111,6 +114,43 @@ public final class DifferenceEvaluators {
                     finalResult = evaluated;
                 }
                 return finalResult;
+            }
+        };
+    }
+
+    /**
+     * Creates a DifferenceEvaluator that returns a EQUAL result for
+     * differences found in one of the given ComparisonTypes.
+     */
+    public static DifferenceEvaluator recordDifferencesAsEqual(ComparisonType... types) {
+        return recordDifferencesAs(ComparisonResult.EQUAL, types);
+    }
+
+    /**
+     * Creates a DifferenceEvaluator that returns a SIMILAR result for
+     * differences found in one of the given ComparisonTypes.
+     */
+    public static DifferenceEvaluator recordDifferencesAsSimilar(ComparisonType... types) {
+        return recordDifferencesAs(ComparisonResult.SIMILAR, types);
+    }
+
+    /**
+     * Creates a DifferenceEvaluator that returns a DIFFERENT result for
+     * differences found in one of the given ComparisonTypes.
+     */
+    public static DifferenceEvaluator recordDifferencesAsDifferent(ComparisonType... types) {
+        return recordDifferencesAs(ComparisonResult.DIFFERENT, types);
+    }
+
+    private static DifferenceEvaluator recordDifferencesAs(final ComparisonResult outcome,
+                                                           ComparisonType... types) {
+        final EnumSet<ComparisonType> comparisonTypes =
+            EnumSet.copyOf(Arrays.asList(types));
+        return new DifferenceEvaluator() {
+            @Override
+            public ComparisonResult evaluate(Comparison comparison, ComparisonResult orig) {
+                return comparisonTypes.contains(comparison.getType())
+                    ? outcome : orig;
             }
         };
     }

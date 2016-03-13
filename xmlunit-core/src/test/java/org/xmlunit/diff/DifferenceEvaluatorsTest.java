@@ -70,4 +70,76 @@ public class DifferenceEvaluatorsTest {
         assertThat(e2.orig, is(ComparisonResult.SIMILAR)); // passed ComparisonResult from e1
     }
 
+    @Test
+    public void recordDifferencesAsEqualDowngradesMatchingTypes() {
+        DifferenceEvaluator d = DifferenceEvaluators
+            .recordDifferencesAsEqual(ComparisonType.XML_VERSION,
+                                      ComparisonType.XML_STANDALONE);
+        assertEquals(ComparisonResult.EQUAL,
+                     d.evaluate(new Comparison(ComparisonType.XML_VERSION,
+                                               null, null, null, null,
+                                               null, null, null, null),
+                                ComparisonResult.SIMILAR));
+    }
+
+    @Test
+    public void recordDifferencesAsEqualLeavesUnknownTypesAlone() {
+        DifferenceEvaluator d = DifferenceEvaluators
+            .recordDifferencesAsEqual(ComparisonType.XML_VERSION,
+                                      ComparisonType.XML_STANDALONE);
+        assertEquals(ComparisonResult.SIMILAR,
+                     d.evaluate(new Comparison(ComparisonType.XML_ENCODING,
+                                               null, null, null, null,
+                                               null, null, null, null),
+                                ComparisonResult.SIMILAR));
+    }
+
+    @Test
+    public void recordDifferencesAsSimilarDowngradesMatchingTypes() {
+        DifferenceEvaluator d = DifferenceEvaluators
+            .recordDifferencesAsSimilar(ComparisonType.XML_VERSION,
+                                        ComparisonType.XML_STANDALONE);
+        assertEquals(ComparisonResult.SIMILAR,
+                     d.evaluate(new Comparison(ComparisonType.XML_VERSION,
+                                               null, null, null, null,
+                                               null, null, null, null),
+                                ComparisonResult.DIFFERENT));
+    }
+
+    @Test
+    public void recordDifferencesAsSimilarLeavesUnknownTypesAlone() {
+        DifferenceEvaluator d = DifferenceEvaluators
+            .recordDifferencesAsSimilar(ComparisonType.XML_VERSION,
+                                        ComparisonType.XML_STANDALONE);
+        assertEquals(ComparisonResult.DIFFERENT,
+                     d.evaluate(new Comparison(ComparisonType.XML_ENCODING,
+                                               null, null, null, null,
+                                               null, null, null, null),
+                                ComparisonResult.DIFFERENT));
+    }
+
+    @Test
+    public void recordDifferencesAsDifferentDowngradesMatchingTypes() {
+        DifferenceEvaluator d = DifferenceEvaluators
+            .recordDifferencesAsDifferent(ComparisonType.XML_VERSION,
+                                          ComparisonType.XML_STANDALONE);
+        assertEquals(ComparisonResult.DIFFERENT,
+                     d.evaluate(new Comparison(ComparisonType.XML_VERSION,
+                                               null, null, null, null,
+                                               null, null, null, null),
+                                ComparisonResult.SIMILAR));
+    }
+
+    @Test
+    public void recordDifferencesAsDifferentLeavesUnknownTypesAlone() {
+        DifferenceEvaluator d = DifferenceEvaluators
+            .recordDifferencesAsDifferent(ComparisonType.XML_VERSION,
+                                      ComparisonType.XML_STANDALONE);
+        assertEquals(ComparisonResult.SIMILAR,
+                     d.evaluate(new Comparison(ComparisonType.XML_ENCODING,
+                                               null, null, null, null,
+                                               null, null, null, null),
+                                ComparisonResult.SIMILAR));
+    }
+
 }
