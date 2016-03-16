@@ -108,7 +108,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         return sb.toString();
     }
 
-    private boolean appendDocumentXmlDeclaration(StringBuilder sb, Document doc) {
+    private static boolean appendDocumentXmlDeclaration(StringBuilder sb, Document doc) {
         if ("1.0".equals(doc.getXmlVersion()) && doc.getXmlEncoding() == null && !doc.getXmlStandalone()) {
             // only default values => ignore
             return false;
@@ -129,13 +129,13 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
     }
 
     /** a short indication of the documents root element like "&lt;ElementName...&gt;".*/
-    private void appendDocumentElementIndication(StringBuilder sb, Document doc) {
+    private static void appendDocumentElementIndication(StringBuilder sb, Document doc) {
         sb.append("<");
         sb.append(doc.getDocumentElement().getNodeName());
         sb.append("...>");
     }
 
-    private boolean appendDocumentType(StringBuilder sb, DocumentType type) {
+    private static boolean appendDocumentType(StringBuilder sb, DocumentType type) {
         if (type == null) {
             return false;
         }
@@ -155,20 +155,20 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         return true;
     }
 
-    private void appendProcessingInstruction(StringBuilder sb, ProcessingInstruction instr) {
+    private static void appendProcessingInstruction(StringBuilder sb, ProcessingInstruction instr) {
         sb.append("<?")
             .append(instr.getTarget())
             .append(' ').append(instr.getData())
             .append("?>");
     }
 
-    private void appendComment(StringBuilder sb, Comment aNode) {
+    private static void appendComment(StringBuilder sb, Comment aNode) {
         sb.append("<!--")
             .append(aNode.getNodeValue())
             .append("-->");
     }
 
-    private void appendText(StringBuilder sb, Text aNode) {
+    private static void appendText(StringBuilder sb, Text aNode) {
         sb.append("<")
             .append(aNode.getParentNode().getNodeName())
             .append(" ...>");
@@ -186,13 +186,13 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
             .append(">");
     }
 
-    private void appendElement(StringBuilder sb, Element aNode) {
+    private static void appendElement(StringBuilder sb, Element aNode) {
         sb.append("<")
         .append(aNode.getNodeName()).append("...")
         .append(">");
     }
 
-    private void appendAttribute(StringBuilder sb, Attr aNode) {
+    private static void appendAttribute(StringBuilder sb, Attr aNode) {
         sb.append("<").append(aNode.getOwnerElement().getNodeName());
         sb.append(' ')
             .append(aNode.getNodeName()).append("=\"")
@@ -262,7 +262,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         }
     }
 
-    private String getFormattedNodeXml(final Node nodeToConvert, boolean formatXml) {
+    private static String getFormattedNodeXml(final Node nodeToConvert, boolean formatXml) {
         String formattedNodeXml;
         try {
             final int numberOfBlanksToIndent = formatXml ? 2 : -1;
@@ -307,7 +307,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         return transformer;
     }
 
-    private String nodeType(short type) {
+    private static String nodeType(short type) {
       switch(type) {
         case Node.ELEMENT_NODE:                return "Element";
         case Node.DOCUMENT_TYPE_NODE:          return "Document Type";
@@ -319,6 +319,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         case Node.CDATA_SECTION_NODE:          return "CDATA Section";
         case Node.ATTRIBUTE_NODE:              return "Attribute";
         case Node.PROCESSING_INSTRUCTION_NODE: return "Processing Instruction";
+        default: break; 
       }
       return Short.toString(type);
     }
