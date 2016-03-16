@@ -25,6 +25,13 @@ import org.xmlunit.transform.Transformation;
  */
 public final class CommentLessSource extends DOMSource {
 
+    private static final String STYLE =
+            "<stylesheet version=\"1.0\" xmlns=\"http://www.w3.org/1999/XSL/Transform\">"
+            + "<template match=\"node()[not(self::comment())]|@*\"><copy>"
+            + "<apply-templates select=\"node()[not(self::comment())]|@*\"/>"
+            + "</copy></template>"
+            + "</stylesheet>";
+
     public CommentLessSource(Source originalSource) {
         super();
         if (originalSource == null) {
@@ -34,13 +41,6 @@ public final class CommentLessSource extends DOMSource {
         t.setStylesheet(getStylesheet());
         setNode(t.transformToDocument());
     }
-
-    private static final String STYLE =
-        "<stylesheet version=\"1.0\" xmlns=\"http://www.w3.org/1999/XSL/Transform\">"
-        + "<template match=\"node()[not(self::comment())]|@*\"><copy>"
-        + "<apply-templates select=\"node()[not(self::comment())]|@*\"/>"
-        + "</copy></template>"
-        + "</stylesheet>";
 
     private static Source getStylesheet() {
         return new StreamSource(new java.io.StringReader(STYLE));

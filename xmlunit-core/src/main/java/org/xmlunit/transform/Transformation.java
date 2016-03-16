@@ -167,7 +167,7 @@ public final class Transformation {
             if (fac == null) {
                 fac = TransformerFactory.newInstance();
             }
-            Transformer t = null;
+            Transformer t;
             if (styleSheet != null) {
                 t = fac.newTransformer(styleSheet);
             } else {

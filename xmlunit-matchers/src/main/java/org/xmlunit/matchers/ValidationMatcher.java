@@ -37,7 +37,7 @@ import java.util.Arrays;
  */
 public class ValidationMatcher extends BaseMatcher {
 
-    private final Source schemaSource[];
+    private final Source[] schemaSource;
     private Source instance;
     private ValidationResult result;
 
