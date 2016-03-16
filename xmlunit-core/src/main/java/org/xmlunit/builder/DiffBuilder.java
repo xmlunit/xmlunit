@@ -265,10 +265,10 @@ public class DiffBuilder {
      * XPath expressions will only use local names for elements and
      * attributes.</p>
      *
-     * @param uri2Prefix maps from namespace URI to prefix.
+     * @param prefix2Uri mapping between prefix and namespace URI
      */
-    public DiffBuilder withNamespaceContext(Map<String, String> uri2Prefix) {
-        namespaceContext = uri2Prefix;
+    public DiffBuilder withNamespaceContext(Map<String, String> prefix2Uri) {
+        namespaceContext = prefix2Uri;
         return this;
     }
 
