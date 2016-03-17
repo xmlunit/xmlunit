@@ -203,8 +203,8 @@ public final class CompareMatcher extends BaseMatcher<Object> {
      * @see DiffBuilder#withNamespaceContext(Map)
      * @since XMLUnit 2.0.1
      */
-    public CompareMatcher withNamespaceContext(Map<String, String> uri2Prefix) {
-        diffBuilder.withNamespaceContext(uri2Prefix);
+    public CompareMatcher withNamespaceContext(Map<String, String> prefix2Uri) {
+        diffBuilder.withNamespaceContext(prefix2Uri);
         return this;
     }
 
