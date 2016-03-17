@@ -10,6 +10,12 @@
   PR [#54](https://github.com/xmlunit/xmlunit/pull/54) by
   [@cboehme](https://github.com/cboehme).
 
+* `DiffBuilder#withNamespaceContext` falsely claimed the map would
+  pass prefixes to URIs rather than the other way around.  PR
+  [#62](https://github.com/xmlunit/xmlunit/pull/62) and issue
+  [#61](https://github.com/xmlunit/xmlunit/issues/61) by
+  [@mariusneo](https://github.com/mariusneo).
+
 ## XMLUnit for Java 2.0.0 - /Released 2016-03-06/
 
 * implemented `DiffBuilder.withComparisonFormatter` mentioned in user
