@@ -16,12 +16,10 @@ import java.util.Map;
  * This Hamcrest {@link Matcher} verifies whether the provided XPath expression corresponds to at least
  * one element in the provided object
  *
- * <p/>
- * All types which are supported by {@link Input#from(Object)}  can be used as input for the object
- * against the matcher is evaluated.
- * <p/>
+ * <p>All types which are supported by {@link Input#from(Object)}  can be used as input for the object
+ * against the matcher is evaluated.</p>
  *
- * <b>Simple Example</b><br>
+ * <p><b>Simple Example</b></p>
  *
  * <pre>
  * final String xml = &quot;&lt;a&gt;&lt;b attr=\&quot;abc\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
@@ -30,8 +28,7 @@ import java.util.Map;
  * assertThat(xml, not(hasXPath("//a/b/c")));
  * </pre>
  *
- * <p/>
- * <b>Example with namespace mapping</b>
+ * <p><b>Example with namespace mapping</b></p>
  *
  * <pre>
  *    String xml = &quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;&quot; +
@@ -93,8 +90,8 @@ public class HasXPathMatcher extends BaseMatcher<Object> {
     /**
      * Creates a matcher that matches when the examined XML input has at least one node
      * corresponding to the specified <code>xPath</code>.
-     * <p/>
-     * For example:
+     * 
+     * <p>For example:</p>
      * <pre>assertThat(xml, hasXPath("/root/cars[0]/audi"))</pre>
      *
      * @param xPath the target xpath

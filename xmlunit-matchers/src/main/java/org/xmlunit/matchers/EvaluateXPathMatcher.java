@@ -15,19 +15,19 @@ import java.util.Map;
 /**
  * This Hamcrest {@link Matcher} verifies whether the evaluation of the provided XPath expression
  * corresponds to the value matcher specified for the provided input XML object.
- * <p/>
- * All types which are supported by {@link Input#from(Object)} can be used as input for the XML object
- * against the matcher is evaluated.
- * <p/>
- * <b>Simple Example</b><br>
+ *
+ * <p>All types which are supported by {@link Input#from(Object)} can be used as input for the XML object
+ * against the matcher is evaluated.</p>
+ *
+ * <p><b>Simple Example</b></p>
  * <pre>
  * final String xml = &quot;&lt;a&gt;&lt;b attr=\&quot;abc\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
  *
  * assertThat(xml, hasXPath("//a/b/@attr", equalTo("abc")));
  * assertThat(xml, hasXPath("count(//a/b/c)", equalTo("0")));
  * </pre>
- * <p/>
- * <b>Example with namespace mapping</b>
+ *
+ * <p><b>Example with namespace mapping</b></p>
  * <pre>
  *    String xml = &quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;&quot; +
  *          &quot;&lt;feed xmlns=\&quot;http://www.w3.org/2005/Atom\&quot;&gt;&quot; +
@@ -67,8 +67,8 @@ public class EvaluateXPathMatcher extends BaseMatcher<Object> {
     /**
      * Creates a matcher that matches when the examined XML input has a value at the
      * specified <code>xPath</code> that satisfies the specified <code>valueMatcher</code>.
-     * <p/>
-     * For example:
+     *
+     * <p>For example:</p>
      * <pre>assertThat(xml, hasXPath(&quot;//fruits/fruit/@name&quot;, equalTo(&quot;apple&quot;))</pre>
      *
      * @param xPath the target xpath
