@@ -105,7 +105,7 @@ public class Input {
         if (object instanceof Source) {
             xml = new SourceHoldingBuilder((Source) object);
         } else if (object instanceof Builder) {
-            xml = ((Builder) object);
+            xml = (Builder) object;
         } else if (object instanceof Document) {
             xml = Input.fromDocument((Document) object);
         } else if (object instanceof Node) {

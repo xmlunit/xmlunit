@@ -100,7 +100,9 @@ public class MultiLevelByNameAndTextSelector implements ElementSelector {
         if (ignoreEmptyTexts) {
             while (isText(n1) && n1.getNodeValue().trim().length() == 0) {
                 Node n2 = n1.getNextSibling();
-                if (n2 == null) break;
+                if (n2 == null) {
+                    break;
+                }
                 n1 = n2;
             }
         }
