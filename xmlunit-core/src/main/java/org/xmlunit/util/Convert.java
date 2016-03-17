@@ -152,8 +152,7 @@ public final class Convert {
     private static Document tryExtractDocFromDOMSource(Source s) {
         Node n = tryExtractNodeFromDOMSource(s);
         if (n != null && n instanceof Document) {
-            @SuppressWarnings("unchecked") Document d = (Document) n;
-            return d;
+            return (Document)n;
         }
         return null;
     }

@@ -21,7 +21,6 @@ import javax.xml.XMLConstants;
  * environment.
  */
 public final class Languages {
-    private Languages() {}
 
     /**
      * W3C XML Schema. 
@@ -47,4 +46,6 @@ public final class Languages {
      * @see javax.xml.XMLConstants#RELAXNG_NS_URI
      */
     public static final String RELAXNG_NS_URI = XMLConstants.RELAXNG_NS_URI;
+
+    private Languages() {}
 }

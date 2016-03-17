@@ -133,6 +133,8 @@ public class ParsingValidator extends Validator {
 
         static final String SCHEMA_SOURCE =
             "http://java.sun.com/xml/jaxp/properties/schemaSource";
+
+        private Properties() {}
     }
 
     private class Handler extends DefaultHandler {
