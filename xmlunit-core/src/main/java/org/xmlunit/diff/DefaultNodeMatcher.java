@@ -51,6 +51,8 @@ import org.w3c.dom.Node;
  * e1} alone.</p>
  */
 public class DefaultNodeMatcher implements NodeMatcher {
+    private static final short CDATA = Node.TEXT_NODE;
+    private static final short TEXT = Node.CDATA_SECTION_NODE;
     private final ElementSelector[] elementSelectors;
     private final NodeTypeMatcher nodeTypeMatcher;
 
@@ -182,9 +184,6 @@ public class DefaultNodeMatcher implements NodeMatcher {
          */
         boolean canBeCompared(short controlType, short testType);
     }
-
-    private static final short CDATA = Node.TEXT_NODE;
-    private static final short TEXT = Node.CDATA_SECTION_NODE;
 
     /**
      * {@link NodeTypeMatcher} that marks pairs of nodes of the same

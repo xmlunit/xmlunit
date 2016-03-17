@@ -22,7 +22,6 @@ import org.w3c.dom.Node;
  * Evaluators used for the base cases.
  */
 public final class DifferenceEvaluators {
-    private DifferenceEvaluators() { }
 
     private static final Short CDATA = Node.CDATA_SECTION_NODE;
     private static final Short TEXT = Node.TEXT_NODE;
@@ -72,11 +71,15 @@ public final class DifferenceEvaluators {
                     case XML_ENCODING:
                         outcome = ComparisonResult.SIMILAR;
                         break;
+                    default:
+                        break;
                     }
                 }
                 return outcome;
             }
         };
+
+    private DifferenceEvaluators() { }
 
     /**
      * Combines multiple DifferenceEvaluators so that the first one
