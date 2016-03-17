@@ -11,10 +11,16 @@
   [@cboehme](https://github.com/cboehme).
 
 * `DiffBuilder#withNamespaceContext` falsely claimed the map would
-  pass prefixes to URIs rather than the other way around.  PR
-  [#62](https://github.com/xmlunit/xmlunit/pull/62) and issue
-  [#61](https://github.com/xmlunit/xmlunit/issues/61) by
-  [@mariusneo](https://github.com/mariusneo).
+  pass prefixes to URIs rather than the other way around.
+  PR [#62](https://github.com/xmlunit/xmlunit/pull/62) and issue
+  PR [#52](https://github.com/xmlunit/xmlunit/pull/52) by
+  [@georgekankava](https://github.com/georgekankava).
+
+* various code style fixes
+  PR [#64](https://github.com/xmlunit/xmlunit/pull/64),
+  PR [#65](https://github.com/xmlunit/xmlunit/pull/65) and
+  PR [#67](https://github.com/xmlunit/xmlunit/pull/67) by
+  [@georgekankava](https://github.com/georgekankava).
 
 ## XMLUnit for Java 2.0.0 - /Released 2016-03-06/
 
