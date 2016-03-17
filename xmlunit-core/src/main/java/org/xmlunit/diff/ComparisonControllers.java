@@ -18,8 +18,6 @@ package org.xmlunit.diff;
  */
 public final class ComparisonControllers {
 
-    private ComparisonControllers() { }
-
     /**
      * Does not stop the comparison at all.
      */
@@ -42,6 +40,8 @@ public final class ComparisonControllers {
      * difference is encountered even if it is similar.
      */
     public static final ComparisonController StopWhenSimilar = new StopComparisonController(ComparisonResult.SIMILAR);
+
+    private ComparisonControllers() { }
 
     private static final class StopComparisonController implements ComparisonController {
 
