@@ -13,8 +13,8 @@
 * `DiffBuilder#withNamespaceContext` falsely claimed the map would
   pass prefixes to URIs rather than the other way around.
   PR [#62](https://github.com/xmlunit/xmlunit/pull/62) and issue
-  PR [#52](https://github.com/xmlunit/xmlunit/pull/52) by
-  [@georgekankava](https://github.com/georgekankava).
+  [#52](https://github.com/xmlunit/xmlunit/pull/52) by
+  [@mariusneo](https://github.com/mariusneo).
 
 * various code style fixes
   PR [#64](https://github.com/xmlunit/xmlunit/pull/64),
