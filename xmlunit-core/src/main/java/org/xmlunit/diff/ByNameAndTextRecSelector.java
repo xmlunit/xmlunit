@@ -104,7 +104,7 @@ public class ByNameAndTextRecSelector implements ElementSelector {
         return true;
     }
 
-    private Map.Entry<Integer, Node> findNonText(NodeList nl, int current, int len) {
+    private static Map.Entry<Integer, Node> findNonText(NodeList nl, int current, int len) {
         Node n = nl.item(current);
         while (isText(n) && ++current < len) {
             n = nl.item(current);

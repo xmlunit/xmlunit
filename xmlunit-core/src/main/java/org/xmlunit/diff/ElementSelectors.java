@@ -38,7 +38,6 @@ import org.w3c.dom.NodeList;
  * Common ElementSelector implementations.
  */
 public final class ElementSelectors {
-    private ElementSelectors() { }
 
     /**
      * Always returns true, i.e. each element can be compared to each
@@ -86,6 +85,47 @@ public final class ElementSelectors {
 
     /**
      * Elements with the same local name (and namespace URI - if any)
+     * and attribute values for all attributes can be compared.
+     */
+    public static final ElementSelector byNameAndAllAttributes =
+        new ElementSelector() {
+            @Override
+            public boolean canBeCompared(Element controlElement,
+                                         Element testElement) {
+                if (!byName.canBeCompared(controlElement, testElement)) {
+                    return false;
+                }
+                Map<QName, String> cAttrs = Nodes.getAttributes(controlElement);
+                Map<QName, String> tAttrs = Nodes.getAttributes(testElement);
+                if (cAttrs.size() != tAttrs.size()) {
+                    return false;
+                }
+                return mapsEqualForKeys(cAttrs, tAttrs, cAttrs.keySet());
+            }
+        };
+    /**
+     * String Constants.
+     */
+    private static final String SELECTORS_MUST_NOT_BE_NULL = "selectors must not be null";
+    private static final String ATTRIBUTES_MUST_NOT_CONTAIN_NULL_VALUES = "attributes must not contain null values";
+    private static final String ATTRIBUTES_MUST_NOT_BE_NULL = "attributes must not be null";
+
+
+    /**
+     * Maps Nodes to their NodeInfo equivalent.
+     */
+    static final Mapper<Node, XPathContext.NodeInfo> TO_NODE_INFO =
+        new Mapper<Node, XPathContext.NodeInfo>() {
+            @Override
+            public XPathContext.NodeInfo apply(Node n) {
+                return new XPathContext.DOMNodeInfo(n);
+            }
+        };
+
+    private ElementSelectors() { }
+
+    /**
+     * Elements with the same local name (and namespace URI - if any)
      * and attribute values for the given attribute names can be
      * compared.
      *
@@ -93,10 +133,10 @@ public final class ElementSelectors {
      */
     public static ElementSelector byNameAndAttributes(String... attribs) {
         if (attribs == null) {
-            throw new IllegalArgumentException("attributes must not be null");
+            throw new IllegalArgumentException(ATTRIBUTES_MUST_NOT_BE_NULL);
         }
         if (any(Arrays.asList(attribs), new IsNullPredicate())) {
-            throw new IllegalArgumentException("attributes must not contain null values");
+            throw new IllegalArgumentException(ATTRIBUTES_MUST_NOT_CONTAIN_NULL_VALUES);
         }
         QName[] qs = new QName[attribs.length];
         for (int i = 0; i < attribs.length; i++) {
@@ -118,11 +158,11 @@ public final class ElementSelectors {
         byNameAndAttributesControlNS(final String... attribs) {
 
         if (attribs == null) {
-            throw new IllegalArgumentException("attributes must not be null");
+            throw new IllegalArgumentException(ATTRIBUTES_MUST_NOT_BE_NULL);
         }
         final Collection<String> qs = Arrays.asList(attribs);
         if (any(qs, new IsNullPredicate())) {
-            throw new IllegalArgumentException("attributes must not contain null values");
+            throw new IllegalArgumentException(ATTRIBUTES_MUST_NOT_CONTAIN_NULL_VALUES);
         }
         final HashSet<String> as = new HashSet(qs);
         return new ElementSelector() {
@@ -161,11 +201,11 @@ public final class ElementSelectors {
      */
     public static ElementSelector byNameAndAttributes(final QName... attribs) {
         if (attribs == null) {
-            throw new IllegalArgumentException("attributes must not be null");
+            throw new IllegalArgumentException(ATTRIBUTES_MUST_NOT_BE_NULL);
         }
         final Collection<QName> qs = Arrays.asList(attribs);
         if (any(qs, new IsNullPredicate())) {
-            throw new IllegalArgumentException("attributes must not contain null values");
+            throw new IllegalArgumentException(ATTRIBUTES_MUST_NOT_CONTAIN_NULL_VALUES);
         }
         return new ElementSelector() {
             @Override
@@ -180,27 +220,6 @@ public final class ElementSelectors {
             }
         };
     }
-
-    /**
-     * Elements with the same local name (and namespace URI - if any)
-     * and attribute values for all attributes can be compared.
-     */
-    public static final ElementSelector byNameAndAllAttributes =
-        new ElementSelector() {
-            @Override
-            public boolean canBeCompared(Element controlElement,
-                                         Element testElement) {
-                if (!byName.canBeCompared(controlElement, testElement)) {
-                    return false;
-                }
-                Map<QName, String> cAttrs = Nodes.getAttributes(controlElement);
-                Map<QName, String> tAttrs = Nodes.getAttributes(testElement);
-                if (cAttrs.size() != tAttrs.size()) {
-                    return false;
-                }
-                return mapsEqualForKeys(cAttrs, tAttrs, cAttrs.keySet());
-            }
-        };
 
     /**
      * Negates another ElementSelector.
@@ -246,7 +265,7 @@ public final class ElementSelectors {
      */
     public static ElementSelector or(final ElementSelector... selectors) {
         if (selectors == null) {
-            throw new IllegalArgumentException("selectors must not be null");
+            throw new IllegalArgumentException(SELECTORS_MUST_NOT_BE_NULL);
         }
         final Collection<ElementSelector> s = Arrays.asList(selectors);
         if (any(s, new IsNullPredicate())) {
@@ -266,7 +285,7 @@ public final class ElementSelectors {
      */
     public static ElementSelector and(final ElementSelector... selectors) {
         if (selectors == null) {
-            throw new IllegalArgumentException("selectors must not be null");
+            throw new IllegalArgumentException(SELECTORS_MUST_NOT_BE_NULL);
         }
         final Collection<ElementSelector> s = Arrays.asList(selectors);
         if (any(s, new IsNullPredicate())) {
@@ -288,7 +307,7 @@ public final class ElementSelectors {
     public static ElementSelector xor(final ElementSelector es1,
                                       final ElementSelector es2) {
         if (es1 == null || es2 == null) {
-            throw new IllegalArgumentException("selectors must not be null");
+            throw new IllegalArgumentException(SELECTORS_MUST_NOT_BE_NULL);
         }
         return new ElementSelector() {
             @Override
@@ -507,16 +526,5 @@ public final class ElementSelectors {
             return es.canBeCompared(e1, e2);
         }
     }
-
-    /**
-     * Maps Nodes to their NodeInfo equivalent.
-     */
-    static final Mapper<Node, XPathContext.NodeInfo> TO_NODE_INFO =
-        new Mapper<Node, XPathContext.NodeInfo>() {
-            @Override
-            public XPathContext.NodeInfo apply(Node n) {
-                return new XPathContext.DOMNodeInfo(n);
-            }
-        };
 
 }
