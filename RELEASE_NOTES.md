@@ -22,6 +22,13 @@
   PR [#67](https://github.com/xmlunit/xmlunit/pull/67) by
   [@georgekankava](https://github.com/georgekankava).
 
+* new `hasXPath` matchers that check for the existence of an XPath
+  inside of a piece of XML or verify additional assertions on the
+  XPath's stringified result.
+  PR [#63](https://github.com/xmlunit/xmlunit/pull/63) and
+  PR [#66](https://github.com/xmlunit/xmlunit/pull/66) by
+  [@mariusneo](https://github.com/mariusneo).
+
 ## XMLUnit for Java 2.0.0 - /Released 2016-03-06/
 
 * implemented `DiffBuilder.withComparisonFormatter` mentioned in user
