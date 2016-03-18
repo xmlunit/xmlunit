@@ -15,6 +15,8 @@ package org.xmlunit.util;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -41,6 +43,9 @@ public final class IterableNodeList implements Iterable<Node> {
             throw new UnsupportedOperationException();
         }
         public Node next() {
+            if(!hasNext()) {
+                throw new NoSuchElementException();
+            } 
             return nl.item(current++);
         }
         public boolean hasNext() {

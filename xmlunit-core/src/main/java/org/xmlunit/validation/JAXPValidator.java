@@ -53,12 +53,10 @@ public class JAXPValidator extends Validator {
         f.setErrorHandler(v);
         try {
             f.newSchema(getSchemaSources());
+        } catch (SAXParseException e) {
+            v.error((SAXParseException) e);
         } catch (SAXException e) {
-            if (e instanceof SAXParseException) {
-                v.error((SAXParseException) e);
-            } else {
                 throw new XMLUnitException(e);
-            }
         } finally {
             f.setErrorHandler(null);
         }
@@ -77,12 +75,10 @@ public class JAXPValidator extends Validator {
         val.setErrorHandler(v);
         try {
             val.validate(s);
+        } catch (SAXParseException e) {
+            v.error((SAXParseException) e);
         } catch (SAXException e) {
-            if (e instanceof SAXParseException) {
-                v.error((SAXParseException) e);
-            } else {
                 throw new XMLUnitException(e);
-            }
         } catch (java.io.IOException e) {
             throw new XMLUnitException(e);
         }
