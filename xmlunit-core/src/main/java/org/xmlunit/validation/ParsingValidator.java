@@ -106,12 +106,10 @@ public class ParsingValidator extends Validator {
             InputSource input = Convert.toInputSource(s);
             try {
                 parser.parse(input, handler);
+            } catch (SAXParseException e) {
+                handler.error((SAXParseException) e);
             } catch (SAXException e) {
-                if (e instanceof SAXParseException) {
-                    handler.error((SAXParseException) e);
-                } else {
-                    throw new XMLUnitException(e);
-                }
+                throw new XMLUnitException(e);
             }
             return handler.getResult();
         } catch (ParserConfigurationException ex) {

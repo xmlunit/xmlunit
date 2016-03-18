@@ -31,6 +31,8 @@ import org.w3c.dom.Text;
  * Utility algorithms that work on DOM nodes.
  */
 public final class Nodes {
+    private static final char SPACE = ' ';
+
     private Nodes() { }
 
     /**
@@ -145,8 +147,6 @@ public final class Nodes {
             }
         }
     }
-
-    private static final char SPACE = ' ';
 
     /**
      * Normalize a string.
