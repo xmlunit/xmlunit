@@ -56,7 +56,7 @@ public class JAXPValidator extends Validator {
         } catch (SAXParseException e) {
             v.error((SAXParseException) e);
         } catch (SAXException e) {
-                throw new XMLUnitException(e);
+            throw new XMLUnitException(e);
         } finally {
             f.setErrorHandler(null);
         }
@@ -78,7 +78,7 @@ public class JAXPValidator extends Validator {
         } catch (SAXParseException e) {
             v.error((SAXParseException) e);
         } catch (SAXException e) {
-                throw new XMLUnitException(e);
+            throw new XMLUnitException(e);
         } catch (java.io.IOException e) {
             throw new XMLUnitException(e);
         }

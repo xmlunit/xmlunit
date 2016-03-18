@@ -43,7 +43,7 @@ public final class IterableNodeList implements Iterable<Node> {
             throw new UnsupportedOperationException();
         }
         public Node next() {
-            if(!hasNext()) {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             } 
             return nl.item(current++);
