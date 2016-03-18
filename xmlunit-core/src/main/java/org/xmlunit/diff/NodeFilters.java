@@ -20,7 +20,6 @@ import org.xmlunit.util.Predicate;
  * Common NodeFilter implementations.
  */
 public final class NodeFilters {
-    private NodeFilters() { }
 
     /**
      * Suppresses document-type and XML declaration nodes.
@@ -31,4 +30,6 @@ public final class NodeFilters {
                 return n.getNodeType() != Node.DOCUMENT_TYPE_NODE;
             }
         };
+
+    private NodeFilters() { }
 }

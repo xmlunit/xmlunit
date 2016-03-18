@@ -163,7 +163,7 @@ public class XPathContext implements Cloneable {
         }
 
         for (NodeInfo child : children) {
-            Level l = null;
+            Level l;
             switch (child.getType()) {
             case Node.COMMENT_NODE:
                 l = new Level(COMMENT + OPEN + (++comments) + CLOSE);
