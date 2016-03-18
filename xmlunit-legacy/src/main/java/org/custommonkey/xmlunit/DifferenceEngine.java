@@ -38,7 +38,6 @@ package org.custommonkey.xmlunit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.w3c.dom.Attr;
@@ -65,6 +64,13 @@ import org.w3c.dom.Text;
  */
 public class DifferenceEngine
     implements DifferenceConstants, DifferenceEngineContract {
+
+    /**
+     * Exception instance used internally to control flow
+     * when a difference is found
+     */
+    private static final DifferenceFoundException flowControlException =
+        new DifferenceFoundException();
 
     private static final String NULL_NODE = "null";
     private static final String NOT_NULL_NODE = "not null";
@@ -135,7 +141,7 @@ public class DifferenceEngine
         }       
     }
         
-    private String getNullOrNotNull(Node aNode) {
+    private static String getNullOrNotNull(Node aNode) {
         return aNode==null ? NULL_NODE : NOT_NULL_NODE;
     }
 
@@ -380,7 +386,7 @@ public class DifferenceEngine
             Node nextControl = controlChildren.get(i);
             boolean matchOnElement = nextControl instanceof Element;
             short findNodeType = nextControl.getNodeType();
-            int startAt = ( i > lastTestNode ? lastTestNode : i);
+            int startAt = i > lastTestNode ? lastTestNode : i;
             j = startAt;
             
             boolean matchFound = false;
@@ -501,7 +507,7 @@ public class DifferenceEngine
      * @param aNode
      * @return true if the node has a namespace
      */
-    private boolean isNamespaced(Node aNode) {
+    private static boolean isNamespaced(Node aNode) {
         String namespace = aNode.getNamespaceURI();
         return namespace != null && namespace.length() > 0;
     }
@@ -630,7 +636,7 @@ public class DifferenceEngine
         return getUnNamespacedNodeName(aNode, isNamespaced(aNode));
     }
     
-    private String getUnNamespacedNodeName(Node aNode, boolean isNamespacedNode) {
+    private static String getUnNamespacedNodeName(Node aNode, boolean isNamespacedNode) {
         if (isNamespacedNode) {
             return aNode.getLocalName();
         }
@@ -641,7 +647,7 @@ public class DifferenceEngine
         return getQName(aNode, isNamespaced(aNode));
     }
 
-    private String getQName(Node aNode, boolean isNamespacedNode) {
+    private static String getQName(Node aNode, boolean isNamespacedNode) {
         if (isNamespacedNode) {
             return "{" + aNode.getNamespaceURI() + "}" + aNode.getLocalName();
         }
@@ -890,7 +896,7 @@ public class DifferenceEngine
      * @return TRUE if the values are neither both null, nor equals() equal
      */
     private boolean unequal(Object expected, Object actual) {
-        return (expected==null ? actual!=null : unequalNotNull(expected, actual));
+        return expected==null ? actual!=null : unequalNotNull(expected, actual);
     }
 
     /**
@@ -919,7 +925,7 @@ public class DifferenceEngine
      * consecutive whitespace chars to a single SPACE.
      */
     final static String normalizeWhitespace(String orig) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         boolean lastCharWasWhitespace = false;
         boolean changed = false;
         char[] characters = orig.toCharArray();
@@ -951,10 +957,4 @@ public class DifferenceEngine
         }
     }
 
-    /**
-     * Exception instance used internally to control flow
-     * when a difference is found
-     */
-    private static final DifferenceFoundException flowControlException =
-        new DifferenceFoundException();
 }

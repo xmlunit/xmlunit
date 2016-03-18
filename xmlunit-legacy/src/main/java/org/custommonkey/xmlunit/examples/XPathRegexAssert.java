@@ -55,6 +55,8 @@ import junit.framework.Assert;
  */
 
 public class XPathRegexAssert {
+    private static final String EXPECTED_VALUE_TO_MATCH = "expected value to match ";
+
     // no instances
     private XPathRegexAssert() {}
 
@@ -83,21 +85,21 @@ public class XPathRegexAssert {
     public static void assertXPathMatches(String regex,
                                           String xpath, Document doc)
         throws XpathException {
-        assertXPathMatches("expected value to match " + regex, regex,
+        assertXPathMatches(EXPECTED_VALUE_TO_MATCH + regex, regex,
                            xpath, doc);
     }
 
     public static void assertXPathMatches(String regex,
                                           String xpath, String xml)
         throws XpathException, SAXException, IOException {
-        assertXPathMatches("expected value to match " + regex, regex,
+        assertXPathMatches(EXPECTED_VALUE_TO_MATCH + regex, regex,
                            xpath, xml);
     }
 
     public static void assertXPathMatches(String regex,
                                           String xpath, Reader reader)
         throws XpathException, SAXException, IOException {
-        assertXPathMatches("expected value to match " + regex, regex,
+        assertXPathMatches(EXPECTED_VALUE_TO_MATCH + regex, regex,
                            xpath, reader);
     }
 }
