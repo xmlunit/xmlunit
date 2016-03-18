@@ -18,8 +18,10 @@
 
 * various code style fixes
   PR [#64](https://github.com/xmlunit/xmlunit/pull/64),
-  PR [#65](https://github.com/xmlunit/xmlunit/pull/65) and
-  PR [#67](https://github.com/xmlunit/xmlunit/pull/67) by
+  PR [#65](https://github.com/xmlunit/xmlunit/pull/65),
+  PR [#67](https://github.com/xmlunit/xmlunit/pull/67),
+  PR [#68](https://github.com/xmlunit/xmlunit/pull/68) and
+  PR [#69](https://github.com/xmlunit/xmlunit/pull/69) by
   [@georgekankava](https://github.com/georgekankava).
 
 * new `hasXPath` matchers that check for the existence of an XPath
