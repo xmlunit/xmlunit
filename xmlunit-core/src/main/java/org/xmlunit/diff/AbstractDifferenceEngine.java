@@ -24,6 +24,8 @@ import org.xmlunit.util.Predicate;
  * interface.
  */
 public abstract class AbstractDifferenceEngine implements DifferenceEngine {
+    private static final String NOT_BE_NULL = " not be null";
+    private static final String LISTENER_MUST_NOT_BE_NULL = "listener must not be null";
     private final ComparisonListenerSupport listeners =
         new ComparisonListenerSupport();
     private NodeMatcher nodeMatcher = new DefaultNodeMatcher();
@@ -43,7 +45,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     @Override
     public void addComparisonListener(ComparisonListener l) {
         if (l == null) {
-            throw new IllegalArgumentException("listener must not be null");
+            throw new IllegalArgumentException(LISTENER_MUST_NOT_BE_NULL);
         }
         listeners.addComparisonListener(l);
     }
@@ -51,7 +53,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     @Override
     public void addMatchListener(ComparisonListener l) {
         if (l == null) {
-            throw new IllegalArgumentException("listener must not be null");
+            throw new IllegalArgumentException(LISTENER_MUST_NOT_BE_NULL);
         }
         listeners.addMatchListener(l);
     }
@@ -59,7 +61,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     @Override
     public void addDifferenceListener(ComparisonListener l) {
         if (l == null) {
-            throw new IllegalArgumentException("listener must not be null");
+            throw new IllegalArgumentException(LISTENER_MUST_NOT_BE_NULL);
         }
         listeners.addDifferenceListener(l);
     }
@@ -68,7 +70,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     public void setNodeMatcher(NodeMatcher n) {
         if (n == null) {
             throw new IllegalArgumentException("node matcher must"
-                                               + " not be null");
+                                               + NOT_BE_NULL);
         }
         nodeMatcher = n;
     }
@@ -84,7 +86,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     public void setDifferenceEvaluator(DifferenceEvaluator e) {
         if (e == null) {
             throw new IllegalArgumentException("difference evaluator must"
-                                               + " not be null");
+                                               + NOT_BE_NULL);
         }
         diffEvaluator = e;
     }
@@ -100,7 +102,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     public void setComparisonController(ComparisonController c) {
         if (c == null) {
             throw new IllegalArgumentException("comparison controller must"
-                                               + " not be null");
+                                               + NOT_BE_NULL);
         }
         comparisonController = c;
     }
@@ -128,7 +130,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     public void setAttributeFilter(Predicate<Attr> af) {
         if (af == null) {
             throw new IllegalArgumentException("attribute filter must"
-                                               + " not be null");
+                                               + NOT_BE_NULL);
         }
         this.attributeFilter = af;
     }

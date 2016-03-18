@@ -44,6 +44,15 @@ import org.w3c.dom.ProcessingInstruction;
  */
 public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
 
+    /**
+     * Maps Nodes to their QNames.
+     */
+    private static final Mapper<Node, QName> QNAME_MAPPER =
+        new Mapper<Node, QName>() {
+            @Override
+            public QName apply(Node n) { return Nodes.getQName(n); }
+        };
+
     @Override
     public void compare(Source control, Source test) {
         if (control == null) {
@@ -174,6 +183,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                 return compareAttributes((Attr) control, controlContext,
                                          (Attr) test, testContext);
             }
+            break;
+        default:
             break;
         }
         return new OngoingComparisonState();
@@ -795,14 +806,5 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         }
         return null;
     }
-
-    /**
-     * Maps Nodes to their QNames.
-     */
-    private static final Mapper<Node, QName> QNAME_MAPPER =
-        new Mapper<Node, QName>() {
-            @Override
-            public QName apply(Node n) { return Nodes.getQName(n); }
-        };
 
 }
