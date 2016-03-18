@@ -113,7 +113,17 @@ assertThat(createTestDocument(), isIdenticalTo(Input.fromFile("test-data/good.xm
 Source source = Input.fromString("<foo>bar</foo>").build();
 XPathEngine xpath = new JAXPXPathEngine();
 Iterable<Node> allMatches = xpath.selectNodes("/foo", source);
+assert allMatches.iterator().hasNext();
 String content = xpath.evaluate("/foo/text()", source);
+assert "bar".equals(content);
+```
+
+or using `HasXPathMatcher` and `EvaluateXPathMatcher`
+
+```java
+assertThat("<foo>bar</foo>", HasXPathMatcher.hasXPath("/foo"));
+assertThat("<foo>bar</foo>", EvaluateXPathMatcher.hasXPath("/foo/text()",
+                                                           equalTo("bar")));
 ```
 
 ### Validating a Document Against an XML Schema
