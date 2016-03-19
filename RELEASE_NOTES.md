@@ -33,6 +33,10 @@
   PR [#66](https://github.com/xmlunit/xmlunit/pull/66) by
   [@mariusneo](https://github.com/mariusneo).
 
+* added new implementations inside `DifferenceEvaluators` for common
+  tasks like changing the outcome for specific differences or ignoring
+  changes inside the XML prolog.
+
 ## XMLUnit for Java 2.0.0 - /Released 2016-03-06/
 
 * implemented `DiffBuilder.withComparisonFormatter` mentioned in user
