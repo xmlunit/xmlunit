@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -154,7 +155,7 @@ public final class DifferenceEvaluators {
      * "https://www.w3.org/TR/2008/REC-xml-20081126/#sec-prolog-dtd"
      * XML prolog}.
      *
-     * <p>Here "ignore" means return {@code ComparisonResult.EQUAL}.
+     * <p>Here "ignore" means return {@code ComparisonResult.EQUAL}.</p>
      *
      * @since 2.1.0
      */
@@ -162,7 +163,38 @@ public final class DifferenceEvaluators {
         return new DifferenceEvaluator() {
             @Override
             public ComparisonResult evaluate(Comparison comparison, ComparisonResult orig) {
-                return belongsToProlog(comparison) || isSequenceOfRootElement(comparison)
+                return belongsToProlog(comparison, true)
+                    || isSequenceOfRootElement(comparison)
+                    ? ComparisonResult.EQUAL : orig;
+            }
+        };
+    }
+
+    /**
+     * Ignore any differences except differences inside the doctype
+     * declaration that are part of the {@link
+     * "https://www.w3.org/TR/2008/REC-xml-20081126/#sec-prolog-dtd"
+     * XML prolog}.
+     *
+     * <p>Here "ignore" means return {@code ComparisonResult.EQUAL}.</p>
+     *
+     * <p>This is one of the building blocks for mimicing the behavior
+     * of XMLUnit for Java 1.x. In order to get the same behavior you
+     * need:</p>
+     *
+     * <pre>
+     * chain(Default, // so CDATA and Text are the same
+     *       ignorePrologDifferencesExceptDoctype()) // so most of the prolog is ignored
+     * </pre>
+     *
+     * @since 2.1.0
+     */
+    public static DifferenceEvaluator ignorePrologDifferencesExceptDoctype() {
+        return new DifferenceEvaluator() {
+            @Override
+            public ComparisonResult evaluate(Comparison comparison, ComparisonResult orig) {
+                return belongsToProlog(comparison, false)
+                    || isSequenceOfRootElement(comparison)
                     ? ComparisonResult.EQUAL : orig;
             }
         };
@@ -182,24 +214,46 @@ public final class DifferenceEvaluators {
         };
     }
 
-    private static boolean belongsToProlog(Comparison comparison) {
-        return belongsToProlog(comparison.getControlDetails().getTarget())
-            || belongsToProlog(comparison.getTestDetails().getTarget());
+    private static boolean belongsToProlog(Comparison comparison,
+                                           boolean ignoreDoctypeDeclarationAsWell) {
+        if (isDoctypeComparison(comparison.getType())) {
+            return ignoreDoctypeDeclarationAsWell;
+        }
+        return belongsToProlog(comparison.getControlDetails().getTarget(),
+                               ignoreDoctypeDeclarationAsWell)
+            || belongsToProlog(comparison.getTestDetails().getTarget(),
+                               ignoreDoctypeDeclarationAsWell);
     }
 
-    private static boolean belongsToProlog(Node n) {
+    private static boolean belongsToProlog(Node n,
+                                           boolean ignoreDoctypeDeclarationAsWell) {
         if (n == null || n instanceof Element) {
+            return false;
+        }
+        if (!ignoreDoctypeDeclarationAsWell && n instanceof DocumentType) {
             return false;
         }
         if (n instanceof Document) {
             return true;
         }
-        return belongsToProlog(n.getParentNode());
+        return belongsToProlog(n.getParentNode(), ignoreDoctypeDeclarationAsWell);
     }
 
     private static boolean isSequenceOfRootElement(Comparison comparison) {
         return comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE
             && comparison.getControlDetails().getTarget() instanceof Element
             && comparison.getControlDetails().getTarget().getParentNode() instanceof Document;
+    }
+
+    private static boolean isDoctypeComparison(ComparisonType t) {
+        switch (t) {
+        case HAS_DOCTYPE_DECLARATION:
+        case DOCTYPE_NAME:
+        case DOCTYPE_PUBLIC_ID:
+        case DOCTYPE_SYSTEM_ID:
+            return true;
+        default:
+            return false;
+        }
     }
 }

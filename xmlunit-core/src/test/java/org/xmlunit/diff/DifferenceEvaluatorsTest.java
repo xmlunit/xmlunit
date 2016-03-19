@@ -296,11 +296,203 @@ public class DifferenceEvaluatorsTest {
         assertThat(differences, not(hasSize(0)));
     }
 
+    @Test
+    public void ignorePrologIgnoresPresenceOfDoctype() {
+        List<Comparison> differences =
+            compare("<!DOCTYPE test ["
+                    + "<!ELEMENT bar EMPTY>"
+                    + "]>"
+                    + "<bar/>",
+                    "<bar/>");
+        assertThat(differences, hasSize(0));
+    }
+
+    @Test
+    public void ignorePrologIgnoresNameOfDoctype() {
+        List<Comparison> differences =
+            compare("<!DOCTYPE foo ["
+                    + "<!ELEMENT bar EMPTY>"
+                    + "]>"
+                    + "<bar/>",
+                    "<!DOCTYPE test ["
+                    + "<!ELEMENT bar EMPTY>"
+                    + "]>"
+                    + "<bar/>");
+        assertThat(differences, hasSize(0));
+    }
+
+    @Test
+    public void ignorePrologExceptDoctypeIgnoresAdditionalContentInProlog() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>",
+                    "<bar/>");
+        assertThat(differences, hasSize(0));
+    }
+
+    @Test
+    public void ignorePrologExceptDoctypeIgnoresXMLDeclarationDifferences() {
+        List<Comparison> differences =
+            compare(
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>",
+                    false);
+        assertThat(differences, hasSize(0));
+    }
+
+    @Test
+    public void ignorePrologExceptDoctypeIgnoresPrologCommentDifferences() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<?foo some PI ?>\n"
+                    + "<!-- some other comment -->"
+                    + "<bar/>",
+                    false);
+        assertThat(differences, hasSize(0));
+    }
+
+    @Test
+    public void ignorePrologExceptDoctypeIgnoresPrologProcessingInstructionDifferences() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some other PI ?>\n"
+                    + "<bar/>",
+                    false);
+        assertThat(differences, hasSize(0));
+    }
+
+    @Test
+    public void ignorePrologExceptDoctypeIgnoresPrologWhitespaceDifferences() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment --> "
+                    + "<?foo some PI ?>"
+                    + "<bar/>",
+                    false);
+        assertThat(differences, hasSize(0));
+    }
+
+    @Test
+    public void ignorePrologExceptDoctypeIgnoresDoesntIgnoreElementName() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<foo/>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>",
+                    false);
+        assertThat(differences, not(hasSize(0)));
+    }
+
+    @Test
+    public void ignorePrologExceptDoctypeDoesntIgnoreCommentsOutsideOfProlog() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<foo>"
+                    + "<!-- some comment -->"
+                    + "</foo>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<foo>"
+                    + "<!-- some other comment -->"
+                    + "</foo>",
+                    false);
+        assertThat(differences, not(hasSize(0)));
+    }
+
+    @Test
+    public void ignorePrologExceptDoctypeDoesntIgnorePIsOutsideOfProlog() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<foo>"
+                    + "<?foo some PI ?>\n"
+                    + "</foo>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<foo>"
+                    + "<?foo some other PI ?>\n"
+                    + "</foo>",
+                    false);
+        assertThat(differences, not(hasSize(0)));
+    }
+
+    @Test
+    public void ignorePrologExceptDoctypeDoesntIgnoreWhitespaceOutsideOfProlog() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<foo>"
+                    + "\n"
+                    + "</foo>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<foo>"
+                    + "</foo>",
+                    false);
+        assertThat(differences, not(hasSize(0)));
+    }
+
+    @Test
+    public void ignorePrologExceptDoctypeDoesntIgnorePresenceOfDoctype() {
+        List<Comparison> differences =
+            compare("<!DOCTYPE test ["
+                    + "<!ELEMENT bar EMPTY>"
+                    + "]>"
+                    + "<bar/>",
+                    "<bar/>",
+                    false);
+        assertThat(differences, not(hasSize(0)));
+    }
+
+    @Test
+    public void ignorePrologExceptDoctypeDoesntIgnoreNameOfDoctype() {
+        List<Comparison> differences =
+            compare("<!DOCTYPE foo ["
+                    + "<!ELEMENT bar EMPTY>"
+                    + "]>"
+                    + "<bar/>",
+                    "<!DOCTYPE test ["
+                    + "<!ELEMENT bar EMPTY>"
+                    + "]>"
+                    + "<bar/>",
+                    false);
+        assertThat(differences, not(hasSize(0)));
+    }
+
     private List<Comparison> compare(String controlXml, String testXml) {
+        return compare(controlXml, testXml, true);
+    }
+
+    private List<Comparison> compare(String controlXml, String testXml,
+                                     boolean ignoreDoctypeDeclarationAsWell) {
         Source control = Input.from(controlXml) .build();
         Source test = Input.from(testXml) .build();
         DOMDifferenceEngine e = new DOMDifferenceEngine();
-        e.setDifferenceEvaluator(DifferenceEvaluators.ignorePrologDifferences());
+        if (ignoreDoctypeDeclarationAsWell) {
+            e.setDifferenceEvaluator(DifferenceEvaluators.ignorePrologDifferences());
+        } else {
+            e.setDifferenceEvaluator(DifferenceEvaluators.ignorePrologDifferencesExceptDoctype());
+        }
         final List<Comparison> differences = new ArrayList<Comparison>();
         e.addDifferenceListener(new ComparisonListener() {
                 @Override
