@@ -16,6 +16,8 @@ package org.xmlunit.diff;
 import java.util.Arrays;
 import java.util.EnumSet;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
@@ -147,6 +149,25 @@ public final class DifferenceEvaluators {
         return recordDifferencesAs(ComparisonResult.DIFFERENT, types);
     }
 
+    /**
+     * Ignore any differences that are part of the {@link
+     * "https://www.w3.org/TR/2008/REC-xml-20081126/#sec-prolog-dtd"
+     * XML prolog}.
+     *
+     * <p>Here "ignore" means return {@code ComparisonResult.EQUAL}.
+     *
+     * @since 2.1.0
+     */
+    public static DifferenceEvaluator ignorePrologDifferences() {
+        return new DifferenceEvaluator() {
+            @Override
+            public ComparisonResult evaluate(Comparison comparison, ComparisonResult orig) {
+                return belongsToProlog(comparison) || isSequenceOfRootElement(comparison)
+                    ? ComparisonResult.EQUAL : orig;
+            }
+        };
+    }
+
     private static DifferenceEvaluator recordDifferencesAs(final ComparisonResult outcome,
                                                            ComparisonType... types) {
         final EnumSet<ComparisonType> comparisonTypes =
@@ -159,5 +180,26 @@ public final class DifferenceEvaluators {
                     ? outcome : orig;
             }
         };
+    }
+
+    private static boolean belongsToProlog(Comparison comparison) {
+        return belongsToProlog(comparison.getControlDetails().getTarget())
+            || belongsToProlog(comparison.getTestDetails().getTarget());
+    }
+
+    private static boolean belongsToProlog(Node n) {
+        if (n == null || n instanceof Element) {
+            return false;
+        }
+        if (n instanceof Document) {
+            return true;
+        }
+        return belongsToProlog(n.getParentNode());
+    }
+
+    private static boolean isSequenceOfRootElement(Comparison comparison) {
+        return comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE
+            && comparison.getControlDetails().getTarget() instanceof Element
+            && comparison.getControlDetails().getTarget().getParentNode() instanceof Document;
     }
 }

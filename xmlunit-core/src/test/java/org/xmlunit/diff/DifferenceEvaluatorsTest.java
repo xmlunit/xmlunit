@@ -13,9 +13,16 @@
 */
 package org.xmlunit.diff;
 
-import org.junit.Test;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.transform.Source;
 
+import org.junit.Test;
+import org.xmlunit.builder.Input;
+
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 
 public class DifferenceEvaluatorsTest {
@@ -166,4 +173,143 @@ public class DifferenceEvaluatorsTest {
                                 ComparisonResult.EQUAL));
     }
 
+    @Test
+    public void ignorePrologIgnoresAdditionalContentInProlog() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>",
+                    "<bar/>");
+        assertThat(differences, hasSize(0));
+    }
+
+    @Test
+    public void ignorePrologIgnoresXMLDeclarationDifferences() {
+        List<Comparison> differences =
+            compare(
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>");
+        assertThat(differences, hasSize(0));
+    }
+
+    @Test
+    public void ignorePrologIgnoresPrologCommentDifferences() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<?foo some PI ?>\n"
+                    + "<!-- some other comment -->"
+                    + "<bar/>");
+        assertThat(differences, hasSize(0));
+    }
+
+    @Test
+    public void ignorePrologIgnoresPrologProcessingInstructionDifferences() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some other PI ?>\n"
+                    + "<bar/>");
+        assertThat(differences, hasSize(0));
+    }
+
+    @Test
+    public void ignorePrologIgnoresPrologWhitespaceDifferences() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment --> "
+                    + "<?foo some PI ?>"
+                    + "<bar/>");
+        assertThat(differences, hasSize(0));
+    }
+
+    @Test
+    public void ignorePrologIgnoresDoesntIgnoreElementName() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<foo/>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<!-- some comment -->"
+                    + "<?foo some PI ?>\n"
+                    + "<bar/>");
+        assertThat(differences, not(hasSize(0)));
+    }
+
+    @Test
+    public void ignorePrologDoesntIgnoreCommentsOutsideOfProlog() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<foo>"
+                    + "<!-- some comment -->"
+                    + "</foo>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<foo>"
+                    + "<!-- some other comment -->"
+                    + "</foo>");
+        assertThat(differences, not(hasSize(0)));
+    }
+
+    @Test
+    public void ignorePrologDoesntIgnorePIsOutsideOfProlog() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<foo>"
+                    + "<?foo some PI ?>\n"
+                    + "</foo>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<foo>"
+                    + "<?foo some other PI ?>\n"
+                    + "</foo>");
+        assertThat(differences, not(hasSize(0)));
+    }
+
+    @Test
+    public void ignorePrologDoesntIgnoreWhitespaceOutsideOfProlog() {
+        List<Comparison> differences =
+            compare("<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<foo>"
+                    + "\n"
+                    + "</foo>",
+                    "<?xml version = \"1.0\" encoding = \"UTF-8\"?>"
+                    + "<foo>"
+                    + "</foo>");
+        assertThat(differences, not(hasSize(0)));
+    }
+
+    private List<Comparison> compare(String controlXml, String testXml) {
+        Source control = Input.from(controlXml) .build();
+        Source test = Input.from(testXml) .build();
+        DOMDifferenceEngine e = new DOMDifferenceEngine();
+        e.setDifferenceEvaluator(DifferenceEvaluators.ignorePrologDifferences());
+        final List<Comparison> differences = new ArrayList<Comparison>();
+        e.addDifferenceListener(new ComparisonListener() {
+                @Override
+                public void comparisonPerformed(Comparison comparison,
+                                                ComparisonResult outcome) {
+                    differences.add(comparison);
+                }
+            });
+        e.compare(control, test);
+        return differences;
+    }
 }
