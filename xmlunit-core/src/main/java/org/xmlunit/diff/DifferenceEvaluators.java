@@ -127,6 +127,8 @@ public final class DifferenceEvaluators {
     /**
      * Creates a DifferenceEvaluator that returns a EQUAL result for
      * differences found in one of the given ComparisonTypes.
+     *
+     * @since XMLUnit 2.1.0
      */
     public static DifferenceEvaluator downgradeDifferencesToEqual(ComparisonType... types) {
         return recordDifferencesAs(ComparisonResult.EQUAL, types);
@@ -136,6 +138,8 @@ public final class DifferenceEvaluators {
      * Creates a DifferenceEvaluator that returns a SIMILAR result for
      * differences (Comparisons that are not EQUAL) found in one of
      * the given ComparisonTypes.
+     *
+     * @since XMLUnit 2.1.0
      */
     public static DifferenceEvaluator downgradeDifferencesToSimilar(ComparisonType... types) {
         return recordDifferencesAs(ComparisonResult.SIMILAR, types);
@@ -145,6 +149,8 @@ public final class DifferenceEvaluators {
      * Creates a DifferenceEvaluator that returns a DIFFERENT result
      * for differences (Comparisons that are not EQUAL) found in one
      * of the given ComparisonTypes.
+     *
+     * @since XMLUnit 2.1.0
      */
     public static DifferenceEvaluator upgradeDifferencesToDifferent(ComparisonType... types) {
         return recordDifferencesAs(ComparisonResult.DIFFERENT, types);
@@ -157,7 +163,7 @@ public final class DifferenceEvaluators {
      *
      * <p>Here "ignore" means return {@code ComparisonResult.EQUAL}.</p>
      *
-     * @since 2.1.0
+     * @since XMLUnit 2.1.0
      */
     public static DifferenceEvaluator ignorePrologDifferences() {
         return new DifferenceEvaluator() {
@@ -187,7 +193,7 @@ public final class DifferenceEvaluators {
      *       ignorePrologDifferencesExceptDoctype()) // so most of the prolog is ignored
      * </pre>
      *
-     * @since 2.1.0
+     * @since XMLUnit 2.1.0
      */
     public static DifferenceEvaluator ignorePrologDifferencesExceptDoctype() {
         return new DifferenceEvaluator() {
