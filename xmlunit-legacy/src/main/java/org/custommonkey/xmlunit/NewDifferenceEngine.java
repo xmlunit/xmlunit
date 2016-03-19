@@ -53,6 +53,7 @@ import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DOMDifferenceEngine;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.DifferenceEvaluator;
+import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelector;
 import org.xmlunit.diff.ElementSelectors;
 import org.xmlunit.diff.NodeMatcher;
@@ -159,18 +160,10 @@ public class NewDifferenceEngine
         engine.setComparisonController(mappedController);
         if (listener != null) {
             final org.xmlunit.diff.DifferenceEvaluator evaluator =
-                new DifferenceListener2DifferenceEvaluator(listener);
-            engine
-                .setDifferenceEvaluator(new DifferenceEvaluator() {
-                        public ComparisonResult evaluate(Comparison comparison,
-                                                         ComparisonResult outcome) {
-                            if (!swallowComparison(comparison, outcome,
-                                                   checkPrelude)) {
-                                return evaluator.evaluate(comparison, outcome);
-                            }
-                            return outcome;
-                        }
-                    });
+                DifferenceEvaluators.chain(DifferenceEvaluators.Default,
+                                           DifferenceEvaluators.ignorePrologDifferencesExceptDoctype(),
+                                           new DifferenceListener2DifferenceEvaluator(listener));
+            engine.setDifferenceEvaluator(evaluator);
         }
 
         NodeMatcher m = new DefaultNodeMatcher();
@@ -337,52 +330,6 @@ public class NewDifferenceEngine
         }
     }
 
-    private static final Short TEXT_TYPE = Short.valueOf(Node.TEXT_NODE);
-    private static final Short CDATA_TYPE =
-        Short.valueOf(Node.CDATA_SECTION_NODE);
-
-    private static boolean swallowComparison(Comparison comparison,
-                                             ComparisonResult outcome,
-                                             IsBetweenDocumentNodeAndRootElement
-                                             checkPrelude) {
-        if (outcome == ComparisonResult.EQUAL) {
-            return true;
-        }
-        if ((comparison.getType() == ComparisonType.CHILD_NODELIST_LENGTH
-             && comparison.getControlDetails().getTarget() instanceof Document)
-            ||
-            (
-             comparison.getType() == ComparisonType.CHILD_LOOKUP
-             && 
-             (isNonElementDocumentChild(comparison.getControlDetails())
-              || isNonElementDocumentChild(comparison.getTestDetails()))
-             )
-            || checkPrelude.shouldSkip()
-            ) {
-            return true;
-        }
-        if (XMLUnit.getIgnoreDiffBetweenTextAndCDATA()
-            && comparison.getType() == ComparisonType.NODE_TYPE) {
-            return (
-                    TEXT_TYPE.equals(comparison.getControlDetails().getValue())
-                    ||
-                    CDATA_TYPE.equals(comparison.getControlDetails().getValue())
-                    )
-                && (
-                    TEXT_TYPE.equals(comparison.getTestDetails().getValue())
-                    ||
-                    CDATA_TYPE.equals(comparison.getTestDetails().getValue())
-                    );
-        }
-        return false;
-    }
-
-    private static boolean isNonElementDocumentChild(Comparison.Detail detail) {
-        return detail != null && detail.getTarget() != null
-            && !(detail.getTarget() instanceof Element)
-            && detail.getTarget().getParentNode() instanceof Document;
-    }
-
     public static class ComparisonController2ComparisonController
         implements org.xmlunit.diff.ComparisonController {
         private final ComparisonController cc;
@@ -425,6 +372,9 @@ public class NewDifferenceEngine
 
         public ComparisonResult evaluate(Comparison comparison,
                                          ComparisonResult outcome) {
+            if (outcome == ComparisonResult.EQUAL) {
+                return outcome;
+            }
             ComparisonResult max = outcome;
             for (Difference diff : toDifference(comparison)) {
                 ComparisonResult curr = null;
