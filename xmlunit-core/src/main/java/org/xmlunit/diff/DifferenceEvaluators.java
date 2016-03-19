@@ -82,8 +82,6 @@ public final class DifferenceEvaluators {
             }
         };
 
-    private DifferenceEvaluators() { }
-
     /**
      * Combines multiple DifferenceEvaluators so that the first one
      * that changes the outcome wins.
@@ -222,7 +220,7 @@ public final class DifferenceEvaluators {
 
     private static boolean belongsToProlog(Comparison comparison,
                                            boolean ignoreDoctypeDeclarationAsWell) {
-        if (isDoctypeComparison(comparison.getType())) {
+        if (comparison.getType().isDoctypeComparison()) {
             return ignoreDoctypeDeclarationAsWell;
         }
         return belongsToProlog(comparison.getControlDetails().getTarget(),
@@ -251,15 +249,6 @@ public final class DifferenceEvaluators {
             && comparison.getControlDetails().getTarget().getParentNode() instanceof Document;
     }
 
-    private static boolean isDoctypeComparison(ComparisonType t) {
-        switch (t) {
-        case HAS_DOCTYPE_DECLARATION:
-        case DOCTYPE_NAME:
-        case DOCTYPE_PUBLIC_ID:
-        case DOCTYPE_SYSTEM_ID:
-            return true;
-        default:
-            return false;
-        }
-    }
+    private DifferenceEvaluators() { }
+
 }

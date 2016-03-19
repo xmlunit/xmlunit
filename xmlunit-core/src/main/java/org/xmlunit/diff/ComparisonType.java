@@ -35,21 +35,21 @@ public enum ComparisonType {
     /**
      * Do both documents have a DOCTYPE (or neither of each)?
      */
-    HAS_DOCTYPE_DECLARATION,
+    HAS_DOCTYPE_DECLARATION(true),
     /**
      * If the documents both have DOCTYPEs, compare the names.
      */
-    DOCTYPE_NAME,
+    DOCTYPE_NAME(true),
     /**
      * If the documents both have DOCTYPEs, compare the PUBLIC
      * identifiers.
      */
-    DOCTYPE_PUBLIC_ID,
+    DOCTYPE_PUBLIC_ID(true),
     /**
      * If the documents both have DOCTYPEs, compare the SYSTEM
      * identifiers.
      */
-    DOCTYPE_SYSTEM_ID,
+    DOCTYPE_SYSTEM_ID(true),
 
     /**
      * Check whether both documents provide the same values for
@@ -127,13 +127,23 @@ public enum ComparisonType {
     ATTR_NAME_LOOKUP("attribute name");
 
     private final String description;
+    private final boolean doctypeComparison;
 
     private ComparisonType() {
-        this(null);
+        this(false);
+    }
+
+    private ComparisonType(boolean doctypeComparison) {
+        this(null, doctypeComparison);
     }
 
     private ComparisonType(String description) {
+        this(description, false);
+    }
+
+    private ComparisonType(String description, boolean doctypeComparison) {
         this.description = description;
+        this.doctypeComparison = doctypeComparison;
     }
 
     public String getDescription() {
@@ -143,4 +153,7 @@ public enum ComparisonType {
         return description;
     }
 
+    boolean isDoctypeComparison() {
+        return doctypeComparison;
+    }
 }
