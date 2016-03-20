@@ -59,12 +59,12 @@ public class HasXPathMatcher extends BaseMatcher<Object> {
      *
      * @param xPath xPath expression
      */
-    public HasXPathMatcher(String xPath){
+    public HasXPathMatcher(String xPath) {
         this.xPath = xPath;
     }
 
     @Override
-    public boolean matches(Object object){
+    public boolean matches(Object object) {
         JAXPXPathEngine engine = new JAXPXPathEngine();
         if (prefix2Uri != null){
             engine.setNamespaceContext(prefix2Uri);
@@ -107,7 +107,6 @@ public class HasXPathMatcher extends BaseMatcher<Object> {
      *
      * @param prefix2Uri prefix2Uri maps from prefix to namespace URI. It is used to resolve
      *                   XML namespace prefixes in the XPath expression
-     * @since XMLUnit 2.0.1
      */
     public HasXPathMatcher withNamespaceContext(Map<String, String> prefix2Uri) {
         this.prefix2Uri = prefix2Uri;

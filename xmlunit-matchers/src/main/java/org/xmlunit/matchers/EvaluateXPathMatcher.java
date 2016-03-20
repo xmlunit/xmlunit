@@ -107,7 +107,6 @@ public class EvaluateXPathMatcher extends BaseMatcher<Object> {
      *
      * @param prefix2Uri prefix2Uri maps from prefix to namespace URI. It is used to resolve
      *                   XML namespace prefixes in the XPath expression
-     * @since XMLUnit 2.0.1
      */
     public EvaluateXPathMatcher withNamespaceContext(Map<String, String> prefix2Uri) {
         this.prefix2Uri = prefix2Uri;
