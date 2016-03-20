@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * This Hamcrest {@link Matcher} verifies whether the provided XPath expression corresponds to at least
- * one element in the provided object
+ * one element in the provided object.
  *
  * <p>All types which are supported by {@link Input#from(Object)}  can be used as input for the object
  * against the matcher is evaluated.</p>
@@ -66,7 +66,7 @@ public class HasXPathMatcher extends BaseMatcher<Object> {
     @Override
     public boolean matches(Object object) {
         JAXPXPathEngine engine = new JAXPXPathEngine();
-        if (prefix2Uri != null){
+        if (prefix2Uri != null) {
             engine.setNamespaceContext(prefix2Uri);
         }
 

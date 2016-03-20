@@ -41,7 +41,7 @@ public class EvaluateXPathMatcherTest {
         try {
             assertThat(xml, hasXPath("//a/b/@attr", equalTo("something")));
             Assert.fail("Should throw AssertionError");
-        }catch(AssertionError e){
+        } catch(AssertionError e) {
             assertThat(e.getMessage(), containsString("was \"abc\""));
         }
 

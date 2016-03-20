@@ -22,14 +22,14 @@ public class HasXPathMatcherTest {
     private DocumentBuilder db;
 
     @Before
-    public void setup() throws ParserConfigurationException{
+    public void setup() throws ParserConfigurationException {
         DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
         f.setNamespaceAware(true);
         db = f.newDocumentBuilder();
     }
 
     @Test
-    public void testXPathIsFoundInDocumentWithASingleOccurence() throws Exception{
+    public void testXPathIsFoundInDocumentWithASingleOccurence() throws Exception {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
                 "   <title>title</title>" +
@@ -48,7 +48,7 @@ public class HasXPathMatcherTest {
     }
 
     @Test
-    public void testXPathIsFoundInStringWithASingleOccurence() throws Exception{
+    public void testXPathIsFoundInStringWithASingleOccurence() throws Exception {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
                 "   <title>title</title>" +
@@ -65,7 +65,7 @@ public class HasXPathMatcherTest {
     }
 
     @Test
-    public void testXPathIsFoundInStringWithMultipleOccurences() throws Exception{
+    public void testXPathIsFoundInStringWithMultipleOccurences() throws Exception {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
                 "   <title>title</title>" +
@@ -99,7 +99,7 @@ public class HasXPathMatcherTest {
     }
 
     @Test
-    public void testXPathIsFoundInDocumentWithNamespaceContextWithASingleOccurence() throws Exception{
+    public void testXPathIsFoundInDocumentWithNamespaceContextWithASingleOccurence() throws Exception {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed xmlns=\"http://www.w3.org/2005/Atom\">" +
                 "   <title>title</title>" +

@@ -40,7 +40,7 @@ import java.util.Map;
  *
  *    HashMap&lt;String, String&gt; prefix2Uri = new HashMap&lt;String, String&gt;();
  *    prefix2Uri.put(&quot;atom&quot;, &quot;http://www.w3.org/2005/Atom&quot;);
- *    assertThat(xmlRootElement,
+ *    assertThat(xml,
  *          hasXPath(&quot;//atom:feed/atom:entry/atom:id/text()&quot;, equalTo(&quot;id1&quot;))
  *          .withNamespaceContext(prefix2Uri));
  * </pre>
