@@ -155,9 +155,9 @@ public final class DifferenceEvaluators {
     }
 
     /**
-     * Ignore any differences that are part of the {@link
-     * "https://www.w3.org/TR/2008/REC-xml-20081126/#sec-prolog-dtd"
-     * XML prolog}.
+     * Ignore any differences that are part of the <a
+     * href="https://www.w3.org/TR/2008/REC-xml-20081126/#sec-prolog-dtd">XML
+     * prolog</a>.
      *
      * <p>Here "ignore" means return {@code ComparisonResult.EQUAL}.</p>
      *
@@ -176,9 +176,9 @@ public final class DifferenceEvaluators {
 
     /**
      * Ignore any differences except differences inside the doctype
-     * declaration that are part of the {@link
-     * "https://www.w3.org/TR/2008/REC-xml-20081126/#sec-prolog-dtd"
-     * XML prolog}.
+     * declaration that are part of the <a
+     * href="https://www.w3.org/TR/2008/REC-xml-20081126/#sec-prolog-dtd">XML
+     * prolog</a>.
      *
      * <p>Here "ignore" means return {@code ComparisonResult.EQUAL}.</p>
      *
