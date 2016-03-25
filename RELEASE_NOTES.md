@@ -37,6 +37,10 @@
   tasks like changing the outcome for specific differences or ignoring
   changes inside the XML prolog.
 
+* `DiffBuilder.withComparisonFormatter` now also fully applies to the
+  `Difference`s contained within the `Diff`.
+  Issue [#55](https://github.com/xmlunit/xmlunit/issues/55)
+
 ## XMLUnit for Java 2.0.0 - /Released 2016-03-06/
 
 * implemented `DiffBuilder.withComparisonFormatter` mentioned in user

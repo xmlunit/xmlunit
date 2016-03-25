@@ -43,6 +43,9 @@ public class Diff {
         this.testSource = testSource;
         this.formatter = formatter;
         this.differences = differences;
+        for (Difference d : differences) {
+            d.setComparisonFormatter(formatter);
+        }
     }
 
     /**

@@ -23,6 +23,7 @@ public class Difference {
 
     private final ComparisonResult result;
     private final Comparison comparison;
+    private ComparisonFormatter formatter = new DefaultComparisonFormatter();
 
     /**
      * Combines comparison and result.
@@ -47,6 +48,14 @@ public class Difference {
     }
 
     /**
+     * Sets the default formatter to use with {@link #toString}.
+     * @since 2.1.0
+     */
+    public void setComparisonFormatter(ComparisonFormatter formatter) {
+        this.formatter = formatter;
+    }
+
+    /**
      * Returns a string representation of this difference using the
      * given {@link ComparisonFormatter}
      * @param formatter the ComparisonFormatter to use
@@ -62,6 +71,6 @@ public class Difference {
      */
     @Override
     public String toString(){
-        return toString(new DefaultComparisonFormatter());
+        return toString(formatter);
     }
 }

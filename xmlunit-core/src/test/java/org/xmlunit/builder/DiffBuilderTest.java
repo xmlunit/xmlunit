@@ -450,21 +450,24 @@ public class DiffBuilderTest {
 
         Diff myDiff = DiffBuilder.compare(control).withTest(test)
             .withComparisonController(ComparisonControllers.StopWhenDifferent)
-            .withComparisonFormatter(new ComparisonFormatter() {
-                    @Override
-                    public String getDescription(Comparison difference) {
-                        return "foo";
-                    }
-
-                    @Override
-                    public String getDetails(Comparison.Detail details, ComparisonType type,
-                                             boolean formatXml) {
-                        return "bar";
-                    }
-                })
+            .withComparisonFormatter(new DummyFormatter())
             .build();
 
         Assert.assertEquals("foo", myDiff.toString());
+    }
+
+    @Test
+    public void usesCustomComparisonFormatterForDifferences() {
+        String control = "<a><b></b><c/></a>";
+        String test = "<a><b></b><c/><d/></a>";
+
+        Diff myDiff = DiffBuilder.compare(control).withTest(test)
+            .withComparisonController(ComparisonControllers.StopWhenDifferent)
+            .withComparisonFormatter(new DummyFormatter())
+            .build();
+
+        Assert.assertEquals("foo (DIFFERENT)",
+                            myDiff.getDifferences().iterator().next().toString());
     }
 
     private final class IgnoreAttributeDifferenceEvaluator implements DifferenceEvaluator {
@@ -488,4 +491,16 @@ public class DiffBuilderTest {
         }
     }
 
+    private static final class DummyFormatter implements ComparisonFormatter {
+        @Override
+        public String getDescription(Comparison difference) {
+            return "foo";
+        }
+
+        @Override
+        public String getDetails(Comparison.Detail details, ComparisonType type,
+                                 boolean formatXml) {
+            return "bar";
+        }
+    }
 }
