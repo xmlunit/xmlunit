@@ -1,5 +1,7 @@
 # Release Notes
 
+## Next Release - //
+
 ## XMLUnit for Java 2.1.0 - /Released 2016-03-26/
 
 * fixed swapped constant assignments in `DifferenceEvaluators`
