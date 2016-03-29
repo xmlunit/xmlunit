@@ -77,7 +77,7 @@ public class Diff
     private boolean identical = true;
     private boolean compared = false;
     private boolean haltComparison = false;
-    private StringBuffer messages;
+    private StringBuilder messages;
     private DifferenceEngineContract differenceEngine;
     private DifferenceListener  differenceListenerDelegate;
     private ElementQualifier elementQualifierDelegate;
@@ -153,7 +153,7 @@ public class Diff
         this.testDoc = getManipulatedDocument(testDoc);
         this.elementQualifierDelegate = elementQualifier;
         this.differenceEngine = comparator;
-        this.messages = new StringBuffer();
+        this.messages = new StringBuilder();
     }
 
     /**
@@ -265,7 +265,7 @@ public class Diff
      * @param appendTo the messages buffer
      * @param difference
      */
-    private void appendDifference(StringBuffer appendTo, Difference difference) {
+    private void appendDifference(StringBuilder appendTo, Difference difference) {
         appendTo.append(' ').append(difference).append('\n');
     }
 
