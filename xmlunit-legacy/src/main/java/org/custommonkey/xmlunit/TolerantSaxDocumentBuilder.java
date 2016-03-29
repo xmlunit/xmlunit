@@ -66,7 +66,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class TolerantSaxDocumentBuilder
     extends DefaultHandler implements LexicalHandler {
     private final DocumentBuilder documentBuilder;
-    private final StringBuffer traceBuffer;
+    private final StringBuilder traceBuilder;
     private Document currentDocument;
     private Element currentElement;
 
@@ -79,7 +79,7 @@ public class TolerantSaxDocumentBuilder
     public TolerantSaxDocumentBuilder(DocumentBuilder documentBuilder)
         throws ParserConfigurationException {
         this.documentBuilder = documentBuilder;
-        this.traceBuffer = new StringBuffer();
+        this.traceBuilder = new StringBuilder();
     }
 
     /**
@@ -93,7 +93,7 @@ public class TolerantSaxDocumentBuilder
      * @return the trace of Sax calls that were used to build up the Document
      */
     public String getTrace() {
-        return traceBuffer.toString();
+        return traceBuilder.toString();
     }
 
     /**
@@ -101,7 +101,7 @@ public class TolerantSaxDocumentBuilder
      * @throws SAXException
      */
     public void startDocument() throws SAXException {
-        traceBuffer.delete(0, traceBuffer.length());
+        traceBuilder.delete(0, traceBuilder.length());
         trace("startDocument");
         currentDocument = documentBuilder.newDocument();
         currentElement = null;
@@ -184,7 +184,7 @@ public class TolerantSaxDocumentBuilder
         }
     }
 
-    private boolean isElementMatching(Element anElement, String qname) {
+    private static boolean isElementMatching(Element anElement, String qname) {
         return anElement.getNodeName()!=null
             && anElement.getNodeName().equals(qname);
     }
@@ -201,7 +201,7 @@ public class TolerantSaxDocumentBuilder
      * Unhandled ContentHandler method
      * @throws SAXException
      */
-    public void ignorableWhitespace (char ch[], int start, int length)
+    public void ignorableWhitespace (char[] ch, int start, int length)
         throws SAXException {
         unhandled("ignorableWhitespace");
     }
@@ -301,7 +301,7 @@ public class TolerantSaxDocumentBuilder
      * LexicalHandler method
      * @throws SAXException
      */
-    public void comment(char ch[], int start, int length)
+    public void comment(char[] ch, int start, int length)
         throws SAXException     {
         String commentText = new String(ch, start, length);
         trace("comment:" + commentText);
@@ -331,7 +331,7 @@ public class TolerantSaxDocumentBuilder
      * @param method
      */
     private void trace(String method) {
-        traceBuffer.append(method).append('\n');
+        traceBuilder.append(method).append('\n');
     }
 
     /**

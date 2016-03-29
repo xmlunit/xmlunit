@@ -121,7 +121,7 @@ public class DoctypeReader extends Reader {
      *  stream has been reached
      * @throws IOException
      */
-    public int read(char cbuf[], int off, int len) throws IOException {
+    public int read(char[] cbuf, int off, int len) throws IOException {
         int startPos = off;
         int currentlyRead;
         while (off - startPos < len && (currentlyRead = read()) != -1) {
