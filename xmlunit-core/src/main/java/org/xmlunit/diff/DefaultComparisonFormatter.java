@@ -289,6 +289,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
                 factory.setAttribute("indent-number", numberOfBlanksToIndent);
             } catch (final IllegalArgumentException ex) {
                 // Could not set property 'indent-number' on factory.getClass().getName()
+                // which is fine for us
             }
         }
         final Transformer transformer = factory.newTransformer();
@@ -301,6 +302,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
             } catch (final IllegalArgumentException ex) {
                 // Could not set property '{http://xml.apache.org/xslt}indent-amount' on
                 // transformer.getClass().getName()
+                // which is fine for us
             }
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         }

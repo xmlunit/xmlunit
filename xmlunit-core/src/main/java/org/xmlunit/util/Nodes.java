@@ -165,7 +165,7 @@ public final class Nodes {
             if (Character.isWhitespace(c)) {
                 if (!lastCharWasWS) {
                     sb.append(SPACE);
-                    changed |= (c != SPACE);
+                    changed |= c != SPACE;
                 } else {
                     changed = true;
                 }

@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015-2016 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -44,112 +44,112 @@ public interface XMLConstants {
     /**
      * &lt;?xml&gt; declaration
      */
-    public static final String XML_DECLARATION =
+    String XML_DECLARATION =
         "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>";
 
     /**
      * xmlns attribute prefix
      */
-    public static final String XMLNS_PREFIX = "xmlns";
+    String XMLNS_PREFIX = "xmlns";
 
     /**
      * "&lt;"
      */
-    public static final String OPEN_START_NODE = "<";
+    String OPEN_START_NODE = "<";
 
     /**
      * "&lt;/"
      */
-    public static final String OPEN_END_NODE = "</";
+    String OPEN_END_NODE = "</";
 
     /**
      * "&gt;"
      */
-    public static final String CLOSE_NODE = ">";
+    String CLOSE_NODE = ">";
 
     /**
      * "![CDATA["
      */
-    public static final String START_CDATA = "![CDATA[";
+    String START_CDATA = "![CDATA[";
     /**
      * "]]"
      */
-    public static final String END_CDATA = "]]";
+    String END_CDATA = "]]";
 
     /**
      * "!--"
      */
-    public static final String START_COMMENT = "!--";
+    String START_COMMENT = "!--";
     /**
      * "--""
      */
-    public static final String END_COMMENT = "--";
+    String END_COMMENT = "--";
 
     /**
      * "?"
      */
-    public static final String START_PROCESSING_INSTRUCTION = "?";
+    String START_PROCESSING_INSTRUCTION = "?";
     /**
      * "?"
      */
-    public static final String END_PROCESSING_INSTRUCTION = "?";
+    String END_PROCESSING_INSTRUCTION = "?";
 
     /**
      * "!DOCTYPE"
      */
-    public static final String START_DOCTYPE = "!DOCTYPE ";
+    String START_DOCTYPE = "!DOCTYPE ";
     
     /**
      * "/"
      */
-    public static final String XPATH_SEPARATOR = "/";
+    String XPATH_SEPARATOR = "/";
 
     /**
      * "["
      */
-    public static final String XPATH_NODE_INDEX_START = "[";
+    String XPATH_NODE_INDEX_START = "[";
 
     /**
      * "]"
      */
-    public static final String XPATH_NODE_INDEX_END = "]";
+    String XPATH_NODE_INDEX_END = "]";
     
     /**
      * "comment()"
      */
-    public static final String XPATH_COMMENT_IDENTIFIER = "comment()";
+    String XPATH_COMMENT_IDENTIFIER = "comment()";
     
     /**
      * "processing-instruction()"
      */
-    public static final String XPATH_PROCESSING_INSTRUCTION_IDENTIFIER = "processing-instruction()";
+    String XPATH_PROCESSING_INSTRUCTION_IDENTIFIER = "processing-instruction()";
     
     /**
      * "text()"
      */
-    public static final String XPATH_CHARACTER_NODE_IDENTIFIER = "text()";
+    String XPATH_CHARACTER_NODE_IDENTIFIER = "text()";
 
     /**
      * "@"
      */
-    public static final String XPATH_ATTRIBUTE_IDENTIFIER = "@";
+    String XPATH_ATTRIBUTE_IDENTIFIER = "@";
 
     /**
      * http://www.w3.org/2001/XMLSchema
      */
-    public static final String W3C_XML_SCHEMA_NS_URI
+    String W3C_XML_SCHEMA_NS_URI
         = "http://www.w3.org/2001/XMLSchema";
 
     /**
      * http://www.w3.org/2001/XMLSchema-instance
      */
-    public static final String W3C_XML_SCHEMA_INSTANCE_NS_URI
+    String W3C_XML_SCHEMA_INSTANCE_NS_URI
         = "http://www.w3.org/2001/XMLSchema-instance";
 
     /**
      * "schemaLocation"
      */
-    public static final String W3C_XML_SCHEMA_INSTANCE_SCHEMA_LOCATION_ATTR
+    String W3C_XML_SCHEMA_INSTANCE_SCHEMA_LOCATION_ATTR
         = "schemaLocation";
 
     /**

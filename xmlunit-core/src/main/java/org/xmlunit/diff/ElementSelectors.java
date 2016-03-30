@@ -16,7 +16,6 @@ package org.xmlunit.diff;
 import static org.xmlunit.util.Linqy.all;
 import static org.xmlunit.util.Linqy.any;
 
-import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,7 +31,6 @@ import org.xmlunit.xpath.JAXPXPathEngine;
 import org.xmlunit.xpath.XPathEngine;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Common ElementSelector implementations.

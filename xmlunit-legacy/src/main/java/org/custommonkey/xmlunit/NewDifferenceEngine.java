@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2010,2013,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2010,2013,2015-2016 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,6 @@ import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
 
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -159,7 +158,7 @@ public class NewDifferenceEngine
             new ComparisonController2ComparisonController(controller);
         engine.setComparisonController(mappedController);
         if (listener != null) {
-            final org.xmlunit.diff.DifferenceEvaluator evaluator =
+            final DifferenceEvaluator evaluator =
                 DifferenceEvaluators.chain(DifferenceEvaluators.Default,
                                            DifferenceEvaluators.ignorePrologDifferencesExceptDoctype(),
                                            new DifferenceListener2DifferenceEvaluator(listener));

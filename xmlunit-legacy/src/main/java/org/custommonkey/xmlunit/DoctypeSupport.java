@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2007,2015-2016 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ import org.custommonkey.xmlunit.util.IntegerBuffer;
  */
 final class DoctypeSupport {
 
-    static interface Readable {
+    interface Readable {
         int read() throws IOException;
     }
 

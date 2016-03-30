@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2010,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2010,2015-2016 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -45,8 +45,6 @@ import org.xmlunit.diff.XPathContext;
 import org.xmlunit.util.IterableNodeList;
 import org.xmlunit.util.Linqy;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 

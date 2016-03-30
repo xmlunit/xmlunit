@@ -259,7 +259,7 @@ public class XPathContext implements Cloneable {
      */
     private static int add1OrIncrement(String name, Map<String, Integer> map) {
         Integer old = map.get(name);
-        int index = old == null ? 1 : (old.intValue() + 1);
+        int index = old == null ? 1 : old.intValue() + 1;
         map.put(name, Integer.valueOf(index));
         return index;
     }
@@ -295,7 +295,7 @@ public class XPathContext implements Cloneable {
     /**
      * Representation of a node used by {@link XPathContext}.
      */
-    public static interface NodeInfo {
+    public interface NodeInfo {
         QName getName();
         short getType();
     }

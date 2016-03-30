@@ -43,7 +43,7 @@ public class Input {
     /**
      * Interface for fluent builders of {@link Source}s.
      */
-    public static interface Builder {
+    public interface Builder {
         /**
          * build the actual {@link Source} instance.
          */
@@ -243,7 +243,7 @@ public class Input {
     public static Builder fromURI(String uri) {
         try {
             return fromURI(new URI(uri));
-        } catch (java.net.URISyntaxException ex) {
+        } catch (URISyntaxException ex) {
             throw new IllegalArgumentException("uri " + uri + " is not an URI",
                                                ex);
         }
@@ -252,7 +252,7 @@ public class Input {
     /**
      * Builds {@link Source}s by transforming other sources.
      */
-    public static interface TransformationBuilder
+    public interface TransformationBuilder
         extends TransformationBuilderBase<TransformationBuilder>, Builder {
         /**
          * Sets the stylesheet to use.

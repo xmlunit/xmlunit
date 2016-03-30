@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015-2016 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -98,111 +98,111 @@ public interface DifferenceConstants {
     int NO_NAMESPACE_SCHEMA_LOCATION_ID = 24;
 
     /** Comparing an implied attribute value against an explicit value */
-    public static final Difference ATTR_VALUE_EXPLICITLY_SPECIFIED =
+    Difference ATTR_VALUE_EXPLICITLY_SPECIFIED =
         new Difference(ATTR_VALUE_EXPLICITLY_SPECIFIED_ID, 
                        "attribute value explicitly specified", true);
 
     /** Comparing 2 elements and one has an attribute the other does not */
-    public static final Difference ATTR_NAME_NOT_FOUND =
+    Difference ATTR_NAME_NOT_FOUND =
         new Difference(ATTR_NAME_NOT_FOUND_ID, "attribute name");
 
     /** Comparing 2 attributes with the same name but different values */
-    public static final Difference ATTR_VALUE =
+    Difference ATTR_VALUE =
         new Difference(ATTR_VALUE_ID, "attribute value");
 
     /** Comparing 2 attribute lists with the same attributes in different sequence */
-    public static final Difference ATTR_SEQUENCE =
+    Difference ATTR_SEQUENCE =
         new Difference(ATTR_SEQUENCE_ID, "sequence of attributes", true);
 
     /** Comparing 2 CDATA sections with different values */
-    public static final Difference CDATA_VALUE =
+    Difference CDATA_VALUE =
         new Difference(CDATA_VALUE_ID, "CDATA section value");
 
     /** Comparing 2 comments with different values */
-    public static final Difference COMMENT_VALUE =
+    Difference COMMENT_VALUE =
         new Difference(COMMENT_VALUE_ID, "comment value");
 
     /** Comparing 2 document types with different names */
-    public static final Difference DOCTYPE_NAME =
+    Difference DOCTYPE_NAME =
         new Difference(DOCTYPE_NAME_ID, "doctype name");
 
     /** Comparing 2 document types with different public identifiers */
-    public static final Difference DOCTYPE_PUBLIC_ID =
+    Difference DOCTYPE_PUBLIC_ID =
         new Difference(DOCTYPE_PUBLIC_ID_ID, "doctype public identifier");
 
     /** Comparing 2 document types with different system identifiers */
-    public static final Difference DOCTYPE_SYSTEM_ID =
+    Difference DOCTYPE_SYSTEM_ID =
         new Difference(DOCTYPE_SYSTEM_ID_ID, "doctype system identifier", true);
 
     /** Comparing 2 elements with different tag names */
-    public static final Difference ELEMENT_TAG_NAME =
+    Difference ELEMENT_TAG_NAME =
         new Difference(ELEMENT_TAG_NAME_ID, "element tag name");
 
     /** Comparing 2 elements with different number of attributes */
-    public static final Difference ELEMENT_NUM_ATTRIBUTES =
+    Difference ELEMENT_NUM_ATTRIBUTES =
         new Difference(ELEMENT_NUM_ATTRIBUTES_ID, "number of element attributes");
 
     /** Comparing 2 processing instructions with different targets */
-    public static final Difference PROCESSING_INSTRUCTION_TARGET =
+    Difference PROCESSING_INSTRUCTION_TARGET =
         new Difference(PROCESSING_INSTRUCTION_TARGET_ID, 
                        "processing instruction target");
 
     /** Comparing 2 processing instructions with different instructions */
-    public static final Difference PROCESSING_INSTRUCTION_DATA =
+    Difference PROCESSING_INSTRUCTION_DATA =
         new Difference(PROCESSING_INSTRUCTION_DATA_ID, 
                        "processing instruction data");
 
     /** Comparing 2 different text values */
-    public static final Difference TEXT_VALUE =
+    Difference TEXT_VALUE =
         new Difference(TEXT_VALUE_ID, "text value");
 
     /** Comparing 2 nodes with different namespace prefixes */
-    public static final Difference NAMESPACE_PREFIX =
+    Difference NAMESPACE_PREFIX =
         new Difference(NAMESPACE_PREFIX_ID, "namespace prefix", true);
 
     /** Comparing 2 nodes with different namespace URIs */
-    public static final Difference NAMESPACE_URI =
+    Difference NAMESPACE_URI =
         new Difference(NAMESPACE_URI_ID, "namespace URI");
 
     /** Comparing 2 nodes with different node types */
-    public static final Difference NODE_TYPE =
+    Difference NODE_TYPE =
         new Difference(NODE_TYPE_ID, "node type");
 
     /** Comparing 2 nodes but only one has any children*/
-    public static final Difference HAS_CHILD_NODES =
+    Difference HAS_CHILD_NODES =
         new Difference(HAS_CHILD_NODES_ID, "presence of child nodes to be");
 
     /** Comparing 2 nodes with different numbers of children */
-    public static final Difference CHILD_NODELIST_LENGTH =
+    Difference CHILD_NODELIST_LENGTH =
         new Difference(CHILD_NODELIST_LENGTH_ID, "number of child nodes");
 
     /** Comparing 2 nodes with children whose nodes are in different sequence*/
-    public static final Difference CHILD_NODELIST_SEQUENCE =
+    Difference CHILD_NODELIST_SEQUENCE =
         new Difference(CHILD_NODELIST_SEQUENCE_ID, 
                        "sequence of child nodes", true);
 
     /** Comparing 2 Documents only one of which has a doctype */
-    public static final Difference HAS_DOCTYPE_DECLARATION = 
+    Difference HAS_DOCTYPE_DECLARATION = 
         new Difference(HAS_DOCTYPE_DECLARATION_ID, 
                        "presence of doctype declaration", true);
 
     /** Comparing 2 nodes and one holds more childnodes than can be
      * matched against child nodes of the other. */
-    public static final Difference CHILD_NODE_NOT_FOUND = 
+    Difference CHILD_NODE_NOT_FOUND = 
         new Difference(CHILD_NODE_NOT_FOUND_ID, "presence of child node");
 
     /** Comparing 2 nodes with different xsi:schemaLocation
      * attributes, potentially only one of the two provides such an
      * attribute at all.
      */
-    public static final Difference SCHEMA_LOCATION = 
+    Difference SCHEMA_LOCATION = 
         new Difference(SCHEMA_LOCATION_ID, "xsi:schemaLocation attribute",
                        true);
     /** Comparing 2 nodes with different xsi:noNamespaceSchemaLocation
      * attributes, potentially only one of the two provides such an
      * attribute at all.
      */
-    public static final Difference NO_NAMESPACE_SCHEMA_LOCATION = 
+    Difference NO_NAMESPACE_SCHEMA_LOCATION = 
         new Difference(NO_NAMESPACE_SCHEMA_LOCATION_ID,
                        "xsi:noNamespaceSchemaLocation attribute",
                        true);

@@ -28,7 +28,6 @@ import org.xmlunit.util.IterableNodeList;
 import org.xmlunit.util.Linqy;
 import org.xmlunit.util.Mapper;
 import org.xmlunit.util.Nodes;
-import org.xmlunit.util.Predicate;
 import org.w3c.dom.Attr;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
@@ -36,7 +35,6 @@ import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 
 /**
@@ -127,9 +125,9 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                 })
             // and finally recurse into children
             .andIfTrueThen(control.getNodeType() != Node.ATTRIBUTE_NODE,
-                           compareChildren(control, controlContext,
+                           compareChildren(controlContext,
                                            controlChildren,
-                                           test, testContext,
+                                           testContext,
                                            testChildren));
     }
 
@@ -190,10 +188,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         return new OngoingComparisonState();
     }
 
-    private DeferredComparison compareChildren(final Node control,
-                                               final XPathContext controlContext,
+    private DeferredComparison compareChildren(final XPathContext controlContext,
                                                final Iterable<Node> controlChildren,
-                                               final Node test,
                                                final XPathContext testContext,
                                                final Iterable<Node> testChildren) {
         return new DeferredComparison() {

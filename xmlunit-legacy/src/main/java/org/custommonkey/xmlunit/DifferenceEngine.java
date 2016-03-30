@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2010,2013,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2010,2013,2015-2016 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -567,9 +567,8 @@ public class DifferenceEngine
         
         for (int i=0; i < controlAttr.getLength(); ++i) {
             Attr nextAttr = (Attr) controlAttr.item(i);
-            if (isXMLNSAttribute(nextAttr)) {
-                // xml namespacing is handled in compareNodeBasics
-            } else {
+            // xml namespacing is handled in compareNodeBasics
+            if (!isXMLNSAttribute(nextAttr)) {
                 boolean isNamespacedAttr = isNamespaced(nextAttr);
                 String attrName = getUnNamespacedNodeName(nextAttr, isNamespacedAttr);
                 Attr compareTo;

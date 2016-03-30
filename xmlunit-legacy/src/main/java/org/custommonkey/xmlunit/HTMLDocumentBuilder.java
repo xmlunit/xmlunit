@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015-2016 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -174,7 +174,7 @@ public class HTMLDocumentBuilder {
         /**
          * Swing-HTML-parser template method, no ContentHandler equivalent
          */
-        public void flush() throws javax.swing.text.BadLocationException {
+        public void flush() throws BadLocationException {
         }
 
         /**
@@ -233,7 +233,7 @@ public class HTMLDocumentBuilder {
          * Equivalent to Sax <code>startElement</code>
          */
         public void handleStartTag(javax.swing.text.html.HTML.Tag tag,
-                                   javax.swing.text.MutableAttributeSet attributeSet, int pos) {
+                                   MutableAttributeSet attributeSet, int pos) {
             try {
                 saxContentHandler.startElement("", "", tag.toString(),
                                                convertToSaxAttributes(attributeSet));
@@ -259,7 +259,7 @@ public class HTMLDocumentBuilder {
          * <code>endElement</code>
          */
         public void handleSimpleTag(javax.swing.text.html.HTML.Tag tag,
-                                    javax.swing.text.MutableAttributeSet attributeSet, int pos) {
+                                    MutableAttributeSet attributeSet, int pos) {
             handleStartTag(tag, attributeSet, pos);
             handleEndTag(tag, pos);
             lastTagWasSimpleTag = true;
