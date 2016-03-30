@@ -3,7 +3,8 @@
 ## Next Release - //
 
 * various code style fixes
-  PR [#74](https://github.com/xmlunit/xmlunit/pull/74)
+  PR [#74](https://github.com/xmlunit/xmlunit/pull/74),
+  PR [#75](https://github.com/xmlunit/xmlunit/pull/75)
   by [@georgekankava](https://github.com/georgekankava).
 
 ## XMLUnit for Java 2.1.0 - /Released 2016-03-26/
