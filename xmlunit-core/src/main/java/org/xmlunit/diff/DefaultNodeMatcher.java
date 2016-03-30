@@ -164,7 +164,7 @@ public class DefaultNodeMatcher implements NodeMatcher {
                                              n2.getNodeType());
     }
 
-    private class Match {
+    private static class Match {
         private final Node node;
         private final int index;
         private Match(Node match, int index) {
