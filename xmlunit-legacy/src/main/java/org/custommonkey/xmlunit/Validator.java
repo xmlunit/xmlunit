@@ -81,7 +81,7 @@ import javax.xml.transform.stream.StreamSource;
  */
 public class Validator extends DefaultHandler {
     private final InputSource validationInputSource;
-    private final StringBuffer messages;
+    private final StringBuilder messages;
     private final boolean usingDoctypeReader;
     private final String systemId;
 
@@ -101,7 +101,7 @@ public class Validator extends DefaultHandler {
                         String systemId,
                         boolean usingDoctypeReader) {
         isValid = null;
-        messages = new StringBuffer();
+        messages = new StringBuilder();
         this.validationInputSource = inputSource;
         this.systemId = systemId;
         this.usingDoctypeReader = usingDoctypeReader;
@@ -169,7 +169,7 @@ public class Validator extends DefaultHandler {
      */
     public Validator(Reader readerForValidation, String systemID) {
         this(new InputSource(readerForValidation), systemID,
-             (readerForValidation instanceof DoctypeReader));
+             readerForValidation instanceof DoctypeReader);
     }
 
     /**
@@ -289,7 +289,7 @@ public class Validator extends DefaultHandler {
      * @param toAppendTo
      * @return specified StringBuffer with message(s) appended
      */
-    private StringBuffer appendMessage(StringBuffer toAppendTo) {
+    private StringBuilder appendMessage(StringBuilder toAppendTo) {
         if (isValid()) {
             return toAppendTo.append("[valid]");
         }
@@ -300,8 +300,8 @@ public class Validator extends DefaultHandler {
      * @return class name appended with validation messages
      */
     public String toString() {
-        StringBuffer buf = new StringBuffer(super.toString()).append(':');
-        return appendMessage(buf).toString();
+        StringBuilder builder = new StringBuilder(super.toString()).append(':');
+        return appendMessage(builder).toString();
     }
 
     /**
@@ -348,7 +348,9 @@ public class Validator extends DefaultHandler {
     private void validationProblem(ValidationProblem p) {
         String msg = "At line " + p.getLine() + ", column: "
             + p.getColumn() + " ==> " + p.getMessage();
-        if (!msg.endsWith("\n")) msg += "\n";
+        if (!msg.endsWith("\n")) { 
+            msg += "\n";
+        }
         invalidate(msg);
     }
 

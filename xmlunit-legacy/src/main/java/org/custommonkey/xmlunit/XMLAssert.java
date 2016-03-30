@@ -131,7 +131,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
     }
 
     private static String getFailMessage(String msg, Diff diff) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (msg != null && msg.length() > 0) {
             sb.append(msg).append(", ");
         }
