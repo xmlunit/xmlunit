@@ -48,6 +48,9 @@ public final class JAXPConstants {
      * {@link XMLReader#setProperty(String, Object)}.
      * 
      */
+
+    private JAXPConstants() { }
+
     public static final class Properties {
 
         /**
@@ -66,5 +69,6 @@ public final class JAXPConstants {
          */
         public static final String SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
 
+        private Properties() { }
     }
 }

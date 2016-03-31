@@ -82,6 +82,8 @@ public final class DifferenceEvaluators {
             }
         };
 
+    private DifferenceEvaluators() {}
+
     /**
      * Combines multiple DifferenceEvaluators so that the first one
      * that changes the outcome wins.
@@ -248,7 +250,5 @@ public final class DifferenceEvaluators {
             && comparison.getControlDetails().getTarget() instanceof Element
             && comparison.getControlDetails().getTarget().getParentNode() instanceof Document;
     }
-
-    private DifferenceEvaluators() { }
 
 }
