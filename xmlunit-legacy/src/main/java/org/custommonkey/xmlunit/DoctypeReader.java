@@ -51,7 +51,7 @@ import java.io.Reader;
 public class DoctypeReader extends Reader {
 
     private final BufferedReader originalReader;
-    private final StringBuffer sourceBuffer = new StringBuffer(1024);
+    private final StringBuilder sourceBuilder = new StringBuilder(1024);
 
     private final DoctypeSupport support;
 
@@ -91,9 +91,9 @@ public class DoctypeReader extends Reader {
      * @return the contents of the originalSource within a StringBuffer
      * @throws IOException if thrown while reading from the original source
      */
-    private StringBuffer getContent(BufferedReader originalSource)
+    private StringBuilder getContent(BufferedReader originalSource)
         throws IOException {
-        if (sourceBuffer.length() == 0) {
+        if (sourceBuilder.length() == 0) {
             String newline = System.getProperty("line.separator");
             String source;
             boolean atFirstLine = true;
@@ -101,15 +101,15 @@ public class DoctypeReader extends Reader {
                 if (atFirstLine) {
                     atFirstLine = false;
                 } else {
-                    sourceBuffer.append(newline);
+                    sourceBuilder.append(newline);
                 }
-                sourceBuffer.append(source);
+                sourceBuilder.append(source);
             }
 
             originalSource.close();
         }
 
-        return sourceBuffer;
+        return sourceBuilder;
     }
 
     /**
