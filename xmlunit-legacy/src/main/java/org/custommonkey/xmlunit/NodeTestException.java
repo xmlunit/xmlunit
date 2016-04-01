@@ -81,11 +81,11 @@ public class NodeTestException extends Exception {
      * @return the exception message and node information if available
      */
     public String getMessage() {
-        StringBuffer stringBuffer = new StringBuffer(super.getMessage());
+        StringBuilder stringBuilder = new StringBuilder(super.getMessage());
         if (hasNode()) {
-            stringBuffer.append(' ')
+            stringBuilder.append(' ')
                 .append(getNode().toString());
         }
-        return stringBuffer.toString();
+        return stringBuilder.toString();
     }
 }

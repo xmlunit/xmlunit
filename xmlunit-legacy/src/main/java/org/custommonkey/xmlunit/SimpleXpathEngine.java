@@ -71,8 +71,8 @@ public class SimpleXpathEngine implements XpathEngine, XSLTConstants {
     /**
      * What every XSL transform needs
      */
-    private StringBuffer getXSLTBase() {
-        StringBuffer result = new StringBuffer(XML_DECLARATION)
+    private StringBuilder getXSLTBase() {
+        StringBuilder result = new StringBuilder(XML_DECLARATION)
             .append(XMLUnit.getXSLTStart());
         String tmp = result.toString();
         int close = tmp.lastIndexOf('>');
@@ -239,7 +239,7 @@ public class SimpleXpathEngine implements XpathEngine, XSLTConstants {
      * current context.
      */
     private String getNamespaceDeclarations() {
-        StringBuffer nsDecls = new StringBuffer();
+        StringBuilder nsDecls = new StringBuilder();
         String quoteStyle = "'";
         for (Iterator keys = ctx.getPrefixes(); keys.hasNext(); ) {
             String prefix = (String) keys.next();

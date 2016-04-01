@@ -63,7 +63,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class HTMLDocumentBuilder {
     protected final TolerantSaxDocumentBuilder tolerantSaxDocumentBuilder;
     protected final SwingEvent2SaxAdapter swingEvent2SaxAdapter;
-    private final StringBuffer traceBuffer;
+    private final StringBuilder traceBuilder;
 
     /**
      * Constructor
@@ -74,7 +74,7 @@ public class HTMLDocumentBuilder {
                                TolerantSaxDocumentBuilder tolerantSaxDocumentBuilder) {
         this.tolerantSaxDocumentBuilder = tolerantSaxDocumentBuilder;
         this.swingEvent2SaxAdapter = new SwingEvent2SaxAdapter();
-        this.traceBuffer = new StringBuffer();
+        this.traceBuilder = new StringBuilder();
     }
 
     /**
@@ -84,9 +84,9 @@ public class HTMLDocumentBuilder {
      * @see TolerantSaxDocumentBuilder
      */
     public Document parse(Reader reader) throws SAXException, IOException {
-        traceBuffer.delete(0, traceBuffer.length());
+        traceBuilder.delete(0, traceBuilder.length());
         swingEvent2SaxAdapter.parse(reader, tolerantSaxDocumentBuilder);
-        traceBuffer.append(tolerantSaxDocumentBuilder.getTrace());
+        traceBuilder.append(tolerantSaxDocumentBuilder.getTrace());
         return tolerantSaxDocumentBuilder.getDocument();
     }
 
@@ -104,7 +104,7 @@ public class HTMLDocumentBuilder {
      * @return the trace of events and / or warnings encountered during parsing
      */
     public String getTrace() {
-        return traceBuffer.toString();
+        return traceBuilder.toString();
     }
 
     /**
@@ -112,7 +112,7 @@ public class HTMLDocumentBuilder {
      * @param msg what to append
      */
     private void trace(String msg) {
-        traceBuffer.append(msg).append('\n');
+        traceBuilder.append(msg).append('\n');
     }
 
     /**
@@ -175,6 +175,7 @@ public class HTMLDocumentBuilder {
          * Swing-HTML-parser template method, no ContentHandler equivalent
          */
         public void flush() throws BadLocationException {
+            throw new UnsupportedOperationException();
         }
 
         /**
