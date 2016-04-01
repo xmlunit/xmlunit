@@ -4,7 +4,10 @@
 
 * various code style fixes
   PR [#74](https://github.com/xmlunit/xmlunit/pull/74),
-  PR [#75](https://github.com/xmlunit/xmlunit/pull/75)
+  PR [#75](https://github.com/xmlunit/xmlunit/pull/75),
+  PR [#78](https://github.com/xmlunit/xmlunit/pull/78),
+  PR [#79](https://github.com/xmlunit/xmlunit/pull/79),
+  PR [#80](https://github.com/xmlunit/xmlunit/pull/80)
   by [@georgekankava](https://github.com/georgekankava).
 
 ## XMLUnit for Java 2.1.0 - /Released 2016-03-26/
