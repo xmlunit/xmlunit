@@ -53,11 +53,11 @@ final class DoctypeSupport {
         int read() throws IOException;
     }
 
-    final static String DOCTYPE_OPEN_DECL = "<!";
-    final static String DOCTYPE_CLOSE_DECL = ">";
-    final static String DOCTYPE = "DOCTYPE ";
-    final static String SYSTEM = " SYSTEM \"";
-    private final static int[] DOCTYPE_INTS = {
+    static final String DOCTYPE_OPEN_DECL = "<!";
+    static final String DOCTYPE_CLOSE_DECL = ">";
+    static final String DOCTYPE = "DOCTYPE ";
+    static final String SYSTEM = " SYSTEM \"";
+    private static final int[] DOCTYPE_INTS = {
         'D', 'O', 'C', 'T', 'Y', 'P', 'E', ' '
     };
 
@@ -74,7 +74,7 @@ final class DoctypeSupport {
                    boolean characters, String encoding) {
         this.original = original;
 
-        StringBuffer sb = new StringBuffer(DOCTYPE_OPEN_DECL);
+        StringBuilder sb = new StringBuilder(DOCTYPE_OPEN_DECL);
         sb.append(DOCTYPE).append(name).append(SYSTEM)
             .append(systemId).append('\"').append(DOCTYPE_CLOSE_DECL);
         String s = sb.toString();
