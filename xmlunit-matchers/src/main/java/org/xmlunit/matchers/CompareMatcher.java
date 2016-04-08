@@ -314,6 +314,12 @@ public final class CompareMatcher extends BaseMatcher<Object> {
 
     @Override
     public void describeTo(Description description) {
+        if (diffResult == null) {
+            description.appendText(" is ")
+                .appendText(checkFor == ComparisonResult.EQUAL ? "equal" : "similar")
+                .appendText(" to the control document");
+            return;
+        }
         final Comparison difference = firstComparison();
         final String reason = createReasonPrefix(diffResult.getControlSource().getSystemId(), difference);
         final String testString = comparisonFormatter.getDetails(difference.getControlDetails(), difference.getType(),

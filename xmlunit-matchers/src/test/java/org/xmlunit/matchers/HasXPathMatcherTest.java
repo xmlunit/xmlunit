@@ -12,7 +12,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 
+import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.Matchers.isEmptyString;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
@@ -119,5 +121,22 @@ public class HasXPathMatcherTest {
         assertThat(xmlRootElement,
                 not(hasXPath("//atom:feed/atom:entry/atom:description").withNamespaceContext(prefix2Uri)));
 
+    }
+
+    /**
+     * Really only tests there is no NPE.
+     * @see "https://github.com/xmlunit/xmlunit/issues/81"
+     */
+    @Test(expected = AssertionError.class)
+    public void canBeCombinedWithFailingMatcher() {
+        assertThat("not empty", both(isEmptyString())
+                   .and(hasXPath("count(//atom:feed/atom:entry")));
+    }
+
+    @Test
+    public void canBeCombinedWithPassingMatcher() {
+        String xml = "<a><b attr=\"abc\"></b></a>";
+        assertThat(xml, both(not(isEmptyString()))
+                   .and(hasXPath("//a/b/@attr")));
     }
 }

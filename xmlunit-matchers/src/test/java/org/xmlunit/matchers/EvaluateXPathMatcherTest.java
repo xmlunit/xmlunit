@@ -10,8 +10,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 
+import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
 import static org.xmlunit.matchers.EvaluateXPathMatcher.hasXPath;
 
@@ -82,5 +85,27 @@ public class EvaluateXPathMatcherTest {
                 equalTo("Google")).withNamespaceContext(prefix2Uri));
         assertThat(xml, hasXPath("//atom:feed/atom:entry[2]/atom:title/text()",
                 equalTo("Bing")).withNamespaceContext(prefix2Uri));
+    }
+
+    /**
+     * Really only tests there is no NPE.
+     * @see "https://github.com/xmlunit/xmlunit/issues/81"
+     */
+    @Test(expected = AssertionError.class)
+    public void canBeCombinedWithFailingMatcher() {
+        assertThat("not empty", both(isEmptyString())
+                   .and(hasXPath("count(//atom:feed/atom:entry)", equalTo("2"))));
+    }
+
+    @Test
+    public void canBeCombinedWithPassingMatcher() {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<fruits>" +
+                    "<fruit name=\"apple\"/>" +
+                    "<fruit name=\"orange\"/>" +
+                    "<fruit name=\"banana\"/>" +
+                "</fruits>";
+        assertThat(xml, both(not(isEmptyString()))
+                   .and(hasXPath("count(//fruits/fruit)", equalTo("3"))));
     }
 }

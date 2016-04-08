@@ -10,6 +10,11 @@
   PR [#80](https://github.com/xmlunit/xmlunit/pull/80)
   by [@georgekankava](https://github.com/georgekankava).
 
+* `CompareMatcher` and `ValidationMatcher` threw
+  `NullPointerException`s when combined with another failing
+  `Matcher`.
+  Issue [#81](https://github.com/xmlunit/xmlunit/issues/81).
+
 ## XMLUnit for Java 2.1.0 - /Released 2016-03-26/
 
 * fixed swapped constant assignments in `DifferenceEvaluators`

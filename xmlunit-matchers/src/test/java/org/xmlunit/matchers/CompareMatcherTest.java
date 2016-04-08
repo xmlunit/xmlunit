@@ -14,9 +14,12 @@
 
 package org.xmlunit.matchers;
 
+import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.junit.Assert.assertThat;
 import static org.xmlunit.TestResources.TEST_RESOURCE_DIR;
 import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
 import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
@@ -304,6 +307,22 @@ public class CompareMatcherTest {
                                return !"d".equals(n.getNodeName());
                            }
                        }));
+    }
+
+    /**
+     * Really only tests there is no NPE.
+     * @see "https://github.com/xmlunit/xmlunit/issues/81"
+     */
+    @Test(expected = AssertionError.class)
+    public void canBeCombinedWithFailingMatcher() {
+        assertThat("not empty", both(isEmptyString()).and(isIdenticalTo("")));
+    }
+
+    @Test
+    public void canBeCombinedWithPassingMatcher() {
+        assertThat("<a><c/><b/></a>", both(not(isEmptyString()))
+                   .and(isSimilarTo("<a><b/><c/></a>")
+                        .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))));
     }
 
     public void expect(Class<? extends Throwable> type) {

@@ -18,10 +18,13 @@ import org.junit.Test;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 
-import static org.xmlunit.matchers.ValidationMatcher.valid;
+import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.ValidationMatcher.valid;
 
 /**
  * Tests for ValidationMatcher.
@@ -69,5 +72,23 @@ public class ValidationMatcherTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowWhenSchemaSourcesIsNull() {
         new ValidationMatcher(null);
+    }
+
+    /**
+     * Really only tests there is no NPE.
+     * @see "https://github.com/xmlunit/xmlunit/issues/81"
+     */
+    @Test(expected = AssertionError.class)
+    public void canBeCombinedWithFailingMatcher() {
+        assertThat("not empty", both(isEmptyString())
+                   .and(valid(new StreamSource(new File("../test-resources/Book.xsd")))));
+    }
+
+    @Test
+    public void canBeCombinedWithPassinggMatcher() {
+        assertThat(new StreamSource(new File("../test-resources/BookXsdGenerated.xml")),
+                   both(not(nullValue()))
+                   .and(valid(new StreamSource(new File("../test-resources/Book.xsd")))));
+
     }
 }

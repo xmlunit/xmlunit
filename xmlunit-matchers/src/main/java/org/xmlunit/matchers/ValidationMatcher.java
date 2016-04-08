@@ -73,7 +73,8 @@ public class ValidationMatcher extends BaseMatcher {
     @Override
     public void describeTo(Description description) {
         description.appendText(" that ")
-            .appendValue(instance.getSystemId() != null ? instance.getSystemId() : "instance");
+            .appendValue(instance != null && instance.getSystemId() != null
+                         ? instance.getSystemId() : "instance");
         if (any(Arrays.asList(schemaSource), new HasSystemIdPredicate())) {
             description.appendText(" validates against ");
             boolean first = true;
