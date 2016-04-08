@@ -1,6 +1,6 @@
 # Release Notes
 
-## Next Release - //
+## XMLUnit for Java 2.1.1 - //
 
 * various code style fixes
   PR [#74](https://github.com/xmlunit/xmlunit/pull/74),
