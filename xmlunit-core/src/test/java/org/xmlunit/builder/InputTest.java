@@ -33,6 +33,7 @@ import org.xmlunit.TestResources;
 import org.xmlunit.XMLUnitException;
 import org.xmlunit.builder.jaxb.ComplexNode;
 import org.xmlunit.util.Convert;
+import org.xmlunit.xpath.JAXPXPathEngine;
 
 import org.junit.Test;
 
@@ -216,6 +217,19 @@ public class InputTest {
     @Test
     public void canCreateInputFromNode() {
         assertNotNull(Input.fromNode(new NullNode()).build());
+    }
+
+    /**
+     * @see "https://github.com/xmlunit/xmlunit/issues/84"
+     */
+    @Test
+    public void testStringSourceCanBeUsedMoreThanOnce() {
+        Source xml = Input.fromString("<a><b>bvalue</b><c>cvalue</c></a>").build();
+
+        JAXPXPathEngine xpath = new JAXPXPathEngine();
+
+        assertEquals(xpath.evaluate("//a/b", xml), "bvalue");
+        assertEquals(xpath.evaluate("//a/c", xml), "cvalue");
     }
 
     private static void allIsWellFor(Source s) throws Exception {

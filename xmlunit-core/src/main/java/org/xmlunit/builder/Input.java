@@ -86,6 +86,22 @@ public class Input {
         private StreamBuilder(Reader r) {
             super(new StreamSource(r));
         }
+        private StreamBuilder(final byte[] b) {
+            super(new StreamSource() {
+                    @Override
+                    public InputStream getInputStream() {
+                        return new ByteArrayInputStream(b);
+                    }
+                });
+        }
+        private StreamBuilder(final String s) {
+            super(new StreamSource() {
+                    @Override
+                    public Reader getReader() {
+                        return new StringReader(s);
+                    }
+                });
+        }
         void setSystemId(String id) {
             if (id != null) {
                 source.setSystemId(id);
@@ -170,14 +186,14 @@ public class Input {
      * Build a Source from a string.
      */
     public static Builder fromString(String s) {
-        return fromReader(new StringReader(s));
+        return new StreamBuilder(s);
     }
 
     /**
      * Build a Source from an array of bytes.
      */
     public static Builder fromByteArray(byte[] b) {
-        return fromStream(new ByteArrayInputStream(b));
+        return new StreamBuilder(b);
     }
 
     /**
