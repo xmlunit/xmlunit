@@ -15,6 +15,10 @@
   `Matcher`.
   Issue [#81](https://github.com/xmlunit/xmlunit/issues/81).
 
+* `Input.fromStream` and `Input.fromString` now return `Source`s that
+  can be used multiple times.
+  Issue [#84](https://github.com/xmlunit/xmlunit/issues/84).
+
 ## XMLUnit for Java 2.1.0 - /Released 2016-03-26/
 
 * fixed swapped constant assignments in `DifferenceEvaluators`
