@@ -1,5 +1,11 @@
 # Release Notes
 
+## XMLUnit for Java 2.x.y - /Not Released, yet/
+
+* `Input.fromByteArray` and `Input.fromString` now return `Source`s that
+  can be used multiple times.
+  Issue [#84](https://github.com/xmlunit/xmlunit/issues/84).
+
 ## XMLUnit for Java 2.1.1 - /Released 2016-04-09/
 
 * various code style fixes
@@ -14,10 +20,6 @@
   `NullPointerException`s when combined with another failing
   `Matcher`.
   Issue [#81](https://github.com/xmlunit/xmlunit/issues/81).
-
-* `Input.fromStream` and `Input.fromString` now return `Source`s that
-  can be used multiple times.
-  Issue [#84](https://github.com/xmlunit/xmlunit/issues/84).
 
 ## XMLUnit for Java 2.1.0 - /Released 2016-03-26/
 
