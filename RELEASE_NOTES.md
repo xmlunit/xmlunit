@@ -1,10 +1,14 @@
 # Release Notes
 
-## XMLUnit for Java 2.x.y - /Not Released, yet/
+## XMLUnit for Java 2.2.0 - /Not Released, yet/
 
 * `Input.fromByteArray` and `Input.fromString` now return `Source`s that
   can be used multiple times.
   Issue [#84](https://github.com/xmlunit/xmlunit/issues/84).
+
+* The `DocumentBuilderFactory` used by `DOMDifferenceEngine` is now
+  configurable.
+  Issue [#83](https://github.com/xmlunit/xmlunit/issues/83).
 
 ## XMLUnit for Java 2.1.1 - /Released 2016-04-09/
 

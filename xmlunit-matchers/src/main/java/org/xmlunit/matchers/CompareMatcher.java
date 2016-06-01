@@ -36,6 +36,7 @@ import org.hamcrest.Matcher;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 
@@ -247,6 +248,15 @@ public final class CompareMatcher extends BaseMatcher<Object> {
      */
     public CompareMatcher withComparisonFormatter(ComparisonFormatter comparisonFormatter) {
         this.comparisonFormatter = comparisonFormatter;
+        return this;
+    }
+
+    /**
+     * @see DiffBuilder#withDocumentBuilderFactory
+     * @since XMLUnit 2.2.0
+     */
+    public CompareMatcher withDocumentBuilderFactory(DocumentBuilderFactory f) {
+        diffBuilder.withDocumentBuilderFactory(f);
         return this;
     }
 

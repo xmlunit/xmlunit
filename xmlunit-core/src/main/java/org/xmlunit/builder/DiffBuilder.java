@@ -33,6 +33,7 @@ import org.xmlunit.input.WhitespaceNormalizedSource;
 import org.xmlunit.input.WhitespaceStrippedSource;
 import org.xmlunit.util.Predicate;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 
 import java.util.ArrayList;
@@ -95,6 +96,8 @@ public class DiffBuilder {
     private boolean normalizeWhitespace;
 
     private boolean ignoreComments;
+
+    private DocumentBuilderFactory documentBuilderFactory;
 
     /**
      * Create a DiffBuilder instance.
@@ -310,6 +313,21 @@ public class DiffBuilder {
     }
 
     /**
+     * Sets the {@link DocumentBuilderFactory} to use when creating a
+     * {@link Document} from the {@link Source}s to compare.
+     *
+     * <p>This is only used if the {@code Source}s used for control
+     * and test not already are {@link
+     * javax.xml.transform.dom.DOMSource}s.</p>
+     *
+     * @since XMLUnit 2.2.0
+     */
+    public DiffBuilder withDocumentBuilderFactory(DocumentBuilderFactory f) {
+        documentBuilderFactory = f;
+        return this;
+    }
+
+    /**
      * Compare the Test-XML {@link #withTest(Object)} with the Control-XML {@link #compare(Object)} and return the
      * collected differences in a {@link Diff} object.
      */
@@ -337,6 +355,9 @@ public class DiffBuilder {
         }
         if (nodeFilter != null) {
             d.setNodeFilter(nodeFilter);
+        }
+        if (documentBuilderFactory != null) {
+            d.setDocumentBuilderFactory(documentBuilderFactory);
         }
         d.compare(wrap(controlSource), wrap(testSource));
 

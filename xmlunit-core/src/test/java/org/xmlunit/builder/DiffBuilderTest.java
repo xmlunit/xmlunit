@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.xmlunit.util.Linqy.count;
 
 import org.xmlunit.TestResources;
+import org.xmlunit.XMLUnitException;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonControllers;
 import org.xmlunit.diff.ComparisonFormatter;
@@ -34,13 +35,17 @@ import org.xmlunit.util.Predicate;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class DiffBuilderTest {
 
@@ -468,6 +473,26 @@ public class DiffBuilderTest {
 
         Assert.assertEquals("foo (DIFFERENT)",
                             myDiff.getDifferences().iterator().next().toString());
+    }
+
+    @Test
+    public void usesDocumentBuilderFactory() throws Exception {
+        DocumentBuilderFactory dFac = Mockito.mock(DocumentBuilderFactory.class);
+        DocumentBuilder b = Mockito.mock(DocumentBuilder.class);
+        Mockito.when(dFac.newDocumentBuilder()).thenReturn(b);
+        Mockito.doThrow(new IOException())
+            .when(b).parse(Mockito.any(InputSource.class));
+
+        String control = "<a><b></b><c/></a>";
+        String test = "<a><b></b><c/><d/></a>";
+
+        try {
+            Diff myDiff = DiffBuilder.compare(control).withTest(test)
+                .withDocumentBuilderFactory(dFac).build();
+            Assert.fail("Expected exception");
+        } catch (XMLUnitException ex) {
+            Mockito.verify(b).parse(Mockito.any(InputSource.class));
+        }
     }
 
     private final class IgnoreAttributeDifferenceEvaluator implements DifferenceEvaluator {

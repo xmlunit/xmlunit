@@ -1046,6 +1046,12 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                                     d2, new XPathContext()));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void cantUseNullDocumentBuilderFactory() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        d.setDocumentBuilderFactory(null);
+    }
+
     private Document documentForString(String s) {
         return Convert.toDocument(Input.fromString(s).build());
     }

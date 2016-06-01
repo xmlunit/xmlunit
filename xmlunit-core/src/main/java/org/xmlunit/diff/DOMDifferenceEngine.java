@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import org.xmlunit.XMLUnitException;
 import org.xmlunit.util.Convert;
@@ -51,6 +52,25 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             public QName apply(Node n) { return Nodes.getQName(n); }
         };
 
+    private DocumentBuilderFactory documentBuilderFactory =
+        DocumentBuilderFactory.newInstance();
+
+    /**
+     * Sets the {@link DocumentBuilderFactory} to use when creating a
+     * {@link Document} from the {@link Source}s to compare.
+     *
+     * <p>This is only used if the {@code Source} passed to {@link #compare}
+     * is not already a {@link javax.xml.transform.dom.DOMSource}.</p>
+     *
+     * @since XMLUnit 2.2.0
+     */
+    public void setDocumentBuilderFactory(DocumentBuilderFactory f) {
+        if (f == null) {
+            throw new IllegalArgumentException("factory must not be null");
+        }
+        documentBuilderFactory = f;
+    }
+
     @Override
     public void compare(Source control, Source test) {
         if (control == null) {
@@ -60,8 +80,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             throw new IllegalArgumentException("test must not be null");
         }
         try {
-            Node controlNode = Convert.toNode(control);
-            Node testNode = Convert.toNode(test);
+            Node controlNode = Convert.toNode(control, documentBuilderFactory);
+            Node testNode = Convert.toNode(test, documentBuilderFactory);
             compareNodes(controlNode, xpathContextFor(controlNode),
                          testNode, xpathContextFor(testNode));
         } catch (Exception ex) {

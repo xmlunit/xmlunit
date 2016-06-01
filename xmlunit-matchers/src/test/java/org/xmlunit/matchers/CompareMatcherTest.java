@@ -24,6 +24,7 @@ import static org.xmlunit.TestResources.TEST_RESOURCE_DIR;
 import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
 import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
+import org.xmlunit.XMLUnitException;
 import org.xmlunit.builder.Input;
 import org.xmlunit.builder.Input.Builder;
 import org.xmlunit.diff.Comparison;
@@ -45,9 +46,13 @@ import org.junit.ComparisonFailure;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.Mockito;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -323,6 +328,27 @@ public class CompareMatcherTest {
         assertThat("<a><c/><b/></a>", both(not(isEmptyString()))
                    .and(isSimilarTo("<a><b/><c/></a>")
                         .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))));
+    }
+
+    @Test
+    public void usesDocumentBuilderFactory() throws Exception {
+        DocumentBuilderFactory dFac = Mockito.mock(DocumentBuilderFactory.class);
+        DocumentBuilder b = Mockito.mock(DocumentBuilder.class);
+        Mockito.when(dFac.newDocumentBuilder()).thenReturn(b);
+        Mockito.doThrow(new IOException())
+            .when(b).parse(Mockito.any(InputSource.class));
+
+        String control = "<a><b></b><c/></a>";
+        String test = "<a><b></b><c/><d/></a>";
+
+        try {
+            assertThat("<a><b></b><c/></a>",
+                       not(isSimilarTo("<a><b></b><c/><d/></a>")
+                           .withDocumentBuilderFactory(dFac)));
+            Assert.fail("Expected exception");
+        } catch (XMLUnitException ex) {
+            Mockito.verify(b).parse(Mockito.any(InputSource.class));
+        }
     }
 
     public void expect(Class<? extends Throwable> type) {
