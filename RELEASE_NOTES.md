@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.2.0 - /Not Released, yet/
+## XMLUnit for Java 2.2.0 - /Released 2016-06-04/
 
 * `Input.fromByteArray` and `Input.fromString` now return `Source`s that
   can be used multiple times.
