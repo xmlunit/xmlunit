@@ -495,6 +495,72 @@ public class DiffBuilderTest {
         }
     }
 
+    /**
+     * Would cause an error because
+     * http://example.org/TR/xhtml1/DTD/xhtml1-transitional.dtd
+     * doesn't exist if the DocumentBuilderFactory tried to resolve
+     * the DTD.
+     *
+     * @see "https://github.com/xmlunit/xmlunit/issues/86"
+     */
+    @Test
+    public void usesDocumentBuilderFactoryWhenIgnoringWhitespace() throws Exception {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+        dbf.setValidating(false);
+        dbf.setFeature("http://xml.org/sax/features/validation", false);
+        dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+        dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+        Diff d = DiffBuilder.compare(Input.fromString(
+                     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \n"
+                     + "     \"http://example.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+                     + "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+                     + "     <head></head>\n"
+                     + "     <body>some content 1</body>\n"
+                     + "</html>"))
+            .withTest(Input.fromString(
+                     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \n"
+                     + "     \"http://example.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+                     + "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+                     + "     <head></head>\n"
+                     + "     <body>some content 2</body>\n"
+                     + "</html>"))
+            .withDocumentBuilderFactory(dbf)
+            .ignoreWhitespace()
+            .build();
+        Assert.assertTrue(d.hasDifferences());
+    }
+
+    @Test
+    public void usesDocumentBuilderFactoryWhenNormalizingWhitespace() throws Exception {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+        dbf.setValidating(false);
+        dbf.setFeature("http://xml.org/sax/features/validation", false);
+        dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+        dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+        Diff d = DiffBuilder.compare(Input.fromString(
+                     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \n"
+                     + "     \"http://example.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+                     + "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+                     + "     <head></head>\n"
+                     + "     <body>some content 1</body>\n"
+                     + "</html>"))
+            .withTest(Input.fromString(
+                     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \n"
+                     + "     \"http://example.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+                     + "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+                     + "     <head></head>\n"
+                     + "     <body>some content 2</body>\n"
+                     + "</html>"))
+            .withDocumentBuilderFactory(dbf)
+            .normalizeWhitespace()
+            .build();
+        Assert.assertTrue(d.hasDifferences());
+    }
+
     private final class IgnoreAttributeDifferenceEvaluator implements DifferenceEvaluator {
 
         private String attributeName;

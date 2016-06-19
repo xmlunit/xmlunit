@@ -13,6 +13,7 @@
 */
 package org.xmlunit.input;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import org.xmlunit.util.Convert;
@@ -26,6 +27,12 @@ public class WhitespaceStrippedSource extends DOMSource {
 
     public WhitespaceStrippedSource(Source originalSource) {
         super(Nodes.stripWhitespace(Convert.toDocument(originalSource)));
+        setSystemId(originalSource.getSystemId());
+    }
+
+    public WhitespaceStrippedSource(Source originalSource,
+                                    DocumentBuilderFactory dbf) {
+        super(Nodes.stripWhitespace(Convert.toDocument(originalSource, dbf)));
         setSystemId(originalSource.getSystemId());
     }
 }

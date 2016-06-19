@@ -13,6 +13,7 @@
 */
 package org.xmlunit.input;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import org.xmlunit.util.Convert;
@@ -30,6 +31,12 @@ public class WhitespaceNormalizedSource extends DOMSource {
 
     public WhitespaceNormalizedSource(Source originalSource) {
         super(Nodes.normalizeWhitespace(Convert.toDocument(originalSource)));
+        setSystemId(originalSource.getSystemId());
+    }
+
+    public WhitespaceNormalizedSource(Source originalSource,
+                                      DocumentBuilderFactory dbf) {
+        super(Nodes.normalizeWhitespace(Convert.toDocument(originalSource, dbf)));
         setSystemId(originalSource.getSystemId());
     }
 }

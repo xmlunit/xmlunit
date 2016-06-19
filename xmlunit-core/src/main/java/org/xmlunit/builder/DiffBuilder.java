@@ -370,10 +370,14 @@ public class DiffBuilder {
     private Source wrap(final Source source) {
         Source newSource = source;
         if (ignoreWhitespace) {
-            newSource = new WhitespaceStrippedSource(newSource);
+            newSource = documentBuilderFactory != null
+                ? new WhitespaceStrippedSource(newSource, documentBuilderFactory)
+                : new WhitespaceStrippedSource(newSource);
         }
         if (normalizeWhitespace) {
-            newSource = new WhitespaceNormalizedSource(newSource);
+            newSource = documentBuilderFactory != null
+                ? new WhitespaceNormalizedSource(newSource, documentBuilderFactory)
+                : new WhitespaceNormalizedSource(newSource);
         }
         if (ignoreComments) {
             newSource = new CommentLessSource(newSource);
