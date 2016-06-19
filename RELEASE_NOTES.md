@@ -1,5 +1,7 @@
 # Release Notes
 
+## XMLUnit for Java 2.2.2 - /Not Released, yet/
+
 ## XMLUnit for Java 2.2.1 - /Released 2016-06-19/
 
 * The `DocumentBuilderFactory` set on `DiffBuilder` wasn't used
