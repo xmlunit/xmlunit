@@ -1,6 +1,11 @@
 # Release Notes
 
-## XMLUnit for Java 2.2.1 - /Not Released, yet/
+## XMLUnit for Java 2.2.1 - /Released 2016-06-19/
+
+* The `DocumentBuilderFactory` set on `DiffBuilder` wasn't used
+  properly when `ignoreWhitespace` or `normalizeWhitespace` has been
+  set.
+  Issue [#86](https://github.com/xmlunit/xmlunit/issues/86).
 
 ## XMLUnit for Java 2.2.0 - /Released 2016-06-04/
 

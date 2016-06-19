@@ -156,6 +156,12 @@ public class DiffBuilder {
 
     /**
      * Will remove all comment-Tags "&lt;!-- Comment --&gt;" from test- and control-XML before comparing.
+     *
+     * <p>Comments are ignored by applying an XSLT transformation on
+     * the source which may reduce the effect of {@link
+     * #withDocumentBuilderFactory}. If you need more control over the
+     * transformation build the {@code Source} using a transformation
+     * yourself, using {@link CommentLessSource#STYLE}.</p>
      */
     public DiffBuilder ignoreComments() {
         ignoreComments = true;
