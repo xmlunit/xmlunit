@@ -33,6 +33,7 @@ import org.xml.sax.SAXParseException;
 public class JAXPValidator extends Validator {
     private final String language;
     private final SchemaFactory factory;
+    private Schema schema;
 
     public JAXPValidator(String language) {
         this(language, null);
@@ -41,6 +42,15 @@ public class JAXPValidator extends Validator {
     public JAXPValidator(String language, SchemaFactory factory) {
         this.language = language;
         this.factory = factory;
+    }
+
+    /**
+     * Sets the schema to use in instance validation directly rather
+     * than via {@link #setSchemaSource}.
+     * @since 2.3.0
+     */
+    public final void setSchema(Schema s) {
+        schema = s;
     }
 
     private SchemaFactory getFactory() {
@@ -66,7 +76,7 @@ public class JAXPValidator extends Validator {
     @Override public ValidationResult validateInstance(Source s) {
         Schema schema;
         try {
-            schema = createSchema();
+            schema = getSchema();
         } catch (SAXException e) {
             throw new XMLUnitException("The schema is invalid", e);
         }
@@ -85,7 +95,10 @@ public class JAXPValidator extends Validator {
         return v.getResult();
     }
 
-    private Schema createSchema() throws SAXException {
+    private Schema getSchema() throws SAXException {
+        if (schema != null) {
+            return schema;
+        }
         Source[] sources = getSchemaSources();
         return sources.length > 0 ? getFactory().newSchema(sources)
             : getFactory().newSchema();

@@ -14,8 +14,11 @@
 package org.xmlunit.matchers;
 
 import org.junit.Test;
+import org.xmlunit.validation.Languages;
 
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 import java.io.File;
 
 import static org.hamcrest.CoreMatchers.both;
@@ -39,9 +42,26 @@ public class ValidationMatcherTest {
     }
 
     @Test
+    public void shouldSuccessfullyValidateInstanceWhenSchemaIsCreatedExternally()
+        throws Exception {
+        SchemaFactory f = SchemaFactory.newInstance(Languages.W3C_XML_SCHEMA_NS_URI);
+        assertThat(new StreamSource(new File("../test-resources/BookXsdGenerated.xml")),
+                   is(valid(f.newSchema(new StreamSource(new File("../test-resources/Book.xsd"))))));
+
+    }
+
+    @Test
     public void shouldFailOnBrokenInstance() {
         assertThat(new StreamSource(new File("../test-resources/invalidBook.xml")),
                    is(not(valid(new StreamSource(new File("../test-resources/Book.xsd"))))));
+    }
+
+    @Test
+    public void shouldFailOnBrokenInstanceWhenSchemaIsCreatedExternally()
+        throws Exception {
+        SchemaFactory f = SchemaFactory.newInstance(Languages.W3C_XML_SCHEMA_NS_URI);
+        assertThat(new StreamSource(new File("../test-resources/invalidBook.xml")),
+                   is(not(valid(f.newSchema(new StreamSource(new File("../test-resources/Book.xsd")))))));
     }
 
     @Test(expected = AssertionError.class)
@@ -71,7 +91,12 @@ public class ValidationMatcherTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowWhenSchemaSourcesIsNull() {
-        new ValidationMatcher(null);
+        new ValidationMatcher((Object[]) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowWhenSchemaIsNull() {
+        new ValidationMatcher((Schema) null);
     }
 
     /**

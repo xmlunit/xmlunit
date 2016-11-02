@@ -30,14 +30,17 @@ import org.hamcrest.Description;
 import org.hamcrest.Factory;
 
 import javax.xml.transform.Source;
+import javax.xml.validation.Schema;
 import java.util.Arrays;
 
 /**
- * Hamcrest Matcher for XML Validation.
+ * Hamcrest Matcher for XML Validation against W3C XML Schema using
+ * {@link JAXPValidator}.
  */
 public class ValidationMatcher extends BaseMatcher {
 
     private final Source[] schemaSource;
+    private final Schema schema;
     private Source instance;
     private ValidationResult result;
 
@@ -57,13 +60,27 @@ public class ValidationMatcher extends BaseMatcher {
                                            }
                                        })
                                    ).toArray(new Source[schemaSource.length]);
+        schema = null;
+    }
+
+    /**
+     * @since 2.3.0
+     */
+    public ValidationMatcher(Schema schema) {
+        if (schema == null) {
+            throw new IllegalArgumentException("schema must not be null");
+        }
+        this.schemaSource = new Source[0];
+        this.schema = schema;
     }
 
     @Override
     public boolean matches(Object instance) {
         this.instance = Input.from(instance).build();
         JAXPValidator v = new JAXPValidator(Languages.W3C_XML_SCHEMA_NS_URI);
-        if (schemaSource.length > 0) {
+        if (schema != null) {
+            v.setSchema(schema);
+        } else if (schemaSource.length > 0) {
             v.setSchemaSources(schemaSource);
         }
         this.result = v.validateInstance(this.instance);
@@ -106,6 +123,14 @@ public class ValidationMatcher extends BaseMatcher {
     @Factory
     public static ValidationMatcher valid(final Object schemaSource) {
         return new ValidationMatcher(schemaSource);
+    }
+
+    /**
+     * @since 2.3.0
+     */
+    @Factory
+    public static ValidationMatcher valid(final Schema schema) {
+        return new ValidationMatcher(schema);
     }
 
     private static class HasSystemIdPredicate implements Predicate<Source> {

@@ -73,6 +73,17 @@ public class JAXPValidatorTest {
         assertFalse(r.getProblems().iterator().hasNext());
     }
 
+    @Test public void shouldSuccessfullyValidateInstanceWhenSchemaIsCreatedExternally()
+        throws Exception {
+        JAXPValidator v = new JAXPValidator(Languages.W3C_XML_SCHEMA_NS_URI);
+        SchemaFactory f = SchemaFactory.newInstance(Languages.W3C_XML_SCHEMA_NS_URI);
+        v.setSchema(f.newSchema(new StreamSource(BOOK_XSD)));
+        ValidationResult r = v.validateInstance(new StreamSource(new File(TEST_RESOURCE_DIR
+                                                                          + "BookXsdGenerated.xml")));
+        assertTrue(r.isValid());
+        assertFalse(r.getProblems().iterator().hasNext());
+    }
+
     @Test public void shouldSuccessfullyValidateInstanceWithoutSchemaSource() {
         JAXPValidator v = new JAXPValidator(Languages.W3C_XML_SCHEMA_NS_URI);
         ValidationResult r = v.validateInstance(new StreamSource(new File(TEST_RESOURCE_DIR
@@ -92,6 +103,17 @@ public class JAXPValidatorTest {
     @Test public void shouldFailOnBrokenInstance() {
         JAXPValidator v = new JAXPValidator(Languages.W3C_XML_SCHEMA_NS_URI);
         v.setSchemaSource(new StreamSource(BOOK_XSD));
+        ValidationResult r = v.validateInstance(new StreamSource(new File(TEST_RESOURCE_DIR
+                                                                          + "invalidBook.xml")));
+        assertFalse(r.isValid());
+        assertTrue(r.getProblems().iterator().hasNext());
+    }
+
+    @Test public void shouldFailOnBrokenInstanceWhenSchemaIsCreatedExternally()
+        throws Exception {
+        JAXPValidator v = new JAXPValidator(Languages.W3C_XML_SCHEMA_NS_URI);
+        SchemaFactory f = SchemaFactory.newInstance(Languages.W3C_XML_SCHEMA_NS_URI);
+        v.setSchema(f.newSchema(new StreamSource(BOOK_XSD)));
         ValidationResult r = v.validateInstance(new StreamSource(new File(TEST_RESOURCE_DIR
                                                                           + "invalidBook.xml")));
         assertFalse(r.isValid());
