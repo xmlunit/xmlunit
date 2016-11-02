@@ -92,7 +92,7 @@ public class ValidationMatcher extends BaseMatcher {
         description.appendText(" that ")
             .appendValue(instance != null && instance.getSystemId() != null
                          ? instance.getSystemId() : "instance");
-        if (any(Arrays.asList(schemaSource), new HasSystemIdPredicate())) {
+        if (schema != null && any(Arrays.asList(schemaSource), new HasSystemIdPredicate())) {
             description.appendText(" validates against ");
             boolean first = true;
             for (Source schema : Arrays.asList(schemaSource)) {
@@ -101,7 +101,8 @@ public class ValidationMatcher extends BaseMatcher {
                 }
                 first = false;
                 description.appendValue(schema.getSystemId() != null
-                                        ? schema.getSystemId() : "schema without systemId");
+                                        ? schema.getSystemId()
+                                        : "schema without systemId");
             }
         } else {
             description.appendText(" validates");

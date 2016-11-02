@@ -1,6 +1,14 @@
 # Release Notes
 
-## XMLUnit for Java 2.2.2 - /Not Released, yet/
+## XMLUnit for Java 2.3.0 - /Not Released, yet/
+
+* `JAXPValidator` and `ValidationMatcher` now accept using `Schema`
+  instances for the schema when validating instance documents.
+  Issue [#89](https://github.com/xmlunit/xmlunit/issues/89).
+
+* updated test dependency to Mockito 2.1.0
+  PR [#87](https://github.com/xmlunit/xmlunit/pull/87) by
+  [@PascalSchumacher](https://github.com/PascalSchumacher).
 
 ## XMLUnit for Java 2.2.1 - /Released 2016-06-19/
 
