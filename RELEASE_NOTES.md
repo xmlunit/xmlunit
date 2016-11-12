@@ -1,5 +1,7 @@
 # Release Notes
 
+## XMLUnit for Java 2.3.1 - /Not Released, yet/
+
 ## XMLUnit for Java 2.3.0 - /Released 2016-11-12/
 
 * `JAXPValidator` and `ValidationMatcher` now accept using `Schema`
