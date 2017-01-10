@@ -14,6 +14,7 @@
 package org.xmlunit.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,6 +30,9 @@ public final class Linqy {
      * Turns the iterable into a list.
      */
     public static <E> List<E> asList(Iterable<E> i) {
+        if (i instanceof Collection) {
+            return new ArrayList<E>((Collection<E>) i);
+        }
         ArrayList<E> a = new ArrayList<E>();
         for (E e : i) {
             a.add(e);
@@ -91,6 +95,9 @@ public final class Linqy {
      * Count the number of elements in a sequence.
      */
     public static int count(Iterable seq) {
+        if (seq instanceof Collection) {
+            return ((Collection) seq).size();
+        }
         int c = 0;
         Iterator it = seq.iterator();
         while (it.hasNext()) {

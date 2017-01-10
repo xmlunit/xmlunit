@@ -15,6 +15,7 @@ package org.xmlunit.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import org.junit.Assert;
@@ -100,6 +101,40 @@ public class LinqyTest {
         Iterator<String> i = Linqy.filter(Arrays.asList("foo"), new IsNullPredicate())
             .iterator();
         i.next();
+    }
+
+    @Test
+    public void countUsesCollectionSizeWhenAvailable() {
+        final boolean[] calls = new boolean[2]; // [0] has iterator been called? [1] has size been called?
+        int count = Linqy.count(new AbstractCollection() {
+            @Override
+            public Iterator iterator() {
+                calls[0] = true;
+                return Arrays.asList(new Object()).iterator();
+            }
+            @Override
+            public int size() {
+                calls[1] = true;
+                return 1;
+            }
+        });
+        Assert.assertEquals(1, count);
+        Assert.assertFalse("iterator has been called", calls[0]);
+        Assert.assertTrue("size has not been called", calls[1]);
+    }
+
+    @Test
+    public void countDoesntNeedCollection() {
+        final boolean[] called = new boolean[1];
+        int count = Linqy.count(new Iterable() {
+            @Override
+            public Iterator iterator() {
+                called[0] = true;
+                return Arrays.asList(new Object()).iterator();
+            }
+        });
+        Assert.assertEquals(1, count);
+        Assert.assertTrue("iterator has not been called", called[0]);
     }
 
     private static class IdentityPredicate implements Predicate<Boolean> {
