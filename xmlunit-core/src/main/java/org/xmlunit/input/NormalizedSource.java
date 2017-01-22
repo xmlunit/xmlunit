@@ -40,6 +40,14 @@ public class NormalizedSource extends DOMSource {
     public NormalizedSource() {
     }
 
+    /**
+     * Creates a new source that is created by "normalizing" the given
+     * source.
+     *
+     * <p>See the class-level JavaDocs for details.</p>
+     *
+     * @param originalSource the original source
+     */
     public NormalizedSource(Source originalSource) {
         if (originalSource != null) {
             Document doc = Convert.toDocument(originalSource);
@@ -49,10 +57,27 @@ public class NormalizedSource extends DOMSource {
         }
     }
 
+    /**
+     * Creates a new source that is created by "normalizing" the given
+     * document.
+     *
+     * <p>See the class-level JavaDocs for details.</p>
+     *
+     * @param doc the original source
+     */
     public NormalizedSource(Document doc) {
         this(doc, null);
     }
 
+    /**
+     * Creates a new source that is created by "normalizing" the given
+     * document.
+     *
+     * <p>See the class-level JavaDocs for details.</p>
+     *
+     * @param doc the original source
+     * @param systemId the system id to use for the new source
+     */
     public NormalizedSource(Document doc, String systemId) {
         if (doc != null) {
             doc.normalizeDocument();
@@ -61,10 +86,27 @@ public class NormalizedSource extends DOMSource {
         setSystemId(systemId);
     }
 
+    /**
+     * Creates a new source that is created by "normalizing" the given
+     * node.
+     *
+     * <p>See the class-level JavaDocs for details.</p>
+     *
+     * @param n the original node
+     */
     public NormalizedSource(Node n) {
         this(n, null);
     }
 
+    /**
+     * Creates a new source that is created by "normalizing" the given
+     * node.
+     *
+     * <p>See the class-level JavaDocs for details.</p>
+     *
+     * @param n the original node
+     * @param systemId the system id to use for the new source
+     */
     public NormalizedSource(Node n, String systemId) {
         setNormalizedNode(n);
         setSystemId(systemId);

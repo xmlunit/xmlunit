@@ -25,11 +25,25 @@ import org.xmlunit.util.Nodes;
  */
 public class WhitespaceStrippedSource extends DOMSource {
 
+    /**
+     * Creates a new source that consists of the given source with all
+     * empty text nodes removed and all non-empty text nodes trimmed.
+     *
+     * @param originalSource the original source
+     */
     public WhitespaceStrippedSource(Source originalSource) {
         super(Nodes.stripWhitespace(Convert.toDocument(originalSource)));
         setSystemId(originalSource.getSystemId());
     }
 
+    /**
+     * Creates a new source that consists of the given source with all
+     * empty text nodes removed and all non-empty text nodes trimmed.
+     *
+     * @param originalSource the original source
+     * @param dbf the DocumentBuilderFactory to use when creating a
+     * DOM document from originalSource
+     */
     public WhitespaceStrippedSource(Source originalSource,
                                     DocumentBuilderFactory dbf) {
         super(Nodes.stripWhitespace(Convert.toDocument(originalSource, dbf)));

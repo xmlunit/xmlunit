@@ -29,11 +29,27 @@ import org.xmlunit.util.Nodes;
  */
 public class WhitespaceNormalizedSource extends DOMSource {
 
+    /**
+     * Creates a new source that consists of the given source with all
+     * whitespace characters replaced by spaces and consecutive
+     * whitespace characters collapsed.
+     *
+     * @param originalSource the original source
+     */
     public WhitespaceNormalizedSource(Source originalSource) {
         super(Nodes.normalizeWhitespace(Convert.toDocument(originalSource)));
         setSystemId(originalSource.getSystemId());
     }
 
+    /**
+     * Creates a new source that consists of the given source with all
+     * whitespace characters replaced by spaces and consecutive
+     * whitespace characters collapsed.
+     *
+     * @param originalSource the original source
+     * @param dbf the DocumentBuilderFactory to use when creating a
+     * DOM document from originalSource
+     */
     public WhitespaceNormalizedSource(Source originalSource,
                                       DocumentBuilderFactory dbf) {
         super(Nodes.normalizeWhitespace(Convert.toDocument(originalSource, dbf)));

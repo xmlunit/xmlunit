@@ -35,6 +35,12 @@ public final class CommentLessSource extends DOMSource {
             + "</copy></template>"
             + "</stylesheet>";
 
+    /**
+     * Creates a new source that consists of the given source with all
+     * comments removed.
+     *
+     * @param originalSource the original source
+     */
     public CommentLessSource(Source originalSource) {
         super();
         if (originalSource == null) {
