@@ -1,6 +1,6 @@
 /*
 *****************************************************************
-Copyright (c) 2014-2015 Jeff Martin, Tim Bacon
+Copyright (c) 2014-2015,2017 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -42,6 +42,14 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class test_QualifiedName extends TestCase {
+
+    public void setUp() {
+        XMLUnit.setXpathNamespaceContext(null);
+    }
+
+    public void tearDown() {
+        XMLUnit.setXpathNamespaceContext(null);
+    }
 
     public void testParseBareLocalName() {
         Assert.assertEquals(new QualifiedName("foo"),
