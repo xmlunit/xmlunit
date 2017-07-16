@@ -193,7 +193,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
     }
 
     /**
-     * Appends a short indication of the documents root element like "&lt;ElementName...&gt;" for {@link
+     * Appends a short indication of the document's root element like "&lt;ElementName...&gt;" for {@link
      * #getShortString}.
      *
      * @param sb the builder to append to
@@ -343,7 +343,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
     /**
      * Formats the node using a format suitable for the node type and comparison.
      *
-     * <p>The implementation ouputs the document prolog and start element for {@code Document} and {@code DocumentType}
+     * <p>The implementation outputs the document prolog and start element for {@code Document} and {@code DocumentType}
      * nodes and may elect to format the node's parent element rather than just the node depending on the node and
      * comparison type. It delegates to {@link #appendFullDocumentHeader} or {@link #getFormattedNodeXml}.</p>
      *
@@ -420,7 +420,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
     }
 
     /**
-     * Formats an node with the help of an identity XML transformation.
+     * Formats a node with the help of an identity XML transformation.
      *
      * @param nodeToConvert the node to format
      * @param formatXml true if the Comparison was generated with {@link
