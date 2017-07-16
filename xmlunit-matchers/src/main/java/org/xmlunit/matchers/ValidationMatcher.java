@@ -64,7 +64,7 @@ public class ValidationMatcher extends BaseMatcher {
     }
 
     /**
-     * @since 2.3.0
+     * @since XMLUnit 2.3.0
      */
     public ValidationMatcher(Schema schema) {
         if (schema == null) {
@@ -127,7 +127,7 @@ public class ValidationMatcher extends BaseMatcher {
     }
 
     /**
-     * @since 2.3.0
+     * @since XMLUnit 2.3.0
      */
     @Factory
     public static ValidationMatcher valid(final Schema schema) {

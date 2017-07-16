@@ -49,7 +49,7 @@ public class Difference {
 
     /**
      * Sets the default formatter to use with {@link #toString}.
-     * @since 2.1.0
+     * @since XMLUnit 2.1.0
      */
     public void setComparisonFormatter(ComparisonFormatter formatter) {
         this.formatter = formatter;

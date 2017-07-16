@@ -47,7 +47,7 @@ public class JAXPValidator extends Validator {
     /**
      * Sets the schema to use in instance validation directly rather
      * than via {@link #setSchemaSource}.
-     * @since 2.3.0
+     * @since XMLUnit 2.3.0
      */
     public final void setSchema(Schema s) {
         schema = s;

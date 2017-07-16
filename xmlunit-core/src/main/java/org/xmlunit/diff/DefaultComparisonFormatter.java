@@ -90,7 +90,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @param type the comparison type
      * @return the display value
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected Object getValue(Object value, ComparisonType type) {
         return type == ComparisonType.NODE_TYPE ? nodeType((Short) value) : value;
@@ -111,7 +111,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @param type the comparison type
      * @return the formatted result
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected String getShortString(Node node, String xpath, ComparisonType type) {
         StringBuilder sb = new StringBuilder();
@@ -153,9 +153,9 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * Appends the XPath information for {@link #getShortString} if present.
      *
      * @param sb the builder to append to
-     * @param the xpath to append, if any
+     * @param xpath the xpath to append, if any
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected void appendXPath(StringBuilder sb, String xpath) {
         if (xpath != null && xpath.length() > 0) {
@@ -170,7 +170,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @param sb the builder to append to
      * @return true if the XML declaration has been appended
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected boolean appendDocumentXmlDeclaration(StringBuilder sb, Document doc) {
         if ("1.0".equals(doc.getXmlVersion()) && doc.getXmlEncoding() == null && !doc.getXmlStandalone()) {
@@ -199,7 +199,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @param sb the builder to append to
      * @param doc the XML document node
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected void appendDocumentElementIndication(StringBuilder sb, Document doc) {
         sb.append("<");
@@ -214,7 +214,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @param type the document type
      * @return true if the DOCTPYE has been appended
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected boolean appendDocumentType(StringBuilder sb, DocumentType type) {
         if (type == null) {
@@ -242,7 +242,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @param sb the builder to append to
      * @param instr the processing instruction
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected void appendProcessingInstruction(StringBuilder sb, ProcessingInstruction instr) {
         sb.append("<?")
@@ -257,7 +257,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @param sb the builder to append to
      * @param aNode the comment
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected void appendComment(StringBuilder sb, Comment aNode) {
         sb.append("<!--")
@@ -271,7 +271,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @param sb the builder to append to
      * @param aNode the text or CDATA node
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected void appendText(StringBuilder sb, Text aNode) {
         sb.append("<")
@@ -297,7 +297,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @param sb the builder to append to
      * @param aNode the element
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected void appendElement(StringBuilder sb, Element aNode) {
         sb.append("<")
@@ -311,7 +311,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @param sb the builder to append to
      * @param aNode the attribute
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected void appendAttribute(StringBuilder sb, Attr aNode) {
         sb.append("<").append(aNode.getOwnerElement().getNodeName());
@@ -353,7 +353,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * org.xmlunit.builder.DiffBuilder#ignoreWhitespace()} - this affects the indentation of the generated output
      * @return the fomatted XML
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected String getFullFormattedXml(final Node node, ComparisonType type, boolean formatXml) {
         StringBuilder sb = new StringBuilder();
@@ -387,7 +387,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @param sb the builder to append to
      * @param doc the document to format
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected void appendFullDocumentHeader(StringBuilder sb, Document doc) {
         if (appendDocumentXmlDeclaration(sb, doc)) {
@@ -427,7 +427,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * org.xmlunit.builder.DiffBuilder#ignoreWhitespace()} - this affects the indentation of the generated output
      * @return the fomatted XML
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected String getFormattedNodeXml(final Node nodeToConvert, boolean formatXml) {
         String formattedNodeXml;
@@ -449,7 +449,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @param numberOfBlanksToIndent the number of spaces which is used for indent the XML-structure
      * @return the transformer
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected Transformer createXmlTransformer(int numberOfBlanksToIndent) throws TransformerConfigurationException {
         final TransformerFactory factory = TransformerFactory.newInstance();
@@ -485,7 +485,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @param type the node type
      * @return the display text
      *
-     * @since 2.4.0
+     * @since XMLUnit 2.4.0
      */
     protected String nodeType(short type) {
         switch(type) {
