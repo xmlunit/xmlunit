@@ -41,6 +41,20 @@ import java.io.StringWriter;
  */
 public class DefaultComparisonFormatter implements ComparisonFormatter {
 
+    /**
+     * Return a short String of the Comparison including the XPath and the shorten value of the effected control and
+     * test Node.
+     *
+     * <p>In general the String will look like "Expected X 'Y' but was 'Z' - comparing A to B" where A and B are the
+     * result of invoking {@link #getShortString} on the target and XPath of the control and test details of the
+     * comparison. A is the description of the comparison and B and C are the control and test values (passed through
+     * {@link #getValue}) respectively.</p>
+     *
+     * <p>For missing attributes the string has a slightly different format.</p>
+     *
+     * @param difference the comparison to describe
+     * @return a short description of the comparison
+     */
     @Override
     public String getDescription(Comparison difference) {
         final ComparisonType type = difference.getType();
@@ -66,11 +80,40 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
             controlTarget, testTarget);
     }
 
-    private Object getValue(Object value, ComparisonType type) {
+    /**
+     * May alter the display of a comparison value for {@link #getShortString} based on the comparison type.
+     *
+     * <p>This implementation returns {@code value} unless it is a comparison of node types in which case the numeric
+     * value (one of the constants defined in the {@link Node} class) is mapped to a more useful String.</p>
+     *
+     * @param value the value to display
+     * @param type the comparison type
+     * @return the display value
+     *
+     * @since 2.4.0
+     */
+    protected Object getValue(Object value, ComparisonType type) {
         return type == ComparisonType.NODE_TYPE ? nodeType((Short) value) : value;
     }
 
-    private String getShortString(Node node, String xpath, ComparisonType type) {
+    /**
+     * Return a String representation for {@link #getShortString} that describes the "thing" that has been compared so
+     * users know how to locate it.
+     *
+     * <p>Examples are "&lt;bar ...&gt; at /foo[1]/bar[1]" for a comparison of elements or "&lt;!-- Comment Text --&gt;
+     * at /foo[2]/comment()[1]" for a comment.</p>
+     *
+     * <p>This implementation dispatches to several {@code appendX} methods based on the comparison type or the type of
+     * the node.</p>
+     *
+     * @param node the node to describe
+     * @param xpath xpath of the node if applicable
+     * @param type the comparison type
+     * @return the formatted result
+     *
+     * @since 2.4.0
+     */
+    protected String getShortString(Node node, String xpath, ComparisonType type) {
         StringBuilder sb = new StringBuilder();
         if (type == ComparisonType.HAS_DOCTYPE_DECLARATION) {
             Document doc = (Document)  node;
@@ -102,13 +145,34 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
                 .append('/').append(node.getNodeValue())
                 .append("-->");
         }
-        if (xpath != null && xpath.length() > 0) {
-            sb.append(" at ").append(xpath);
-        }
+        appendXPath(sb, xpath);
         return sb.toString();
     }
 
-    private static boolean appendDocumentXmlDeclaration(StringBuilder sb, Document doc) {
+    /**
+     * Appends the XPath information for {@link #getShortString} if present.
+     *
+     * @param sb the builder to append to
+     * @param the xpath to append, if any
+     *
+     * @since 2.4.0
+     */
+    protected void appendXPath(StringBuilder sb, String xpath) {
+        if (xpath != null && xpath.length() > 0) {
+            sb.append(" at ").append(xpath);
+        }
+    }
+
+    /**
+     * Appends the XML declaration for {@link #getShortString} or {@link #appendFullDocumentHeader} if it contains
+     * non-default values.
+     *
+     * @param sb the builder to append to
+     * @return true if the XML declaration has been appended
+     *
+     * @since 2.4.0
+     */
+    protected boolean appendDocumentXmlDeclaration(StringBuilder sb, Document doc) {
         if ("1.0".equals(doc.getXmlVersion()) && doc.getXmlEncoding() == null && !doc.getXmlStandalone()) {
             // only default values => ignore
             return false;
@@ -128,24 +192,41 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         return true;
     }
 
-    /** a short indication of the documents root element like "&lt;ElementName...&gt;".*/
-    private static void appendDocumentElementIndication(StringBuilder sb, Document doc) {
+    /**
+     * Appends a short indication of the documents root element like "&lt;ElementName...&gt;" for {@link
+     * #getShortString}.
+     *
+     * @param sb the builder to append to
+     * @param doc the XML document node
+     *
+     * @since 2.4.0
+     */
+    protected void appendDocumentElementIndication(StringBuilder sb, Document doc) {
         sb.append("<");
         sb.append(doc.getDocumentElement().getNodeName());
         sb.append("...>");
     }
 
-    private static boolean appendDocumentType(StringBuilder sb, DocumentType type) {
+    /**
+     * Appends the XML DOCTYPE for {@link #getShortString} or {@link #appendFullDocumentHeader} if present.
+     *
+     * @param sb the builder to append to
+     * @param type the document type
+     * @return true if the DOCTPYE has been appended
+     *
+     * @since 2.4.0
+     */
+    protected boolean appendDocumentType(StringBuilder sb, DocumentType type) {
         if (type == null) {
             return false;
         }
         sb.append("<!DOCTYPE ").append(type.getName());
         boolean hasNoPublicId = true;
-        if (type.getPublicId()!=null && type.getPublicId().length() > 0) {
+        if (type.getPublicId() != null && type.getPublicId().length() > 0) {
             sb.append(" PUBLIC \"").append(type.getPublicId()).append('"');
             hasNoPublicId = false;
         }
-        if (type.getSystemId()!=null && type.getSystemId().length() > 0) {
+        if (type.getSystemId() != null && type.getSystemId().length() > 0) {
             if (hasNoPublicId) {
                 sb.append(" SYSTEM");
             }
@@ -155,28 +236,52 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         return true;
     }
 
-    private static void appendProcessingInstruction(StringBuilder sb, ProcessingInstruction instr) {
+    /**
+     * Formats a processing instruction for {@link #getShortString}.
+     *
+     * @param sb the builder to append to
+     * @param instr the processing instruction
+     *
+     * @since 2.4.0
+     */
+    protected void appendProcessingInstruction(StringBuilder sb, ProcessingInstruction instr) {
         sb.append("<?")
             .append(instr.getTarget())
             .append(' ').append(instr.getData())
             .append("?>");
     }
 
-    private static void appendComment(StringBuilder sb, Comment aNode) {
+    /**
+     * Formats a comment for {@link #getShortString}.
+     *
+     * @param sb the builder to append to
+     * @param aNode the comment
+     *
+     * @since 2.4.0
+     */
+    protected void appendComment(StringBuilder sb, Comment aNode) {
         sb.append("<!--")
             .append(aNode.getNodeValue())
             .append("-->");
     }
 
-    private static void appendText(StringBuilder sb, Text aNode) {
+    /**
+     * Formats a text or CDATA node for {@link #getShortString}.
+     *
+     * @param sb the builder to append to
+     * @param aNode the text or CDATA node
+     *
+     * @since 2.4.0
+     */
+    protected void appendText(StringBuilder sb, Text aNode) {
         sb.append("<")
             .append(aNode.getParentNode().getNodeName())
             .append(" ...>");
 
         if (aNode instanceof CDATASection) {
-        sb.append("<![CDATA[")
-            .append(aNode.getNodeValue())
-            .append("]]>");
+            sb.append("<![CDATA[")
+                .append(aNode.getNodeValue())
+                .append("]]>");
         } else {
             sb.append(aNode.getNodeValue());
         }
@@ -186,19 +291,47 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
             .append(">");
     }
 
-    private static void appendElement(StringBuilder sb, Element aNode) {
+    /**
+     * Formats a placeholder for an element for {@link #getShortString}.
+     *
+     * @param sb the builder to append to
+     * @param aNode the element
+     *
+     * @since 2.4.0
+     */
+    protected void appendElement(StringBuilder sb, Element aNode) {
         sb.append("<")
-        .append(aNode.getNodeName()).append("...")
-        .append(">");
+            .append(aNode.getNodeName()).append("...")
+            .append(">");
     }
 
-    private static void appendAttribute(StringBuilder sb, Attr aNode) {
+    /**
+     * Formats a placeholder for an attribute for {@link #getShortString}.
+     *
+     * @param sb the builder to append to
+     * @param aNode the attribute
+     *
+     * @since 2.4.0
+     */
+    protected void appendAttribute(StringBuilder sb, Attr aNode) {
         sb.append("<").append(aNode.getOwnerElement().getNodeName());
         sb.append(' ')
             .append(aNode.getNodeName()).append("=\"")
             .append(aNode.getNodeValue()).append("\"...>");
     }
 
+    /**
+     * Return the xml node from {@link Detail#getTarget()} as formatted String.
+     *
+     * <p>Delegates to {@link #getFullFormattedXml} unless the {@code Comparison.Detail}'s {@code target} is null.</p>
+     *
+     * @param details The {@link Comparison#getControlDetails()} or {@link Comparison#getTestDetails()}.
+     * @param type the implementation can return different details depending on the ComparisonType.
+     * @param formatXml set this to true if the Comparison was generated with {@link
+     * org.xmlunit.builder.DiffBuilder#ignoreWhitespace()} - this affects the indentation of the generated output.
+     *
+     * @return the full xml node.
+     */
     @Override
     public String getDetails(Comparison.Detail difference, ComparisonType type, boolean formatXml) {
         if (difference.getTarget() == null) {
@@ -207,7 +340,22 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         return getFullFormattedXml(difference.getTarget(), type, formatXml);
     }
 
-    private String getFullFormattedXml(final Node node, ComparisonType type, boolean formatXml) {
+    /**
+     * Formats the node using a format suitable for the node type and comparison.
+     *
+     * <p>The implementation ouputs the document prolog and start element for {@code Document} and {@code DocumentType}
+     * nodes and may elect to format the node's parent element rather than just the node depending on the node and
+     * comparison type. It delegates to {@link #appendFullDocumentHeader} or {@link #getFormattedNodeXml}.</p>
+     *
+     * @param node the node to format
+     * @param type the comparison type
+     * @param formatXml true if the Comparison was generated with {@link
+     * org.xmlunit.builder.DiffBuilder#ignoreWhitespace()} - this affects the indentation of the generated output
+     * @return the fomatted XML
+     *
+     * @since 2.4.0
+     */
+    protected String getFullFormattedXml(final Node node, ComparisonType type, boolean formatXml) {
         StringBuilder sb = new StringBuilder();
         final Node nodeToConvert;
         if (type == ComparisonType.CHILD_NODELIST_SEQUENCE) {
@@ -232,7 +380,16 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         return sb.toString().trim();
     }
 
-    private void appendFullDocumentHeader(StringBuilder sb, Document doc) {
+    /**
+     * Appends the XML declaration and DOCTYPE if present as well as the document's root element for {@link
+     * #getFullFormattedXml}.
+     *
+     * @param sb the builder to append to
+     * @param doc the document to format
+     *
+     * @since 2.4.0
+     */
+    protected void appendFullDocumentHeader(StringBuilder sb, Document doc) {
         if (appendDocumentXmlDeclaration(sb, doc)) {
             sb.append("\n");
         }
@@ -262,7 +419,17 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         }
     }
 
-    private static String getFormattedNodeXml(final Node nodeToConvert, boolean formatXml) {
+    /**
+     * Formats an node with the help of an identity XML transformation.
+     *
+     * @param nodeToConvert the node to format
+     * @param formatXml true if the Comparison was generated with {@link
+     * org.xmlunit.builder.DiffBuilder#ignoreWhitespace()} - this affects the indentation of the generated output
+     * @return the fomatted XML
+     *
+     * @since 2.4.0
+     */
+    protected String getFormattedNodeXml(final Node nodeToConvert, boolean formatXml) {
         String formattedNodeXml;
         try {
             final int numberOfBlanksToIndent = formatXml ? 2 : -1;
@@ -277,11 +444,14 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
     }
 
     /**
-     * create a default Transformer to format a XML-Node to a String.
+     * Create a default Transformer to format a XML-Node to a String.
      * 
      * @param numberOfBlanksToIndent the number of spaces which is used for indent the XML-structure
+     * @return the transformer
+     *
+     * @since 2.4.0
      */
-    private static Transformer createXmlTransformer(int numberOfBlanksToIndent) throws TransformerConfigurationException {
+    protected Transformer createXmlTransformer(int numberOfBlanksToIndent) throws TransformerConfigurationException {
         final TransformerFactory factory = TransformerFactory.newInstance();
         // as not all TransformerFactories support this feature -> catch the IllegalArgumentException
         if (numberOfBlanksToIndent >= 0) {
@@ -309,8 +479,16 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         return transformer;
     }
 
-    private static String nodeType(short type) {
-      switch(type) {
+    /**
+     * Provides a display text for the constant values of the {@link Node} class that represent node types.
+     *
+     * @param type the node type
+     * @return the display text
+     *
+     * @since 2.4.0
+     */
+    protected String nodeType(short type) {
+        switch(type) {
         case Node.ELEMENT_NODE:                return "Element";
         case Node.DOCUMENT_TYPE_NODE:          return "Document Type";
         case Node.ENTITY_NODE:                 return "Entity";
@@ -322,7 +500,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         case Node.ATTRIBUTE_NODE:              return "Attribute";
         case Node.PROCESSING_INSTRUCTION_NODE: return "Processing Instruction";
         default: break; 
-      }
-      return Short.toString(type);
+        }
+        return Short.toString(type);
     }
 }
