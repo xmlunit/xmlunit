@@ -26,6 +26,8 @@ public interface ComparisonFormatter {
      * test Node.
      * <p>
      * This is used for {@link Diff#toString()}.
+     * @param difference the comparison to describe
+     * @return a short description of the comparison
      */
     String getDescription(Comparison difference);
 
