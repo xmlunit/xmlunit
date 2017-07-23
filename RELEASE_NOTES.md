@@ -1,5 +1,7 @@
 # Release Notes
 
+## XMLUnit for Java 2.4.1 - /not released, yet/
+
 ## XMLUnit for Java 2.4.0 - /Released 2017-07-23/
 
 * made `DefaultComparisonFormatter` more subclass friendly.
