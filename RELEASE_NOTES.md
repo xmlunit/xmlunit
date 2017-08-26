@@ -2,6 +2,14 @@
 
 ## XMLUnit for Java 2.5.0 - /not released, yet/
 
+* `CommentLessSource`, `DiffBuilder#ignoreComments` and
+  `CompareMatcher#ignoreComments` now all use XSLT version 2.0
+  stylesheets in order to strip comments. New constructors and methods
+  have been added if you need a different version of XSLT (in
+  particular if you need 1.0 which used to be the default up to
+  XMLUnit 2.4.0).
+  Issue [#99](https://github.com/xmlunit/xmlunit/issues/99).
+
 ## XMLUnit for Java 2.4.0 - /Released 2017-07-23/
 
 * made `DefaultComparisonFormatter` more subclass friendly.

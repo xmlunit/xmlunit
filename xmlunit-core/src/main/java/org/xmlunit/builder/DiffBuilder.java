@@ -97,6 +97,8 @@ public class DiffBuilder {
 
     private boolean ignoreComments;
 
+    private String ignoreCommentVersion = null;
+
     private DocumentBuilderFactory documentBuilderFactory;
 
     /**
@@ -164,7 +166,23 @@ public class DiffBuilder {
      * yourself, using {@link CommentLessSource#STYLE}.</p>
      */
     public DiffBuilder ignoreComments() {
+        return ignoreCommentsUsingXSLTVersion(null);
+    }
+
+    /**
+     * Will remove all comment-Tags "&lt;!-- Comment --&gt;" from test- and control-XML before comparing.
+     *
+     * <p>Comments are ignored by applying an XSLT transformation on
+     * the source which may reduce the effect of {@link
+     * #withDocumentBuilderFactory}. This uses the {@link
+     * CommentLessSource} constructor with two arguments using {@code
+     * xsltVersion} as second argument.</p>
+     * @param xsltVersion use this version for the stylesheet
+     * @since XMLUnit 2.5.0
+     */
+    public DiffBuilder ignoreCommentsUsingXSLTVersion(String xsltVersion) {
         ignoreComments = true;
+        ignoreCommentVersion = xsltVersion;
         return this;
     }
 
@@ -386,7 +404,9 @@ public class DiffBuilder {
                 : new WhitespaceNormalizedSource(newSource);
         }
         if (ignoreComments) {
-            newSource = new CommentLessSource(newSource);
+            newSource = ignoreCommentVersion == null
+                ? new CommentLessSource(newSource)
+                : new CommentLessSource(newSource, ignoreCommentVersion);
         }
         return newSource;
     }

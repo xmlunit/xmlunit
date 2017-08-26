@@ -168,6 +168,15 @@ public final class CompareMatcher extends BaseMatcher<Object> {
     }
 
     /**
+     * @see DiffBuilder#ignoreCommentsUsingXSLTVersion()
+     * @since XMLUnit 2.5.0
+     */
+    public CompareMatcher ignoreCommentsUsingXSLTVersion(String xsltVersion) {
+        diffBuilder.ignoreCommentsUsingXSLTVersion(xsltVersion);
+        return this;
+    }
+
+    /**
      * @see DiffBuilder#withNodeMatcher(NodeMatcher)
      */
     public CompareMatcher withNodeMatcher(NodeMatcher nodeMatcher) {

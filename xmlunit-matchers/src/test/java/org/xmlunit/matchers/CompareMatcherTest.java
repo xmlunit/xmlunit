@@ -142,6 +142,20 @@ public class CompareMatcherTest {
     }
 
     @Test
+    public void testIsIdenticalTo_withIgnoreComments1_0_shouldSucceed() {
+
+        // run test:
+        assertThat("<a><!-- test --></a>", isIdenticalTo("<a></a>").ignoreCommentsUsingXSLTVersion("1.0"));
+    }
+
+    @Test
+    public void testIsIdenticalTo_withIgnoreComments2_0_shouldSucceed() {
+
+        // run test:
+        assertThat("<a><!-- test --></a>", isIdenticalTo("<a></a>").ignoreCommentsUsingXSLTVersion("2.0"));
+    }
+
+    @Test
     public void testIsIdenticalTo_withNormalizeWhitespace_shouldSucceed() {
 
         // run test:

@@ -200,6 +200,40 @@ public class DiffBuilderTest {
     }
 
     @Test
+    public void testDiff_withIgnoreComments2_0_shouldSucceed() {
+        // prepare testData
+        String controlXml = "<a><b><!-- A comment -->Test Value</b></a>";
+        String testXml = "<a><b><!-- An other comment -->Test Value</b></a>";
+
+        // run test
+        Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml).build())
+                                .withTest(Input.fromString(testXml).build())
+                                .ignoreCommentsUsingXSLTVersion("2.0")
+                                .build();
+
+        // validate result
+        Assert.assertFalse("XML similar " + myDiff.toString(), myDiff.hasDifferences());
+
+    }
+
+    @Test
+    public void testDiff_withIgnoreComments1_0_shouldSucceed() {
+        // prepare testData
+        String controlXml = "<a><b><!-- A comment -->Test Value</b></a>";
+        String testXml = "<a><b><!-- An other comment -->Test Value</b></a>";
+
+        // run test
+        Diff myDiff = DiffBuilder.compare(Input.fromString(controlXml).build())
+                                .withTest(Input.fromString(testXml).build())
+                                .ignoreCommentsUsingXSLTVersion("1.0")
+                                .build();
+
+        // validate result
+        Assert.assertFalse("XML similar " + myDiff.toString(), myDiff.hasDifferences());
+
+    }
+
+    @Test
     public void testDiff_fromCombinedSourceAndString_shouldSucceed() {
         // prepare testData
         String controlXml = "<a><b>Test Value</b></a>";
