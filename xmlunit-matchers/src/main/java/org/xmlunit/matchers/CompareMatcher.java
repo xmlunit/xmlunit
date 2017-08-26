@@ -24,6 +24,7 @@ import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.DefaultComparisonFormatter;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.DifferenceEvaluator;
+import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelector;
 import org.xmlunit.diff.NodeMatcher;
 import org.xmlunit.util.Predicate;
@@ -168,7 +169,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
     }
 
     /**
-     * @see DiffBuilder#ignoreCommentsUsingXSLTVersion()
+     * @see DiffBuilder#ignoreCommentsUsingXSLTVersion(String)
      * @since XMLUnit 2.5.0
      */
     public CompareMatcher ignoreCommentsUsingXSLTVersion(String xsltVersion) {

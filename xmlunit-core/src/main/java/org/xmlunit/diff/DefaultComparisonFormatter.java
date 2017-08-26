@@ -325,7 +325,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      *
      * <p>Delegates to {@link #getFullFormattedXml} unless the {@code Comparison.Detail}'s {@code target} is null.</p>
      *
-     * @param details The {@link Comparison#getControlDetails()} or {@link Comparison#getTestDetails()}.
+     * @param difference The {@link Comparison#getControlDetails()} or {@link Comparison#getTestDetails()}.
      * @param type the implementation can return different details depending on the ComparisonType.
      * @param formatXml set this to true if the Comparison was generated with {@link
      * org.xmlunit.builder.DiffBuilder#ignoreWhitespace()} - this affects the indentation of the generated output.

@@ -338,7 +338,7 @@ public class DiffBuilder {
 
     /**
      * Sets the {@link DocumentBuilderFactory} to use when creating a
-     * {@link Document} from the {@link Source}s to compare.
+     * {@link org.w3c.dom.Document} from the {@link Source}s to compare.
      *
      * <p>This is only used if the {@code Source}s used for control
      * and test not already are {@link

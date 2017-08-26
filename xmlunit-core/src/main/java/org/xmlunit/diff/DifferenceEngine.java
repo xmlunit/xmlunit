@@ -91,7 +91,7 @@ public interface DifferenceEngine {
      *
      * @param prefix2Uri maps from prefix to namespace URI.
      */
-    void setNamespaceContext(Map<String, String> prefix2uri);
+    void setNamespaceContext(Map<String, String> prefix2Uri);
 
     /**
      * Compares two pieces of XML and invokes the registered listeners.
