@@ -22,36 +22,68 @@ import org.xmlunit.transform.Transformation;
 /**
  * A source that is obtained from a different source by stripping all
  * comments.
+ *
+ * <p>As of XMLUnit 2.5.0 it is possible to select the XSLT version to
+ * use for the stylesheet. The default now is 2.0, it used to be 1.0
+ * and you may need to change the value if your transformer doesn't
+ * support XSLT 2.0.</p>
  */
 public final class CommentLessSource extends DOMSource {
 
-    /**
-     * Stylesheet used to strip all comments from an XML document.
-     */
-    public static final String STYLE =
-            "<stylesheet version=\"1.0\" xmlns=\"http://www.w3.org/1999/XSL/Transform\">"
+    private static final String DEFAULT_VERSION = "2.0";
+
+    private static final String STYLE_TEMPLATE =
+            "<stylesheet version=\"%1$s\" xmlns=\"http://www.w3.org/1999/XSL/Transform\">"
             + "<template match=\"node()[not(self::comment())]|@*\"><copy>"
             + "<apply-templates select=\"node()[not(self::comment())]|@*\"/>"
             + "</copy></template>"
             + "</stylesheet>";
 
     /**
+     * Stylesheet used to strip all comments from an XML document.
+     */
+    public static final String STYLE = getStylesheetContent(DEFAULT_VERSION);
+
+    /**
      * Creates a new source that consists of the given source with all
-     * comments removed.
+     * comments removed using an XSLT stylesheet of version 2.0.
      *
      * @param originalSource the original source
      */
     public CommentLessSource(Source originalSource) {
+        this(originalSource, DEFAULT_VERSION);
+    }
+
+    /**
+     * Creates a new source that consists of the given source with all
+     * comments removed.
+     *
+     * @param originalSource the original source
+     * @param xsltVersion use this version for the stylesheet
+     * @since XMLUnit 2.5.0
+     */
+    public CommentLessSource(Source originalSource, String xsltVersion) {
         super();
         if (originalSource == null) {
             throw new IllegalArgumentException("source must not be null");
         }
+        if (xsltVersion == null) {
+            throw new IllegalArgumentException("xsltVersion must not be null");
+        }
         Transformation t = new Transformation(originalSource);
-        t.setStylesheet(getStylesheet());
+        t.setStylesheet(getStylesheet(xsltVersion));
         setNode(t.transformToDocument());
     }
 
-    private static Source getStylesheet() {
-        return new StreamSource(new java.io.StringReader(STYLE));
+    private static Source getStylesheet(String xsltVersion) {
+        return new StreamSource(new java.io.StringReader(getStylesheetContentCached(xsltVersion)));
+    }
+
+    private static String getStylesheetContentCached(String xsltVersion) {
+        return DEFAULT_VERSION.equals(xsltVersion) ? STYLE : getStylesheetContent(xsltVersion);
+    }
+
+    private static String getStylesheetContent(String xsltVersion) {
+        return String.format(STYLE_TEMPLATE, xsltVersion);
     }
 }

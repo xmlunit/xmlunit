@@ -14,24 +14,42 @@
 package org.xmlunit.input;
 
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Collection;
 import javax.xml.transform.stream.StreamSource;
 import org.xmlunit.util.Convert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import static org.junit.Assert.*;
 
+@RunWith(Parameterized.class)
 public class CommentLessSourceTest {
 
-    @Test public void stripCommentsAtDifferentLevels() {
-        StreamSource s =
-            new StreamSource(new StringReader("<?xml version='1.0'?>"
-                                              + "<!-- comment 1 -->"
-                                              + "<foo>"
-                                              + "<!-- comment 2 -->"
-                                              + "</foo>"));
-        CommentLessSource cls = new CommentLessSource(s);
+    @Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[] { null },
+                             new Object[] { "1.0" },
+                             new Object[] { "2.0" });
+    }
+
+    private final String xsltVersion;
+
+    public CommentLessSourceTest(String xsltVersion) {
+        this.xsltVersion = xsltVersion;
+    }
+
+    @Test
+    public void stripCommentsAtDifferentLevels() {
+        CommentLessSource cls = getSource("<?xml version='1.0'?>"
+                                          + "<!-- comment 1 -->"
+                                          + "<foo>"
+                                          + "<!-- comment 2 -->"
+                                          + "</foo>");
         Document d = Convert.toDocument(cls);
         assertEquals(1, d.getChildNodes().getLength());
         assertTrue(d.getChildNodes().item(0) instanceof Element);
@@ -41,6 +59,17 @@ public class CommentLessSourceTest {
     @Test(expected = IllegalArgumentException.class)
     public void cantWrapNullSource() {
         new CommentLessSource(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void cantUseNullVersion() {
+        new CommentLessSource(new StreamSource(new StringReader("foo")), null);
+    }
+
+    private CommentLessSource getSource(String s) {
+        StreamSource src = s == null ? null : new StreamSource(new StringReader(s));
+        return xsltVersion == null ? new CommentLessSource(src)
+            : new CommentLessSource(src, xsltVersion);
     }
 
 }
