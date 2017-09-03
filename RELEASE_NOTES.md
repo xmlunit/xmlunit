@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.5.0 - /not released, yet/
+## XMLUnit for Java 2.5.0 - /Released 2017-09-03/
 
 * `CommentLessSource`, `DiffBuilder#ignoreComments` and
   `CompareMatcher#ignoreComments` now all use XSLT version 2.0
