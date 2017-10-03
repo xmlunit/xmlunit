@@ -76,6 +76,7 @@
     <module>xmlunit-core</module>
     <module>xmlunit-matchers</module>
     <module>xmlunit-legacy</module>
+    <module>xmlunit-exceptional-node-matchers</module>
   </modules>
 
   <developers>
