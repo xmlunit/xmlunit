@@ -105,12 +105,6 @@ public class PlaceholderDifferenceEvaluatorTest {
         Diff diff = DiffBuilder.compare(control).withTest(test)
                 .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
 
-        Iterator it = diff.getDifferences().iterator();
-        while (it.hasNext()) {
-            Difference difference = (Difference) it.next();
-            System.out.println(difference);
-        }
-
         assertFalse(diff.hasDifferences());
     }
 
