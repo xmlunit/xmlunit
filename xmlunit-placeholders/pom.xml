@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>org.xmlunit:xmlunit-exceptional-node-matchers</name>
-    <artifactId>xmlunit-exceptional-node-matchers</artifactId>
+    <name>org.xmlunit:xmlunit-placeholders</name>
+    <artifactId>xmlunit-placeholders</artifactId>
 
     <dependencies>
         <dependency>

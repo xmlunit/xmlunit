@@ -1,4 +1,4 @@
-package org.xmlunit.exnm;
+package org.xmlunit.placeholder;
 
 import org.w3c.dom.Node;
 import org.xmlunit.diff.Comparison;
@@ -7,6 +7,11 @@ import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DifferenceEvaluator;
 
 /**
+ * This class is used to add placeholder feature to XML comparison. To use it, just add it with DiffBuilder like below <br><br>
+ * <code>Diff diff = DiffBuilder.compare(control).withTest(test).withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();</code><br><br>
+ * Supported scenarios are demonstrated in the unit tests (PlaceholderDifferenceEvaluatorTest).<br><br>
+ * This class is <b>experimental/unstable</b>, hence the API or supported scenarios could change in future versions.<br><br>
+ *
  * Created by Zheng on 3/10/2017.
  */
 public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {

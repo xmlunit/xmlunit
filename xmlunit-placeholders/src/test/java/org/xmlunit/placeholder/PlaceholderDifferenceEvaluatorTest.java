@@ -1,4 +1,4 @@
-package org.xmlunit.exnm;
+package org.xmlunit.placeholder;
 
 import org.junit.Test;
 import org.xmlunit.XMLUnitException;
@@ -12,7 +12,7 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
 /**
- * Not testing the {@link PlaceholderDifferenceEvaluator} class directly, but testing it via the {@link DiffBuilder} and {@link Diff}
+ * Not testing the {@link PlaceholderDifferenceEvaluator} class directly, but testing it via the {@link DiffBuilder} and {@link Diff}. <br><br>
  * Created by Zheng on 3/10/2017.
  */
 public class PlaceholderDifferenceEvaluatorTest {
