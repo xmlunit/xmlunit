@@ -223,6 +223,10 @@
                 <title>XMLUnit Legacy ${project.version}</title>
                 <packages>org.custommonkey.xmlunit*</packages>
               </group>
+              <group>
+                <title>XMLUnit Placeholders ${project.version}</title>
+                <packages>org.xmlunit.placeholder*</packages>
+              </group>
             </groups>
             <quiet>true</quiet>
             <source>${maven.compile.source}</source>
