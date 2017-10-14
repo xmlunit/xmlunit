@@ -13,7 +13,6 @@ import static org.junit.Assert.*;
 
 /**
  * Not testing the {@link PlaceholderDifferenceEvaluator} class directly, but testing it via the {@link DiffBuilder} and {@link Diff}. <br><br>
- * Created by Zheng on 3/10/2017.
  */
 public class PlaceholderDifferenceEvaluatorTest {
     @Test

@@ -12,8 +12,6 @@ import org.xmlunit.diff.DifferenceEvaluator;
  * Supported scenarios are demonstrated in the unit tests (PlaceholderDifferenceEvaluatorTest).<br><br>
  * Default delimiters for placeholder are <code>${</code> and <code>}</code>. To use custom delimiters (in regular expression), create instance with the <code>PlaceholderDifferenceEvaluator(String placeholderOpeningDelimiterRegex, String placeholderClosingDelimiterRegex)</code> constructor. <br><br>
  * This class is <b>experimental/unstable</b>, hence the API or supported scenarios could change in future versions.<br><br>
- *
- * Created by Zheng on 3/10/2017.
  */
 public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
     private static final String PLACEHOLDER_OPENING_DELIMITER_REGEX_DEFAULT = "\\$\\{";
