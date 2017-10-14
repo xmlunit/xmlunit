@@ -10,12 +10,45 @@ import org.xmlunit.diff.DifferenceEvaluator;
  * This class is used to add placeholder feature to XML comparison. To use it, just add it with DiffBuilder like below <br><br>
  * <code>Diff diff = DiffBuilder.compare(control).withTest(test).withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();</code><br><br>
  * Supported scenarios are demonstrated in the unit tests (PlaceholderDifferenceEvaluatorTest).<br><br>
+ * Default delimiters for placeholder are <code>${</code> and <code>}</code>. To use custom delimiters (in regular expression), create instance with the <code>PlaceholderDifferenceEvaluator(String placeholderOpeningDelimiterRegex, String placeholderClosingDelimiterRegex)</code> constructor. <br><br>
  * This class is <b>experimental/unstable</b>, hence the API or supported scenarios could change in future versions.<br><br>
  *
  * Created by Zheng on 3/10/2017.
  */
 public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
-    private static final String PLACEHOLDER_REGEX_IGNORE = "\\$\\{[\\s]*xmlunit\\.ignore[\\s]*}";
+    private static final String PLACEHOLDER_OPENING_DELIMITER_REGEX_DEFAULT = "\\$\\{";
+    private static final String PLACEHOLDER_CLOSING_DELIMITER_REGEX_DEFAULT = "}";
+    private static final String PLACEHOLDER_NAME_REGEX_IGNORE = "xmlunit\\.ignore";
+    private static final String WHITESPACES_REGEX = "[\\s]*";
+    private String placeholderRegexIgnore;
+
+    public PlaceholderDifferenceEvaluator() {
+        this.placeholderRegexIgnore = constructIgnorePlaceholder(
+                PLACEHOLDER_OPENING_DELIMITER_REGEX_DEFAULT, PLACEHOLDER_CLOSING_DELIMITER_REGEX_DEFAULT);
+    }
+
+    /**
+     * Null, empty or whitespaces string argument is omitted. Otherwise, argument is trimmed.
+     * @param placeholderOpeningDelimiterRegex
+     * @param placeholderClosingDelimiterRegex
+     */
+    public PlaceholderDifferenceEvaluator(String placeholderOpeningDelimiterRegex, String placeholderClosingDelimiterRegex) {
+        String openingDelimiterRegex = PLACEHOLDER_OPENING_DELIMITER_REGEX_DEFAULT;
+        String closingDelimiterRegex = PLACEHOLDER_CLOSING_DELIMITER_REGEX_DEFAULT;
+        if (placeholderOpeningDelimiterRegex != null && !placeholderOpeningDelimiterRegex.matches(WHITESPACES_REGEX)) {
+            openingDelimiterRegex = placeholderOpeningDelimiterRegex.trim();
+        }
+        if (placeholderClosingDelimiterRegex != null && !placeholderClosingDelimiterRegex.matches(WHITESPACES_REGEX)) {
+            closingDelimiterRegex = placeholderClosingDelimiterRegex.trim();
+        }
+
+        this.placeholderRegexIgnore = constructIgnorePlaceholder(openingDelimiterRegex, closingDelimiterRegex);
+    }
+
+    private String constructIgnorePlaceholder(String openingDelimiterRegex, String closingDelimiterRegex) {
+        return openingDelimiterRegex + WHITESPACES_REGEX + PLACEHOLDER_NAME_REGEX_IGNORE + WHITESPACES_REGEX +
+                closingDelimiterRegex;
+    }
 
     public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
         Comparison.Detail controlDetails = comparison.getControlDetails();
@@ -49,11 +82,11 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
     }
 
     private boolean isIgnorePlaceholder(String text) {
-        String textWithIgnorePlaceholderRemoved = text.replaceFirst(PLACEHOLDER_REGEX_IGNORE, "");
+        String textWithIgnorePlaceholderRemoved = text.replaceFirst(placeholderRegexIgnore, "");
         if (textWithIgnorePlaceholderRemoved.length() == 0) {    //  the ignore placeholder is all that in the text
             return true;
         } else if (textWithIgnorePlaceholderRemoved.length() != text.length()) {    //  there is other content than the ignore placeholder in the text
-            throw new RuntimeException("${xmlunit.ignore} must exclusively occupy the text node.");
+            throw new RuntimeException("The 'ignore' placeholder must exclusively occupy the text node.");
         } else {                         //  there is no ignore placeholder in the text
             return false;
         }

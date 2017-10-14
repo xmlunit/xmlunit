@@ -89,6 +89,16 @@ public class PlaceholderDifferenceEvaluatorTest {
     }
 
     @Test
+    public void hasIgnorePlaceholder_CustomDelimiters_Equal_NoWhitespaceInPlaceholder() throws Exception {
+        String control = "<elem1><elem11>#{xmlunit.ignore}</elem11></elem1>";
+        String test = "<elem1><elem11>abc</elem11></elem1>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator("#\\{", null)).build();
+
+        assertFalse(diff.hasDifferences());
+    }
+
+    @Test
     public void hasIgnorePlaceholder_Equal_StartAndEndWhitespacesInPlaceholder() throws Exception {
         String control = "<elem1><elem11>${  xmlunit.ignore  }</elem11></elem1>";
         String test = "<elem1><elem11>abc</elem11></elem1>";
@@ -119,7 +129,7 @@ public class PlaceholderDifferenceEvaluatorTest {
             diffBuilder.build();
             fail();
         } catch (XMLUnitException e) {
-            assertEquals("${xmlunit.ignore} must exclusively occupy the text node.", e.getCause().getMessage());
+            assertEquals("The 'ignore' placeholder must exclusively occupy the text node.", e.getCause().getMessage());
         }
     }
 
