@@ -28,11 +28,28 @@ import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.util.Nodes;
 
 /**
- * This class is used to add placeholder feature to XML comparison. To use it, just add it with DiffBuilder like below <br><br>
- * <code>Diff diff = DiffBuilder.compare(control).withTest(test).withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();</code><br><br>
- * Supported scenarios are demonstrated in the unit tests (PlaceholderDifferenceEvaluatorTest).<br><br>
- * Default delimiters for placeholder are <code>${</code> and <code>}</code>. To use custom delimiters (in regular expression), create instance with the <code>PlaceholderDifferenceEvaluator(String placeholderOpeningDelimiterRegex, String placeholderClosingDelimiterRegex)</code> constructor. <br><br>
- * This class is <b>experimental/unstable</b>, hence the API or supported scenarios could change in future versions.<br><br>
+ * This class is used to add placeholder feature to XML comparison.
+ *
+ * <p><b>This class and the whole module are considered experimental
+ * and any API may change between releases of XMLUnit.</b></p>
+ *
+ * <p>To use it, just add it with {@link
+ * org.xmlunit.builder.DiffBuilder} like below</p>
+ *
+ * <pre>
+ * Diff diff = DiffBuilder.compare(control).withTest(test).withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+ * </pre>
+ *
+ * <p>Supported scenarios are demonstrated in the unit tests
+ * (PlaceholderDifferenceEvaluatorTest).</p>
+ *
+ * <p>Default delimiters for placeholder are <code>${</code> and
+ * <code>}</code>. To use custom delimiters (in regular expression),
+ * create instance with the
+ * <code>PlaceholderDifferenceEvaluator(String
+ * placeholderOpeningDelimiterRegex, String
+ * placeholderClosingDelimiterRegex)</code> constructor.</p>
+ *
  * @since 2.5.1
  */
 public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {

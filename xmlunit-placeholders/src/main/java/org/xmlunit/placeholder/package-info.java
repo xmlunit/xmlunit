@@ -17,18 +17,42 @@
  * the test engine by using {@code ${xmlunit.KEYWORD}} sequences
  * inside the control document.
  *
- * <p>You configure the difference engine to use {@link
- * PlaceholderDifferenceEvaluator} and it will act on the supported
- * keywords.</p>
- *
- * <p>Currently supported are:</p>
- *
- * <ul>
- * <li>{@code ${xmlunit.ignore}} which makes XMLUnit ignore the element containing it completely.</li>
- * </ul>
- *
  * <p><b>This package and the whole module are considered experimental
  * and any API may change between releases of XMLUnit.</b></p>
+ *
+ * <p>The placeholder feature allows a placeholder sequence of {@code
+ * ${xmlunit.KEYWORD}} to be used as nested text in elements or as
+ * attribute values of the control document and trigger special
+ * handling based on the keyword.</p>
+ *
+ * <p>The "special handling" is controlled by an instance of {@link
+ * PlaceholderHandler} per keyword. The class {@link
+ * PlaceholderDifferenceEvaluator} loads all implementations via
+ * {@code java.util.ServiceLoader} so it is possible to extend the set
+ * of handlers via your own modules.</p>
+ *
+ * <p>Keywords currently supported by built-in handlers are:</p>
+ *
+ * <ul>
+ *
+ * <li>{@code ${xmlunit.ignore}} which makes XMLUnit ignore the nested
+ * text or attribute completely. This is handled by {@link
+ * IgnorePlaceholderHandler}.</li>
+ *
+ * </ul>
+ *
+ * <p>The default delimiters of <code>${</code> and <code>}</code> can
+ * be overwritten using custom regular expressions.</p>
+ *
+ * <p>The easiest way to activate the placeholder feature is to use
+ * one of the methods in {@link PlaceholderSupport} to add it to a
+ * {@link org.xmlunit.builder.DiffBuilder} or {@code
+ * org.xmlunit.matchers.CompareMatcher} instance. The alternative
+ * approach is to create an instance of {@link
+ * PlaceholderDifferenceEvaluator} as a {@link
+ * org.xmlunit.diff.DifferenceEvaluator} and add it to the builder
+ * yourself.</p>
+ *
  * @since 2.5.1
  */
 package org.xmlunit.placeholder;

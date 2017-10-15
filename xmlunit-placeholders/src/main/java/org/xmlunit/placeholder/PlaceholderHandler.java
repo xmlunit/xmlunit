@@ -19,6 +19,9 @@ import org.xmlunit.diff.ComparisonResult;
  * Interface implemented by classes that are responsible for a
  * placeholder keyword.
  *
+ * <p><b>This class and the whole module are considered experimental
+ * and any API may change between releases of XMLUnit.</b></p>
+ *
  * <p>Implementations are expected to be thread-safe, the {@link
  * #evaluate} method may be invoked by multiple threads in
  * parallel.</p>

@@ -23,9 +23,14 @@ import org.xmlunit.diff.DifferenceEvaluators;
  * org.xmlunit.builder.DiffBuilder} or {@code
  * org.xmlunit.matchers.CompareMatcher}.
  *
+ * <p><b>This class and the whole module are considered experimental
+ * and any API may change between releases of XMLUnit.</b></p>
+ *
  * @since 2.5.1
  */
 public class PlaceholderSupport {
+    private PlaceholderSupport() { /* no instances */
+
     /**
      * Adds placeholder support to a {@link DifferenceEngineConfigurer}.
      * @param configurer the configurer to add support to
@@ -60,7 +65,9 @@ public class PlaceholderSupport {
      * Adds placeholder support to a {@link DifferenceEngineConfigurer} considering an additional {@link DifferenceEvaluator}.
      *
      * @param configurer the configurer to add support to
-     * @param evaluator the additional evaluator - payload support is chained after the given evaluator
+     * @param evaluator the additional evaluator - payload support is
+     * {@link DifferenceEvaluators#chain chain}ed after the given
+     * evaluator
      */
     public static <D extends DifferenceEngineConfigurer<D>>
         D withPlaceholderSupportChainedAfter(D configurer, DifferenceEvaluator evaluator) {
@@ -79,7 +86,9 @@ public class PlaceholderSupport {
      * the closing delimiter of placeholder, defaults to {@link
      * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX}
      * if the parameter is null or blank
-     * @param evaluator the additional evaluator - payload support is chained after the given evaluator
+     * @param evaluator the additional evaluator - payload support is
+     * {@link DifferenceEvaluators#chain chain}ed after the given
+     * evaluator
      */
     public static <D extends DifferenceEngineConfigurer<D>>
         D withPlaceholderSupportUsingDelimitersChainedAfter(D configurer, String placeholderOpeningDelimiterRegex,

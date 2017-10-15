@@ -18,8 +18,12 @@ import org.xmlunit.diff.ComparisonResult;
 /**
  * Handler for the "ignore" placeholder keyword.
  *
+ * <p><b>This class and the whole module are considered experimental
+ * and any API may change between releases of XMLUnit.</b></p>
+ *
  * <p>Text nodes or attributes containing {@code ${xmlunit.ignore}}
  * will be ignored.</p>
+ * @since 2.5.1
  */
 public class IgnorePlaceholderHandler implements PlaceholderHandler {
     private static final String PLACEHOLDER_NAME_IGNORE = "ignore";
