@@ -13,6 +13,8 @@
 */
 package org.xmlunit.placeholder;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,7 +38,14 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
     public static final String PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX = Pattern.quote("${");
     public static final String PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX = Pattern.quote("}");
     private static final String PLACEHOLDER_PREFIX_REGEX = Pattern.quote("xmlunit.");
-    private static final String PLACEHOLDER_NAME_IGNORE = "ignore";
+    private static final Map<String, PlaceholderHandler> KNOWN_HANDLERS;
+
+    static {
+        Map<String, PlaceholderHandler> m = new HashMap<String, PlaceholderHandler>();
+        IgnorePlaceholderHandler h = new IgnorePlaceholderHandler();
+        m.put(h.getKeyword(), h);
+        KNOWN_HANDLERS = Collections.unmodifiableMap(m);
+    }
 
     private final Pattern placeholderRegex;
 
@@ -97,7 +106,7 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
             return evaluateConsideringPlaceholders((String) controlDetails.getValue(),
                 (String) testDetails.getValue(), outcome);
 
-        // two "test document has no attribute but control document has"
+        // "test document has no attribute but control document has"
         } else if (isMissingAttributeDifference(comparison)) {
             return evaluateMissingAttributeConsideringPlaceholders(comparison, outcome);
 
@@ -208,11 +217,10 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
     }
 
     private boolean isKnown(String keyword) {
-        return PLACEHOLDER_NAME_IGNORE.equals(keyword);
+        return KNOWN_HANDLERS.containsKey(keyword);
     }
 
     private ComparisonResult evaluate(String keyword, String testText) {
-        // ignore placeholder
-        return ComparisonResult.EQUAL;
+        return KNOWN_HANDLERS.get(keyword).evaluate(testText);
     }
 }
