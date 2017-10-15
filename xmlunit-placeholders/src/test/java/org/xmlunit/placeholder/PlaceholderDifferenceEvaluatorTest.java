@@ -101,6 +101,30 @@ public class PlaceholderDifferenceEvaluatorTest {
     }
 
     @Test
+    public void hasIgnorePlaceholder_Equal_NoWhitespaceInPlaceholder_CDATA_Control() throws Exception {
+        String control = "<elem1><elem11><![CDATA[${xmlunit.ignore}]]></elem11></elem1>";
+        String test = "<elem1><elem11>abc</elem11></elem1>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+            .withDifferenceEvaluator(DifferenceEvaluators.chain(
+                DifferenceEvaluators.Default, new PlaceholderDifferenceEvaluator()))
+            .build();
+
+        assertFalse(diff.toString(), diff.hasDifferences());
+    }
+
+    @Test
+    public void hasIgnorePlaceholder_Equal_NoWhitespaceInPlaceholder_CDATA_TEST() throws Exception {
+        String control = "<elem1><elem11>${xmlunit.ignore}</elem11></elem1>";
+        String test = "<elem1><elem11><![CDATA[abc]]></elem11></elem1>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+            .withDifferenceEvaluator(DifferenceEvaluators.chain(
+                DifferenceEvaluators.Default, new PlaceholderDifferenceEvaluator()))
+            .build();
+
+        assertFalse(diff.hasDifferences());
+    }
+
+    @Test
     public void hasIgnorePlaceholder_CustomDelimiters_Equal_NoWhitespaceInPlaceholder() throws Exception {
         String control = "<elem1><elem11>#{xmlunit.ignore}</elem11></elem1>";
         String test = "<elem1><elem11>abc</elem11></elem1>";

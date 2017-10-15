@@ -71,6 +71,7 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
         Comparison.Detail controlDetails = comparison.getControlDetails();
         Node controlTarget = controlDetails.getTarget();
         Comparison.Detail testDetails = comparison.getTestDetails();
+        Node testTarget = testDetails.getTarget();
 
         // comparing textual content of elements
         if (comparison.getType() == ComparisonType.TEXT_VALUE) {
@@ -90,6 +91,12 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
             String controlNodeValue = controlTarget.getNodeValue();
             return evaluateConsideringPlaceholders(controlNodeValue, null, outcome);
 
+        // may be comparing TEXT to CDATA
+        } else if (comparison.getType() == ComparisonType.NODE_TYPE
+                   && isTextLikeNode(controlTarget.getNodeType())
+                   && isTextLikeNode(testTarget.getNodeType())) {
+            return evaluateConsideringPlaceholders(controlTarget.getNodeValue(), testTarget.getNodeValue(), outcome);
+
         // default, don't apply any placeholders at all
         } else {
             return outcome;
@@ -97,7 +104,7 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
     }
 
     private boolean isTextLikeNode(short nodeType) {
-        return nodeType == Node.TEXT_NODE;
+        return nodeType == Node.TEXT_NODE || nodeType == Node.CDATA_SECTION_NODE;
     }
 
     private ComparisonResult evaluateConsideringPlaceholders(String controlText, String testText,
