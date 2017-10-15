@@ -60,7 +60,7 @@ import java.util.Map;
  * assertFalse(&quot;XML similar &quot; + myDiff.toString(), myDiff.hasDifferences());
  * </pre>
  */
-public class DiffBuilder {
+public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
 
     private static final ComparisonResult[] CHECK_FOR_SIMILAR = new ComparisonResult[] {
         ComparisonResult.DIFFERENT};
@@ -196,6 +196,7 @@ public class DiffBuilder {
      * 
      * @see org.xmlunit.diff.DifferenceEngine#setNodeMatcher(NodeMatcher)
      */
+    @Override
     public DiffBuilder withNodeMatcher(final NodeMatcher nodeMatcher) {
         this.nodeMatcher = nodeMatcher;
         return this;
@@ -217,6 +218,7 @@ public class DiffBuilder {
      *         .build();
      * </pre>
      */
+    @Override
     public DiffBuilder withDifferenceEvaluator(final DifferenceEvaluator differenceEvaluator) {
         this.differenceEvaluator = differenceEvaluator;
         return this;
@@ -232,27 +234,30 @@ public class DiffBuilder {
      *      .build();
      * </pre>
      */
+    @Override
     public DiffBuilder withComparisonController(final ComparisonController comparisonController) {
         this.comparisonController = comparisonController;
         return this;
     }
 
     /**
-     * Registers a listener that is notified of each comparison.
+     * Registers listeners that are notified of each comparison.
      * 
      * @see org.xmlunit.diff.DifferenceEngine#addComparisonListener(ComparisonListener)
      */
+    @Override
     public DiffBuilder withComparisonListeners(final ComparisonListener... comparisonListeners) {
         this.comparisonListeners.addAll(Arrays.asList(comparisonListeners));
         return this;
     }
 
     /**
-     * Registers a listener that is notified of each comparison with
+     * Registers listeners that are notified of each comparison with
      * outcome other than {@link ComparisonResult#EQUAL}.
      * 
      * @see org.xmlunit.diff.DifferenceEngine#addDifferenceListener(ComparisonListener)
      */
+    @Override
     public DiffBuilder withDifferenceListeners(final ComparisonListener... comparisonListeners) {
         this.differenceListeners.addAll(Arrays.asList(comparisonListeners));
         return this;
@@ -294,6 +299,7 @@ public class DiffBuilder {
      *
      * @param prefix2Uri mapping between prefix and namespace URI
      */
+    @Override
     public DiffBuilder withNamespaceContext(Map<String, String> prefix2Uri) {
         namespaceContext = prefix2Uri;
         return this;
@@ -311,6 +317,7 @@ public class DiffBuilder {
      * If you want to suppress comparison of them you'll need to
      * implement {@link DifferenceEvaluator}.</p>
      */
+    @Override
     public DiffBuilder withAttributeFilter(Predicate<Attr> attributeFilter) {
         this.attributeFilter = attributeFilter;
         return this;
@@ -323,6 +330,7 @@ public class DiffBuilder {
      * the comparison.  By default nodes that are not document types
      * are considered.</p>
      */
+    @Override
     public DiffBuilder withNodeFilter(Predicate<Node> nodeFilter) {
         this.nodeFilter = nodeFilter;
         return this;
@@ -331,6 +339,7 @@ public class DiffBuilder {
     /**
      * Sets a non-default formatter for the differences found.
      */
+    @Override
     public DiffBuilder withComparisonFormatter(ComparisonFormatter formatter) {
         this.formatter = formatter;
         return this;

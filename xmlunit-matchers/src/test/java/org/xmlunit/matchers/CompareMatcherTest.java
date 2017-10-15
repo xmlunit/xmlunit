@@ -365,6 +365,11 @@ public class CompareMatcherTest {
         }
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void cantSetComparisonController() {
+        isSimilarTo("<foo/>").withComparisonController(null);
+    }
+
     public void expect(Class<? extends Throwable> type) {
         if (letExceptionTestFail) return;
         thrown.expect(type);

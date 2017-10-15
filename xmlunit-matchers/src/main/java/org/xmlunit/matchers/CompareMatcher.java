@@ -15,8 +15,10 @@
 package org.xmlunit.matchers;
 
 import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.builder.DifferenceEngineConfigurer;
 import org.xmlunit.builder.Input;
 import org.xmlunit.diff.Comparison;
+import org.xmlunit.diff.ComparisonController;
 import org.xmlunit.diff.ComparisonControllers;
 import org.xmlunit.diff.ComparisonFormatter;
 import org.xmlunit.diff.ComparisonListener;
@@ -79,7 +81,8 @@ import org.w3c.dom.Node;
  * assertThat(test, isMyProjSimilarTo(controlFile));
  * </pre>
  */
-public final class CompareMatcher extends BaseMatcher<Object> {
+public final class CompareMatcher extends BaseMatcher<Object>
+    implements DifferenceEngineConfigurer<CompareMatcher> {
 
     private static final Logger LOGGER = Logger.getLogger(CompareMatcher.class.getName());
 
@@ -180,6 +183,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
     /**
      * @see DiffBuilder#withNodeMatcher(NodeMatcher)
      */
+    @Override
     public CompareMatcher withNodeMatcher(NodeMatcher nodeMatcher) {
         diffBuilder.withNodeMatcher(nodeMatcher);
         return this;
@@ -188,6 +192,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
     /**
      * @see DiffBuilder#withDifferenceEvaluator(DifferenceEvaluator)
      */
+    @Override
     public CompareMatcher withDifferenceEvaluator(DifferenceEvaluator differenceEvaluator) {
         diffBuilder.withDifferenceEvaluator(differenceEvaluator);
         return this;
@@ -196,6 +201,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
     /**
      * @see DiffBuilder#withComparisonListeners(ComparisonListener...)
      */
+    @Override
     public CompareMatcher withComparisonListeners(ComparisonListener... comparisonListeners) {
         diffBuilder.withComparisonListeners(comparisonListeners);
         return this;
@@ -204,6 +210,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
     /**
      * @see DiffBuilder#withDifferenceListeners(ComparisonListener...)
      */
+    @Override
     public CompareMatcher withDifferenceListeners(ComparisonListener... comparisonListeners) {
         diffBuilder.withDifferenceListeners(comparisonListeners);
         return this;
@@ -214,6 +221,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
      *
      * @since XMLUnit 2.1.0
      */
+    @Override
     public CompareMatcher withNamespaceContext(Map<String, String> prefix2Uri) {
         diffBuilder.withNamespaceContext(prefix2Uri);
         return this;
@@ -222,6 +230,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
     /**
      * @see DiffBuilder#withAttributeFilter
      */
+    @Override
     public CompareMatcher withAttributeFilter(Predicate<Attr> attributeFilter) {
         diffBuilder.withAttributeFilter(attributeFilter);
         return this;
@@ -230,6 +239,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
     /**
      * @see DiffBuilder#withNodeFilter
      */
+    @Override
     public CompareMatcher withNodeFilter(Predicate<Node> nodeFilter) {
         diffBuilder.withNodeFilter(nodeFilter);
         return this;
@@ -256,6 +266,7 @@ public final class CompareMatcher extends BaseMatcher<Object> {
     /**
      * Use a custom Formatter for the Error Messages. The defaultFormatter is {@link DefaultComparisonFormatter}.
      */
+    @Override
     public CompareMatcher withComparisonFormatter(ComparisonFormatter comparisonFormatter) {
         this.comparisonFormatter = comparisonFormatter;
         return this;
@@ -268,6 +279,16 @@ public final class CompareMatcher extends BaseMatcher<Object> {
     public CompareMatcher withDocumentBuilderFactory(DocumentBuilderFactory f) {
         diffBuilder.withDocumentBuilderFactory(f);
         return this;
+    }
+
+    /**
+     * Throws an exception as you the {@link ComparisonController} is
+     * completely determined by the factory method used.
+     * @since XMLUnit 2.5.1
+     */
+    @Override
+    public CompareMatcher withComparisonController(final ComparisonController comparisonController) {
+        throw new UnsupportedOperationException("Can't set ComparisonController with CompareMatcher");
     }
 
     @Override
