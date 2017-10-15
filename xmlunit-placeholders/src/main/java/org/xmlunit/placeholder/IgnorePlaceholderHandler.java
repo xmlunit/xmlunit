@@ -15,7 +15,13 @@ package org.xmlunit.placeholder;
 
 import org.xmlunit.diff.ComparisonResult;
 
-class IgnorePlaceholderHandler implements PlaceholderHandler {
+/**
+ * Handler for the "ignore" placeholder keyword.
+ *
+ * <p>Text nodes or attributes containing {@code ${xmlunit.ignore}}
+ * will be ignored.</p>
+ */
+public class IgnorePlaceholderHandler implements PlaceholderHandler {
     private static final String PLACEHOLDER_NAME_IGNORE = "ignore";
 
     @Override

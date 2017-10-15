@@ -16,6 +16,7 @@ package org.xmlunit.placeholder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
@@ -42,8 +43,9 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
 
     static {
         Map<String, PlaceholderHandler> m = new HashMap<String, PlaceholderHandler>();
-        IgnorePlaceholderHandler h = new IgnorePlaceholderHandler();
-        m.put(h.getKeyword(), h);
+        for (PlaceholderHandler h : ServiceLoader.load(PlaceholderHandler.class)) {
+            m.put(h.getKeyword(), h);
+        }
         KNOWN_HANDLERS = Collections.unmodifiableMap(m);
     }
 
