@@ -51,18 +51,25 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
 
     private final Pattern placeholderRegex;
 
+    /**
+     * Creates a PlaceholderDifferenceEvaluator with default
+     * delimiters {@link #PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX}
+     * and {@link #PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX}.
+     */
     public PlaceholderDifferenceEvaluator() {
         this(null, null);
     }
 
     /**
-     * Null, empty or whitespaces string argument is omitted. Otherwise, argument is trimmed.
-     * @param placeholderOpeningDelimiterRegex opening delimiter of
-     * placeholder, defaults to {@link
-     * #PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX}
-     * @param placeholderClosingDelimiterRegex closing delimiter of
-     * placeholder, defaults to {@link
-     * #PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX}
+     * Creates a PlaceholderDifferenceEvaluator with custom delimiters.
+     * @param placeholderOpeningDelimiterRegex regular expression for
+     * the opening delimiter of placeholder, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX}
+     * if the parameter is null or blank
+     * @param placeholderClosingDelimiterRegex regular expression for
+     * the closing delimiter of placeholder, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX}
+     * if the parameter is null or blank
      */
     public PlaceholderDifferenceEvaluator(String placeholderOpeningDelimiterRegex,
                                           String placeholderClosingDelimiterRegex) {
