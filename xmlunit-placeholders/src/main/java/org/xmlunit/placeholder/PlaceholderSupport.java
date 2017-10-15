@@ -29,7 +29,7 @@ import org.xmlunit.diff.DifferenceEvaluators;
  * @since 2.5.1
  */
 public class PlaceholderSupport {
-    private PlaceholderSupport() { /* no instances */
+    private PlaceholderSupport() { /* no instances */ }
 
     /**
      * Adds placeholder support to a {@link DifferenceEngineConfigurer}.
