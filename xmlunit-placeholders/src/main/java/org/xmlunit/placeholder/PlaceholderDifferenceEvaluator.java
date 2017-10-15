@@ -70,6 +70,10 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
     }
 
     public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
+        if (outcome == ComparisonResult.EQUAL) {
+            return outcome;
+        }
+
         Comparison.Detail controlDetails = comparison.getControlDetails();
         Node controlTarget = controlDetails.getTarget();
         Comparison.Detail testDetails = comparison.getTestDetails();
