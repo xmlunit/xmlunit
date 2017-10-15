@@ -169,4 +169,150 @@ public class PlaceholderDifferenceEvaluatorTest {
         }
     }
 
+    @Test
+    public void regression_NoPlaceholder_Attributes_Equal() throws Exception {
+        String control = "<elem1 attr='123'/>";
+        String test = "<elem1 attr='123'/>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertFalse(diff.hasDifferences());
+    }
+
+    @Test
+    public void regression_NoPlaceholder_Attributes_Different() throws Exception {
+        String control = "<elem1 attr='123'/>";
+        String test = "<elem1 attr='abc'/>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertTrue(diff.hasDifferences());
+        int count = 0;
+        Iterator it = diff.getDifferences().iterator();
+        while (it.hasNext()) {
+            count++;
+            Difference difference = (Difference) it.next();
+            assertEquals(ComparisonResult.DIFFERENT, difference.getResult());
+        }
+        assertEquals(1, count);
+    }
+
+    @Test
+    public void regression_NoPlaceholder_Missing_Attribute() throws Exception {
+        String control = "<elem1/>";
+        String test = "<elem1 attr='abc'/>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertTrue(diff.hasDifferences());
+        int count = 0;
+        Iterator it = diff.getDifferences().iterator();
+        while (it.hasNext()) {
+            count++;
+            Difference difference = (Difference) it.next();
+            assertEquals(ComparisonResult.DIFFERENT, difference.getResult());
+
+            Comparison comparison = difference.getComparison();
+            if (count == 1) {
+                String xpath = "/elem1[1]";
+                assertEquals(ComparisonType.ELEMENT_NUM_ATTRIBUTES, comparison.getType());
+                assertEquals(xpath, comparison.getControlDetails().getXPath());
+                assertEquals(0, comparison.getControlDetails().getValue());
+                assertEquals(xpath, comparison.getTestDetails().getXPath());
+                assertEquals(1, comparison.getTestDetails().getValue());
+            } else {
+                assertEquals(ComparisonType.ATTR_NAME_LOOKUP, comparison.getType());
+                assertEquals("/elem1[1]", comparison.getControlDetails().getXPath());
+                assertEquals(null, comparison.getControlDetails().getValue());
+                assertEquals("/elem1[1]/@attr", comparison.getTestDetails().getXPath());
+            }
+        }
+        assertEquals(2, count);
+    }
+
+    @Test
+    public void hasIgnorePlaceholder_Attribute_Equal_NoWhitespaceInPlaceholder() throws Exception {
+        String control = "<elem1 attr='${xmlunit.ignore}'/>";
+        String test = "<elem1 attr='abc'/>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertFalse(diff.hasDifferences());
+    }
+
+    @Test
+    public void hasIgnorePlaceholder_CustomDelimiters_Attribute_Equal_NoWhitespaceInPlaceholder() throws Exception {
+        String control = "<elem1 attr='#{xmlunit.ignore}'/>";
+        String test = "<elem1 attr='abc'/>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator("#\\{", null)).build();
+
+        assertFalse(diff.hasDifferences());
+    }
+
+    @Test
+    public void hasIgnorePlaceholder_Attribute_Equal_StartAndEndWhitespacesInPlaceholder() throws Exception {
+        String control = "<elem1 attr='${  xmlunit.ignore  }'/>";
+        String test = "<elem1 attr='abc'/>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertFalse(diff.hasDifferences());
+    }
+
+    @Test
+    public void hasIgnorePlaceholder_Attribute_Equal_MissingActualAttribute() throws Exception {
+        String control = "<elem1 attr='${xmlunit.ignore}'/>";
+        String test = "<elem1/>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertFalse(diff.hasDifferences());
+    }
+
+    @Test
+    public void missingAttributeWithMoreThanOneAttribute() throws Exception {
+        String control = "<elem1 attr='${xmlunit.ignore}' a='b'/>";
+        String test = "<elem1 a='b'/>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertFalse(diff.hasDifferences());
+    }
+
+    @Test
+    public void missingAttributeWithMoreThanOneIgnore() throws Exception {
+        String control = "<elem1 attr='${xmlunit.ignore}' a='${xmlunit.ignore}'/>";
+        String test = "<elem1/>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertFalse(diff.hasDifferences());
+    }
+
+    @Test
+    public void missingAttributeWithMissingControlAttribute() throws Exception {
+        String control = "<elem1 attr='${xmlunit.ignore}' a='${xmlunit.ignore}'/>";
+        String test = "<elem1 b='a'/>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertTrue(diff.hasDifferences());
+    }
+
+    @Test
+    public void hasIgnorePlaceholder_Attribute_Exception_ExclusivelyOccupy() throws Exception {
+        String control = "<elem1 attr='${xmlunit.ignore}abc'/>";
+        String test = "<elem1 attr='abc'/>";
+        DiffBuilder diffBuilder = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator());
+
+        try {
+            diffBuilder.build();
+            fail();
+        } catch (XMLUnitException e) {
+            assertEquals("The placeholder must exclusively occupy the text node.", e.getCause().getMessage());
+        }
+    }
+
 }

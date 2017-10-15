@@ -13,14 +13,16 @@
 */
 package org.xmlunit.placeholder;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import javax.xml.namespace.QName;
 import org.w3c.dom.Node;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DifferenceEvaluator;
+import org.xmlunit.util.Nodes;
 
 /**
  * This class is used to add placeholder feature to XML comparison. To use it, just add it with DiffBuilder like below <br><br>
@@ -78,7 +80,7 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
             return evaluateConsideringPlaceholders((String) controlDetails.getValue(),
                 (String) testDetails.getValue(), outcome);
 
-        // two possible cases of "test document has no text-like node but control document has"
+        // two versions of "test document has no text-like node but control document has"
         } else if (comparison.getType() == ComparisonType.CHILD_NODELIST_LENGTH &&
                 Integer.valueOf(1).equals(controlDetails.getValue()) &&
                 Integer.valueOf(0).equals(testDetails.getValue()) &&
@@ -96,6 +98,39 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
                    && isTextLikeNode(controlTarget.getNodeType())
                    && isTextLikeNode(testTarget.getNodeType())) {
             return evaluateConsideringPlaceholders(controlTarget.getNodeValue(), testTarget.getNodeValue(), outcome);
+
+        // comparing textual content of attributes
+        } else if (comparison.getType() == ComparisonType.ATTR_VALUE) {
+            return evaluateConsideringPlaceholders((String) controlDetails.getValue(),
+                (String) testDetails.getValue(), outcome);
+
+        // two versions of "test document has no attribute but control document has"
+        } else if (comparison.getType() == ComparisonType.ELEMENT_NUM_ATTRIBUTES) {
+            Map<QName, String> controlAttrs = Nodes.getAttributes(controlTarget);
+            Map<QName, String> testAttrs = Nodes.getAttributes(testTarget);
+
+            int cAttrsMatched = 0;
+            for (Map.Entry<QName, String> cAttr : controlAttrs.entrySet()) {
+                String testValue = testAttrs.get(cAttr.getKey());
+                if (testValue == null) {
+                    ComparisonResult o = evaluateConsideringPlaceholders(cAttr.getValue(), null, outcome);
+                    if (o != ComparisonResult.EQUAL) {
+                        return outcome;
+                    }
+                } else {
+                    cAttrsMatched++;
+                }
+            }
+            if (cAttrsMatched != testAttrs.size()) {
+                // there are unmatched test attributes
+                return outcome;
+            }
+            return ComparisonResult.EQUAL;
+
+        } else if (comparison.getType() == ComparisonType.ATTR_NAME_LOOKUP && controlTarget != null
+            && controlDetails.getValue() != null) {
+            String controlAttrValue = Nodes.getAttributes(controlTarget).get((QName) controlDetails.getValue());
+            return evaluateConsideringPlaceholders(controlAttrValue, null, outcome);
 
         // default, don't apply any placeholders at all
         } else {
