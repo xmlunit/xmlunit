@@ -80,7 +80,7 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      *
      * @see org.xmlunit.diff.DifferenceEngine#addComparisonListener(ComparisonListener)
      */
-    D withComparisonListeners(final ComparisonListener... comparisonListeners);
+    D withComparisonListeners(ComparisonListener... comparisonListeners);
 
     /**
      * Registers listeners that are notified of each comparison with
@@ -88,7 +88,7 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      *
      * @see org.xmlunit.diff.DifferenceEngine#addDifferenceListener(ComparisonListener)
      */
-    D withDifferenceListeners(final ComparisonListener... comparisonListeners);
+    D withDifferenceListeners(ComparisonListener... comparisonListeners);
 
     /**
      * Establish a namespace context that will be used in {@link
