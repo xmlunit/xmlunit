@@ -141,7 +141,7 @@ public class PlaceholderDifferenceEvaluatorTest {
             diffBuilder.build();
             fail();
         } catch (XMLUnitException e) {
-            assertEquals("The 'ignore' placeholder must exclusively occupy the text node.", e.getCause().getMessage());
+            assertEquals("The placeholder must exclusively occupy the text node.", e.getCause().getMessage());
         }
     }
 

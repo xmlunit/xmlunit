@@ -13,6 +13,9 @@
 */
 package org.xmlunit.placeholder;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.w3c.dom.Node;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonResult;
@@ -28,38 +31,40 @@ import org.xmlunit.diff.DifferenceEvaluator;
  * @since 2.5.1
  */
 public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
-    private static final String PLACEHOLDER_OPENING_DELIMITER_REGEX_DEFAULT = "\\$\\{";
-    private static final String PLACEHOLDER_CLOSING_DELIMITER_REGEX_DEFAULT = "}";
-    private static final String PLACEHOLDER_NAME_REGEX_IGNORE = "xmlunit\\.ignore";
-    private static final String WHITESPACES_REGEX = "[\\s]*";
-    private String placeholderRegexIgnore;
+    public static final String PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX = Pattern.quote("${");
+    public static final String PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX = Pattern.quote("}");
+    private static final String PLACEHOLDER_PREFIX_REGEX = Pattern.quote("xmlunit.");
+    private static final String PLACEHOLDER_NAME_IGNORE = "ignore";
+
+    private final Pattern placeholderRegex;
 
     public PlaceholderDifferenceEvaluator() {
-        this.placeholderRegexIgnore = constructIgnorePlaceholder(
-                PLACEHOLDER_OPENING_DELIMITER_REGEX_DEFAULT, PLACEHOLDER_CLOSING_DELIMITER_REGEX_DEFAULT);
+        this(null, null);
     }
 
     /**
      * Null, empty or whitespaces string argument is omitted. Otherwise, argument is trimmed.
-     * @param placeholderOpeningDelimiterRegex
-     * @param placeholderClosingDelimiterRegex
+     * @param placeholderOpeningDelimiterRegex opening delimiter of
+     * placeholder, defaults to {@link
+     * #PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX}
+     * @param placeholderClosingDelimiterRegex closing delimiter of
+     * placeholder, defaults to {@link
+     * #PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX}
      */
-    public PlaceholderDifferenceEvaluator(String placeholderOpeningDelimiterRegex, String placeholderClosingDelimiterRegex) {
-        String openingDelimiterRegex = PLACEHOLDER_OPENING_DELIMITER_REGEX_DEFAULT;
-        String closingDelimiterRegex = PLACEHOLDER_CLOSING_DELIMITER_REGEX_DEFAULT;
-        if (placeholderOpeningDelimiterRegex != null && !placeholderOpeningDelimiterRegex.matches(WHITESPACES_REGEX)) {
-            openingDelimiterRegex = placeholderOpeningDelimiterRegex.trim();
+    public PlaceholderDifferenceEvaluator(String placeholderOpeningDelimiterRegex,
+                                          String placeholderClosingDelimiterRegex) {
+        if (placeholderOpeningDelimiterRegex == null
+            || placeholderOpeningDelimiterRegex.trim().length() == 0) {
+            placeholderOpeningDelimiterRegex = PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX;
         }
-        if (placeholderClosingDelimiterRegex != null && !placeholderClosingDelimiterRegex.matches(WHITESPACES_REGEX)) {
-            closingDelimiterRegex = placeholderClosingDelimiterRegex.trim();
+        if (placeholderClosingDelimiterRegex == null
+            || placeholderClosingDelimiterRegex.trim().length() == 0) {
+            placeholderClosingDelimiterRegex = PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX;
         }
 
-        this.placeholderRegexIgnore = constructIgnorePlaceholder(openingDelimiterRegex, closingDelimiterRegex);
-    }
-
-    private String constructIgnorePlaceholder(String openingDelimiterRegex, String closingDelimiterRegex) {
-        return openingDelimiterRegex + WHITESPACES_REGEX + PLACEHOLDER_NAME_REGEX_IGNORE + WHITESPACES_REGEX +
-                closingDelimiterRegex;
+        placeholderRegex = Pattern.compile("(\\s*" + placeholderOpeningDelimiterRegex
+            + "\\s*" + PLACEHOLDER_PREFIX_REGEX + "(.+)" + "\\s*"
+            + placeholderClosingDelimiterRegex + "\\s*)");
     }
 
     public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
@@ -67,40 +72,57 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
         Node controlTarget = controlDetails.getTarget();
         Comparison.Detail testDetails = comparison.getTestDetails();
 
+        // comparing textual content of elements
         if (comparison.getType() == ComparisonType.TEXT_VALUE) {
-            String controlTextValue = (String) controlDetails.getValue();
-            return evaluateConsideringIgnorePlaceholder(controlTextValue, outcome);
+            return evaluateConsideringPlaceholders((String) controlDetails.getValue(),
+                (String) testDetails.getValue(), outcome);
+
+        // two possible cases of "test document has no text-like node but control document has"
         } else if (comparison.getType() == ComparisonType.CHILD_NODELIST_LENGTH &&
                 Integer.valueOf(1).equals(controlDetails.getValue()) &&
                 Integer.valueOf(0).equals(testDetails.getValue()) &&
-                controlTarget.getFirstChild().getNodeType() == Node.TEXT_NODE) {
+                isTextLikeNode(controlTarget.getFirstChild().getNodeType())) {
             String controlNodeChildValue = controlTarget.getFirstChild().getNodeValue();
-            return evaluateConsideringIgnorePlaceholder(controlNodeChildValue, outcome);
+            return evaluateConsideringPlaceholders(controlNodeChildValue, null, outcome);
+
         } else if (comparison.getType() == ComparisonType.CHILD_LOOKUP && controlTarget != null &&
-                controlTarget.getNodeType() == Node.TEXT_NODE) {
+                isTextLikeNode(controlTarget.getNodeType())) {
             String controlNodeValue = controlTarget.getNodeValue();
-            return evaluateConsideringIgnorePlaceholder(controlNodeValue, outcome);
+            return evaluateConsideringPlaceholders(controlNodeValue, null, outcome);
+
+        // default, don't apply any placeholders at all
         } else {
             return outcome;
         }
     }
 
-    private ComparisonResult evaluateConsideringIgnorePlaceholder(String controlText, ComparisonResult outcome) {
-        if (isIgnorePlaceholder(controlText)) {
-            return ComparisonResult.EQUAL;
-        } else {
-            return outcome;
-        }
+    private boolean isTextLikeNode(short nodeType) {
+        return nodeType == Node.TEXT_NODE;
     }
 
-    private boolean isIgnorePlaceholder(String text) {
-        String textWithIgnorePlaceholderRemoved = text.replaceFirst(placeholderRegexIgnore, "");
-        if (textWithIgnorePlaceholderRemoved.length() == 0) {    //  the ignore placeholder is all that in the text
-            return true;
-        } else if (textWithIgnorePlaceholderRemoved.length() != text.length()) {    //  there is other content than the ignore placeholder in the text
-            throw new RuntimeException("The 'ignore' placeholder must exclusively occupy the text node.");
-        } else {                         //  there is no ignore placeholder in the text
-            return false;
+    private ComparisonResult evaluateConsideringPlaceholders(String controlText, String testText,
+        ComparisonResult outcome) {
+        Matcher m = placeholderRegex.matcher(controlText);
+        if (m.find()) {
+            String keyword = m.group(2).trim();
+            if (isKnown(keyword)) {
+                if (!m.group(1).trim().equals(controlText.trim())) {
+                    throw new RuntimeException("The placeholder must exclusively occupy the text node.");
+                }
+                return evaluate(keyword, testText);
+            }
         }
+
+        // no placeholder at all or unknown keyword
+        return outcome;
+    }
+
+    private boolean isKnown(String keyword) {
+        return PLACEHOLDER_NAME_IGNORE.equals(keyword);
+    }
+
+    private ComparisonResult evaluate(String keyword, String testText) {
+        // ignore placeholder
+        return ComparisonResult.EQUAL;
     }
 }
