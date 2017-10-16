@@ -21,7 +21,6 @@ import org.xmlunit.diff.*;
 import javax.xml.namespace.QName;
 import java.util.Iterator;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
 /**

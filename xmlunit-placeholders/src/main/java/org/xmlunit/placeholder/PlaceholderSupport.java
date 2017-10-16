@@ -65,7 +65,7 @@ public class PlaceholderSupport {
      * Adds placeholder support to a {@link DifferenceEngineConfigurer} considering an additional {@link DifferenceEvaluator}.
      *
      * @param configurer the configurer to add support to
-     * @param evaluator the additional evaluator - payload support is
+     * @param evaluator the additional evaluator - placeholder support is
      * {@link DifferenceEvaluators#chain chain}ed after the given
      * evaluator
      */
@@ -86,7 +86,7 @@ public class PlaceholderSupport {
      * the closing delimiter of placeholder, defaults to {@link
      * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX}
      * if the parameter is null or blank
-     * @param evaluator the additional evaluator - payload support is
+     * @param evaluator the additional evaluator - placeholder support is
      * {@link DifferenceEvaluators#chain chain}ed after the given
      * evaluator
      */

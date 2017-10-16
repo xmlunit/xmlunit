@@ -169,7 +169,7 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
         if (controlHasOneTextChildAndTestHasNone(comparison)) {
             value = controlTarget.getFirstChild().getNodeValue();
         } else {
-            value = controlTarget.getNodeValue();;
+            value = controlTarget.getNodeValue();
         }
         return evaluateConsideringPlaceholders(value, null, outcome);
     }
