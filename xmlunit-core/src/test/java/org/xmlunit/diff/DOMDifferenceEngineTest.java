@@ -17,8 +17,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.dom.DOMSource;
 import org.xmlunit.NullNode;
 import org.xmlunit.TestResources;
+import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
+import org.xmlunit.util.Linqy;
 import org.xmlunit.util.Predicate;
 import org.junit.Before;
 import org.junit.Test;
@@ -1050,6 +1052,27 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
     public void cantUseNullDocumentBuilderFactory() {
         DOMDifferenceEngine d = new DOMDifferenceEngine();
         d.setDocumentBuilderFactory(null);
+    }
+
+    // https://github.com/xmlunit/xmlunit.net/issues/22
+    @Test
+    public void elementsWithDifferentPrefixesAreSimilar() {
+        Diff diff = DiffBuilder.compare("<Root xmlns:x='http://example.org'><x:Elem/></Root>")
+            .withTest("<Root xmlns:y='http://example.org'><y:Elem/></Root>")
+            .build();
+        assertEquals(1, Linqy.count(diff.getDifferences()));
+        assertEquals(ComparisonResult.SIMILAR, diff.getDifferences().iterator().next().getResult());
+        assertEquals(ComparisonType.NAMESPACE_PREFIX, diff.getDifferences().iterator().next().getComparison().getType());
+    }
+
+    @Test
+    public void attributesWithDifferentPrefixesAreSimilar() {
+        Diff diff = DiffBuilder.compare("<Root xmlns:x='http://example.org' x:Attr='1'/>")
+            .withTest("<Root xmlns:y='http://example.org' y:Attr='1'/>")
+            .build();
+        assertEquals(1, Linqy.count(diff.getDifferences()));
+        assertEquals(ComparisonResult.SIMILAR, diff.getDifferences().iterator().next().getResult());
+        assertEquals(ComparisonType.NAMESPACE_PREFIX, diff.getDifferences().iterator().next().getComparison().getType());
     }
 
     private Document documentForString(String s) {
