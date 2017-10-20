@@ -25,7 +25,7 @@ import org.xmlunit.diff.ComparisonResult;
  * <p>Implementations are expected to be thread-safe, the {@link
  * #evaluate} method may be invoked by multiple threads in
  * parallel.</p>
- * @since 2.5.1
+ * @since 2.6.0
  */
 public interface PlaceholderHandler {
     /**

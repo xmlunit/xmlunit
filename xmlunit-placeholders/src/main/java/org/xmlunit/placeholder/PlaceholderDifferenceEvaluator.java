@@ -50,7 +50,7 @@ import org.xmlunit.util.Nodes;
  * placeholderOpeningDelimiterRegex, String
  * placeholderClosingDelimiterRegex)</code> constructor.</p>
  *
- * @since 2.5.1
+ * @since 2.6.0
  */
 public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
     public static final String PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX = Pattern.quote("${");

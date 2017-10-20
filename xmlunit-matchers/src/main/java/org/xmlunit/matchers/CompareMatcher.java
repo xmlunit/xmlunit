@@ -284,7 +284,7 @@ public final class CompareMatcher extends BaseMatcher<Object>
     /**
      * Throws an exception as you the {@link ComparisonController} is
      * completely determined by the factory method used.
-     * @since XMLUnit 2.5.1
+     * @since XMLUnit 2.6.0
      */
     @Override
     public CompareMatcher withComparisonController(final ComparisonController comparisonController) {

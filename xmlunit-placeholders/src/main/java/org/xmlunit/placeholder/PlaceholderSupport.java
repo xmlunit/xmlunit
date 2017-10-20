@@ -26,7 +26,7 @@ import org.xmlunit.diff.DifferenceEvaluators;
  * <p><b>This class and the whole module are considered experimental
  * and any API may change between releases of XMLUnit.</b></p>
  *
- * @since 2.5.1
+ * @since 2.6.0
  */
 public class PlaceholderSupport {
     private PlaceholderSupport() { /* no instances */ }

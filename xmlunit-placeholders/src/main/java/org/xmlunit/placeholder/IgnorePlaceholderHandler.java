@@ -23,7 +23,7 @@ import org.xmlunit.diff.ComparisonResult;
  *
  * <p>Text nodes or attributes containing {@code ${xmlunit.ignore}}
  * will be ignored.</p>
- * @since 2.5.1
+ * @since 2.6.0
  */
 public class IgnorePlaceholderHandler implements PlaceholderHandler {
     private static final String PLACEHOLDER_NAME_IGNORE = "ignore";

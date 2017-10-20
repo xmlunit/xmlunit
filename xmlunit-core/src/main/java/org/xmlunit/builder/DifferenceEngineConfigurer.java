@@ -28,7 +28,7 @@ import org.xmlunit.util.Predicate;
 
 /**
  * Subset of the configuration options available for a {@link DifferenceEngine}.
- * @since 2.5.1
+ * @since 2.6.0
  */
 public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer<D>> {
 

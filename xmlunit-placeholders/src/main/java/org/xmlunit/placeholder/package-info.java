@@ -53,6 +53,6 @@
  * org.xmlunit.diff.DifferenceEvaluator} and add it to the builder
  * yourself.</p>
  *
- * @since 2.5.1
+ * @since 2.6.0
  */
 package org.xmlunit.placeholder;
