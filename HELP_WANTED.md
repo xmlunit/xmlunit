@@ -22,6 +22,7 @@ Java
 
 * additional NUnit constraints
 * build ISource from objects via XmlSerializer
+* .NET Core support (without breaking the .NET 3.5 builds)
 
 Claimed
 -------
