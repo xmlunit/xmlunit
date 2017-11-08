@@ -6,6 +6,9 @@
   PR [#101](https://github.com/xmlunit/xmlunit/pull/101) by
   [@PascalSchumacher](https://github.com/PascalSchumacher).
 
+* `CompareMatcher`'s `describeTo` method threw an exception if the
+  comparison yielded no differences.
+  Issue [#107](https://github.com/xmlunit/xmlunit/issues/107).
 
 ## XMLUnit for Java 2.5.0 - /Released 2017-09-03/
 
