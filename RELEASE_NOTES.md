@@ -1,10 +1,11 @@
 # Release Notes
 
 ## XMLUnit for Java 2.5.1 - /Not Released, yet/
+
+* Made Travis build work with OpenJDK6 again.
   PR [#101](https://github.com/xmlunit/xmlunit/pull/101) by
   [@PascalSchumacher](https://github.com/PascalSchumacher).
 
-* Made Travis build work with OpenJDK6 again.
 
 ## XMLUnit for Java 2.5.0 - /Released 2017-09-03/
 
