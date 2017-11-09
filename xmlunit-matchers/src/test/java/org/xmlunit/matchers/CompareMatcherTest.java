@@ -41,6 +41,7 @@ import org.xmlunit.util.Predicate;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matchers;
+import org.hamcrest.StringDescription;
 import org.junit.Assert;
 import org.junit.ComparisonFailure;
 import org.junit.Rule;
@@ -368,6 +369,18 @@ public class CompareMatcherTest {
     @Test(expected = UnsupportedOperationException.class)
     public void cantSetComparisonController() {
         isSimilarTo("<foo/>").withComparisonController(null);
+    }
+
+    /**
+     * @see "https://github.com/xmlunit/xmlunit/issues/107"
+     */
+    @Test
+    public void describeToWorksWhenThereAreNoDifferences() throws Exception {
+        CompareMatcher m = isIdenticalTo("<foo/>");
+        Assert.assertTrue(m.matches("<foo/>"));
+        StringDescription sd = new StringDescription();
+        m.describeTo(sd);
+        assertThat(sd.toString(), is(" is equal to the control document"));
     }
 
     public void expect(Class<? extends Throwable> type) {

@@ -2,10 +2,6 @@
 
 ## XMLUnit for Java 2.6.0 - /Not Released, yet/
 
-* Made Travis build work with OpenJDK6 again.
-  PR [#101](https://github.com/xmlunit/xmlunit/pull/101) by
-  [@PascalSchumacher](https://github.com/PascalSchumacher).
-
 * add a new experimental project xmlunit-placeholders which aims to
   use `${xmlunit.FOO}` expressions inside of the control document to
   allow for a DSL-like approach of defining more complex tests.
@@ -13,6 +9,16 @@
   used to make XMLUnit ignore the element containing this text.
   PR [#105](https://github.com/xmlunit/xmlunit/pull/105) by
   [@zheng-wang](https://github.com/zheng-wang).
+
+## XMLUnit for Java 2.5.1 - /Released 2017-11-09/
+
+* Made Travis build work with OpenJDK6 again.
+  PR [#101](https://github.com/xmlunit/xmlunit/pull/101) by
+  [@PascalSchumacher](https://github.com/PascalSchumacher).
+
+* `CompareMatcher`'s `describeTo` method threw an exception if the
+  comparison yielded no differences.
+  Issue [#107](https://github.com/xmlunit/xmlunit/issues/107).
 
 ## XMLUnit for Java 2.5.0 - /Released 2017-09-03/
 

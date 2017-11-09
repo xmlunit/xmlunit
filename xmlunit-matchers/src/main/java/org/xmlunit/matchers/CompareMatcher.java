@@ -355,7 +355,7 @@ public final class CompareMatcher extends BaseMatcher<Object>
 
     @Override
     public void describeTo(Description description) {
-        if (diffResult == null) {
+        if (diffResult == null || !diffResult.hasDifferences()) {
             description.appendText(" is ")
                 .appendText(checkFor == ComparisonResult.EQUAL ? "equal" : "similar")
                 .appendText(" to the control document");
