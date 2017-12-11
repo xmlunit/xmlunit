@@ -176,6 +176,7 @@
                 <X-Compile-Target-JDK>${maven.compile.target}</X-Compile-Target-JDK>
                 <build-time>${maven.build.timestamp}</build-time>
                 <X-Git-Hash>${buildNumber} (Branch ${scmBranch})</X-Git-Hash>
+                <Automatic-Module-Name>${project.groupId}.${project.artifactId}</Automatic-Module-Name>
               </manifestEntries>
             </archive>
           </configuration>
