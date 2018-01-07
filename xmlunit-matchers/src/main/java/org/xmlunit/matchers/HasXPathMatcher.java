@@ -9,6 +9,7 @@ import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
 import org.xmlunit.xpath.JAXPXPathEngine;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ import java.util.Map;
 public class HasXPathMatcher extends BaseMatcher<Object> {
 
     private String xPath;
-
+    private DocumentBuilderFactory dbf;
     private Map<String, String> prefix2Uri;
 
     /**
@@ -63,6 +64,17 @@ public class HasXPathMatcher extends BaseMatcher<Object> {
         this.xPath = xPath;
     }
 
+    /**
+     * Sets the {@link DocumentBuilderFactory} to use when creating a
+     * {@link org.w3c.dom.Document} from the XML input.
+     *
+     * @since XMLUnit 2.6.0
+     */
+    public HasXPathMatcher withDocumentBuilderFactory(DocumentBuilderFactory f) {
+        dbf = f;
+        return this;
+    }
+
     @Override
     public boolean matches(Object object) {
         JAXPXPathEngine engine = new JAXPXPathEngine();
@@ -71,7 +83,7 @@ public class HasXPathMatcher extends BaseMatcher<Object> {
         }
 
         Source s = Input.from(object).build();
-        Node n = Convert.toNode(s);
+        Node n = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
         Iterable<Node> nodes = engine.selectNodes(xPath, n);
 
         return nodes.iterator().hasNext();

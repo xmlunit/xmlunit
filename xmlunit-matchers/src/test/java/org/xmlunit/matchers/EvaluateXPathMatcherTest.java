@@ -2,12 +2,15 @@ package org.xmlunit.matchers;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
+import org.xmlunit.XMLUnitException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.both;
@@ -107,5 +110,28 @@ public class EvaluateXPathMatcherTest {
                 "</fruits>";
         assertThat(xml, both(not(isEmptyString()))
                    .and(hasXPath("count(//fruits/fruit)", equalTo("3"))));
+    }
+
+    @Test
+    public void usesDocumentBuilderFactory() throws Exception {
+        DocumentBuilderFactory dFac = Mockito.mock(DocumentBuilderFactory.class);
+        DocumentBuilder b = Mockito.mock(DocumentBuilder.class);
+        Mockito.when(dFac.newDocumentBuilder()).thenReturn(b);
+        Mockito.doThrow(new IOException())
+            .when(b).parse(Mockito.any(InputSource.class));
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<fruits>" +
+                    "<fruit name=\"apple\"/>" +
+                    "<fruit name=\"orange\"/>" +
+                    "<fruit name=\"banana\"/>" +
+                "</fruits>";
+        try {
+            assertThat(xml, hasXPath("count(//fruits/fruit)", equalTo("3"))
+                       .withDocumentBuilderFactory(dFac));
+            Assert.fail("Expected exception");
+        } catch (XMLUnitException ex) {
+            Mockito.verify(b).parse(Mockito.any(InputSource.class));
+        }
     }
 }

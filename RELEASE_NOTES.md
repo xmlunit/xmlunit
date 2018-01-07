@@ -10,6 +10,11 @@
   PR [#105](https://github.com/xmlunit/xmlunit/pull/105) by
   [@zheng-wang](https://github.com/zheng-wang).
 
+* added `withDocumentBuilderFactory` methods to `HasXPathMatcher` and
+  `EvaluateXPathMatcher` to allow explicit configuration of the
+  `DocumentBuilderFactory` used.
+  Issue [#108](https://github.com/xmlunit/xmlunit/issues/108).
+
 ## XMLUnit for Java 2.5.1 - /Released 2017-11-09/
 
 * Made Travis build work with OpenJDK6 again.
