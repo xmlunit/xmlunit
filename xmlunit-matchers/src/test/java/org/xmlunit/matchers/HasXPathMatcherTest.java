@@ -164,4 +164,10 @@ public class HasXPathMatcherTest {
             Mockito.verify(b).parse(Mockito.any(InputSource.class));
         }
     }
+
+    @Test
+    public void quotesCanBeMixed() {
+        assertThat("<a>b'b</a>", hasXPath("//a[text()=\"b'b\"]"));
+    }
+
 }
