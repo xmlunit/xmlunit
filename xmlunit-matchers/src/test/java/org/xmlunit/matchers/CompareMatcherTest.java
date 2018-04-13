@@ -99,13 +99,6 @@ public class CompareMatcherTest {
     }
 
     @Test
-    public void testIsSimilarTo_withAssertionErrorForElementOrder_throwsReadableMessage() {
-        // run test:
-        assertThat("<a><c/><b/></a>", isSimilarTo("<a><b/><c/></a>")
-            .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText)));
-    }
-
-    @Test
     public void testIsIdenticalTo_withAssertionErrorForWhitespaces_throwsReadableMessage() {
         // Expected Exception
         expect(AssertionError.class);
@@ -173,6 +166,13 @@ public class CompareMatcherTest {
         // run test:
         assertThat("<a>\n  <b>\n  Test\n  Node\n  </b>\n</a>", isIdenticalTo("<a><b>TestNode</b></a>")
             .normalizeWhitespace());
+    }
+
+    @Test
+    public void testIsSimilarTo_withSwappedElements_shouldSucceed() {
+        // run test:
+        assertThat("<a><c/><b/></a>", isSimilarTo("<a><b/><c/></a>")
+            .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText)));
     }
 
     @Test
