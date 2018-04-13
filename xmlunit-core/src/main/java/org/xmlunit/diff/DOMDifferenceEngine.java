@@ -25,6 +25,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import org.xmlunit.XMLUnitException;
 import org.xmlunit.util.Convert;
+import org.xmlunit.util.DocumentBuilderFactoryConfigurer;
 import org.xmlunit.util.IterableNodeList;
 import org.xmlunit.util.Linqy;
 import org.xmlunit.util.Mapper;
@@ -53,7 +54,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         };
 
     private DocumentBuilderFactory documentBuilderFactory =
-        DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactoryConfigurer.Default.configure(DocumentBuilderFactory.newInstance());
 
     /**
      * Sets the {@link DocumentBuilderFactory} to use when creating a
