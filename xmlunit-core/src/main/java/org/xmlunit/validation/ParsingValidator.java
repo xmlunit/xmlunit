@@ -80,7 +80,20 @@ public class ParsingValidator extends Validator {
         return validateInstance(s, SAXParserFactory.newInstance());
     }
 
-    ValidationResult validateInstance(Source s, SAXParserFactory factory) {
+    /**
+     * Validates an instance against the schema using a pre-configured {@link SAXParserFactory}.
+     *
+     * <p>The factory given will be configured to be namespace aware and validating.</p>
+     *
+     * @param s the instance document
+     * @param factory the factory to use, must not be null
+     *
+     * @since XMLUnit 2.5.0
+     */
+    public ValidationResult validateInstance(Source s, SAXParserFactory factory) {
+        if (factory == null) {
+            throw new IllegalArgumentException("factory must not be null");
+        }
         try {
             factory.setNamespaceAware(true);
             factory.setValidating(true);
