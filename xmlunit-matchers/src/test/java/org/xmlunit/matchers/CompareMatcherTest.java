@@ -383,6 +383,13 @@ public class CompareMatcherTest {
         assertThat(sd.toString(), is(" is equal to the control document"));
     }
 
+    @Test
+    public void createsAUsefulMessageWhenFailingCombinedWithNot() throws Exception {
+        expect(AssertionError.class);
+        expectMessage("not  is similar to the control document");
+        assertThat("<a><b></b><c/></a>", not(isSimilarTo("<a><b></b><c/></a>")));
+    }
+
     public void expect(Class<? extends Throwable> type) {
         if (letExceptionTestFail) return;
         thrown.expect(type);

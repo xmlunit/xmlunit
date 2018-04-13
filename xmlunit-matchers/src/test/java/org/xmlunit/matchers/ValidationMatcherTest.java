@@ -13,7 +13,9 @@
 */
 package org.xmlunit.matchers;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.xmlunit.validation.Languages;
 
 import javax.xml.transform.stream.StreamSource;
@@ -33,6 +35,9 @@ import static org.xmlunit.matchers.ValidationMatcher.valid;
  * Tests for ValidationMatcher.
  */
 public class ValidationMatcherTest {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void shouldSuccessfullyValidateInstance() {
@@ -116,4 +121,15 @@ public class ValidationMatcherTest {
                    .and(valid(new StreamSource(new File("../test-resources/Book.xsd")))));
 
     }
+
+    @Test
+    public void createsAUsefulMessageWhenFailingCombinedWithNot() throws Exception {
+        thrown.expect(AssertionError.class);
+        thrown.expectMessage("not  that");
+        thrown.expectMessage("validates");
+        assertThat(new StreamSource(new File("../test-resources/BookXsdGenerated.xml")),
+                   not(valid(new StreamSource(new File("../test-resources/Book.xsd")))));
+
+    }
+
 }

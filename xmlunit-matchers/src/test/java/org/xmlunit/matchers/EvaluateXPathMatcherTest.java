@@ -1,7 +1,9 @@
 package org.xmlunit.matchers;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -22,6 +24,9 @@ import static org.junit.Assert.assertThat;
 import static org.xmlunit.matchers.EvaluateXPathMatcher.hasXPath;
 
 public class EvaluateXPathMatcherTest {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void testXPathCountInXmlString() throws Exception {
@@ -133,5 +138,31 @@ public class EvaluateXPathMatcherTest {
         } catch (XMLUnitException ex) {
             Mockito.verify(b).parse(Mockito.any(InputSource.class));
         }
+    }
+
+    @Test
+    public void createsAUsefulMessageWhenFailingCombinedWithNotOnTheOutside() throws Exception {
+        thrown.expect(AssertionError.class);
+        thrown.expectMessage("not XML with XPath count(//fruits/fruit) evaluated to \"3\"");
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<fruits>" +
+                    "<fruit name=\"apple\"/>" +
+                    "<fruit name=\"orange\"/>" +
+                    "<fruit name=\"banana\"/>" +
+                "</fruits>";
+        assertThat(xml, not(hasXPath("count(//fruits/fruit)", equalTo("3"))));
+    }
+
+    @Test
+    public void createsAUsefulMessageWhenFailingCombinedWithNotOnTheInside() throws Exception {
+        thrown.expect(AssertionError.class);
+        thrown.expectMessage("XML with XPath count(//fruits/fruit) evaluated to not \"3\"");
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<fruits>" +
+                    "<fruit name=\"apple\"/>" +
+                    "<fruit name=\"orange\"/>" +
+                    "<fruit name=\"banana\"/>" +
+                "</fruits>";
+        assertThat(xml, hasXPath("count(//fruits/fruit)", not(equalTo("3"))));
     }
 }

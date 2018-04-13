@@ -2,7 +2,9 @@ package org.xmlunit.matchers;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -25,6 +27,9 @@ import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
 public class HasXPathMatcherTest {
 
     private DocumentBuilder db;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setup() throws ParserConfigurationException {
@@ -170,4 +175,11 @@ public class HasXPathMatcherTest {
         assertThat("<a>b'b</a>", hasXPath("//a[text()=\"b'b\"]"));
     }
 
+    @Test
+    public void createsAUsefulMessageWhenFailingCombinedWithNot() throws Exception {
+        thrown.expect(AssertionError.class);
+        thrown.expectMessage("not XML with XPath //a/b/@attr");
+        String xml = "<a><b attr=\"abc\"></b></a>";
+        assertThat(xml, not(hasXPath("//a/b/@attr")));
+    }
 }
