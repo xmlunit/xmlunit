@@ -101,7 +101,7 @@ public final class Convert {
     public static Document toDocument(Source s) {
         Document d = tryExtractDocFromDOMSource(s);
         return d != null ? d 
-            : toDocument(s, DocumentBuilderFactory.newInstance());
+            : toDocument(s, DocumentBuilderFactoryConfigurer.Default.configure(DocumentBuilderFactory.newInstance()));
     }
 
     /**
@@ -165,7 +165,7 @@ public final class Convert {
     public static Node toNode(Source s) {
         Node n = tryExtractNodeFromDOMSource(s);
         return n != null ? n 
-            : toDocument(s, DocumentBuilderFactory.newInstance());
+            : toDocument(s, DocumentBuilderFactoryConfigurer.Default.configure(DocumentBuilderFactory.newInstance()));
     }
 
     /**

@@ -59,6 +59,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.EntityResolver;
+import org.xmlunit.util.DocumentBuilderFactoryConfigurer;
 
 /**
  * Allows access to project control parameters such as which Parser to use and
@@ -193,6 +194,7 @@ public final class XMLUnit {
         if (controlBuilderFactory == null) {
             controlBuilderFactory = DocumentBuilderFactory.newInstance();
             controlBuilderFactory.setNamespaceAware(true);
+            DocumentBuilderFactoryConfigurer.Default.configure(controlBuilderFactory);
         }
         return controlBuilderFactory;
     }
@@ -247,6 +249,7 @@ public final class XMLUnit {
         if (testBuilderFactory == null) {
             testBuilderFactory = DocumentBuilderFactory.newInstance();
             testBuilderFactory.setNamespaceAware(true);
+            DocumentBuilderFactoryConfigurer.Default.configure(testBuilderFactory);
         }
         return testBuilderFactory;
     }

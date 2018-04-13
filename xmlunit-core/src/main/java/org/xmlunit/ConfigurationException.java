@@ -23,4 +23,11 @@ public class ConfigurationException extends XMLUnitException {
     public ConfigurationException(Throwable cause) {
         super(cause);
     }
+
+    /**
+     * @since XMLUnit 2.6.0
+     */
+    public ConfigurationException(String message, Throwable cause) {
+        super(cause);
+    }
 }
