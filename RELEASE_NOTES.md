@@ -15,6 +15,28 @@
   `DocumentBuilderFactory` used.
   Issue [#108](https://github.com/xmlunit/xmlunit/issues/108).
 
+* the `DocmentBuilderFactory` and `TransformerFactory` instances used
+  by XMLUnit are now configured to not load any external DTDs or parse
+  external entities. They are now configured according to the [OWASP
+  recommendations for XML eXternal Entity injection
+  preventions](https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java). The
+  `TransformerFactory` used by the
+  `org.xmlunit.transform.Transformation` class is still configured to
+  load external stylesheets, though.
+
+  For the `legacy` package XXE prevention has to be enabled via
+  `XMLUnit.enableXXEProtection` explicitly.
+
+  This is a breaking change and you may need to provide
+  `DocmentBuilderFactory` or `TransformerFactory` of your own if you
+  need to load external entities.
+
+  The `SAXParserFactory` and `SchemaFactory` instances used inside the
+  validation package have not been changed as their use is likely to
+  require loading of external DTDs or schemas.
+
+  Issue [#91](https://github.com/xmlunit/xmlunit/issues/91).
+
 ## XMLUnit for Java 2.5.1 - /Released 2017-11-09/
 
 * Made Travis build work with OpenJDK6 again.
