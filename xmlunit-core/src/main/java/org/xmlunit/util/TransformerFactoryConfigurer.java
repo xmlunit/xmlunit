@@ -85,10 +85,20 @@ public class TransformerFactoryConfigurer {
     }
 
     /**
-     * The default instance.
+     * The default instance which disables DTD loading but still
+     * allows loading of external stylesheets.
      */
     public static final TransformerFactoryConfigurer Default = builder()
         .withDTDLoadingDisabled()
+        .build();
+
+    /**
+     * The instance which disables DTD loading as well as loading of
+     * external stylesheets.
+     */
+    public static final TransformerFactoryConfigurer NoExternalAccess = builder()
+        .withDTDLoadingDisabled()
+        .withExternalStylesheetLoadingDisabled()
         .build();
 
     /**

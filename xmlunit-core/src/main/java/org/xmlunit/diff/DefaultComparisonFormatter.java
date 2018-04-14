@@ -454,6 +454,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      */
     protected Transformer createXmlTransformer(int numberOfBlanksToIndent) throws TransformerConfigurationException {
         TransformerFactoryConfigurer.Builder b = TransformerFactoryConfigurer.builder()
+            .withExternalStylesheetLoadingDisabled()
             .withDTDLoadingDisabled();
 
         if (numberOfBlanksToIndent >= 0) {
