@@ -84,6 +84,7 @@ public final class XMLUnit {
     private static String xpathFactoryName = null;
     private static boolean expandEntities = false;
     private static boolean compareUnmatched = true;
+    private static boolean enableXXEProtection = false;
 
     private static final String XSLT_VERSION_START = " version=\"";
     private static final String XSLT_VERSION_END = "\">";
@@ -194,7 +195,9 @@ public final class XMLUnit {
         if (controlBuilderFactory == null) {
             controlBuilderFactory = DocumentBuilderFactory.newInstance();
             controlBuilderFactory.setNamespaceAware(true);
-            DocumentBuilderFactoryConfigurer.Default.configure(controlBuilderFactory);
+            if (enableXXEProtection) {
+                DocumentBuilderFactoryConfigurer.Default.configure(controlBuilderFactory);
+            }
         }
         return controlBuilderFactory;
     }
@@ -249,7 +252,9 @@ public final class XMLUnit {
         if (testBuilderFactory == null) {
             testBuilderFactory = DocumentBuilderFactory.newInstance();
             testBuilderFactory.setNamespaceAware(true);
-            DocumentBuilderFactoryConfigurer.Default.configure(testBuilderFactory);
+            if (enableXXEProtection) {
+                DocumentBuilderFactoryConfigurer.Default.configure(testBuilderFactory);
+            }
         }
         return testBuilderFactory;
     }
@@ -871,6 +876,26 @@ public final class XMLUnit {
      */
     public static boolean getCompareUnmatched() {
         return compareUnmatched;
+    }
+
+    /**
+     * Whether to enable XXE protection on the factories used by this class.
+     *
+     * @since XMLUnit 2.6.0
+     * @see "https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet"
+     */
+    public static void setEnableXXEProtection(boolean b) {
+        enableXXEProtection = b;
+    }
+
+    /**
+     * Whether XXE protection is enabled on the factories used by this class.
+     *
+     * @since XMLUnit 2.6.0
+     * @see "https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet"
+     */
+    public static boolean getEnableXXEProtection() {
+        return enableXXEProtection;
     }
 
 }
