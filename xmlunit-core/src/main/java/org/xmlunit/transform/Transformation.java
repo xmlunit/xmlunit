@@ -27,6 +27,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamResult;
 import org.xmlunit.ConfigurationException;
 import org.xmlunit.XMLUnitException;
+import org.xmlunit.util.TransformerFactoryConfigurer;
 import org.w3c.dom.Document;
 
 /**
@@ -165,7 +166,7 @@ public final class Transformation {
         try {
             TransformerFactory fac = factory;
             if (fac == null) {
-                fac = TransformerFactory.newInstance();
+                fac = TransformerFactoryConfigurer.Default.configure(TransformerFactory.newInstance());
             }
             Transformer t;
             if (styleSheet != null) {

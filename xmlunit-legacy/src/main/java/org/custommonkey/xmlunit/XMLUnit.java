@@ -60,6 +60,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.EntityResolver;
 import org.xmlunit.util.DocumentBuilderFactoryConfigurer;
+import org.xmlunit.util.TransformerFactoryConfigurer;
 
 /**
  * Allows access to project control parameters such as which Parser to use and
@@ -407,6 +408,9 @@ public final class XMLUnit {
         TransformerFactory tf = TransformerFactory.newInstance();
         if (uriResolver != null) {
             tf.setURIResolver(uriResolver);
+        }
+        if (enableXXEProtection) {
+            tf = TransformerFactoryConfigurer.Default.configure(tf);
         }
         return tf;
     }

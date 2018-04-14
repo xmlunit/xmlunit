@@ -72,7 +72,7 @@ public final class Convert {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 StreamResult r = new StreamResult(bos);
                 if (fac == null) {
-                    fac = TransformerFactory.newInstance();
+                    fac = TransformerFactoryConfigurer.Default.configure(TransformerFactory.newInstance());
                 }
                 Transformer t = fac.newTransformer();
                 t.transform(s, r);

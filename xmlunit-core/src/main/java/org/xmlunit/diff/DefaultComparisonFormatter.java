@@ -15,6 +15,7 @@
 package org.xmlunit.diff;
 
 import org.xmlunit.diff.Comparison.Detail;
+import org.xmlunit.util.TransformerFactoryConfigurer;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
@@ -452,16 +453,14 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @since XMLUnit 2.4.0
      */
     protected Transformer createXmlTransformer(int numberOfBlanksToIndent) throws TransformerConfigurationException {
-        final TransformerFactory factory = TransformerFactory.newInstance();
-        // as not all TransformerFactories support this feature -> catch the IllegalArgumentException
+        TransformerFactoryConfigurer.Builder b = TransformerFactoryConfigurer.builder()
+            .withDTDLoadingDisabled();
+
         if (numberOfBlanksToIndent >= 0) {
-            try {
-                factory.setAttribute("indent-number", numberOfBlanksToIndent);
-            } catch (final IllegalArgumentException ex) {
-                // Could not set property 'indent-number' on factory.getClass().getName()
-                // which is fine for us
-            }
+            // not all TransformerFactories support this feature
+            b = b.withSafeAttribute("indent-number", numberOfBlanksToIndent);
         }
+        final TransformerFactory factory = b.build().configure(TransformerFactory.newInstance());
         final Transformer transformer = factory.newTransformer();
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         transformer.setOutputProperty(OutputKeys.METHOD, "xml");
