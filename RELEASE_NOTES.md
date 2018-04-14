@@ -28,12 +28,12 @@
   `XMLUnit.enableXXEProtection` explicitly.
 
   This is a breaking change and you may need to provide
-  `DocmentBuilderFactory` or `TransformerFactory` of your own if you
-  need to load external entities.
+  `DocmentBuilderFactory` or `TransformerFactory` instances of your
+  own if you need to load external entities.
 
-  The `SAXParserFactory` and `SchemaFactory` instances used inside the
-  validation package have not been changed as their use is likely to
-  require loading of external DTDs or schemas.
+  The `SAXParserFactory` and `SchemaFactory` instances used inside of
+  the `validation` package have not been changed as their use is
+  likely to require loading of external DTDs or schemas.
 
   Issue [#91](https://github.com/xmlunit/xmlunit/issues/91).
 
