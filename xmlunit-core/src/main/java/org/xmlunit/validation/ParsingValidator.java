@@ -88,7 +88,7 @@ public class ParsingValidator extends Validator {
      * @param s the instance document
      * @param factory the factory to use, must not be null
      *
-     * @since XMLUnit 2.5.0
+     * @since XMLUnit 2.6.0
      */
     public ValidationResult validateInstance(Source s, SAXParserFactory factory) {
         if (factory == null) {
