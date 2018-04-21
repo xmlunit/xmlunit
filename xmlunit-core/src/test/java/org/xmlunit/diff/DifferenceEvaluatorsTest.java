@@ -492,6 +492,7 @@ public class DifferenceEvaluatorsTest {
             e.setDifferenceEvaluator(DifferenceEvaluators.ignorePrologDifferences());
         } else {
             e.setDifferenceEvaluator(DifferenceEvaluators.ignorePrologDifferencesExceptDoctype());
+            e.setNodeFilter(NodeFilters.AcceptAll);
         }
         final List<Comparison> differences = new ArrayList<Comparison>();
         e.addDifferenceListener(new ComparisonListener() {

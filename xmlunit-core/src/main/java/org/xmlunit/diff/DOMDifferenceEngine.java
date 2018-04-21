@@ -247,8 +247,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                              final XPathContext controlContext,
                                              final Document test,
                                              final XPathContext testContext) {
-        final DocumentType controlDt = control.getDoctype();
-        final DocumentType testDt = test.getDoctype();
+        final DocumentType controlDt = filterNode(control.getDoctype());
+        final DocumentType testDt = filterNode(test.getDoctype());
 
         return compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
                                       control, getXPath(controlContext),
@@ -265,6 +265,10 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                            })
             .andThen(compareDeclarations(control, controlContext,
                                          test, testContext));
+    }
+
+    private <T extends Node> T filterNode(T n) {
+        return n != null && getNodeFilter().test(n) ? n : null;
     }
 
     /**

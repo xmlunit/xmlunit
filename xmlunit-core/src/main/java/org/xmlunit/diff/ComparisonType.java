@@ -34,6 +34,11 @@ public enum ComparisonType {
     XML_ENCODING,
     /**
      * Do both documents have a DOCTYPE (or neither of each)?
+     *
+     * <p>This difference is most likely masked by a {@link
+     * #CHILD_NODELIST_LENGTH} difference as the number of children of
+     * the document node is tested before the presence of the document
+     * type declaration.</p>
      */
     HAS_DOCTYPE_DECLARATION(true),
     /**

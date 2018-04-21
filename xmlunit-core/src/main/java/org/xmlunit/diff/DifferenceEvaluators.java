@@ -193,6 +193,11 @@ public final class DifferenceEvaluators {
      *       ignorePrologDifferencesExceptDoctype()) // so most of the prolog is ignored
      * </pre>
      *
+     * <p>In general different doctype declarations will be ignored
+     * because of {@link NodeFilters.Default}, so if you want to
+     * detect these differences you need to pick a different {@code
+     * NodeFilter}.</p>
+     *
      * @since XMLUnit 2.1.0
      */
     public static DifferenceEvaluator ignorePrologDifferencesExceptDoctype() {

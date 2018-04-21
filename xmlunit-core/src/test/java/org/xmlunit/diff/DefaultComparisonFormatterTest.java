@@ -105,7 +105,9 @@ public class DefaultComparisonFormatterTest {
         DocumentBuilderFactory dbf = getDocumentBuilderFactoryWithoutValidation();
         Document controlDoc = Convert.toDocument(Input.fromString("<!DOCTYPE Book><a/>").build(), dbf);
 
-        Diff diff = DiffBuilder.compare(controlDoc).withTest("<a/>").build();
+        Diff diff = DiffBuilder.compare(controlDoc).withTest("<a/>")
+            .withDifferenceEvaluator(DifferenceEvaluators.downgradeDifferencesToEqual(ComparisonType.CHILD_NODELIST_LENGTH))
+            .withNodeFilter(NodeFilters.AcceptAll).build();
         assertPreRequirements(diff, ComparisonType.HAS_DOCTYPE_DECLARATION);
         Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
@@ -129,7 +131,9 @@ public class DefaultComparisonFormatterTest {
         Document controlDoc = Convert.toDocument(Input.fromString("<!DOCTYPE Book ><a/>").build(), dbf);
         Document testDoc = Convert.toDocument(Input.fromString("<!DOCTYPE XY ><a/>").build(), dbf);
 
-        Diff diff = DiffBuilder.compare(controlDoc).withTest(testDoc).build();
+        Diff diff = DiffBuilder.compare(controlDoc).withTest(testDoc)
+            .withDifferenceEvaluator(DifferenceEvaluators.downgradeDifferencesToEqual(ComparisonType.CHILD_NODELIST_LENGTH))
+            .withNodeFilter(NodeFilters.AcceptAll).build();
         assertPreRequirements(diff, ComparisonType.DOCTYPE_NAME);
         Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
@@ -155,7 +159,9 @@ public class DefaultComparisonFormatterTest {
         Document testDoc = Convert.toDocument(Input.fromString(
                 "<!DOCTYPE Book SYSTEM \"http://example.org/nonsense\"><a/>").build(), dbf);
 
-        Diff diff = DiffBuilder.compare(controlDoc).withTest(testDoc).build();
+        Diff diff = DiffBuilder.compare(controlDoc).withTest(testDoc)
+            .withDifferenceEvaluator(DifferenceEvaluators.downgradeDifferencesToEqual(ComparisonType.CHILD_NODELIST_LENGTH))
+            .withNodeFilter(NodeFilters.AcceptAll).build();
         assertPreRequirements(diff, ComparisonType.DOCTYPE_PUBLIC_ID);
         Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
@@ -182,7 +188,9 @@ public class DefaultComparisonFormatterTest {
         Document testDoc = Convert.toDocument(Input.fromString(
                 "<!DOCTYPE Book PUBLIC \"XMLUNIT/TEST/PUB\" \"http://example.org/404\"><a/>").build(), dbf);
 
-        Diff diff = DiffBuilder.compare(controlDoc).withTest(testDoc).build();
+        Diff diff = DiffBuilder.compare(controlDoc).withTest(testDoc)
+            .withDifferenceEvaluator(DifferenceEvaluators.downgradeDifferencesToEqual(ComparisonType.CHILD_NODELIST_LENGTH))
+            .withNodeFilter(NodeFilters.AcceptAll).build();
         assertPreRequirements(diff, ComparisonType.DOCTYPE_SYSTEM_ID);
         Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 

@@ -37,6 +37,25 @@
 
   Issue [#91](https://github.com/xmlunit/xmlunit/issues/91).
 
+* the configured `NodeFilter` is now applied before comparing
+  `DocumentType` nodes.
+
+  This change breaks backwards compatibility as the old behavior was
+  to ignore `DocumentType` when counting the children of the
+  `Document` node but not when actually comparing the
+  `DocumentType`. Prior to this change if one document had a document
+  type declaration but the other didn't, a `HAS_DOCTYPE_DECLARATION`
+  difference was detected, this will no longer be the case now. If you
+  want to detect this difference, you need to use a more lenient
+  `NodeFilter` than `NodeFilter.Default`
+  (i.e. `NodeFilters.AcceptAll`) but then you will see an additional
+  `CHILD_NODELIST_LENGTH` difference.
+
+  The legacy package has been adapted and will behave as before even
+  when using `NewDifferenceEngine`.
+
+  Issue [#116](https://github.com/xmlunit/xmlunit/issues/116).
+
 ## XMLUnit for Java 2.5.1 - /Released 2017-11-09/
 
 * Made Travis build work with OpenJDK6 again.

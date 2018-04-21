@@ -56,16 +56,20 @@ import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelector;
 import org.xmlunit.diff.ElementSelectors;
+import org.xmlunit.diff.NodeFilters;
 import org.xmlunit.diff.NodeMatcher;
 import org.xmlunit.input.CommentLessSource;
 import org.xmlunit.input.WhitespaceNormalizedSource;
 import org.xmlunit.input.WhitespaceStrippedSource;
+import org.xmlunit.util.IterableNodeList;
 import org.xmlunit.util.Linqy;
 import org.xmlunit.util.Predicate;
 import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
 
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -144,6 +148,7 @@ public class NewDifferenceEngine
     public void compare(Node control, Node test, DifferenceListener listener, 
                         ElementQualifier elementQualifier) {
         DOMDifferenceEngine engine = new DOMDifferenceEngine();
+        engine.setNodeFilter(NodeFilters.AcceptAll);
 
         final IsBetweenDocumentNodeAndRootElement checkPrelude =
             new IsBetweenDocumentNodeAndRootElement();
@@ -161,6 +166,7 @@ public class NewDifferenceEngine
             final DifferenceEvaluator evaluator =
                 DifferenceEvaluators.chain(DifferenceEvaluators.Default,
                                            DifferenceEvaluators.ignorePrologDifferencesExceptDoctype(),
+                                           new IgnoreDoctypeNotPresentDifferences(),
                                            new DifferenceListener2DifferenceEvaluator(listener));
             engine.setDifferenceEvaluator(evaluator);
         }
@@ -359,6 +365,53 @@ public class NewDifferenceEngine
             return eq.qualifyForComparison(controlElement, testElement);
         }
 
+    }
+
+    private static final class IgnoreDoctypeNotPresentDifferences implements DifferenceEvaluator {
+        public ComparisonResult evaluate(Comparison comparison,
+                                         ComparisonResult outcome) {
+            if (outcome == ComparisonResult.EQUAL) {
+                return outcome;
+            }
+            if (comparison.getType() == ComparisonType.CHILD_LOOKUP
+                && (isDoctype(comparison.getControlDetails())
+                    || isDoctype(comparison.getTestDetails()))) {
+                return ComparisonResult.EQUAL;
+            }
+            if (comparison.getType() == ComparisonType.CHILD_NODELIST_LENGTH
+                && isDocumentWithDocTypeDifference(comparison)
+                && Math.abs((Integer) comparison.getControlDetails().getValue()
+                            - (Integer) comparison.getTestDetails().getValue())
+                   == 1) {
+                return ComparisonResult.EQUAL;
+            }
+            if (comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE
+                && isDocumentWithDocTypeDifference(comparison)) {
+                return ComparisonResult.EQUAL;
+            }
+            return outcome;
+        }
+
+        private boolean isDoctype(Comparison.Detail detail) {
+            return detail != null && detail.getTarget() instanceof DocumentType;
+        }
+
+        private boolean isDocumentWithDocTypeDifference(Comparison comparison) {
+            if (!(comparison.getControlDetails().getTarget() instanceof Document)) {
+                return false;
+            }
+            return hasDoctypeChild(comparison.getControlDetails().getTarget())
+                || hasDoctypeChild(comparison.getTestDetails().getTarget());
+        }
+
+        private boolean hasDoctypeChild(Node n) {
+            return Linqy.any(new IterableNodeList(n.getChildNodes()),
+                             new Predicate<Node>() {
+                                 public boolean test(Node n) {
+                                     return n instanceof DocumentType;
+                                 }
+                             });
+        }
     }
 
     public static class DifferenceListener2DifferenceEvaluator

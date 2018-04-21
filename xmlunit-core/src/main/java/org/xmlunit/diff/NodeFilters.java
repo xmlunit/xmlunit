@@ -23,11 +23,26 @@ public final class NodeFilters {
 
     /**
      * Suppresses document-type and XML declaration nodes.
+     *
+     * <p>This is the default used by {@link AbstractDifferenceEngine}
+     * and thus {@link DOMDifferenceEngine}.</p>
      */
     public static final Predicate<Node> Default = new Predicate<Node>() {
             @Override
             public boolean test(Node n) {
                 return n.getNodeType() != Node.DOCUMENT_TYPE_NODE;
+            }
+        };
+
+    /**
+     * Accepts all nodes.
+     *
+     * @since 2.6.0
+     */
+    public static final Predicate<Node> AcceptAll = new Predicate<Node>() {
+            @Override
+            public boolean test(Node n) {
+                return true;
             }
         };
 

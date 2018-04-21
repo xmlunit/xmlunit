@@ -363,6 +363,13 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                 public ComparisonResult evaluate(Comparison comparison,
                                                  ComparisonResult outcome) {
                     if (comparison.getType()
+                        == ComparisonType.CHILD_NODELIST_LENGTH) {
+                        assertEquals(ComparisonResult.DIFFERENT, outcome);
+                        // downgrade so we get to see the HAS_DOCTYPE_DECLARATION
+                        // difference
+                        return ComparisonResult.EQUAL;
+                    }
+                    if (comparison.getType()
                         == ComparisonType.HAS_DOCTYPE_DECLARATION) {
                         assertEquals(ComparisonResult.DIFFERENT, outcome);
                         return ComparisonResult.DIFFERENT;
@@ -374,6 +381,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                 }
             });
         d.setComparisonController(ComparisonControllers.StopWhenDifferent);
+        d.setNodeFilter(NodeFilters.AcceptAll);
         Document d1 = Convert.toDocument(Input.fromString("<Book/>").build());
         Document d2 =
             Convert.toDocument(Input.fromString("<!DOCTYPE Book PUBLIC "
@@ -446,6 +454,26 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                      d.compareNodes(d1, new XPathContext(),
                                     d2, new XPathContext()));
         assertEquals(1, ex.invoked);
+    }
+
+    @Test
+    public void nodeFilterAppliesToDocTypes() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.HAS_DOCTYPE_DECLARATION);
+        d.addDifferenceListener(ex);
+        d.setComparisonController(ComparisonControllers.StopWhenDifferent);
+        Document d1 = Convert.toDocument(Input.fromString("<Book/>").build());
+        Document d2 =
+            Convert.toDocument(Input.fromString("<!DOCTYPE Book PUBLIC "
+                    + "\"XMLUNIT/TEST/PUB\" "
+                    + "\"" + TestResources.BOOK_DTD
+                    + "\">"
+                    + "<Book/>")
+                               .build());
+        assertEquals(wrap(ComparisonResult.EQUAL),
+                     d.compareNodes(d1, new XPathContext(),
+                                    d2, new XPathContext()));
+        assertEquals(0, ex.invoked);
     }
 
     private static class DocType extends NullNode implements DocumentType {
