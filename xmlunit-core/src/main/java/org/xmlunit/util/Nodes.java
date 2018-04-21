@@ -127,7 +127,7 @@ public final class Nodes {
     public static Node stripElementContentWhitespace(Node original) {
         Node cloned = original.cloneNode(true);
         cloned.normalize();
-        stripECS(cloned);
+        stripECW(cloned);
         return cloned;
     }
 
@@ -195,10 +195,10 @@ public final class Nodes {
         return changed ? sb.toString() : s;
     }
 
-    private static void stripECS(Node n) {
+    private static void stripECW(Node n) {
         List<Node> toRemove = new LinkedList<Node>();
         for (Node child : new IterableNodeList(n.getChildNodes())) {
-            stripECS(child);
+            stripECW(child);
             if (!(n instanceof Attr)
                 && (child instanceof Text || child instanceof CDATASection)
                 && child.getNodeValue().trim().length() == 0) {
