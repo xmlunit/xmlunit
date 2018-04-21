@@ -37,7 +37,7 @@ public final class NodeFilters {
     /**
      * Accepts all nodes.
      *
-     * @since 2.6.0
+     * @since XMLUnit 2.6.0
      */
     public static final Predicate<Node> AcceptAll = new Predicate<Node>() {
             @Override
