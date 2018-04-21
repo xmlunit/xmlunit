@@ -172,6 +172,15 @@ public final class CompareMatcher extends BaseMatcher<Object>
     }
 
     /**
+     * @see DiffBuilder#ignoreElementContentWhitespace()
+     * @since XMLUnit 2.6.0
+     */
+    public CompareMatcher ignoreElementContentWhitespace() {
+        diffBuilder.ignoreElementContentWhitespace();
+        return this;
+    }
+
+    /**
      * @see DiffBuilder#ignoreCommentsUsingXSLTVersion(String)
      * @since XMLUnit 2.5.0
      */

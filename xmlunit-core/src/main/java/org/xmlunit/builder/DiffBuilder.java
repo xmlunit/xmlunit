@@ -29,6 +29,7 @@ import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.NodeMatcher;
 import org.xmlunit.input.CommentLessSource;
+import org.xmlunit.input.ElementContentWhitespaceStrippedSource;
 import org.xmlunit.input.WhitespaceNormalizedSource;
 import org.xmlunit.input.WhitespaceStrippedSource;
 import org.xmlunit.util.Predicate;
@@ -95,6 +96,8 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
 
     private boolean normalizeWhitespace;
 
+    private boolean ignoreECW;
+
     private boolean ignoreComments;
 
     private String ignoreCommentVersion = null;
@@ -138,6 +141,11 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
 
     /**
      * Ignore whitespace by removing all empty text nodes and trimming the non-empty ones.
+     *
+     * <p>If you only want to remove text nodes consisting solely of
+     * whitespace (AKA element content whitespace) but leave all other
+     * text nodes alone you should use {@link
+     * #ignoreElementContentWhitespace} instead.</p>
      */
     public DiffBuilder ignoreWhitespace() {
         ignoreWhitespace = true;
@@ -153,6 +161,15 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      */
     public DiffBuilder normalizeWhitespace() {
         normalizeWhitespace = true;
+        return this;
+    }
+
+    /**
+     * Ignore element content whitespace by removing all text nodes solely consisting of whitespace.
+     * @since XMLUnit 2.6.0
+     */
+    public DiffBuilder ignoreElementContentWhitespace() {
+        ignoreECW = true;
         return this;
     }
 
@@ -416,6 +433,11 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
             newSource = ignoreCommentVersion == null
                 ? new CommentLessSource(newSource)
                 : new CommentLessSource(newSource, ignoreCommentVersion);
+        }
+        if (ignoreECW) {
+            newSource = documentBuilderFactory != null
+                ? new ElementContentWhitespaceStrippedSource(newSource, documentBuilderFactory)
+                : new ElementContentWhitespaceStrippedSource(newSource);
         }
         return newSource;
     }

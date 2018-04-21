@@ -129,6 +129,13 @@ public class CompareMatcherTest {
     }
 
     @Test
+    public void testIsIdenticalTo_withIgnoreElementContentWhitespaces_shouldSucceed() {
+
+        // run test:
+        assertThat("<a>\n  <b/>\n</a>", isIdenticalTo("<a><b/></a>").ignoreElementContentWhitespace());
+    }
+
+    @Test
     public void testIsIdenticalTo_withIgnoreComments_shouldSucceed() {
 
         // run test:
