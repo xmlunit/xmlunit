@@ -47,7 +47,7 @@
   type declaration but the other didn't, a `HAS_DOCTYPE_DECLARATION`
   difference was detected, this will no longer be the case now. If you
   want to detect this difference, you need to use a more lenient
-  `NodeFilter` than `NodeFilter.Default`
+  `NodeFilter` than `NodeFilters.Default`
   (i.e. `NodeFilters.AcceptAll`) but then you will see an additional
   `CHILD_NODELIST_LENGTH` difference.
 
