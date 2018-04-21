@@ -299,7 +299,7 @@ public class NodesTest {
     }
 
     @Test
-    public void stripECSWorks() {
+    public void stripECWWorks() {
         Node orig = handleWsSetup();
         Node s = Nodes.stripElementContentWhitespace(orig);
 
