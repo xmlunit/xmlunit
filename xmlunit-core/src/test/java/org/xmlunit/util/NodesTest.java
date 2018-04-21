@@ -297,4 +297,45 @@ public class NodesTest {
         assertEquals("foo bar", Nodes.normalize("foo\nbar"));
         assertEquals("foo bar", Nodes.normalize("foo  \r\n\t bar"));
     }
+
+    @Test
+    public void stripECSWorks() {
+        Node orig = handleWsSetup();
+        Node s = Nodes.stripElementContentWhitespace(orig);
+
+        assertTrue(s instanceof Document);
+        NodeList top = s.getChildNodes();
+        assertEquals(1, top.getLength());
+        assertTrue(top.item(0) instanceof Element);
+        assertEquals("root", top.item(0).getNodeName());
+        NodeList rootsChildren = top.item(0).getChildNodes();
+        assertEquals(4, rootsChildren.getLength());
+        assertTrue("should be comment, is " + rootsChildren.item(0).getClass(),
+                   rootsChildren.item(0) instanceof Comment);
+        assertEquals(" trim\tme ",
+                     ((Comment) rootsChildren.item(0)).getData());
+        assertTrue("should be element, is " + rootsChildren.item(1).getClass(),
+                   rootsChildren.item(1) instanceof Element);
+        assertEquals("child", rootsChildren.item(1).getNodeName());
+        assertTrue("should be cdata, is " + rootsChildren.item(2).getClass(),
+                   rootsChildren.item(2) instanceof CDATASection);
+        assertEquals(" trim me ",
+                     ((CDATASection) rootsChildren.item(2)).getData());
+        assertTrue("should be PI, is " + rootsChildren.item(3).getClass(),
+                   rootsChildren.item(3) instanceof ProcessingInstruction);
+        assertEquals("trim me ",
+                     ((ProcessingInstruction) rootsChildren.item(3)).getData());
+        Node child = rootsChildren.item(1);
+        NodeList grandChildren = child.getChildNodes();
+        assertEquals(1, grandChildren.getLength());
+        assertTrue("should be text, is " + grandChildren.item(0).getClass(),
+                   grandChildren.item(0) instanceof Text);
+        assertEquals("\n trim me \n", ((Text) grandChildren.item(0)).getData());
+        NamedNodeMap attrs = child.getAttributes();
+        assertEquals(2, attrs.getLength());
+        Attr a = (Attr) attrs.getNamedItem("attr");
+        assertEquals(" trim me ", a.getValue());
+        Attr a2 = (Attr) attrs.getNamedItem("attr2");
+        assertEquals("not me", a2.getValue());
+    }
 }

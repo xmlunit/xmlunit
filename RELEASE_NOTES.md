@@ -56,6 +56,12 @@
 
   Issue [#116](https://github.com/xmlunit/xmlunit/issues/116).
 
+* added a new `Source` implementation
+  `ElementContentWhitespaceStrippedSource` which is similar to
+  `WhitespaceStrippedSource` but only affects text nodes that solely
+  consist of whitespace and doesn't affect any other text nodes.
+  Issue [#119](https://github.com/xmlunit/xmlunit/issues/119).
+
 ## XMLUnit for Java 2.5.1 - /Released 2017-11-09/
 
 * Made Travis build work with OpenJDK6 again.

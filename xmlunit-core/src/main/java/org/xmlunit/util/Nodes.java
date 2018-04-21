@@ -115,6 +115,23 @@ public final class Nodes {
     }
 
     /**
+     * Creates a new Node (of the same type as the original node) that
+     * is similar to the orginal but doesn't contain any text or CDATA
+     * nodes that only consist of whitespace.
+     *
+     * <p>This doesn't have any effect if applied to a text or CDATA
+     * node itself.</p>
+     *
+     * @since XMLUnit 2.6.0
+     */
+    public static Node stripElementContentWhitespace(Node original) {
+        Node cloned = original.cloneNode(true);
+        cloned.normalize();
+        stripECS(cloned);
+        return cloned;
+    }
+
+    /**
      * Trims textual content of this node, removes empty text and
      * CDATA children, recurses into its child nodes.
      * @param normalize whether to normalize whitespace as well
@@ -177,4 +194,20 @@ public final class Nodes {
         }
         return changed ? sb.toString() : s;
     }
+
+    private static void stripECS(Node n) {
+        List<Node> toRemove = new LinkedList<Node>();
+        for (Node child : new IterableNodeList(n.getChildNodes())) {
+            stripECS(child);
+            if (!(n instanceof Attr)
+                && (child instanceof Text || child instanceof CDATASection)
+                && child.getNodeValue().trim().length() == 0) {
+                toRemove.add(child);
+            }
+        }
+        for (Node child : toRemove) {
+            n.removeChild(child);
+        }
+    }
+
 }

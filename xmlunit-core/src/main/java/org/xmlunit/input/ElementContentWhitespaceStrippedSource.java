@@ -21,37 +21,34 @@ import org.xmlunit.util.Nodes;
 
 /**
  * A source that is obtained from a different source by removing all
- * empty text nodes and trimming the non-empty ones.
+ * text nodes that only contain whitespace.
  *
- * <p>If you only want to remove text nodes consisting solely of
- * whitespace (AKA element content whitespace) but leave all other
- * text nodes alone you should use {@link
- * ElementContentWhitespaceStrippedSource} instead.</p>
+ * @since XMLUnit 2.6.0
  */
-public class WhitespaceStrippedSource extends DOMSource {
+public class ElementContentWhitespaceStrippedSource extends DOMSource {
 
     /**
      * Creates a new source that consists of the given source with all
-     * empty text nodes removed and all non-empty text nodes trimmed.
+     * text nodes that only contain whitespace stripped.
      *
      * @param originalSource the original source
      */
-    public WhitespaceStrippedSource(Source originalSource) {
-        super(Nodes.stripWhitespace(Convert.toDocument(originalSource)));
+    public ElementContentWhitespaceStrippedSource(Source originalSource) {
+        super(Nodes.stripElementContentWhitespace(Convert.toDocument(originalSource)));
         setSystemId(originalSource.getSystemId());
     }
 
     /**
      * Creates a new source that consists of the given source with all
-     * empty text nodes removed and all non-empty text nodes trimmed.
+     * text nodes that only contain whitespace stripped.
      *
      * @param originalSource the original source
      * @param dbf the DocumentBuilderFactory to use when creating a
      * DOM document from originalSource
      */
-    public WhitespaceStrippedSource(Source originalSource,
-                                    DocumentBuilderFactory dbf) {
-        super(Nodes.stripWhitespace(Convert.toDocument(originalSource, dbf)));
+    public ElementContentWhitespaceStrippedSource(Source originalSource,
+                                                  DocumentBuilderFactory dbf) {
+        super(Nodes.stripElementContentWhitespace(Convert.toDocument(originalSource, dbf)));
         setSystemId(originalSource.getSystemId());
     }
 }
