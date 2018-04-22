@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.6.0 - /Not Released, yet/
+## XMLUnit for Java 2.6.0 - /Released 2018-04-22/
 
 * add a new experimental project xmlunit-placeholders which aims to
   use `${xmlunit.FOO}` expressions inside of the control document to
