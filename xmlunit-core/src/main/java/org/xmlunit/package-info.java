@@ -14,6 +14,6 @@
 
 /**
  * XMLUnit helps testing code that creates XML.
- * @see "http://www.xmlunit.org/"
+ * @see "https://www.xmlunit.org/"
  */
 package org.xmlunit;

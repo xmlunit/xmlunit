@@ -117,7 +117,7 @@ public class JaxbBuilderTest {
     @Test
     public void testMarchal_withJaxbElement_shouldReturnSource() throws Exception {
         // prepare test data
-        QName name = new QName("http://www.xmlunit.org/test/complexXml", "ComplexNode", "nsXY");
+        QName name = new QName("https://www.xmlunit.org/test/complexXml", "ComplexNode", "nsXY");
         final Object testJAXBElement = new JAXBElement<ComplexNode>(name, ComplexNode.class, createComplexNode("123"));
 
         // run test

@@ -26,7 +26,7 @@
   <packaging>jar</packaging>
   <name>org.xmlunit:xmlunit-matchers</name>
   <description>XMLUnit for Java Hamcrest Matchers</description>
-  <url>http://www.xmlunit.org/</url>
+  <url>https://www.xmlunit.org/</url>
 
   <dependencies>
     <dependency>

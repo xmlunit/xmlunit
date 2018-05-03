@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *         &lt;element name="Number" type="{http://www.w3.org/2001/XMLSchema}int" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="Double" type="{http://www.w3.org/2001/XMLSchema}double" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="Decimal" type="{http://www.w3.org/2001/XMLSchema}decimal" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element name="ComplexNode" type="{http://www.xmlunit.org/test/complexXml}ComplexNode" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="ComplexNode" type="{https://www.xmlunit.org/test/complexXml}ComplexNode" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>

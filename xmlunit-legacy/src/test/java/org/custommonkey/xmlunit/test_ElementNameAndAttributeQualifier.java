@@ -139,7 +139,7 @@ public class test_ElementNameAndAttributeQualifier extends TestCase {
 
     public void testNamespacedQualifyingAttribute() throws Exception {
         final String attrName = "id";
-        final String nsURI = "http://www.xmlunit.org/tests";
+        final String nsURI = "https://www.xmlunit.org/tests";
 
         elementNameAndAttributeQualifier = new ElementNameAndAttributeQualifier();
         testAssertionsFor(attrName, nsURI, new boolean[] {false, false}, true);

@@ -78,19 +78,19 @@ public class RecursiveXPathBuilderTest {
 
     @Test
     public void namespaceButNoMap() {
-        Element e = doc.createElementNS("http://www.xmlunit.org/test", "foo");
-        e.setAttributeNS("http://www.xmlunit.org/test", "foo", "bar");
-        e.setAttributeNS("http://www.xmlunit.org/test", "baz", "xyzzy");
+        Element e = doc.createElementNS("https://www.xmlunit.org/test", "foo");
+        e.setAttributeNS("https://www.xmlunit.org/test", "foo", "bar");
+        e.setAttributeNS("https://www.xmlunit.org/test", "baz", "xyzzy");
         assertEquals("/foo[1]/@foo",
                      builder.apply(e.getAttributeNode("foo")).getXPath());
     }
 
     @Test
     public void namespaceWithMap() {
-        Element e = doc.createElementNS("http://www.xmlunit.org/test", "foo");
-        e.setAttributeNS("http://www.xmlunit.org/test", "foo", "bar");
-        e.setAttributeNS("http://www.xmlunit.org/test", "baz", "xyzzy");
-        Map<String, String> p2u = Collections.singletonMap("x", "http://www.xmlunit.org/test");
+        Element e = doc.createElementNS("https://www.xmlunit.org/test", "foo");
+        e.setAttributeNS("https://www.xmlunit.org/test", "foo", "bar");
+        e.setAttributeNS("https://www.xmlunit.org/test", "baz", "xyzzy");
+        Map<String, String> p2u = Collections.singletonMap("x", "https://www.xmlunit.org/test");
         builder.setNamespaceContext(p2u);
         assertEquals("/x:foo[1]/@x:foo",
                      builder.apply(e.getAttributeNode("foo")).getXPath());

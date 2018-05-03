@@ -21,7 +21,7 @@
   <version>2.6.1-SNAPSHOT</version>
   <name>org.xmlunit:xmlunit-parent</name>
   <description>Parent POM for all artifacts of XMLUnit</description>
-  <url>http://www.xmlunit.org/</url>
+  <url>https://www.xmlunit.org/</url>
 
   <properties>
     <maven.compile.source>1.6</maven.compile.source>
@@ -49,7 +49,7 @@
 
   <organization>
     <name>XMLUnit</name>
-    <url>http://www.xmlunit.org/</url>
+    <url>https://www.xmlunit.org/</url>
   </organization>
 
   <scm>
@@ -85,7 +85,7 @@
       <name>XMLUnit Contributors</name>
       <email>xmlunit-general@lists.sourceforge.net</email>
       <organization>XMLUnit</organization>
-      <organizationUrl>http://www.xmlunit.org/</organizationUrl>
+      <organizationUrl>https://www.xmlunit.org/</organizationUrl>
     </developer>
   </developers>
 

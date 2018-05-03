@@ -31,7 +31,7 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _ComplexNode_QNAME = new QName("http://www.xmlunit.org/test/complexXml", "ComplexNode");
+    private final static QName _ComplexNode_QNAME = new QName("https://www.xmlunit.org/test/complexXml", "ComplexNode");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.xmlunit.test.jaxb
@@ -59,7 +59,7 @@ public class ObjectFactory {
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ComplexNode }{@code >}
      */
-    @XmlElementDecl(namespace = "http://www.xmlunit.org/test/complexXml", name = "ComplexNode")
+    @XmlElementDecl(namespace = "https://www.xmlunit.org/test/complexXml", name = "ComplexNode")
     public JAXBElement<ComplexNode> createComplexNode(ComplexNode value) {
         return new JAXBElement<ComplexNode>(_ComplexNode_QNAME, ComplexNode.class, null, value);
     }
