@@ -15,11 +15,11 @@ public class IterableNodeAssert extends FactoryBasedNavigableIterableAssert<Iter
         this.root = root;
     }
 
-    public IterableNodeAssert exists() {
+    public IterableNodeAssert exist() {
         return isNotEmpty();
     }
 
-    public void notExists() {
+    public void notExist() {
         isEmpty();
     }
 }

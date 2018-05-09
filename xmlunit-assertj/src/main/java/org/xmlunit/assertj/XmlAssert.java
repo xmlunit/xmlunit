@@ -12,6 +12,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import java.util.Map;
 
+import static org.assertj.core.error.ShouldNotHaveThrown.shouldNotHaveThrown;
+
 public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
 
     private DocumentBuilderFactory dbf;
@@ -27,15 +29,32 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
 
     public IterableNodeAssert nodesByXPath(String xPath) {
         isNotNull();
+
         Assertions.assertThat(xPath).isNotBlank();
 
-        XPathEngine xPathEngine = createXPathEngine();
+        try {
+            XPathEngine xPathEngine = createXPathEngine();
 
-        Source s = Input.from(actual).build();
-        Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
-        Iterable<Node> nodes = xPathEngine.selectNodes(xPath, root);
+            Source s = Input.from(actual).build();
+            Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
+            Iterable<Node> nodes = xPathEngine.selectNodes(xPath, root);
 
-        return new IterableNodeAssert(nodes, xPathEngine, root);
+            return new IterableNodeAssert(nodes, xPathEngine, root);
+
+        } catch (Exception e) {
+
+            throwAssertionError(shouldNotHaveThrown(e));
+        }
+
+        return null;
+    }
+
+    public IterableNodeAssert hasXPath(String xPath) {
+        return nodesByXPath(xPath).exist();
+    }
+
+    public void hasNotXPath(String xPath) {
+        nodesByXPath(xPath).notExist();
     }
 
     public XmlAssert withDocumentBuildFactory(DocumentBuilderFactory dbf) {
