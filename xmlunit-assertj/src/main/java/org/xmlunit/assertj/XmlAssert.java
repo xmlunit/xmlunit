@@ -25,7 +25,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
         return new XmlAssert(o);
     }
 
-    public IterableNodeAssert nodes(String xPath) {
+    public IterableNodeAssert nodesByXPath(String xPath) {
         isNotNull();
         Assertions.assertThat(xPath).isNotBlank();
 
