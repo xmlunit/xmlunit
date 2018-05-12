@@ -22,22 +22,25 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
 
     public NodeAssert hasAttribute(String attributeName) {
         isNotNull();
-        requestAttributeForName(attributeName);
+        final Map.Entry<QName, String> entry = attributeForName(attributeName);
+        if(entry == null) {
+            throwAssertionError(shouldHaveAttribute(actual.getNodeName(), attributeName));
+        }
         return this;
     }
 
     public NodeAssert hasAttribute(String attributeName, String attributeValue) {
         isNotNull();
 
-        final Map.Entry<QName, String> attribute = requestAttributeForName(attributeName);
-        if (!attribute.getValue().equals(attributeValue)) {
-            throwAssertionError(shouldHaveAttributeWithValue(actual, attributeName, attributeValue));
+        final Map.Entry<QName, String> attribute = attributeForName(attributeName);
+        if (attribute == null || !attribute.getValue().equals(attributeValue)) {
+            throwAssertionError(shouldHaveAttributeWithValue(actual.getNodeName(), attributeName, attributeValue));
         }
 
         return this;
     }
 
-    private Map.Entry<QName, String> requestAttributeForName(String attributeName) {
+    private Map.Entry<QName, String> attributeForName(String attributeName) {
 
         Map<QName, String> attributes = Nodes.getAttributes(actual);
 
@@ -48,7 +51,6 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
             }
         }
 
-        throwAssertionError(shouldHaveAttribute(actual, attributeName));
         return null;
     }
 
