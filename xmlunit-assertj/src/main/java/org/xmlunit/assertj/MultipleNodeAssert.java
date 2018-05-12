@@ -4,18 +4,18 @@ import org.assertj.core.api.FactoryBasedNavigableIterableAssert;
 import org.w3c.dom.Node;
 import org.xmlunit.xpath.XPathEngine;
 
-public class IterableNodeAssert extends FactoryBasedNavigableIterableAssert<IterableNodeAssert, Iterable<Node>, Node, NodeAssert> {
+public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<MultipleNodeAssert, Iterable<Node>, Node, SingleNodeAssert> {
 
     private final XPathEngine xPathEngine;
     private final Node root;
 
-    public IterableNodeAssert(Iterable<Node> nodes, XPathEngine xPathEngine, Node root) {
-        super(nodes, IterableNodeAssert.class, new NodeAssertFactory(xPathEngine));
+    public MultipleNodeAssert(Iterable<Node> nodes, XPathEngine xPathEngine, Node root) {
+        super(nodes, MultipleNodeAssert.class, new NodeAssertFactory(xPathEngine));
         this.xPathEngine = xPathEngine;
         this.root = root;
     }
 
-    public IterableNodeAssert exist() {
+    public MultipleNodeAssert exist() {
         return isNotEmpty();
     }
 

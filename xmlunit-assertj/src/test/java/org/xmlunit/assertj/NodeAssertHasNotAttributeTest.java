@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
 
-public class NodeAssertHasAttributeTest {
+public class NodeAssertHasNotAttributeTest {
 
     @Rule
     public ExpectedException thrown = none();
@@ -169,7 +169,7 @@ public class NodeAssertHasAttributeTest {
     public void testHasAttribute_forLastNode_shouldFailed() {
 
         thrown.expectAssertionError("Expecting:\n <entry>\nto have attribute:\n <attr2>\n with value:\n <value2>");
-
+        
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
                 "   <entry attr2=\"value2\">" +

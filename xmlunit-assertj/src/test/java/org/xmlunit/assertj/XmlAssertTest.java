@@ -14,11 +14,11 @@ public class XmlAssertTest {
 
     @Test
     public void testXPath_shouldReturnNotNull() {
-        final IterableNodeAssert iterableNodeAssert1 = assertThat("<a><b></b><c/></a>").nodesByXPath("/a");
-        final IterableNodeAssert iterableNodeAssert2 = assertThat("<a><b></b><c/></a>").nodesByXPath("/x");
+        final MultipleNodeAssert multipleNodeAssert1 = assertThat("<a><b></b><c/></a>").nodesByXPath("/a");
+        final MultipleNodeAssert multipleNodeAssert2 = assertThat("<a><b></b><c/></a>").nodesByXPath("/x");
 
-        Assertions.assertThat(iterableNodeAssert1).isNotNull();
-        Assertions.assertThat(iterableNodeAssert2).isNotNull();
+        Assertions.assertThat(multipleNodeAssert1).isNotNull();
+        Assertions.assertThat(multipleNodeAssert2).isNotNull();
     }
 
     @Test

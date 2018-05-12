@@ -27,7 +27,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
         return new XmlAssert(o);
     }
 
-    public IterableNodeAssert nodesByXPath(String xPath) {
+    public MultipleNodeAssert nodesByXPath(String xPath) {
         isNotNull();
 
         Assertions.assertThat(xPath).isNotBlank();
@@ -39,7 +39,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
             Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
             Iterable<Node> nodes = xPathEngine.selectNodes(xPath, root);
 
-            return new IterableNodeAssert(nodes, xPathEngine, root);
+            return new MultipleNodeAssert(nodes, xPathEngine, root);
 
         } catch (Exception e) {
 
@@ -49,7 +49,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
         return null;
     }
 
-    public IterableNodeAssert hasXPath(String xPath) {
+    public MultipleNodeAssert hasXPath(String xPath) {
         return nodesByXPath(xPath).exist();
     }
 

@@ -11,16 +11,16 @@ import java.util.Map;
 import static org.xmlunit.assertj.ShouldHaveAttribute.shouldHaveAttribute;
 import static org.xmlunit.assertj.ShouldHaveAttribute.shouldHaveAttributeWithValue;
 
-public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
+public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
 
     private final XPathEngine xPathEngine;
 
-    NodeAssert(Node node, XPathEngine xPathEngine) {
-        super(node, NodeAssert.class);
+    SingleNodeAssert(Node node, XPathEngine xPathEngine) {
+        super(node, SingleNodeAssert.class);
         this.xPathEngine = xPathEngine;
     }
 
-    public NodeAssert hasAttribute(String attributeName) {
+    public SingleNodeAssert hasAttribute(String attributeName) {
         isNotNull();
         final Map.Entry<QName, String> entry = attributeForName(attributeName);
         if(entry == null) {
@@ -29,7 +29,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
         return this;
     }
 
-    public NodeAssert hasAttribute(String attributeName, String attributeValue) {
+    public SingleNodeAssert hasAttribute(String attributeName, String attributeValue) {
         isNotNull();
 
         final Map.Entry<QName, String> attribute = attributeForName(attributeName);

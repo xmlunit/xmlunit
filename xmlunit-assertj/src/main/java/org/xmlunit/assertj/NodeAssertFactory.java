@@ -4,7 +4,7 @@ import org.assertj.core.api.AssertFactory;
 import org.w3c.dom.Node;
 import org.xmlunit.xpath.XPathEngine;
 
-class NodeAssertFactory implements AssertFactory<Node, NodeAssert> {
+class NodeAssertFactory implements AssertFactory<Node, SingleNodeAssert> {
 
     private final XPathEngine xPathEngine;
 
@@ -13,7 +13,7 @@ class NodeAssertFactory implements AssertFactory<Node, NodeAssert> {
     }
 
     @Override
-    public NodeAssert createAssert(Node node) {
-        return new NodeAssert(node, xPathEngine);
+    public SingleNodeAssert createAssert(Node node) {
+        return new SingleNodeAssert(node, xPathEngine);
     }
 }
