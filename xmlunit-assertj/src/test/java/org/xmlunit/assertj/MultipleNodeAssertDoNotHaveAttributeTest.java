@@ -3,16 +3,17 @@ package org.xmlunit.assertj;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static java.lang.String.format;
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
 
-public class MultipleNodeAssertHaveNotAttributeTest {
+public class MultipleNodeAssertDoNotHaveAttributeTest {
 
     @Rule
     public ExpectedException thrown = none();
 
     @Test
-    public void testHaveNotAttribute_withAnyValue_shouldPass() {
+    public void testDoNotHaveAttribute_withAnyValue_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -27,11 +28,11 @@ public class MultipleNodeAssertHaveNotAttributeTest {
 
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
-                .haveNotAttribute("attr");
+                .doNotHaveAttribute("attr");
     }
 
     @Test
-    public void testHaveNotAttribute_withValue_shouldPass() {
+    public void testDoNotHaveAttribute_withValue_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -46,11 +47,11 @@ public class MultipleNodeAssertHaveNotAttributeTest {
 
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
-                .haveNotAttribute("attr", "value");
+                .doNotHaveAttribute("attr", "value");
     }
 
     @Test
-    public void testHaveNotAttribute_withMultipleAttributes_shouldPass() {
+    public void testDoNotHaveAttribute_withMultipleAttributes_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -66,12 +67,12 @@ public class MultipleNodeAssertHaveNotAttributeTest {
 
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
-                .haveNotAttribute("attr1")
-                .haveNotAttribute("attr2");
+                .doNotHaveAttribute("attr1")
+                .doNotHaveAttribute("attr2");
     }
 
     @Test
-    public void testHaveNotAttribute_withMultipleAttributeWithValues_shouldPass() {
+    public void testDoNotHaveAttribute_withMultipleAttributeWithValues_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -86,15 +87,15 @@ public class MultipleNodeAssertHaveNotAttributeTest {
 
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
-                .haveNotAttribute("attr1", "value1")
-                .haveNotAttribute("attr2", "value2");
+                .doNotHaveAttribute("attr1", "value1")
+                .doNotHaveAttribute("attr2", "value2");
     }
 
     @Test
-    public void testHaveNotAttribute_withAnyValue_shouldFailed() {
+    public void testDoNotHaveAttribute_withAnyValue_shouldFailed() {
 
         thrown.expectAssertionError("check node at index 1");
-        thrown.expectAssertionError("Expecting:\n <entry>\nnot to have attribute:\n <attr>");
+        thrown.expectAssertionError(format("Expecting:%n <entry>%nnot to have attribute:%n <attr>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -109,14 +110,14 @@ public class MultipleNodeAssertHaveNotAttributeTest {
 
         assertThat(xml)
                 .hasXPath("/feed/entry")
-                .haveNotAttribute("attr");
+                .doNotHaveAttribute("attr");
     }
 
     @Test
-    public void testHaveNotAttribute_withValue_shouldFailed() {
+    public void testDoNotHaveAttribute_withValue_shouldFailed() {
 
         thrown.expectAssertionError("check node at index 1");
-        thrown.expectAssertionError("Expecting:\n <entry>\nnot to have attribute:\n <attr>\nwith value:\n <value>");
+        thrown.expectAssertionError(format("Expecting:%n <entry>%nnot to have attribute:%n <attr>%nwith value:%n <value>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -131,14 +132,14 @@ public class MultipleNodeAssertHaveNotAttributeTest {
 
         assertThat(xml)
                 .hasXPath("/feed/entry")
-                .haveNotAttribute("attr", "value");
+                .doNotHaveAttribute("attr", "value");
     }
 
     @Test
-    public void testHaveNotAttribute_withMultipleAttributes_shouldFailed() {
+    public void testDoNotHaveAttribute_withMultipleAttributes_shouldFailed() {
 
         thrown.expectAssertionError("check node at index 2");
-        thrown.expectAssertionError("Expecting:\n <entry>\nnot to have attribute:\n <attr1>");
+        thrown.expectAssertionError(format("Expecting:%n <entry>%nnot to have attribute:%n <attr1>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -157,15 +158,15 @@ public class MultipleNodeAssertHaveNotAttributeTest {
 
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
-                .haveNotAttribute("attr1")
-                .haveNotAttribute("attr2");
+                .doNotHaveAttribute("attr1")
+                .doNotHaveAttribute("attr2");
     }
 
     @Test
-    public void testHaveNotAttribute_withMultipleAttributeWithValues_shouldFailed() {
+    public void testDoNotHaveAttribute_withMultipleAttributeWithValues_shouldFailed() {
 
         thrown.expectAssertionError("check node at index 2");
-        thrown.expectAssertionError("Expecting:\n <entry>\nnot to have attribute:\n <attr2>\nwith value:\n <value2>");
+        thrown.expectAssertionError(format("Expecting:%n <entry>%nnot to have attribute:%n <attr2>%nwith value:%n <value2>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -186,8 +187,8 @@ public class MultipleNodeAssertHaveNotAttributeTest {
 
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
-                .haveNotAttribute("attr1", "value1")
-                .haveNotAttribute("attr2", "value2");
+                .doNotHaveAttribute("attr1", "value1")
+                .doNotHaveAttribute("attr2", "value2");
     }
 
     @Test
@@ -207,7 +208,7 @@ public class MultipleNodeAssertHaveNotAttributeTest {
 
         assertThat(xml)
                 .nodesByXPath("/feed/abc")
-                .haveNotAttribute("attr1")
-                .haveNotAttribute("attr2", "value2");
+                .doNotHaveAttribute("attr1")
+                .doNotHaveAttribute("attr2", "value2");
     }
 }

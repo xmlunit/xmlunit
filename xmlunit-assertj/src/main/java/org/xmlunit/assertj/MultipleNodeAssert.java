@@ -36,7 +36,7 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
     /**
      * Equivalent for {@link #isEmpty()}.
      */
-    public void notExist() {
+    public void doNotExist() {
         isEmpty();
     }
 
@@ -90,13 +90,13 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
      * @throws AssertionError if the actual nodes iterable is {@code null}.
      * @throws AssertionError if any node has attribute with given name.
      */
-    public MultipleNodeAssert haveNotAttribute(final String attributeName) {
+    public MultipleNodeAssert doNotHaveAttribute(final String attributeName) {
         isNotNull();
 
         allSatisfy(new SingleNodeAssertConsumer() {
             @Override
             public void accept(SingleNodeAssert singleNodeAssert) {
-                singleNodeAssert.hasNotAttribute(attributeName);
+                singleNodeAssert.doesNotHaveAttribute(attributeName);
             }
         });
 
@@ -111,13 +111,13 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
      * @throws AssertionError if the actual nodes iterable is {@code null}.
      * @throws AssertionError if any node has attribute with given name and value.
      */
-    public MultipleNodeAssert haveNotAttribute(final String attributeName, final String attributeValue) {
+    public MultipleNodeAssert doNotHaveAttribute(final String attributeName, final String attributeValue) {
         isNotNull();
 
         allSatisfy(new SingleNodeAssertConsumer() {
             @Override
             public void accept(SingleNodeAssert singleNodeAssert) {
-                singleNodeAssert.hasNotAttribute(attributeName, attributeValue);
+                singleNodeAssert.doesNotHaveAttribute(attributeName, attributeValue);
             }
         });
 

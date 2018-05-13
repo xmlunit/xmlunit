@@ -127,6 +127,24 @@ public class XmlAssertHasXPathTest {
     }
 
     @Test
+    public void testHasXPath_withDocumentBuildFactory_shouldPass() {
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <entry>" +
+                "       <title>title1</title>" +
+                "       <id>id1</id>" +
+                "   </entry>" +
+                "</feed>";
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+        assertThat(xml)
+                .withDocumentBuildFactory(dbf)
+                .hasXPath("//entry/title");
+    }
+
+    @Test
     public void testHasXPath_withInvalidNamespacesContext_shouldFailed() {
 
         thrown.expectAssertionError("Expecting actual not to be empty");
@@ -157,5 +175,6 @@ public class XmlAssertHasXPathTest {
 
         assertThat(xml).hasXPath("//atom:feed/atom:entry/atom:id");
     }
+
 
 }

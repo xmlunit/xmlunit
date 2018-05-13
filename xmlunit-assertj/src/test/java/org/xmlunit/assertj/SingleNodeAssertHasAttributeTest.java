@@ -3,6 +3,7 @@ package org.xmlunit.assertj;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static java.lang.String.format;
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
 
@@ -118,7 +119,7 @@ public class SingleNodeAssertHasAttributeTest {
     @Test
     public void testHasAttribute_withAnyValue_shouldFailed() {
 
-        thrown.expectAssertionError("Expecting:\n <title>\nto have attribute:\n <attr>");
+        thrown.expectAssertionError(format("Expecting:%n <title>%nto have attribute:%n <attr>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -137,7 +138,7 @@ public class SingleNodeAssertHasAttributeTest {
     @Test
     public void testHasAttribute_withValue_shouldFailed() {
 
-        thrown.expectAssertionError("Expecting:\n <entry>\nto have attribute:\n <attr>\nwith value:\n <value>");
+        thrown.expectAssertionError(format("Expecting:%n <entry>%nto have attribute:%n <attr>%nwith value:%n <value>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -156,7 +157,7 @@ public class SingleNodeAssertHasAttributeTest {
     @Test
     public void testHasAttribute_withMultipleAttributes_shouldFailed() {
 
-        thrown.expectAssertionError("Expecting:\n <entry>\nto have attribute:\n <attr2>\nwith value:\n <value2>");
+        thrown.expectAssertionError(format("Expecting:%n <entry>%nto have attribute:%n <attr2>%nwith value:%n <value2>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -176,7 +177,7 @@ public class SingleNodeAssertHasAttributeTest {
     @Test
     public void testHasAttribute_forFirstNode_shouldFailed() {
 
-        thrown.expectAssertionError("Expecting:\n <entry>\nto have attribute:\n <attr1>\nwith value:\n <value1>");
+        thrown.expectAssertionError(format("Expecting:%n <entry>%nto have attribute:%n <attr1>%nwith value:%n <value1>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -197,7 +198,7 @@ public class SingleNodeAssertHasAttributeTest {
     @Test
     public void testHasAttribute_forLastNode_shouldFailed() {
 
-        thrown.expectAssertionError("Expecting:\n <entry>\nto have attribute:\n <attr2>\nwith value:\n <value2>");
+        thrown.expectAssertionError(format("Expecting:%n <entry>%nto have attribute:%n <attr2>%nwith value:%n <value2>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +

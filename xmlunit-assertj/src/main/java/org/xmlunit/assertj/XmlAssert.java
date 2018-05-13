@@ -30,7 +30,7 @@ import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
  *
  * assertThat(xml).nodesByXPath("//a/b/@attr").exist();
  * assertThat(xml).hasXPath("//a/b/@attr");
- * assertThat(xml).hasNotXPath("//a/b/c");
+ * assertThat(xml).doesNotHaveXPath("//a/b/c");
  * </pre>
  *
  * <p><b>Example with namespace mapping</b></p>
@@ -106,10 +106,10 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     }
 
     /**
-     * Equivalent for <pre>{@link #nodesByXPath(String) nodesByXPath(xPath)}.{@link MultipleNodeAssert#exist() notExist()}</pre>
+     * Equivalent for <pre>{@link #nodesByXPath(String) nodesByXPath(xPath)}.{@link MultipleNodeAssert#doNotExist() doNotExist()}</pre>
      */
-    public void hasNotXPath(String xPath) {
-        nodesByXPath(xPath).notExist();
+    public void doesNotHaveXPath(String xPath) {
+        nodesByXPath(xPath).doNotExist();
     }
 
     /**

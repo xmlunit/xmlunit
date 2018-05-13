@@ -70,7 +70,7 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
      * @throws AssertionError if the actual node is {@code null}.
      * @throws AssertionError if node has attribute with given name.
      */
-    public SingleNodeAssert hasNotAttribute(String attributeName) {
+    public SingleNodeAssert doesNotHaveAttribute(String attributeName) {
         isNotNull();
         
         final Map.Entry<QName, String> entry = attributeForName(attributeName);
@@ -86,7 +86,7 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
      * @throws AssertionError if the actual node is {@code null}.
      * @throws AssertionError if node has attribute with given name and value.
      */
-    public SingleNodeAssert hasNotAttribute(String attributeName, String attributeValue) {
+    public SingleNodeAssert doesNotHaveAttribute(String attributeName, String attributeValue) {
         isNotNull();
 
         final Map.Entry<QName, String> attribute = attributeForName(attributeName);

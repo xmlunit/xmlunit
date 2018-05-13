@@ -3,16 +3,17 @@ package org.xmlunit.assertj;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static java.lang.String.format;
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
 
-public class SingleNodeAssertHasNotAttributeTest {
+public class SingleNodeAssertDoesNotHaveAttributeTest {
 
     @Rule
     public ExpectedException thrown = none();
 
     @Test
-    public void testHasNotAttribute_forNodeWithoutAttribute_shouldPass() {
+    public void testDoesNotHaveAttribute_forNodeWithoutAttribute_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -25,11 +26,11 @@ public class SingleNodeAssertHasNotAttributeTest {
         assertThat(xml)
                 .nodesByXPath("/feed/title")
                 .first()
-                .hasNotAttribute("attr");
+                .doesNotHaveAttribute("attr");
     }
 
     @Test
-    public void testHasNotAttribute_withValue_forNodeWithoutAttribute_shouldPass() {
+    public void testDoesNotHaveAttribute_withValue_forNodeWithoutAttribute_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -42,11 +43,11 @@ public class SingleNodeAssertHasNotAttributeTest {
         assertThat(xml)
                 .nodesByXPath("/feed/title")
                 .first()
-                .hasNotAttribute("attr", "value");
+                .doesNotHaveAttribute("attr", "value");
     }
 
     @Test
-    public void testHasNotAttribute_forNodeWithAttribute_shouldPass() {
+    public void testDoesNotHaveAttribute_forNodeWithAttribute_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -59,11 +60,11 @@ public class SingleNodeAssertHasNotAttributeTest {
         assertThat(xml)
                 .nodesByXPath("/feed/title")
                 .first()
-                .hasNotAttribute("attr");
+                .doesNotHaveAttribute("attr");
     }
 
     @Test
-    public void testHasNotAttribute_withValue_forNodeWithAttribute_shouldPass() {
+    public void testDoesNotHaveAttribute_withValue_forNodeWithAttribute_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -76,11 +77,11 @@ public class SingleNodeAssertHasNotAttributeTest {
         assertThat(xml)
                 .nodesByXPath("/feed/title")
                 .first()
-                .hasNotAttribute("attr", "value");
+                .doesNotHaveAttribute("attr", "value");
     }
 
     @Test
-    public void testHasNotAttribute_forNodeWithMultipleAttributes_shouldPass() {
+    public void testDoesNotHaveAttribute_forNodeWithMultipleAttributes_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -93,12 +94,12 @@ public class SingleNodeAssertHasNotAttributeTest {
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
                 .first()
-                .hasNotAttribute("attr1")
-                .hasNotAttribute("attr2");
+                .doesNotHaveAttribute("attr1")
+                .doesNotHaveAttribute("attr2");
     }
 
     @Test
-    public void testHasNotAttribute_withValue_forNodeWithMultipleAttributes_shouldPass() {
+    public void testDoesNotHaveAttribute_withValue_forNodeWithMultipleAttributes_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -111,12 +112,12 @@ public class SingleNodeAssertHasNotAttributeTest {
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
                 .first()
-                .hasNotAttribute("attr1", "value1")
-                .hasNotAttribute("attr2", "value2");
+                .doesNotHaveAttribute("attr1", "value1")
+                .doesNotHaveAttribute("attr2", "value2");
     }
 
     @Test
-    public void testHasNotAttribute_withMultipleMatchingNodes_shouldPass() {
+    public void testDoesNotHaveAttribute_withMultipleMatchingNodes_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -137,23 +138,23 @@ public class SingleNodeAssertHasNotAttributeTest {
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
                 .first()
-                .hasNotAttribute("attr1", "value1");
+                .doesNotHaveAttribute("attr1", "value1");
 
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
                 .last()
-                .hasNotAttribute("attr4", "value4");
+                .doesNotHaveAttribute("attr4", "value4");
 
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
                 .element(2)
-                .hasNotAttribute("attr3", "value3");
+                .doesNotHaveAttribute("attr3", "value3");
     }
 
     @Test
-    public void testHasNotAttribute_withAnyValue_shouldFailed() {
+    public void testDoesNotHaveAttribute_withAnyValue_shouldFailed() {
 
-        thrown.expectAssertionError("Expecting:\n <entry>\nnot to have attribute:\n <attr>");
+        thrown.expectAssertionError(format("Expecting:%n <entry>%nnot to have attribute:%n <attr>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -166,13 +167,13 @@ public class SingleNodeAssertHasNotAttributeTest {
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
                 .first()
-                .hasNotAttribute("attr");
+                .doesNotHaveAttribute("attr");
     }
 
     @Test
-    public void testHasNotAttribute_withValue_shouldFailed() {
+    public void testDoesNotHaveAttribute_withValue_shouldFailed() {
 
-        thrown.expectAssertionError("Expecting:\n <entry>\nnot to have attribute:\n <attr>\nwith value:\n <value>");
+        thrown.expectAssertionError(format("Expecting:%n <entry>%nnot to have attribute:%n <attr>%nwith value:%n <value>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -185,13 +186,13 @@ public class SingleNodeAssertHasNotAttributeTest {
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
                 .first()
-                .hasNotAttribute("attr", "value");
+                .doesNotHaveAttribute("attr", "value");
     }
 
     @Test
-    public void testHasNotAttribute_withMultipleAttributes_shouldFailed() {
+    public void testDoesNotHaveAttribute_withMultipleAttributes_shouldFailed() {
 
-        thrown.expectAssertionError("Expecting:\n <entry>\nnot to have attribute:\n <attr2>\nwith value:\n <value2>");
+        thrown.expectAssertionError(format("Expecting:%n <entry>%nnot to have attribute:%n <attr2>%nwith value:%n <value2>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -204,14 +205,14 @@ public class SingleNodeAssertHasNotAttributeTest {
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
                 .first()
-                .hasNotAttribute("attr1", "value1")
-                .hasNotAttribute("attr2", "value2");
+                .doesNotHaveAttribute("attr1", "value1")
+                .doesNotHaveAttribute("attr2", "value2");
     }
 
     @Test
-    public void testHasNotAttribute_forFirstNode_shouldFailed() {
+    public void testDoesNotHaveAttribute_forFirstNode_shouldFailed() {
 
-        thrown.expectAssertionError("Expecting:\n <entry>\nnot to have attribute:\n <attr1>\nwith value:\n <value1>");
+        thrown.expectAssertionError(format("Expecting:%n <entry>%nnot to have attribute:%n <attr1>%nwith value:%n <value1>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -226,13 +227,13 @@ public class SingleNodeAssertHasNotAttributeTest {
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
                 .first()
-                .hasNotAttribute("attr1", "value1");
+                .doesNotHaveAttribute("attr1", "value1");
     }
 
     @Test
-    public void testHasNotAttribute_forLastNode_shouldFailed() {
+    public void testDoesNotHaveAttribute_forLastNode_shouldFailed() {
 
-        thrown.expectAssertionError("Expecting:\n <entry>\nnot to have attribute:\n <attr2>\nwith value:\n <value2>");
+        thrown.expectAssertionError(format("Expecting:%n <entry>%nnot to have attribute:%n <attr2>%nwith value:%n <value2>"));
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -247,6 +248,6 @@ public class SingleNodeAssertHasNotAttributeTest {
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
                 .last()
-                .hasNotAttribute("attr2", "value2");
+                .doesNotHaveAttribute("attr2", "value2");
     }
 }
