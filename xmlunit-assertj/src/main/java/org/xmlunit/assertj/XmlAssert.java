@@ -12,7 +12,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import java.util.Map;
 
-import static org.assertj.core.error.ShouldNotHaveThrown.shouldNotHaveThrown;
+import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
+
 
 /**
  * Entry point for fluent interface for writing assertions based on AssertJ library.
