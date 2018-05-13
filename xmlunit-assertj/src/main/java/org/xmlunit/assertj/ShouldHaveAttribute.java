@@ -14,8 +14,8 @@ class ShouldHaveAttribute extends BasicErrorMessageFactory {
     }
 
     private ShouldHaveAttribute(String nodeName, String attributeName, String attributeValue) {
-        super("\nExpecting:\n <%s>\nto have attribute:\n <%s>" +
-                        (attributeValue != null ? "\n with value:\n <%s>" : ""),
+        super("\nExpecting:\n<%s>\nto have attribute:\n<%s>" +
+                        (attributeValue != null ? "\nwith value:\n<%s>" : ""),
                 unquotedString(nodeName),
                 unquotedString(attributeName),
                 (attributeValue != null ? unquotedString(attributeValue) : null));

@@ -3,7 +3,6 @@ package org.xmlunit.assertj;
 import org.assertj.core.api.AbstractAssert;
 import org.w3c.dom.Node;
 import org.xmlunit.util.Nodes;
-import org.xmlunit.xpath.XPathEngine;
 
 import javax.xml.namespace.QName;
 import java.util.Map;
@@ -13,17 +12,14 @@ import static org.xmlunit.assertj.ShouldHaveAttribute.shouldHaveAttributeWithVal
 
 public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
 
-    private final XPathEngine xPathEngine;
-
-    SingleNodeAssert(Node node, XPathEngine xPathEngine) {
+    SingleNodeAssert(Node node) {
         super(node, SingleNodeAssert.class);
-        this.xPathEngine = xPathEngine;
     }
 
     public SingleNodeAssert hasAttribute(String attributeName) {
         isNotNull();
         final Map.Entry<QName, String> entry = attributeForName(attributeName);
-        if(entry == null) {
+        if (entry == null) {
             throwAssertionError(shouldHaveAttribute(actual.getNodeName(), attributeName));
         }
         return this;

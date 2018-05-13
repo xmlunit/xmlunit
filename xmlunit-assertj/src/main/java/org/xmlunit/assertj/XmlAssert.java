@@ -39,7 +39,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
             Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
             Iterable<Node> nodes = xPathEngine.selectNodes(xPath, root);
 
-            return new MultipleNodeAssert(nodes, xPathEngine, root);
+            return new MultipleNodeAssert(nodes);
 
         } catch (Exception e) {
 
