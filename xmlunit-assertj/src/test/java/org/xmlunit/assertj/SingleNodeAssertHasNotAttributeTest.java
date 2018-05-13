@@ -149,6 +149,7 @@ public class SingleNodeAssertHasNotAttributeTest {
                 .element(2)
                 .hasNotAttribute("attr3", "value3");
     }
+
     @Test
     public void testHasNotAttribute_withAnyValue_shouldFailed() {
 

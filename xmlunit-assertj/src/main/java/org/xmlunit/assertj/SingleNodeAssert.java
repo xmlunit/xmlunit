@@ -12,14 +12,34 @@ import static org.xmlunit.assertj.error.ShouldHaveAttribute.shouldHaveAttributeW
 import static org.xmlunit.assertj.error.ShouldNotHaveAttribute.shouldNotHaveAttribute;
 import static org.xmlunit.assertj.error.ShouldNotHaveAttribute.shouldNotHaveAttributeWithValue;
 
+/**
+ * Assertion methods for {@link Node}.
+ *
+ * <p><b>Simple Example</b></p>
+ *
+ * <pre>
+ * import static org.xmlunit.assertj.XmlAssert.assertThat;
+ *
+ * final String xml = &quot;&lt;a&gt;&lt;b attr=\&quot;abc\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
+ *
+ * assertThat(xml).nodesByXPath("//a/b").first().hasAttribute("attr", "abc").
+ * </pre>
+ */
 public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
 
     SingleNodeAssert(Node node) {
         super(node, SingleNodeAssert.class);
     }
 
+    /**
+     * Verifies that node has attribute with given name.
+     *
+     * @throws AssertionError if the actual node is {@code null}.
+     * @throws AssertionError if node has not attribute with given name.
+     */
     public SingleNodeAssert hasAttribute(String attributeName) {
         isNotNull();
+        
         final Map.Entry<QName, String> entry = attributeForName(attributeName);
         if (entry == null) {
             throwAssertionError(shouldHaveAttribute(actual.getNodeName(), attributeName));
@@ -27,6 +47,12 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
         return this;
     }
 
+    /**
+     * Verifies that node has attribute with given name and value.
+     *
+     * @throws AssertionError if the actual node is {@code null}.
+     * @throws AssertionError if node has not attribute with given name and value.
+     */
     public SingleNodeAssert hasAttribute(String attributeName, String attributeValue) {
         isNotNull();
 
@@ -38,8 +64,15 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
         return this;
     }
 
+    /**
+     * Verifies that node has not attribute with given name.
+     * 
+     * @throws AssertionError if the actual node is {@code null}.
+     * @throws AssertionError if node has attribute with given name.
+     */
     public SingleNodeAssert hasNotAttribute(String attributeName) {
         isNotNull();
+        
         final Map.Entry<QName, String> entry = attributeForName(attributeName);
         if (entry != null) {
             throwAssertionError(shouldNotHaveAttribute(actual.getNodeName(), attributeName));
@@ -47,6 +80,12 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
         return this;
     }
 
+    /**
+     * Verifies that node has not attribute with given name and value.
+     * 
+     * @throws AssertionError if the actual node is {@code null}.
+     * @throws AssertionError if node has attribute with given name and value.
+     */
     public SingleNodeAssert hasNotAttribute(String attributeName, String attributeValue) {
         isNotNull();
 

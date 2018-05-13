@@ -189,4 +189,25 @@ public class MultipleNodeAssertHaveAttributeTest {
                 .haveAttribute("attr1", "value1")
                 .haveAttribute("attr2", "value2");
     }
+
+    @Test
+    public void testHaveAttribute_forEmptyNodeSet_shouldPass() {
+
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry attr1=\"value1\" attr2=\"value2\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "   <entry attr1=\"value1\" attr2=\"value2\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "</feed>";
+
+        assertThat(xml)
+                .nodesByXPath("/feed/abc")
+                .haveAttribute("attr1")
+                .haveAttribute("attr2", "value2");
+    }
 }
