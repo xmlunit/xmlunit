@@ -6,100 +6,18 @@ import org.junit.Test;
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
 
-public class MultipleNodeAssertHaveAttributeTest {
+public class MultipleNodeAssertHaveNotAttributeTest {
 
     @Rule
     public ExpectedException thrown = none();
 
     @Test
-    public void testHaveAttribute_withAnyValue_shouldPass() {
+    public void testHaveNotAttribute_withAnyValue_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
                 "   <title>title</title>" +
-                "   <entry attr=\"value\">" +
-                "       <title>title1</title>" +
-                "   </entry>" +
-                "   <entry attr=\"value2\">" +
-                "       <title>title1</title>" +
-                "   </entry>" +
-                "</feed>";
-
-        assertThat(xml)
-                .nodesByXPath("/feed/entry")
-                .haveAttribute("attr");
-    }
-
-    @Test
-    public void testHaveAttribute_withValue_shouldPass() {
-
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                "<feed>" +
-                "   <title>title</title>" +
-                "   <entry attr=\"value\">" +
-                "       <title>title1</title>" +
-                "   </entry>" +
-                "   <entry attr=\"value\">" +
-                "       <title>title1</title>" +
-                "   </entry>" +
-                "</feed>";
-
-        assertThat(xml)
-                .nodesByXPath("/feed/entry")
-                .haveAttribute("attr", "value");
-    }
-
-    @Test
-    public void testHaveAttribute_withMultipleAttributes_shouldPass() {
-
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                "<feed>" +
-                "   <title>title</title>" +
-                "   <entry attr1=\"value1\" attr2=\"value2\">" +
-                "       <title>title1</title>" +
-                "   </entry>" +
-                "   <title>title</title>" +
-                "   <entry attr2=\"value4\" attr1=\"value3\">" +
-                "       <title>title1</title>" +
-                "   </entry>" +
-                "</feed>";
-
-        assertThat(xml)
-                .nodesByXPath("/feed/entry")
-                .haveAttribute("attr1")
-                .haveAttribute("attr2");
-    }
-
-    @Test
-    public void testHaveAttribute_withMultipleAttributeWithValues_shouldPass() {
-
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                "<feed>" +
-                "   <title>title</title>" +
-                "   <entry attr1=\"value1\" attr2=\"value2\">" +
-                "       <title>title1</title>" +
-                "   </entry>" +
-                "   <entry attr2=\"value2\" attr1=\"value1\">" +
-                "       <title>title1</title>" +
-                "   </entry>" +
-                "</feed>";
-
-        assertThat(xml)
-                .nodesByXPath("/feed/entry")
-                .haveAttribute("attr1", "value1")
-                .haveAttribute("attr2", "value2");
-    }
-
-    @Test
-    public void testHaveAttribute_withAnyValue_shouldFailed() {
-
-        thrown.expectAssertionError("check node at index 1");
-        thrown.expectAssertionError("Expecting:\n <entry>\nto have attribute:\n <attr>");
-
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                "<feed>" +
-                "   <title>title</title>" +
-                "   <entry attr=\"value\">" +
+                "   <entry attr1=\"value\">" +
                 "       <title>title1</title>" +
                 "   </entry>" +
                 "   <entry attr2=\"value2\">" +
@@ -108,20 +26,80 @@ public class MultipleNodeAssertHaveAttributeTest {
                 "</feed>";
 
         assertThat(xml)
-                .hasXPath("/feed/entry")
-                .haveAttribute("attr");
+                .nodesByXPath("/feed/entry")
+                .haveNotAttribute("attr");
     }
 
     @Test
-    public void testHaveAttribute_withValue_shouldFailed() {
-
-        thrown.expectAssertionError("check node at index 1");
-        thrown.expectAssertionError("Expecting:\n <entry>\nto have attribute:\n <attr>\nwith value:\n <value>");
+    public void testHaveNotAttribute_withValue_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
                 "   <title>title</title>" +
-                "   <entry attr=\"value\">" +
+                "   <entry attr1=\"value\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "   <entry attr=\"abc\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "</feed>";
+
+        assertThat(xml)
+                .nodesByXPath("/feed/entry")
+                .haveNotAttribute("attr", "value");
+    }
+
+    @Test
+    public void testHaveNotAttribute_withMultipleAttributes_shouldPass() {
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry abc=\"value1\" aaa=\"def\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "   <title>title</title>" +
+                "   <entry xyz=\"value4\" bbb=\"aaa\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "</feed>";
+
+        assertThat(xml)
+                .nodesByXPath("/feed/entry")
+                .haveNotAttribute("attr1")
+                .haveNotAttribute("attr2");
+    }
+
+    @Test
+    public void testHaveNotAttribute_withMultipleAttributeWithValues_shouldPass() {
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry attr1=\"abc\" xyz=\"value2\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "   <entry def=\"value2\" attr1=\"ghi\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "</feed>";
+
+        assertThat(xml)
+                .nodesByXPath("/feed/entry")
+                .haveNotAttribute("attr1", "value1")
+                .haveNotAttribute("attr2", "value2");
+    }
+
+    @Test
+    public void testHaveNotAttribute_withAnyValue_shouldFailed() {
+
+        thrown.expectAssertionError("check node at index 1");
+        thrown.expectAssertionError("Expecting:\n <entry>\nnot to have attribute:\n <attr>");
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry abc=\"value\">" +
                 "       <title>title1</title>" +
                 "   </entry>" +
                 "   <entry attr=\"value2\">" +
@@ -131,23 +109,45 @@ public class MultipleNodeAssertHaveAttributeTest {
 
         assertThat(xml)
                 .hasXPath("/feed/entry")
-                .haveAttribute("attr", "value");
+                .haveNotAttribute("attr");
     }
 
     @Test
-    public void testHaveAttribute_withMultipleAttributes_shouldFailed() {
+    public void testHaveNotAttribute_withValue_shouldFailed() {
 
-        thrown.expectAssertionError("check node at index 2");
-        thrown.expectAssertionError("Expecting:\n <entry>\nto have attribute:\n <attr2>");
+        thrown.expectAssertionError("check node at index 1");
+        thrown.expectAssertionError("Expecting:\n <entry>\nnot to have attribute:\n <attr>\nwith value:\n <value>");
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
                 "   <title>title</title>" +
-                "   <entry attr1=\"value1\" attr2=\"value2\">" +
+                "   <entry attr=\"value2\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "   <entry attr=\"value\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "</feed>";
+
+        assertThat(xml)
+                .hasXPath("/feed/entry")
+                .haveNotAttribute("attr", "value");
+    }
+
+    @Test
+    public void testHaveNotAttribute_withMultipleAttributes_shouldFailed() {
+
+        thrown.expectAssertionError("check node at index 2");
+        thrown.expectAssertionError("Expecting:\n <entry>\nnot to have attribute:\n <attr1>");
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry abc=\"value1\" def=\"value2\">" +
                 "       <title>title1</title>" +
                 "   </entry>" +
                 "   <title>title</title>" +
-                "   <entry attr2=\"value4\" attr1=\"value3\">" +
+                "   <entry>" +
                 "       <title>title1</title>" +
                 "   </entry>" +
                 "   <entry attr1=\"value5\">" +
@@ -157,36 +157,36 @@ public class MultipleNodeAssertHaveAttributeTest {
 
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
-                .haveAttribute("attr1")
-                .haveAttribute("attr2");
+                .haveNotAttribute("attr1")
+                .haveNotAttribute("attr2");
     }
 
     @Test
-    public void testHaveAttribute_withMultipleAttributeWithValues_shouldFailed() {
+    public void testHaveNotAttribute_withMultipleAttributeWithValues_shouldFailed() {
 
         thrown.expectAssertionError("check node at index 2");
-        thrown.expectAssertionError("Expecting:\n <entry>\nto have attribute:\n <attr1>\nwith value:\n <value1>");
+        thrown.expectAssertionError("Expecting:\n <entry>\nnot to have attribute:\n <attr2>\nwith value:\n <value2>");
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
                 "   <title>title</title>" +
-                "   <entry attr1=\"value1\" attr2=\"value2\">" +
+                "   <entry attr1=\"value2\" attr2=\"value1\">" +
                 "       <title>title1</title>" +
                 "   </entry>" +
-                "   <entry attr1=\"value1\" attr2=\"value2\">" +
+                "   <entry abc=\"value1\">" +
                 "       <title>title1</title>" +
                 "   </entry>" +
                 "   <entry attr1=\"VALUE1\" attr2=\"value2\">" +
                 "       <title>title1</title>" +
                 "   </entry>" +
-                "   <entry attr1=\"value1\" attr2=\"value2\">" +
+                "   <entry attr1=\"value2\" attr2=\"value1\">" +
                 "       <title>title1</title>" +
                 "   </entry>" +
                 "</feed>";
 
         assertThat(xml)
                 .nodesByXPath("/feed/entry")
-                .haveAttribute("attr1", "value1")
-                .haveAttribute("attr2", "value2");
+                .haveNotAttribute("attr1", "value1")
+                .haveNotAttribute("attr2", "value2");
     }
 }

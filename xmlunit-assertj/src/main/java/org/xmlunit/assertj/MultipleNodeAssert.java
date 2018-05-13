@@ -45,6 +45,30 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         return this;
     }
 
+    public MultipleNodeAssert haveNotAttribute(final String attributeName) {
+
+        allSatisfy(new SingleNodeAssertConsumer() {
+            @Override
+            public void accept(SingleNodeAssert singleNodeAssert) {
+                singleNodeAssert.hasNotAttribute(attributeName);
+            }
+        });
+
+        return this;
+    }
+
+    public MultipleNodeAssert haveNotAttribute(final String attributeName, final String attributeValue) {
+
+        allSatisfy(new SingleNodeAssertConsumer() {
+            @Override
+            public void accept(SingleNodeAssert singleNodeAssert) {
+                singleNodeAssert.hasNotAttribute(attributeName, attributeValue);
+            }
+        });
+
+        return this;
+    }
+
     private void allSatisfy(SingleNodeAssertConsumer consumer) {
         int index = 0;
         for (Node node : actual) {

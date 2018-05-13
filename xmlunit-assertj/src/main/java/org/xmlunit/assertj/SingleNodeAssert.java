@@ -7,8 +7,10 @@ import org.xmlunit.util.Nodes;
 import javax.xml.namespace.QName;
 import java.util.Map;
 
-import static org.xmlunit.assertj.ShouldHaveAttribute.shouldHaveAttribute;
-import static org.xmlunit.assertj.ShouldHaveAttribute.shouldHaveAttributeWithValue;
+import static org.xmlunit.assertj.error.ShouldHaveAttribute.shouldHaveAttribute;
+import static org.xmlunit.assertj.error.ShouldHaveAttribute.shouldHaveAttributeWithValue;
+import static org.xmlunit.assertj.error.ShouldNotHaveAttribute.shouldNotHaveAttribute;
+import static org.xmlunit.assertj.error.ShouldNotHaveAttribute.shouldNotHaveAttributeWithValue;
 
 public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
 
@@ -31,6 +33,26 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
         final Map.Entry<QName, String> attribute = attributeForName(attributeName);
         if (attribute == null || !attribute.getValue().equals(attributeValue)) {
             throwAssertionError(shouldHaveAttributeWithValue(actual.getNodeName(), attributeName, attributeValue));
+        }
+
+        return this;
+    }
+
+    public SingleNodeAssert hasNotAttribute(String attributeName) {
+        isNotNull();
+        final Map.Entry<QName, String> entry = attributeForName(attributeName);
+        if (entry != null) {
+            throwAssertionError(shouldNotHaveAttribute(actual.getNodeName(), attributeName));
+        }
+        return this;
+    }
+
+    public SingleNodeAssert hasNotAttribute(String attributeName, String attributeValue) {
+        isNotNull();
+
+        final Map.Entry<QName, String> attribute = attributeForName(attributeName);
+        if (attribute != null && attribute.getValue().equals(attributeValue)) {
+            throwAssertionError(shouldNotHaveAttributeWithValue(actual.getNodeName(), attributeName, attributeValue));
         }
 
         return this;
