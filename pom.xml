@@ -77,7 +77,6 @@
     <module>xmlunit-matchers</module>
     <module>xmlunit-legacy</module>
     <module>xmlunit-placeholders</module>
-    <module>xmlunit-assertj</module>
   </modules>
 
   <developers>
@@ -124,11 +123,6 @@
         <version>2.1.0</version>
         <scope>test</scope>
       </dependency>
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>2.9.0</version>
-        </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -454,6 +448,25 @@
       <properties>
         <javadoc.additionalparam>-Xdoclint:html,syntax,accessibility,reference</javadoc.additionalparam>
       </properties>
+    </profile>
+    <profile>
+      <id>java7+</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <jdk>[1.7,)</jdk>
+      </activation>
+      <modules>
+        <module>xmlunit-assertj</module>
+      </modules>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>2.9.0</version>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
     </profile>
   </profiles>
 </project>
