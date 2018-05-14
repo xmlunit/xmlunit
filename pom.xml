@@ -221,6 +221,10 @@
                 <packages>org.xmlunit.matchers*</packages>
               </group>
               <group>
+                <title>XMLUnit AssertJ Assertions ${project.version}</title>
+                <packages>org.xmlunit.assertj*</packages>
+              </group>
+              <group>
                 <title>XMLUnit Legacy ${project.version}</title>
                 <packages>org.custommonkey.xmlunit*</packages>
               </group>
