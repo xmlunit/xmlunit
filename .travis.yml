@@ -5,6 +5,7 @@ jdk:
   - oraclejdk8
 addons:
   apt:
+    update: true
     packages:
       - openjdk-6-jdk
 # use java 6 compatible maven version
