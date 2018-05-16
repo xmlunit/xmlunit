@@ -29,6 +29,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeTrue;
 import static org.xmlunit.matchers.ValidationMatcher.valid;
 
 /**
@@ -77,6 +78,12 @@ public class ValidationMatcherTest {
 
     @Test
     public void shouldSuccessfullyValidateInstanceWithoutExplicitSchemaSource() {
+        try {
+            Class.forName("java.nio.file.FileSystem");
+        } catch (Throwable t) {
+            assumeTrue("Skipping on Java6 as it doesn't like xmlunit.org's certificate",
+                       false);
+        }
         assertThat(new StreamSource(new File("../test-resources/BookXsdGenerated.xml")),
                    is(new ValidationMatcher()));
 
