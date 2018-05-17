@@ -13,7 +13,6 @@
 */
 package org.xmlunit.diff;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.junit.Before;
 import org.junit.Test;

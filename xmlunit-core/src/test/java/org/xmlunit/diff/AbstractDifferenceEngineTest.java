@@ -14,8 +14,6 @@
 package org.xmlunit.diff;
 
 import org.junit.Test;
-import java.util.AbstractMap;
-import java.util.Map;
 import javax.xml.transform.Source;
 
 import static org.hamcrest.Matchers.containsString;
