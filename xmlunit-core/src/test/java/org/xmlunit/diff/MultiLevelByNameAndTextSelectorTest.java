@@ -84,7 +84,6 @@ public class MultiLevelByNameAndTextSelectorTest {
         test.appendChild(child2);
         child2.appendChild(doc.createTextNode(BAR));
 
-        ElementSelector s = new MultiLevelByNameAndTextSelector(2);
         assertFalse(new MultiLevelByNameAndTextSelector(2)
                     .canBeCompared(control, test));
         assertTrue(new MultiLevelByNameAndTextSelector(2, true)

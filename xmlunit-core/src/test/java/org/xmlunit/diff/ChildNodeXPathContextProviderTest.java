@@ -63,6 +63,6 @@ public class ChildNodeXPathContextProviderTest {
     @Test(expected = NoSuchElementException.class)
     public void shouldThrowIfNodeIsNotInInitialList() throws Exception {
         ChildNodeXPathContextProvider p = new ChildNodeXPathContextProvider(ctx, elements);
-        XPathContext provided = p.apply(doc.createElement("foo"));
+        p.apply(doc.createElement("foo"));
     }
 }
