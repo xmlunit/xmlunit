@@ -118,12 +118,13 @@ String content = xpath.evaluate("/foo/text()", source);
 assert "bar".equals(content);
 ```
 
-or using `HasXPathMatcher` and `EvaluateXPathMatcher`
+or using `HasXPathMatcher`, `EvaluateXPathMatcher` and `XmlAssert`
 
 ```java
 assertThat("<foo>bar</foo>", HasXPathMatcher.hasXPath("/foo"));
 assertThat("<foo>bar</foo>", EvaluateXPathMatcher.hasXPath("/foo/text()",
                                                            equalTo("bar")));
+XmlAssert.assertThat("<foo>bar</foo>").hasXPath("/foo");
 ```
 
 ### Validating a Document Against an XML Schema
