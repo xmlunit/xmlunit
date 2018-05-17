@@ -15,7 +15,6 @@ package org.xmlunit.input;
 
 import static org.junit.Assert.*;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;

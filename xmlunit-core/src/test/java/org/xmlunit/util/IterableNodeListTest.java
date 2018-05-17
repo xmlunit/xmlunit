@@ -13,7 +13,6 @@
 */
 package org.xmlunit.util;
 
-import java.util.Arrays;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 

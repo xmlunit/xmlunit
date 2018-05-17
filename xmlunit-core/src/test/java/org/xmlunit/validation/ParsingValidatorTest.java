@@ -41,7 +41,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.xmlunit.ConfigurationException;
-import org.xmlunit.TestResources;
 import org.xmlunit.XMLUnitException;
 
 public class ParsingValidatorTest {

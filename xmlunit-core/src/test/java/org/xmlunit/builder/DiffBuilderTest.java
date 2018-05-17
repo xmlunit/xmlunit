@@ -521,7 +521,7 @@ public class DiffBuilderTest {
         String test = "<a><b></b><c/><d/></a>";
 
         try {
-            Diff myDiff = DiffBuilder.compare(control).withTest(test)
+            DiffBuilder.compare(control).withTest(test)
                 .withDocumentBuilderFactory(dFac).build();
             Assert.fail("Expected exception");
         } catch (XMLUnitException ex) {
