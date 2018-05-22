@@ -15,14 +15,11 @@ package org.xmlunit.assertj;
 
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
-import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
-import org.xmlunit.util.Convert;
 import org.xmlunit.xpath.JAXPXPathEngine;
 import org.xmlunit.xpath.XPathEngine;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Source;
 import java.util.Map;
 
 import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
@@ -78,6 +75,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
 
     /**
      * Factory method for {@link XmlAssert}
+     *
      * @param o object with type supported by {@link Input#from(Object)}
      */
     public static XmlAssert assertThat(Object o) {
@@ -93,16 +91,9 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     public MultipleNodeAssert nodesByXPath(String xPath) {
         isNotNull();
 
-        Assertions.assertThat(xPath).isNotBlank();
-
         try {
             XPathEngine xPathEngine = createXPathEngine();
-
-            Source s = Input.from(actual).build();
-            Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
-            Iterable<Node> nodes = xPathEngine.selectNodes(xPath, root);
-
-            return new MultipleNodeAssert(nodes);
+            return MultipleNodeAssert.create(actual, xPathEngine, dbf, xPath);
 
         } catch (Exception e) {
 
@@ -143,7 +134,6 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      *
      * @param prefix2Uri prefix2Uri maps from prefix to namespace URI. It is used to resolve
      *                   XML namespace prefixes in the XPath expression
-     *
      * @throws AssertionError if the actual value is {@code null}.
      */
     public XmlAssert withNamespaceContext(Map<String, String> prefix2Uri) {

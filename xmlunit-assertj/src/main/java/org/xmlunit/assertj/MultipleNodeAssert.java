@@ -13,8 +13,15 @@
 */
 package org.xmlunit.assertj;
 
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.FactoryBasedNavigableIterableAssert;
 import org.w3c.dom.Node;
+import org.xmlunit.builder.Input;
+import org.xmlunit.util.Convert;
+import org.xmlunit.xpath.XPathEngine;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Source;
 
 /**
  * Assertion methods for {@link Iterable} of {@link Node}.
@@ -36,8 +43,19 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         void accept(SingleNodeAssert t);
     }
 
-    MultipleNodeAssert(Iterable<Node> nodes) {
+    private MultipleNodeAssert(Iterable<Node> nodes) {
         super(nodes, MultipleNodeAssert.class, new NodeAssertFactory());
+    }
+
+    static MultipleNodeAssert create(Object xmlSource, XPathEngine xPathEngine, DocumentBuilderFactory dbf, String xPath) {
+
+        Assertions.assertThat(xPath).isNotBlank();
+
+        Source s = Input.from(xmlSource).build();
+        Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
+        Iterable<Node> nodes = xPathEngine.selectNodes(xPath, root);
+
+        return new MultipleNodeAssert(nodes);
     }
 
     /**
