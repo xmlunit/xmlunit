@@ -14,7 +14,6 @@ public class ValidationAssert extends AbstractAssert<ValidationAssert, Object> {
 
     private final Source[] schemaSource;
     private final Schema schema;
-    private ValidationResult result;
 
     private ValidationAssert(Object actual, Source[] schemaSource, Schema schema) {
         super(actual, ValidationAssert.class);
@@ -44,31 +43,34 @@ public class ValidationAssert extends AbstractAssert<ValidationAssert, Object> {
         return new ValidationAssert(xmlSource, null, schema);
     }
 
-    private void validate() {
-        if (result == null) {
-            Source source = Input.from(actual).build();
-            JAXPValidator validator = new JAXPValidator(Languages.W3C_XML_SCHEMA_NS_URI);
-            if (schema != null) {
-                validator.setSchema(schema);
-            } else {
-                validator.setSchemaSources(schemaSource);
-            }
-            this.result = validator.validateInstance(source);
+    private ValidationResult validate() {
+
+        Source source = Input.from(actual).build();
+        JAXPValidator validator = new JAXPValidator(Languages.W3C_XML_SCHEMA_NS_URI);
+        if (schema != null) {
+            validator.setSchema(schema);
+        } else {
+            validator.setSchemaSources(schemaSource);
         }
+        return validator.validateInstance(source);
     }
 
     public ValidationAssert isValid() {
-        validate();
-        if (!result.isValid()) {
-            failWithMessage("dupa");
+        ValidationResult validationResult = validate();
+        if (!validationResult.isValid()) {
+            failWithMessage("error message");
         }
         return this;
     }
 
     public void isNotValid() {
-        validate();
-        if (result.isValid()) {
-            failWithMessage("dupa");
+         ValidationResult validateResult = validate();
+        if (validateResult.isValid()) {
+            failWithMessage("error message");
         }
+    }
+
+    public void isInvalid() {
+        isNotValid();
     }
 }
