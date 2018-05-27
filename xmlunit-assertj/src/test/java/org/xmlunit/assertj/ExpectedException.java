@@ -20,6 +20,7 @@ import org.junit.runners.model.Statement;
 
 import java.util.regex.Pattern;
 
+import static java.util.regex.Pattern.DOTALL;
 import static org.junit.internal.matchers.ThrowableMessageMatcher.hasMessage;
 
 
@@ -57,7 +58,7 @@ public class ExpectedException implements TestRule {
 
         @Override
         protected boolean matchesSafely(String item) {
-            return Pattern.compile(regex).matcher(item).matches();
+            return Pattern.compile(regex, DOTALL).matcher(item).matches();
         }
 
         @Override

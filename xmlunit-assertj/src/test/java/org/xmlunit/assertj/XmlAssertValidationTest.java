@@ -18,7 +18,7 @@ public class XmlAssertValidationTest {
     public ExpectedException thrown = none();
 
     @Test
-    public void testIsValidateAgainst_shouldPass() {
+    public void testIsValidAgainst_shouldPass() {
         StreamSource xml = new StreamSource(new File("../test-resources/BookXsdGenerated.xml"));
         StreamSource xsd = new StreamSource(new File("../test-resources/Book.xsd"));
 
@@ -26,7 +26,7 @@ public class XmlAssertValidationTest {
     }
 
     @Test
-    public void testIsValidateAgainst_withExternallyCreatedSchemaInstance_shouldPass() throws Exception {
+    public void testIsValidAgainst_withExternallyCreatedSchemaInstance_shouldPass() throws Exception {
         StreamSource xml = new StreamSource(new File("../test-resources/BookXsdGenerated.xml"));
         StreamSource xsd = new StreamSource(new File("../test-resources/Book.xsd"));
 
@@ -37,7 +37,7 @@ public class XmlAssertValidationTest {
     }
 
     @Test
-    public void testIsNotValidateAgainst_withBrokenXml_shouldPass() {
+    public void testIsNotValidAgainst_withBrokenXml_shouldPass() {
         final StreamSource xml = new StreamSource(new File("../test-resources/invalidBook.xml"));
         final StreamSource xsd = new StreamSource(new File("../test-resources/Book.xsd"));
 
@@ -45,7 +45,7 @@ public class XmlAssertValidationTest {
     }
 
     @Test
-    public void testIsNotValidateAgainst_withBrokenXml_andExternallyCreatedSchemaInstance_shouldPass() throws Exception {
+    public void testIsNotValidAgainst_withBrokenXml_andExternallyCreatedSchemaInstance_shouldPass() throws Exception {
         StreamSource xml = new StreamSource(new File("../test-resources/invalidBook.xml"));
         StreamSource xsd = new StreamSource(new File("../test-resources/Book.xsd"));
 
@@ -56,12 +56,12 @@ public class XmlAssertValidationTest {
     }
 
     @Test
-    public void testIsValidateAgainst_withBrokenXml_shouldFailed() {
+    public void testIsValidAgainst_withBrokenXml_shouldFailed() {
 
         thrown.expectAssertionErrorPattern("^\\nExpecting:\\n <.*\\.\\.\\/test-resources\\/invalidBook.xml>\\nto be valid but found following problems:\\n.*");
-        thrown.expectAssertionError("1. line=9 column=8 type=ERROR " +
-                "message=cvc-complex-type.2.4.b: The content of element 'Book' is not complete. " +
-                "One of '{\"https://www.xmlunit.org/publishing\":Publisher}' is expected.");
+        thrown.expectAssertionError("1. line=9; column=8; type=ERROR;" +
+                " message=cvc-complex-type.2.4.b: The content of element 'Book' is not complete." +
+                " One of '{\"https://www.xmlunit.org/publishing\":Publisher}' is expected.");
 
         StreamSource xml = new StreamSource(new File("../test-resources/invalidBook.xml"));
         StreamSource xsd = new StreamSource(new File("../test-resources/Book.xsd"));
@@ -80,9 +80,9 @@ public class XmlAssertValidationTest {
     @Test
     public void testIsValid_withBrokenXml_shouldPass() {
 
-        thrown.expectAssertionError("1. line=9 column=8 type=ERROR " +
-                "message=cvc-complex-type.2.4.b: The content of element 'Book' is not complete. " +
-                "One of '{\"https://www.xmlunit.org/publishing\":Publisher}' is expected.");
+        thrown.expectAssertionError("1. line=9; column=8; type=ERROR;" +
+                " message=cvc-complex-type.2.4.b: The content of element 'Book' is not complete." +
+                " One of '{\"https://www.xmlunit.org/publishing\":Publisher}' is expected.");
 
         StreamSource xml = new StreamSource(new File("../test-resources/invalidBook.xml"));
 
@@ -90,7 +90,7 @@ public class XmlAssertValidationTest {
     }
 
     @Test
-    public void testIsInValid_withBrokenXml_shouldPass() {
+    public void testIsInvalid_withBrokenXml_shouldPass() {
 
         StreamSource xml = new StreamSource(new File("../test-resources/invalidBook.xml"));
 
