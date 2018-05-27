@@ -13,7 +13,6 @@
 */
 package org.xmlunit.assertj;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.FactoryBasedNavigableIterableAssert;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
@@ -35,6 +34,7 @@ import javax.xml.transform.Source;
  *
  * assertThat(xml).nodesByXPath("//a/b").haveAttribute("attr").
  * </pre>
+ *
  * @since XMLUnit 2.6.1
  */
 public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<MultipleNodeAssert, Iterable<Node>, Node, SingleNodeAssert> {
@@ -48,8 +48,6 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
     }
 
     static MultipleNodeAssert create(Object xmlSource, XPathEngine xPathEngine, DocumentBuilderFactory dbf, String xPath) {
-
-        Assertions.assertThat(xPath).isNotBlank();
 
         Source s = Input.from(xmlSource).build();
         Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);

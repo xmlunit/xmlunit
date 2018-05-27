@@ -129,6 +129,7 @@ public class SingleNodeAssertHasAttributeTest {
                 .element(2)
                 .hasAttribute("attr3", "value3");
     }
+
     @Test
     public void testHasAttribute_withAnyValue_shouldFailed() {
 

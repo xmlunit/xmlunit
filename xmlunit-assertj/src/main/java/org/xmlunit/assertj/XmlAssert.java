@@ -20,6 +20,7 @@ import org.xmlunit.xpath.JAXPXPathEngine;
 import org.xmlunit.xpath.XPathEngine;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.validation.Schema;
 import java.util.Map;
 
 import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
@@ -90,6 +91,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      */
     public MultipleNodeAssert nodesByXPath(String xPath) {
         isNotNull();
+        Assertions.assertThat(xPath).isNotBlank();
 
         try {
             XPathEngine xPathEngine = createXPathEngine();
@@ -140,6 +142,36 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
         isNotNull();
         this.prefix2Uri = prefix2Uri;
         return this;
+    }
+
+    public ValidationAssert isValid() {
+        isNotNull();
+        return ValidationAssert.create(actual).isValid();
+    }
+
+    public void isInvalid() {
+        isNotNull();
+        ValidationAssert.create(actual).isInvalid();
+    }
+
+    public ValidationAssert isValidAgainst(Schema schema) {
+        isNotNull();
+        return ValidationAssert.create(actual, schema).isValid();
+    }
+
+    public void isNotValidAgainst(Schema schema) {
+        isNotNull();
+        ValidationAssert.create(actual, schema).isInvalid();
+    }
+
+    public ValidationAssert isValidAgainst(Object... schemaSources) {
+        isNotNull();
+        return ValidationAssert.create(actual, schemaSources).isValid();
+    }
+
+    public void isNotValidAgainst(Object... schemaSources) {
+        isNotNull();
+        ValidationAssert.create(actual, schemaSources).isInvalid();
     }
 
     private XPathEngine createXPathEngine() {
