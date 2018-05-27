@@ -62,7 +62,8 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
         Iterable<Node> nodes = engine.selectNodes(xPath, root);
 
-        return new MultipleNodeAssert(nodes);
+        return new MultipleNodeAssert(nodes)
+                .describedAs("XPath \"%s\" evaluated to node set", xPath);
     }
 
     /**

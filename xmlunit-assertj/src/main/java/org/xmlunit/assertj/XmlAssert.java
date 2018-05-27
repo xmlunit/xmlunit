@@ -14,10 +14,7 @@
 package org.xmlunit.assertj;
 
 import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.Assertions;
 import org.xmlunit.builder.Input;
-import org.xmlunit.xpath.JAXPXPathEngine;
-import org.xmlunit.xpath.XPathEngine;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.validation.Schema;
@@ -140,6 +137,16 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      */
     public void doesNotHaveXPath(String xPath) {
         nodesByXPath(xPath).doNotExist();
+    }
+
+    public ValueAssert valueByXPath(String xPath) {
+        isNotNull();
+        try {
+            return ValueAssert.create(actual, prefix2Uri, dbf, xPath);
+        } catch (Exception e) {
+            throwAssertionError(shouldNotHaveThrown(e));
+        }
+        return null;
     }
 
     public ValidationAssert isValid() {
