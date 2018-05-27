@@ -13,14 +13,16 @@
 */
 package org.xmlunit.assertj;
 
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.FactoryBasedNavigableIterableAssert;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
-import org.xmlunit.xpath.XPathEngine;
+import org.xmlunit.xpath.JAXPXPathEngine;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
+import java.util.Map;
 
 /**
  * Assertion methods for {@link Iterable} of {@link Node}.
@@ -47,11 +49,18 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         super(nodes, MultipleNodeAssert.class, new NodeAssertFactory());
     }
 
-    static MultipleNodeAssert create(Object xmlSource, XPathEngine xPathEngine, DocumentBuilderFactory dbf, String xPath) {
+    static MultipleNodeAssert create(Object xmlSource, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf, String xPath) {
+
+        Assertions.assertThat(xPath).isNotBlank();
+
+        final JAXPXPathEngine engine = new JAXPXPathEngine();
+        if (prefix2Uri != null) {
+            engine.setNamespaceContext(prefix2Uri);
+        }
 
         Source s = Input.from(xmlSource).build();
         Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
-        Iterable<Node> nodes = xPathEngine.selectNodes(xPath, root);
+        Iterable<Node> nodes = engine.selectNodes(xPath, root);
 
         return new MultipleNodeAssert(nodes);
     }

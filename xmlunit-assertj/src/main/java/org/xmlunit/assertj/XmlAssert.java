@@ -84,42 +84,6 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     }
 
     /**
-     * Create {@link MultipleNodeAssert} from nodes selecting by given <b>xPath</b>.
-     *
-     * @throws AssertionError if the actual value is {@code null}.
-     * @throws AssertionError if the actual value provide invalid XML.
-     */
-    public MultipleNodeAssert nodesByXPath(String xPath) {
-        isNotNull();
-        Assertions.assertThat(xPath).isNotBlank();
-
-        try {
-            XPathEngine xPathEngine = createXPathEngine();
-            return MultipleNodeAssert.create(actual, xPathEngine, dbf, xPath);
-
-        } catch (Exception e) {
-
-            throwAssertionError(shouldNotHaveThrown(e));
-        }
-
-        return null;
-    }
-
-    /**
-     * Equivalent for <pre>{@link #nodesByXPath(String) nodesByXPath(xPath)}.{@link MultipleNodeAssert#exist() exist()}</pre>
-     */
-    public MultipleNodeAssert hasXPath(String xPath) {
-        return nodesByXPath(xPath).exist();
-    }
-
-    /**
-     * Equivalent for <pre>{@link #nodesByXPath(String) nodesByXPath(xPath)}.{@link MultipleNodeAssert#doNotExist() doNotExist()}</pre>
-     */
-    public void doesNotHaveXPath(String xPath) {
-        nodesByXPath(xPath).doNotExist();
-    }
-
-    /**
      * Sets the {@link DocumentBuilderFactory} to use when creating a
      * {@link org.w3c.dom.Document} from the XML input.
      *
@@ -142,6 +106,40 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
         isNotNull();
         this.prefix2Uri = prefix2Uri;
         return this;
+    }
+
+    /**
+     * Create {@link MultipleNodeAssert} from nodes selecting by given <b>xPath</b>.
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value provide invalid XML.
+     */
+    public MultipleNodeAssert nodesByXPath(String xPath) {
+        isNotNull();
+
+        try {
+            return MultipleNodeAssert.create(actual, prefix2Uri, dbf, xPath);
+
+        } catch (Exception e) {
+
+            throwAssertionError(shouldNotHaveThrown(e));
+        }
+
+        return null;
+    }
+
+    /**
+     * Equivalent for <pre>{@link #nodesByXPath(String) nodesByXPath(xPath)}.{@link MultipleNodeAssert#exist() exist()}</pre>
+     */
+    public MultipleNodeAssert hasXPath(String xPath) {
+        return nodesByXPath(xPath).exist();
+    }
+
+    /**
+     * Equivalent for <pre>{@link #nodesByXPath(String) nodesByXPath(xPath)}.{@link MultipleNodeAssert#doNotExist() doNotExist()}</pre>
+     */
+    public void doesNotHaveXPath(String xPath) {
+        nodesByXPath(xPath).doNotExist();
     }
 
     public ValidationAssert isValid() {
@@ -172,15 +170,5 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     public void isNotValidAgainst(Object... schemaSources) {
         isNotNull();
         ValidationAssert.create(actual, schemaSources).isInvalid();
-    }
-
-    private XPathEngine createXPathEngine() {
-
-        final JAXPXPathEngine engine = new JAXPXPathEngine();
-        if (prefix2Uri != null) {
-            engine.setNamespaceContext(prefix2Uri);
-        }
-
-        return engine;
     }
 }
