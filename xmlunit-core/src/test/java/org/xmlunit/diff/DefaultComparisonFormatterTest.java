@@ -34,6 +34,18 @@ public class DefaultComparisonFormatterTest {
 
     private DefaultComparisonFormatter compFormatter = new DefaultComparisonFormatter();
 
+    private static final boolean JAVA_9_PLUS;
+    static {
+        boolean j9 = false;
+        try {
+            Class.forName("java.lang.module.ModuleDescriptor");
+            j9 = true;
+        } catch (ClassNotFoundException e) {
+        } catch (Error e) {
+        }
+        JAVA_9_PLUS = j9;
+    }
+
     @Test
     public void testComparisonType_XML_VERSION() {
         // prepare data
@@ -279,7 +291,11 @@ public class DefaultComparisonFormatterTest {
                 description);
 
         assertEquals("<a>Text</a>", controlDetails);
-        assertEquals("<a><![CDATA[Text]]></a>", testDetails);
+        if (JAVA_9_PLUS) {
+            assertEquals("<a>\n  <![CDATA[Text]]>\n</a>", testDetails);
+        } else {
+            assertEquals("<a><![CDATA[Text]]></a>", testDetails);
+        }
     }
 
     @Test
@@ -605,7 +621,11 @@ public class DefaultComparisonFormatterTest {
             + "comparing <a...> at /a[1] to <a...> at /a[1]", description);
 
         assertEquals("<a>\n  <b/>\n</a>", controlDetails);
-        assertEquals("<a>\n  <b/>\n</a>", testDetails);
+        if (JAVA_9_PLUS) {
+            assertEquals("<a>\n    \n  <b/>\n  \n</a>", testDetails);
+        } else {
+            assertEquals("<a>\n  <b/>\n</a>", testDetails);
+        }
 
         assertEquals("<a><b/></a>", controlDetailsUnformatted);
         assertEquals("<a>\n  <b/>\n</a>", testDetailsUnformatted);
