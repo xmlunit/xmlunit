@@ -15,5 +15,6 @@
 /**
  * Contains internal classes of XMLUnit's AssertJ support that are
  * only public as an implementation detail.
+ * @since XMLUnit 2.6.1
  */
 package org.xmlunit.assertj.error;

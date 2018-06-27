@@ -32,13 +32,13 @@ import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
  * <p><b>Simple Example</b></p>
  *
  * <pre>
- * import static org.xmlunit.assertj.XmlAssert.assertThat;
+ *    import static org.xmlunit.assertj.XmlAssert.assertThat;
  *
- * final String xml = &quot;&lt;a&gt;&lt;b attr=\&quot;abc\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
+ *    final String xml = &quot;&lt;a&gt;&lt;b attr=\&quot;abc\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
  *
- * assertThat(xml).nodesByXPath("//a/b/@attr").exist();
- * assertThat(xml).hasXPath("//a/b/@attr");
- * assertThat(xml).doesNotHaveXPath("//a/b/c");
+ *    assertThat(xml).nodesByXPath("//a/b/@attr").exist();
+ *    assertThat(xml).hasXPath("//a/b/@attr");
+ *    assertThat(xml).doesNotHaveXPath("//a/b/c");
  * </pre>
  *
  * <p><b>Example with namespace mapping</b></p>
@@ -60,6 +60,24 @@ import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
  *          .hasXPath(&quot;//atom:feed/atom:entry/atom:id&quot;));
  * </pre>
  *
+ * <p><b>Testing XPath expression value</b></p>
+ *
+ * <pre>
+ *    String xml = &quot;&lt;a&gt;&lt;b attr=\&quot;abc\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
+ *
+ *    assertThat(xml).valueByXPath("//a/b/@attr").isEqualTo("abc");
+ *    assertThat(xml).valueByXPath("count(//a/b)").isEqualTo(1);
+ * </pre>
+ *
+ * <p><b>Example with XML validation</b></p>
+ *
+ * <pre>
+ *    String xml = &quot;&lt;a&gt;&lt;b attr=\&quot;abc\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
+ *    StreamSource xsd = new StreamSource(new File("schema.xsd"));
+ *
+ *    assertThat(xml).isValid();
+ *    assertThat(xml).isValidAgainst(xsd);
+ * </pre>
  * @since XMLUnit 2.6.1
  */
 public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
@@ -108,6 +126,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     /**
      * Create {@link MultipleNodeAssert} from nodes selecting by given <b>xPath</b>.
      *
+     * @throws AssertionError if the xPath is blank.
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value provide invalid XML.
      */
@@ -139,6 +158,13 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
         nodesByXPath(xPath).doNotExist();
     }
 
+    /**
+     * Create {@link ValueAssert} from value of given <b>xPath</b> expression.
+     *
+     * @throws AssertionError if the xPath is blank.
+     * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value provide invalid XML.
+     */
     public ValueAssert valueByXPath(String xPath) {
         isNotNull();
         try {
@@ -149,36 +175,72 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
         return null;
     }
 
+    /**
+     * Check if actual value is valid against W3C XML Schema
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value is invalid
+     */
     public XmlAssert isValid() {
         isNotNull();
         ValidationAssert.create(actual).isValid();
         return this;
     }
 
+    /**
+     * Check if actual value is not valid against W3C XML Schema
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value is valid
+     */
     public XmlAssert isInvalid() {
         isNotNull();
         ValidationAssert.create(actual).isInvalid();
         return this;
     }
 
+    /**
+     * Check if actual value is valid against given schema
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value is invalid
+     */
     public XmlAssert isValidAgainst(Schema schema) {
         isNotNull();
         ValidationAssert.create(actual, schema).isValid();
         return this;
     }
 
+    /**
+     * Check if actual value is not valid against given schema
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value is valid
+     */
     public XmlAssert isNotValidAgainst(Schema schema) {
         isNotNull();
         ValidationAssert.create(actual, schema).isInvalid();
         return this;
     }
 
+    /**
+     * Check if actual value is valid against schema provided by given sources
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value is invalid
+     */
     public XmlAssert isValidAgainst(Object... schemaSources) {
         isNotNull();
         ValidationAssert.create(actual, schemaSources).isValid();
         return this;
     }
 
+    /**
+     * Check if actual value is not valid against schema provided by given sources
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value is valid
+     */
     public XmlAssert isNotValidAgainst(Object... schemaSources) {
         isNotNull();
         ValidationAssert.create(actual, schemaSources).isInvalid();
