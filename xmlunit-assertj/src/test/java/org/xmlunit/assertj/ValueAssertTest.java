@@ -76,6 +76,19 @@ public class ValueAssertTest {
     }
 
     @Test
+    public void testAsXml_shouldPass() {
+
+        String xml ="<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<a><b>" +
+                "<![CDATA[<c><d attr=\"xyz\"></d></c>]]>" +
+                "</b></a>";
+
+        assertThat(xml).valueByXPath("//a/b/text()")
+                .isEqualTo("<c><d attr=\"xyz\"></d></c>")
+                .asXml().hasXPath("/c/d");
+    }
+
+    @Test
     public void testIsEqualTo_withAttributeValueExpression_shouldPass() {
 
         String xml = "<a><b attr=\"abc\"></b></a>";

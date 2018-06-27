@@ -61,6 +61,10 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
         return Assertions.assertThat(value);
     }
 
+    public XmlAssert asXml() {
+        return XmlAssert.assertThat(actual);
+    }
+
     public ValueAssert isEqualTo(int expected) {
         asInt().isEqualTo(expected);
 
