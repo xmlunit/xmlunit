@@ -1,16 +1,13 @@
 package org.xmlunit.assertj;
 
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
-import org.xmlunit.XMLUnitException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
@@ -20,20 +17,6 @@ import static org.xmlunit.assertj.XmlAssert.assertThat;
 public class ValueAssertTest {
     @Rule
     public ExpectedException thrown = none();
-
-    @Test
-    public void testIsEqualTo_withCountExpression_shouldPass() {
-
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                "<fruits>" +
-                "<fruit name=\"apple\"/>" +
-                "<fruit name=\"orange\"/>" +
-                "<fruit name=\"banana\"/>" +
-                "</fruits>";
-        assertThat(xml).valueByXPath("count(//fruits/fruit)").isEqualTo(3);
-        assertThat(xml).valueByXPath("count(//fruits/fruit[@name=\"orange\"])").isEqualTo(1);
-        assertThat(xml).valueByXPath("count(//fruits/fruit[@name=\"apricot\"])").isEqualTo(0);
-    }
 
     @Test
     public void testAsInt_withCountExpression_shouldPass() {
@@ -64,6 +47,33 @@ public class ValueAssertTest {
         assertThat(xml).valueByXPath("//fruits/fruit/@name").asInt();
     }
 
+    @Test
+    public void testIsEqualTo_withInt_shouldPass() {
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<fruits>" +
+                "<fruit name=\"apple\"/>" +
+                "<fruit name=\"orange\"/>" +
+                "<fruit name=\"banana\"/>" +
+                "</fruits>";
+        assertThat(xml).valueByXPath("count(//fruits/fruit)").isEqualTo(3);
+        assertThat(xml).valueByXPath("count(//fruits/fruit[@name=\"orange\"])").isEqualTo(1);
+        assertThat(xml).valueByXPath("count(//fruits/fruit[@name=\"apricot\"])").isEqualTo(0);
+    }
+
+    @Test
+    public void testIsEqualTo_withDouble_shouldPass() {
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<fruits>" +
+                "<fruit name=\"apple\" weight=\"23.3\"/>" +
+                "<fruit name=\"orange\" weight=\"0.0\"/>" +
+                "<fruit name=\"banana\" weight=\"7\"/>" +
+                "</fruits>";
+        assertThat(xml).valueByXPath("//fruits/fruit[@name=\"apple\"]/@weight").isEqualTo(23.3);
+        assertThat(xml).valueByXPath("//fruits/fruit[@name=\"orange\"]/@weight").isEqualTo(0.0);
+        assertThat(xml).valueByXPath("//fruits/fruit[@name=\"banana\"]/@weight").isEqualTo(7.0);
+    }
 
     @Test
     public void testIsEqualTo_withAttributeValueExpression_shouldPass() {
