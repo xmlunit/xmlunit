@@ -1,9 +1,6 @@
 package org.xmlunit.assertj;
 
-import org.assertj.core.api.AbstractCharSequenceAssert;
-import org.assertj.core.api.AbstractDoubleAssert;
-import org.assertj.core.api.AbstractIntegerAssert;
-import org.assertj.core.api.Assertions;
+import org.assertj.core.api.*;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
@@ -61,6 +58,23 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
         return Assertions.assertThat(value);
     }
 
+    public AbstractBooleanAssert<?> asBoolean() {
+        isNotNull();
+        boolean value = false;
+        switch (actual.toLowerCase()) {
+            case "1":
+            case "true":
+                value = true; break;
+            case "0":
+            case "false":
+                value = false; break;
+            default:
+                throwAssertionError(shouldBeConvertible(actual, "boolean"));
+        }
+
+        return Assertions.assertThat(value);
+    }
+
     public XmlAssert asXml() {
         return XmlAssert.assertThat(actual);
     }
@@ -73,6 +87,12 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
 
     public ValueAssert isEqualTo(double expected) {
         asDouble().isEqualTo(expected);
+
+        return this;
+    }
+
+    public ValueAssert isEqualTo(boolean expected) {
+        asBoolean().isEqualTo(expected);
 
         return this;
     }
