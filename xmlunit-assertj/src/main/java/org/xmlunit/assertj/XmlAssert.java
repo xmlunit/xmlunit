@@ -149,33 +149,39 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
         return null;
     }
 
-    public ValidationAssert isValid() {
+    public XmlAssert isValid() {
         isNotNull();
-        return ValidationAssert.create(actual).isValid();
+        ValidationAssert.create(actual).isValid();
+        return this;
     }
 
-    public void isInvalid() {
+    public XmlAssert isInvalid() {
         isNotNull();
         ValidationAssert.create(actual).isInvalid();
+        return this;
     }
 
-    public ValidationAssert isValidAgainst(Schema schema) {
+    public XmlAssert isValidAgainst(Schema schema) {
         isNotNull();
-        return ValidationAssert.create(actual, schema).isValid();
+        ValidationAssert.create(actual, schema).isValid();
+        return this;
     }
 
-    public void isNotValidAgainst(Schema schema) {
+    public XmlAssert isNotValidAgainst(Schema schema) {
         isNotNull();
         ValidationAssert.create(actual, schema).isInvalid();
+        return this;
     }
 
-    public ValidationAssert isValidAgainst(Object... schemaSources) {
+    public XmlAssert isValidAgainst(Object... schemaSources) {
         isNotNull();
-        return ValidationAssert.create(actual, schemaSources).isValid();
+        ValidationAssert.create(actual, schemaSources).isValid();
+        return this;
     }
 
-    public void isNotValidAgainst(Object... schemaSources) {
+    public XmlAssert isNotValidAgainst(Object... schemaSources) {
         isNotNull();
         ValidationAssert.create(actual, schemaSources).isInvalid();
+        return this;
     }
 }

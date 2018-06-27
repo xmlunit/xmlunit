@@ -15,12 +15,12 @@ import static org.xmlunit.assertj.error.ShouldBeValid.shouldBeValid;
 
 public class ValidationAssert extends AbstractAssert<ValidationAssert, Source> {
 
-    private final Source[] schemaSource;
+    private final Source[] schemaSources;
     private final Schema schema;
 
-    private ValidationAssert(Source actual, Source[] schemaSource, Schema schema) {
+    private ValidationAssert(Source actual, Source[] schemaSources, Schema schema) {
         super(actual, ValidationAssert.class);
-        this.schemaSource = schemaSource;
+        this.schemaSources = schemaSources;
         this.schema = schema;
     }
 
@@ -67,7 +67,7 @@ public class ValidationAssert extends AbstractAssert<ValidationAssert, Source> {
         if (schema != null) {
             validator.setSchema(schema);
         } else {
-            validator.setSchemaSources(schemaSource);
+            validator.setSchemaSources(schemaSources);
         }
         return validator.validateInstance(actual);
     }
