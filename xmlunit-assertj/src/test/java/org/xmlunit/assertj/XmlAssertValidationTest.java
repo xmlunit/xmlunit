@@ -70,6 +70,27 @@ public class XmlAssertValidationTest {
     }
 
     @Test
+    public void testIsValidAgainst_withEmptySourcesArray_shouldPass() {
+
+        StreamSource xml = new StreamSource(new File("../test-resources/BookXsdGenerated.xml"));
+
+        assertThat(xml).isValidAgainst();
+        assertThat(xml).isValidAgainst(new Object[0]);
+    }
+
+    @Test
+    public void testIsValidAgainst_withBrokenXmlAndEmptySourcesArray_shouldFailed() {
+
+        thrown.expectAssertionError("1. line=9; column=8; type=ERROR;" +
+                " message=cvc-complex-type.2.4.b: The content of element 'Book' is not complete." +
+                " One of '{\"https://www.xmlunit.org/publishing\":Publisher}' is expected.");
+
+        StreamSource xml = new StreamSource(new File("../test-resources/invalidBook.xml"));
+
+        assertThat(xml).isValidAgainst();
+    }
+
+    @Test
     public void testIsValid_shouldPass() {
 
         StreamSource xml = new StreamSource(new File("../test-resources/BookXsdGenerated.xml"));

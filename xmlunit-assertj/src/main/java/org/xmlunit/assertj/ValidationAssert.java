@@ -58,7 +58,6 @@ public class ValidationAssert extends AbstractAssert<ValidationAssert, Source> {
 
         Assertions.assertThat(schemaSources)
                 .isNotNull()
-                .isNotEmpty()
                 .doesNotContainNull();
 
         Source source = Input.from(xmlSource).build();
@@ -94,7 +93,7 @@ public class ValidationAssert extends AbstractAssert<ValidationAssert, Source> {
         JAXPValidator validator = new JAXPValidator(Languages.W3C_XML_SCHEMA_NS_URI);
         if (schema != null) {
             validator.setSchema(schema);
-        } else {
+        } else if (schemaSources != null && schemaSources.length > 0) {
             validator.setSchemaSources(schemaSources);
         }
         return validator.validateInstance(actual);

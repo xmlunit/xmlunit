@@ -13,7 +13,11 @@
 */
 package org.xmlunit.assertj;
 
-import org.assertj.core.api.*;
+import org.assertj.core.api.AbstractBooleanAssert;
+import org.assertj.core.api.AbstractCharSequenceAssert;
+import org.assertj.core.api.AbstractDoubleAssert;
+import org.assertj.core.api.AbstractIntegerAssert;
+import org.assertj.core.api.Assertions;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
