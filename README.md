@@ -148,15 +148,16 @@ assertThat(createDocument(), valid(Input.fromFile("local.xsd")));
 
 ## Requirements
 
-XMLUnit requires Java6.
+XMLUnit requires Java6 except for the AssertJ module which requires
+Java7.
 
 The `core` library provides all functionality needed to test XML
 output and hasn't got any dependencies.  It uses JUnit 4.x for its own
 tests.
 
-The core library is complemented by Hamcrest 1.x matchers.  There also
-exists a `legacy` project that provides the API of XMLUnit 1.x on top
-of the 2.x core library.
+The core library is complemented by Hamcrest 1.x matchers and AssertJ
+assertions.  There also exists a `legacy` project that provides the
+API of XMLUnit 1.x on top of the 2.x core library.
 
 ## Checking out XMLUnit for Java
 
