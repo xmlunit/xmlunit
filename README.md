@@ -98,7 +98,7 @@ Diff d = DiffBuilder.compare(Input.fromFile("test-data/good.xml"))
 assert !d.hasDifferences();
 ```
 
-or using the `CompareMatcher`
+or using Hamcrest with `CompareMatcher`
 
 ```java
 import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
@@ -118,12 +118,17 @@ String content = xpath.evaluate("/foo/text()", source);
 assert "bar".equals(content);
 ```
 
-or using `HasXPathMatcher`, `EvaluateXPathMatcher` and `XmlAssert`
+or using Hamcrest with `HasXPathMatcher`, `EvaluateXPathMatcher`
 
 ```java
 assertThat("<foo>bar</foo>", HasXPathMatcher.hasXPath("/foo"));
 assertThat("<foo>bar</foo>", EvaluateXPathMatcher.hasXPath("/foo/text()",
                                                            equalTo("bar")));
+```
+
+or using AssertJ with `XmlAssert`
+
+```
 XmlAssert.assertThat("<foo>bar</foo>").hasXPath("/foo");
 ```
 
@@ -138,7 +143,7 @@ boolean valid = result.isValid();
 Iterable<ValidationProblem> problems = result.getProblems();
 ```
 
-or using `ValidationMatcher`
+or using Hamcrest with `ValidationMatcher`
 
 ```java
 import static org.xmlunit.matchers.ValidationMatcher.valid;
