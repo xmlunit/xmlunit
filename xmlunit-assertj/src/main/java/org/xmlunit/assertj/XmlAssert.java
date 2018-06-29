@@ -14,15 +14,10 @@
 package org.xmlunit.assertj;
 
 import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.Assertions;
-import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
-import org.xmlunit.util.Convert;
-import org.xmlunit.xpath.JAXPXPathEngine;
-import org.xmlunit.xpath.XPathEngine;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Source;
+import javax.xml.validation.Schema;
 import java.util.Map;
 
 import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
@@ -37,13 +32,13 @@ import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
  * <p><b>Simple Example</b></p>
  *
  * <pre>
- * import static org.xmlunit.assertj.XmlAssert.assertThat;
+ *    import static org.xmlunit.assertj.XmlAssert.assertThat;
  *
- * final String xml = &quot;&lt;a&gt;&lt;b attr=\&quot;abc\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
+ *    final String xml = &quot;&lt;a&gt;&lt;b attr=\&quot;abc\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
  *
- * assertThat(xml).nodesByXPath("//a/b/@attr").exist();
- * assertThat(xml).hasXPath("//a/b/@attr");
- * assertThat(xml).doesNotHaveXPath("//a/b/c");
+ *    assertThat(xml).nodesByXPath("//a/b/@attr").exist();
+ *    assertThat(xml).hasXPath("//a/b/@attr");
+ *    assertThat(xml).doesNotHaveXPath("//a/b/c");
  * </pre>
  *
  * <p><b>Example with namespace mapping</b></p>
@@ -65,6 +60,24 @@ import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
  *          .hasXPath(&quot;//atom:feed/atom:entry/atom:id&quot;));
  * </pre>
  *
+ * <p><b>Testing XPath expression value</b></p>
+ *
+ * <pre>
+ *    String xml = &quot;&lt;a&gt;&lt;b attr=\&quot;abc\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
+ *
+ *    assertThat(xml).valueByXPath("//a/b/@attr").isEqualTo("abc");
+ *    assertThat(xml).valueByXPath("count(//a/b)").isEqualTo(1);
+ * </pre>
+ *
+ * <p><b>Example with XML validation</b></p>
+ *
+ * <pre>
+ *    String xml = &quot;&lt;a&gt;&lt;b attr=\&quot;abc\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
+ *    StreamSource xsd = new StreamSource(new File("schema.xsd"));
+ *
+ *    assertThat(xml).isValid();
+ *    assertThat(xml).isValidAgainst(xsd);
+ * </pre>
  * @since XMLUnit 2.6.1
  */
 public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
@@ -78,6 +91,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
 
     /**
      * Factory method for {@link XmlAssert}
+     *
      * @param o object with type supported by {@link Input#from(Object)}
      */
     public static XmlAssert assertThat(Object o) {
@@ -85,24 +99,42 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     }
 
     /**
+     * Sets the {@link DocumentBuilderFactory} to use when creating a
+     * {@link org.w3c.dom.Document} from the XML input.
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     */
+    public XmlAssert withDocumentBuildFactory(DocumentBuilderFactory dbf) {
+        isNotNull();
+        this.dbf = dbf;
+        return this;
+    }
+
+    /**
+     * Utility method used for creating a namespace context mapping to be used in XPath matching.
+     *
+     * @param prefix2Uri prefix2Uri maps from prefix to namespace URI. It is used to resolve
+     *                   XML namespace prefixes in the XPath expression
+     * @throws AssertionError if the actual value is {@code null}.
+     */
+    public XmlAssert withNamespaceContext(Map<String, String> prefix2Uri) {
+        isNotNull();
+        this.prefix2Uri = prefix2Uri;
+        return this;
+    }
+
+    /**
      * Create {@link MultipleNodeAssert} from nodes selecting by given <b>xPath</b>.
      *
+     * @throws AssertionError if the xPath is blank.
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value provide invalid XML.
      */
     public MultipleNodeAssert nodesByXPath(String xPath) {
         isNotNull();
 
-        Assertions.assertThat(xPath).isNotBlank();
-
         try {
-            XPathEngine xPathEngine = createXPathEngine();
-
-            Source s = Input.from(actual).build();
-            Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
-            Iterable<Node> nodes = xPathEngine.selectNodes(xPath, root);
-
-            return new MultipleNodeAssert(nodes);
+            return MultipleNodeAssert.create(actual, prefix2Uri, dbf, xPath);
 
         } catch (Exception e) {
 
@@ -127,38 +159,91 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     }
 
     /**
-     * Sets the {@link DocumentBuilderFactory} to use when creating a
-     * {@link org.w3c.dom.Document} from the XML input.
+     * Create {@link ValueAssert} from value of given <b>xPath</b> expression.
+     *
+     * @throws AssertionError if the xPath is blank.
+     * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value provide invalid XML.
+     */
+    public ValueAssert valueByXPath(String xPath) {
+        isNotNull();
+        try {
+            return ValueAssert.create(actual, prefix2Uri, dbf, xPath);
+        } catch (Exception e) {
+            throwAssertionError(shouldNotHaveThrown(e));
+        }
+        return null;
+    }
+
+    /**
+     * Check if actual value is valid against W3C XML Schema
      *
      * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value is invalid
      */
-    public XmlAssert withDocumentBuildFactory(DocumentBuilderFactory dbf) {
+    public XmlAssert isValid() {
         isNotNull();
-        this.dbf = dbf;
+        ValidationAssert.create(actual).isValid();
         return this;
     }
 
     /**
-     * Utility method used for creating a namespace context mapping to be used in XPath matching.
-     *
-     * @param prefix2Uri prefix2Uri maps from prefix to namespace URI. It is used to resolve
-     *                   XML namespace prefixes in the XPath expression
+     * Check if actual value is not valid against W3C XML Schema
      *
      * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value is valid
      */
-    public XmlAssert withNamespaceContext(Map<String, String> prefix2Uri) {
+    public XmlAssert isInvalid() {
         isNotNull();
-        this.prefix2Uri = prefix2Uri;
+        ValidationAssert.create(actual).isInvalid();
         return this;
     }
 
-    private XPathEngine createXPathEngine() {
+    /**
+     * Check if actual value is valid against given schema
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value is invalid
+     */
+    public XmlAssert isValidAgainst(Schema schema) {
+        isNotNull();
+        ValidationAssert.create(actual, schema).isValid();
+        return this;
+    }
 
-        final JAXPXPathEngine engine = new JAXPXPathEngine();
-        if (prefix2Uri != null) {
-            engine.setNamespaceContext(prefix2Uri);
-        }
+    /**
+     * Check if actual value is not valid against given schema
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value is valid
+     */
+    public XmlAssert isNotValidAgainst(Schema schema) {
+        isNotNull();
+        ValidationAssert.create(actual, schema).isInvalid();
+        return this;
+    }
 
-        return engine;
+    /**
+     * Check if actual value is valid against schema provided by given sources
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value is invalid
+     */
+    public XmlAssert isValidAgainst(Object... schemaSources) {
+        isNotNull();
+        ValidationAssert.create(actual, schemaSources).isValid();
+        return this;
+    }
+
+    /**
+     * Check if actual value is not valid against schema provided by given sources
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     * @throws AssertionError if the actual value is valid
+     */
+    public XmlAssert isNotValidAgainst(Object... schemaSources) {
+        isNotNull();
+        ValidationAssert.create(actual, schemaSources).isInvalid();
+        return this;
     }
 }

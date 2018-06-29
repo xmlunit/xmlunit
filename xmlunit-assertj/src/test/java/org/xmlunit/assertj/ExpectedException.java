@@ -13,9 +13,16 @@
 */
 package org.xmlunit.assertj;
 
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+
+import java.util.regex.Pattern;
+
+import static java.lang.String.*;
+import static java.util.regex.Pattern.DOTALL;
+import static org.junit.internal.matchers.ThrowableMessageMatcher.hasMessage;
 
 
 public class ExpectedException implements TestRule {
@@ -25,7 +32,8 @@ public class ExpectedException implements TestRule {
         return new ExpectedException();
     }
 
-    private ExpectedException() {}
+    private ExpectedException() {
+    }
 
     @Override
     public Statement apply(Statement base, Description description) {
@@ -33,11 +41,30 @@ public class ExpectedException implements TestRule {
     }
 
     public void expectAssertionError(String message) {
-        expect(AssertionError.class, message);
+        delegate.expect(AssertionError.class);
+        delegate.expectMessage(format(message));
     }
 
-    void expect(Class<? extends Throwable> type, String message) {
-        delegate.expect(type);
-        delegate.expectMessage(message);
+    public void expectAssertionErrorPattern(String messageRegex) {
+        delegate.expect(AssertionError.class);
+        delegate.expect(hasMessage(new MatchesPattern(messageRegex)));
+    }
+
+    private class MatchesPattern extends TypeSafeMatcher<String> {
+        private String regex;
+
+        MatchesPattern(String regex) {
+            this.regex = regex;
+        }
+
+        @Override
+        protected boolean matchesSafely(String item) {
+            return Pattern.compile(regex, DOTALL).matcher(item).matches();
+        }
+
+        @Override
+        public void describeTo(org.hamcrest.Description description) {
+            description.appendText("a string matching the regex '" + regex + "'");
+        }
     }
 }

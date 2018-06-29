@@ -11,10 +11,23 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+package org.xmlunit.assertj.error;
+
+import org.assertj.core.error.BasicErrorMessageFactory;
 
 /**
- * Contains internal classes of XMLUnit's AssertJ support that are
- * only public as an implementation detail.
  * @since XMLUnit 2.6.1
  */
-package org.xmlunit.assertj.error;
+public class ShouldBeConvertible extends BasicErrorMessageFactory {
+
+    public static ShouldBeConvertible shouldBeConvertible(String value, String targetType) {
+
+        return new ShouldBeConvertible(value,targetType);
+    }
+
+    private ShouldBeConvertible(String value, String targetType) {
+        super("%nExpecting:%n <%s>%nto be convertible to%n <%s>",
+                unquotedString(value),
+                unquotedString(targetType));
+    }
+}
