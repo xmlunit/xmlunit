@@ -183,5 +183,4 @@ XMLUnit for Java builds using Apache Maven 3.x, mainly you want to run
 $ mvn install
 ```
 
-in order to compile `core`, `matchers` and `legacy` and run the
-tests.
+in order to compile all modules and run the tests.
