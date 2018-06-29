@@ -1,11 +1,6 @@
 Contributing to XMLUnit
 =======================
 
-The current focus is on getting a complete rewrite of XMLUnit 1.x -
-called 2.x - out of the door.  Please help us shape the new API and
-discuss it on the `xmlunit-general` list over at
-[Sourceforge](http://sourceforge.net/p/xmlunit/mailman/?source=navbar).
-
 Contributing to XMLUnit 2.x
 ---------------------------
 
