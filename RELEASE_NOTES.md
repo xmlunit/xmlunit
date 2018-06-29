@@ -2,9 +2,10 @@
 
 ## XMLUnit for Java 2.6.1 - /Not Released, yet/
 
-* add a new module with AssertJ support - currently only XPath
-  assertions are supported. This module requires Java7 at runtime,
-  PR [#120](https://github.com/xmlunit/xmlunit/pull/120) by
+* add a new module with AssertJ support - currently only XPath and
+  validation assertions are supported. This module requires Java7 at
+  runtime, PR [#120](https://github.com/xmlunit/xmlunit/pull/120) and
+  PR [#126](https://github.com/xmlunit/xmlunit/pull/126) by
   [@krystiankaluzny](https://github.com/krystiankaluzny).
 
 ## XMLUnit for Java 2.6.0 - /Released 2018-04-22/
