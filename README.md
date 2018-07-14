@@ -128,8 +128,13 @@ assertThat("<foo>bar</foo>", EvaluateXPathMatcher.hasXPath("/foo/text()",
 
 or using AssertJ with `XmlAssert`
 
-```
-XmlAssert.assertThat("<foo>bar</foo>").hasXPath("/foo");
+```java
+
+import static org.xmlunit.assertj.XmlAssert.assertThat;
+...
+
+assertThat("<foo>bar</foo>").hasXPath("/foo");
+assertThat("<foo>bar</foo>").valueByXPath("/foo/text()").isEqualTo("bar");
 ```
 
 ### Validating a Document Against an XML Schema
@@ -150,6 +155,15 @@ import static org.xmlunit.matchers.ValidationMatcher.valid;
 ...
 
 assertThat(createDocument(), valid(Input.fromFile("local.xsd")));
+```
+
+or using AssertJ with `XmlAssert`
+
+```java
+import static org.xmlunit.assertj.XmlAssert.assertThat;
+...
+
+assertThat(createDocument()).isValidAgainst(Input.fromFile("local.xsd"));
 ```
 
 ## Requirements
