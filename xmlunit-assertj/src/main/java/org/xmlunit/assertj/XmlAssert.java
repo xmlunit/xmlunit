@@ -175,6 +175,15 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
         return null;
     }
 
+    public CompareAssert and(Object control) {
+        isNotNull();
+        try {
+            return CompareAssert.create(actual, control, prefix2Uri, dbf);
+        } catch (Exception e) {
+            throwAssertionError(shouldNotHaveThrown(e));
+        }
+        return null;
+    }
     /**
      * Check if actual value is valid against W3C XML Schema
      *
