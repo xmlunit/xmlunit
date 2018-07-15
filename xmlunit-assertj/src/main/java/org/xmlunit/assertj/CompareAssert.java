@@ -1,11 +1,11 @@
 package org.xmlunit.assertj;
 
-import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.DifferenceEngineConfigurer;
+import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonController;
 import org.xmlunit.diff.ComparisonControllers;
 import org.xmlunit.diff.ComparisonFormatter;
@@ -19,12 +19,16 @@ import org.xmlunit.util.Predicate;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.Map;
 
-public class CompareAssert extends AbstractAssert<CompareAssert, Object> implements DifferenceEngineConfigurer<CompareAssert> {
+import static org.xmlunit.assertj.error.ShouldBeDifferent.shouldBeDifferent;
+import static org.xmlunit.assertj.error.ShouldNotBeDifferent.shouldNotBeDifferent;
+
+public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> implements DifferenceEngineConfigurer<CompareAssert> {
 
     private final DiffBuilder diffBuilder;
     private ComparisonController customComparisonController;
+    private boolean formatXml;
 
-    private CompareAssert(Object actual, Object control, DiffBuilder diffBuilder) {
+    private CompareAssert(Object actual, DiffBuilder diffBuilder) {
         super(actual, CompareAssert.class);
         this.diffBuilder = diffBuilder;
     }
@@ -38,7 +42,7 @@ public class CompareAssert extends AbstractAssert<CompareAssert, Object> impleme
                 .withNamespaceContext(prefix2Uri)
                 .withDocumentBuilderFactory(dbf);
 
-        return new CompareAssert(actual, control, diffBuilder);
+        return new CompareAssert(actual, diffBuilder);
     }
 
 
@@ -102,11 +106,13 @@ public class CompareAssert extends AbstractAssert<CompareAssert, Object> impleme
     }
 
     public CompareAssert ignoreWhitespace() {
+        formatXml = true;
         diffBuilder.ignoreWhitespace();
         return this;
     }
 
     public CompareAssert normalizeWhitespace() {
+        formatXml = true;
         diffBuilder.normalizeWhitespace();
         return this;
     }
@@ -159,9 +165,17 @@ public class CompareAssert extends AbstractAssert<CompareAssert, Object> impleme
         Diff diff = diffBuilder.build();
 
         if (!diff.hasDifferences() && ComparisonResult.DIFFERENT == compareFor) {
-            failWithMessage("Should be different");
+
+            String controlSystemId = diff.getControlSource().getSystemId();
+            String testSystemId = diff.getTestSource().getSystemId();
+            throwAssertionError(shouldBeDifferent(controlSystemId, testSystemId));
+
         } else if (diff.hasDifferences()) {
-            failWithMessage("Should not be different");
+
+            String systemId = diff.getControlSource().getSystemId();
+            Comparison firstDifferenceComparison = diff.getDifferences().iterator().next().getComparison();
+            throwAssertionError(shouldNotBeDifferent(systemId, firstDifferenceComparison, formatXml));
+
         }
     }
 }
