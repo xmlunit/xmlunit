@@ -28,6 +28,8 @@ import static org.junit.internal.matchers.ThrowableMessageMatcher.hasMessage;
 public class ExpectedException implements TestRule {
     private final org.junit.rules.ExpectedException delegate = org.junit.rules.ExpectedException.none();
 
+    private boolean checkAssertionType = false;
+
     public static ExpectedException none() {
         return new ExpectedException();
     }
@@ -41,15 +43,22 @@ public class ExpectedException implements TestRule {
     }
 
     public void expectAssertionError(String message) {
-        delegate.expect(AssertionError.class);
+        expectAssertionError();
         delegate.expectMessage(format(message));
     }
 
     public void expectAssertionErrorPattern(String messageRegex) {
-        delegate.expect(AssertionError.class);
+        expectAssertionError();
         delegate.expect(hasMessage(new MatchesPattern(messageRegex)));
     }
 
+    private void expectAssertionError() {
+
+        if(!checkAssertionType) {
+            delegate.expect(AssertionError.class);
+            checkAssertionType = true;
+        }
+    }
     private class MatchesPattern extends TypeSafeMatcher<String> {
         private String regex;
 
