@@ -11,8 +11,10 @@ import org.xmlunit.diff.ComparisonControllers;
 import org.xmlunit.diff.ComparisonFormatter;
 import org.xmlunit.diff.ComparisonListener;
 import org.xmlunit.diff.ComparisonResult;
+import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.DifferenceEvaluator;
+import org.xmlunit.diff.ElementSelectors;
 import org.xmlunit.diff.NodeMatcher;
 import org.xmlunit.util.Predicate;
 
@@ -129,6 +131,14 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
 
     public CompareAssert ignoreCommentsUsingXSLTVersion(String xsltVersion) {
         diffBuilder.ignoreCommentsUsingXSLTVersion(xsltVersion);
+        return this;
+    }
+
+    /**
+     * Equivalent for <pre>withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))</pre>
+     */
+    public CompareAssert ignoreChildNodesOrder() {
+        diffBuilder.withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText));
         return this;
     }
 

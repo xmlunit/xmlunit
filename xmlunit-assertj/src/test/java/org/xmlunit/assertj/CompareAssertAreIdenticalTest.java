@@ -32,6 +32,32 @@ public class CompareAssertAreIdenticalTest {
     }
 
     @Test
+    public void testAreSimilar_shouldFailed() {
+
+        thrown.expectAssertionError("Expected node type 'CDATA Section' but was 'Text'");
+
+        String xml1 = "<!DOCTYPE a>" +
+                "<a xmlns:xyz=\"https://www.xmlunit.com/xyz\">" +
+                "   <b>text</b>" +
+                "   <c>" +
+                "      <d/>" +
+                "      <xyz:e/>" +
+                "   </c>" +
+                "</a>";
+
+        String xml2 = "" +
+                "<a xmlns:vwy=\"https://www.xmlunit.com/xyz\">" +
+                "   <b><![CDATA[text]]></b>" +
+                "   <c>" +
+                "      <d/>" +
+                "      <vwy:e/>" +
+                "   </c>" +
+                "</a>";
+
+        assertThat(xml1).and(xml2).areIdentical();
+    }
+
+    @Test
     public void testAreIdentical_shouldFailed_withReadableMessage() {
 
         thrown.expectAssertionError("Expected attribute value 'xy' but was 'xyz'");
