@@ -10,13 +10,13 @@ import static org.assertj.core.util.Lists.newArrayList;
 
 abstract class CustomAbstractAssert<SELF extends CustomAbstractAssert<SELF, ACTUAL>, ACTUAL> extends AbstractAssert<SELF, ACTUAL> {
 
-    private static final String ORG_ASSERTJ = "org.assert";
+    private static final String ORG_XMLUNIT_ASSERTJ_ERROR = "org.xmlunit.assertj.error";
 
     CustomAbstractAssert(ACTUAL actual, Class<?> selfType) {
         super(actual, selfType);
     }
 
-    protected void throwAssertionError(AssertionErrorFactory assertionErrorFactory) {
+    void throwAssertionError(AssertionErrorFactory assertionErrorFactory) {
         AssertionError assertionError = assertionErrorFactory.newAssertionError(info.description(), info.representation());
         Failures.instance().removeAssertJRelatedElementsFromStackTraceIfNeeded(assertionError);
         removeCustomAssertRelatedElementsFromStackTraceIfNeeded(assertionError);
@@ -42,6 +42,9 @@ abstract class CustomAbstractAssert<SELF extends CustomAbstractAssert<SELF, ACTU
         Class<?> currentAssertClass = getClass();
         while (currentAssertClass != AbstractAssert.class) {
             if (stackTraceElement.getClassName().equals(currentAssertClass.getName())) {
+                return true;
+            }
+            if (stackTraceElement.getClassName().contains(ORG_XMLUNIT_ASSERTJ_ERROR)) {
                 return true;
             }
             currentAssertClass = currentAssertClass.getSuperclass();
