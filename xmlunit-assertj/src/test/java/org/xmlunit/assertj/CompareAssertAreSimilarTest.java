@@ -79,7 +79,7 @@ public class CompareAssertAreSimilarTest {
     }
 
     @Test
-    public void testAreSimilar_withDifferenceEvaluator_shouldFailed() {
+    public void testAreSimilar_withDifferenceEvaluator_shouldPass() {
 
         final String xml1 = "<a><b attr=\"abc\"></b></a>";
         final String xml2 = "<a><b attr=\"xyz\"></b></a>";

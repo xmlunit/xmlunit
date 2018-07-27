@@ -119,7 +119,7 @@ public class XmlAssertValidationTest {
     }
 
     @Test
-    public void testIsInvalid_shouldPass() {
+    public void testIsInvalid_shouldField() {
 
         thrown.expectAssertionErrorPattern("^\\nExpecting:\\n <.*\\.\\.\\/test-resources\\/BookXsdGenerated.xml>\\nto be invalid");
 

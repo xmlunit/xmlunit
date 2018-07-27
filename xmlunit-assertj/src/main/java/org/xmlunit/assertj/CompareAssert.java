@@ -180,12 +180,11 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
             String testSystemId = diff.getTestSource().getSystemId();
             throwAssertionError(shouldBeDifferent(controlSystemId, testSystemId));
 
-        } else if (diff.hasDifferences()) {
+        } else if (diff.hasDifferences() && ComparisonResult.DIFFERENT != compareFor) {
 
             String systemId = diff.getControlSource().getSystemId();
             Comparison firstDifferenceComparison = diff.getDifferences().iterator().next().getComparison();
             throwAssertionError(shouldNotBeDifferent(systemId, firstDifferenceComparison, formatXml));
-
         }
     }
 }
