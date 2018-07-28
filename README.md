@@ -107,6 +107,18 @@ import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
 assertThat(createTestDocument(), isIdenticalTo(Input.fromFile("test-data/good.xml")));
 ```
 
+or using AssertJ with `XmlAssert`
+
+```java
+
+import static org.xmlunit.assertj.XmlAssert.assertThat;
+...
+
+assertThat(createTestDocument())
+            .and(Input.fromFile("test-data/good.xml"))
+            .areIdentical();
+```
+
 ### Asserting an XPath Value
 
 ```java
