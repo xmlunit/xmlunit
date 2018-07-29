@@ -134,7 +134,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     /**
      * {@inheritDoc}
      *
-     * @see DiffBuilder#withNamespaceContext(Map<String, String>)
+     * @see DiffBuilder#withNamespaceContext(Map)
      */
     @Override
     public CompareAssert withNamespaceContext(Map<String, String> prefix2Uri) {
@@ -145,7 +145,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     /**
      * {@inheritDoc}
      *
-     * @see DiffBuilder#withAttributeFilter(Predicate<Attr>)
+     * @see DiffBuilder#withAttributeFilter(Predicate)
      */
     @Override
     public CompareAssert withAttributeFilter(Predicate<Attr> attributeFilter) {
@@ -156,7 +156,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     /**
      * {@inheritDoc}
      *
-     * @see DiffBuilder#withNodeFilter(Predicate<Node>)
+     * @see DiffBuilder#withNodeFilter(Predicate)
      */
     @Override
     public CompareAssert withNodeFilter(Predicate<Node> nodeFilter) {

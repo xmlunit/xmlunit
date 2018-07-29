@@ -23,8 +23,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <maven.compile.source>7</maven.compile.source>
-    <maven.compile.target>7</maven.compile.target>
+    <maven.compile.source>1.7</maven.compile.source>
+    <maven.compile.target>1.7</maven.compile.target>
   </properties>
 
   <artifactId>xmlunit-assertj</artifactId>
