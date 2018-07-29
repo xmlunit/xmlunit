@@ -103,4 +103,25 @@ public class CompareAssertAreDifferentTest {
                 .areDifferent();
     }
 
+    @Test
+    public void testAreDifferent_withInvalidTestXml_shouldFailed() {
+
+        thrown.expectAssertionErrorPattern(".*Expecting code not to raise a throwable but caught.*Caught exception during comparison.*");
+
+        String testXml = "abc";
+        String controlXml = "<a><b/><c/></a>";
+
+        assertThat(testXml).and(controlXml).areDifferent();
+    }
+
+    @Test
+    public void testAreDifferent_withInvalidControlXml_shouldFailed() {
+
+        thrown.expectAssertionErrorPattern(".*Expecting code not to raise a throwable but caught.*Caught exception during comparison.*");
+
+        String testXml = "<a><b/><c/></a>";
+        String controlXml = "abc";
+
+        assertThat(testXml).and(controlXml).areDifferent();
+    }
 }

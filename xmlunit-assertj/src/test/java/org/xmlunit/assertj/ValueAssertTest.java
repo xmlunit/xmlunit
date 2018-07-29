@@ -231,10 +231,4 @@ public class ValueAssertTest {
                 .valueByXPath("//atom:feed/atom:entry[2]/atom:title/text()").isEqualTo("Bing");
     }
 
-    @Test
-    public void testValueByXpath_withInvalidXml_shouldFailed() {
-        thrown.expectAssertionErrorPattern(".*Expecting code not to raise a throwable but caught.*Content is not allowed in prolog.*");
-
-        assertThat("not empty").valueByXPath("count(//atom:feed/atom:entry)").isEmpty();
-    }
 }

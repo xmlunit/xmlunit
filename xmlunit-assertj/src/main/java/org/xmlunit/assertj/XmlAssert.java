@@ -97,6 +97,7 @@ import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
  *               DifferenceEvaluators.Default, new MyDifferenceEvaluator()));
  *          .areIdentical();
  * </pre>
+ *
  * @since XMLUnit 2.6.1
  */
 public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
@@ -151,16 +152,12 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      */
     public MultipleNodeAssert nodesByXPath(String xPath) {
         isNotNull();
-
         try {
             return MultipleNodeAssert.create(actual, prefix2Uri, dbf, xPath);
-
         } catch (Exception e) {
-
             throwAssertionError(shouldNotHaveThrown(e));
         }
-
-        return null;
+        return null; //fix compile issue
     }
 
     /**
@@ -191,16 +188,14 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
         } catch (Exception e) {
             throwAssertionError(shouldNotHaveThrown(e));
         }
-        return null;
+        return null; //fix compile issue
     }
 
     /**
      * Create {@link CompareAssert} for given <b>control</b> XML source and actual XML source.
      *
      * @throws AssertionError if the actual value is {@code null}
-     * @throws AssertionError if the actual value is invalid
      * @throws AssertionError if the control value is {@code null}
-     * @throws AssertionError if the control value is invalid
      */
     public CompareAssert and(Object control) {
         isNotNull();
@@ -209,7 +204,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
         } catch (Exception e) {
             throwAssertionError(shouldNotHaveThrown(e));
         }
-        return null;
+        return null; //fix compile issue
     }
 
     /**

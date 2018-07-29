@@ -165,4 +165,26 @@ public class CompareAssertAreIdenticalTest {
                 .normalizeWhitespace()
                 .areIdentical();
     }
+
+    @Test
+    public void testAreIdentical_withInvalidTestXml_shouldFailed() {
+
+        thrown.expectAssertionErrorPattern(".*Expecting code not to raise a throwable but caught.*Caught exception during comparison.*");
+
+        String testXml = "abc";
+        String controlXml = "<a><b/><c/></a>";
+
+        assertThat(testXml).and(controlXml).areIdentical();
+    }
+
+    @Test
+    public void testAreIdentical_withInvalidControlXml_shouldFailed() {
+
+        thrown.expectAssertionErrorPattern(".*Expecting code not to raise a throwable but caught.*Caught exception during comparison.*");
+
+        String testXml = "<a><b/><c/></a>";
+        String controlXml = "abc";
+
+        assertThat(testXml).and(controlXml).areIdentical();
+    }
 }

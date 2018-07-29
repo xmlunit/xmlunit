@@ -36,6 +36,7 @@ import java.util.Map;
 
 import static org.xmlunit.assertj.error.ShouldBeDifferent.shouldBeDifferent;
 import static org.xmlunit.assertj.error.ShouldNotBeDifferent.shouldNotBeDifferent;
+import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
 
 /**
  * Assertion methods for XMLs comparision.
@@ -55,6 +56,8 @@ import static org.xmlunit.assertj.error.ShouldNotBeDifferent.shouldNotBeDifferen
  */
 public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> implements DifferenceEngineConfigurer<CompareAssert> {
 
+    private static final String EXPECTING_NOT_NULL = "Expecting control not to be null";
+
     private final DiffBuilder diffBuilder;
     private ComparisonController customComparisonController;
     private boolean formatXml;
@@ -66,7 +69,9 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
 
     static CompareAssert create(Object actual, Object control, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf) {
 
-        Assertions.assertThat(control).isNotNull();
+        Assertions.assertThat(control)
+                .as(EXPECTING_NOT_NULL)
+                .isNotNull();
 
         DiffBuilder diffBuilder = DiffBuilder.compare(control)
                 .withTest(actual)
@@ -251,6 +256,8 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * Check if actual and control XMLs are identical.
      * If custom comparison controller wasn't defined then {@link ComparisonControllers#StopWhenSimilar} is used.
      *
+     * @throws AssertionError if the test value is invalid
+     * @throws AssertionError if the control value is invalid
      * @see DiffBuilder#checkForIdentical()
      */
     public CompareAssert areIdentical() {
@@ -263,6 +270,8 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * Check if actual and control XMLs are similar.
      * If custom comparison controller wasn't defined then {@link ComparisonControllers#StopWhenDifferent} is used.
      *
+     * @throws AssertionError if the test value is invalid
+     * @throws AssertionError if the control value is invalid
      * @see DiffBuilder#checkForSimilar()
      */
     public CompareAssert areSimilar() {
@@ -274,9 +283,11 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     /**
      * Check if actual and control XMLs are different.
      * Similar XMLs aren't different. It means that if <pre>areSimilar</pre> pass then <pre>areDifferent</pre> failed.
-     *
+     * <p>
      * If custom comparison controller wasn't defined then {@link ComparisonControllers#StopWhenSimilar} is used.
      *
+     * @throws AssertionError if the test value is invalid
+     * @throws AssertionError if the control value is invalid
      * @see DiffBuilder#checkForSimilar()
      */
     public CompareAssert areDifferent() {
@@ -297,7 +308,15 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
             diffBuilder.withComparisonController(ComparisonControllers.StopWhenSimilar);
         }
 
-        Diff diff = diffBuilder.build();
+        Diff diff;
+
+        try {
+
+            diff = diffBuilder.build();
+        } catch (Exception e) {
+            throwAssertionError(shouldNotHaveThrown(e));
+            return; //fix compile issue
+        }
 
         if (!diff.hasDifferences() && ComparisonResult.DIFFERENT == compareFor) {
 
