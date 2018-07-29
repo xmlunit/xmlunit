@@ -24,7 +24,7 @@ public class CompareAssertAreSimilarTest {
     @Test
     public void testAreSimilar_shouldPass() {
 
-        String xml1 = "<!DOCTYPE a>" +
+        String testXml = "<!DOCTYPE a>" +
                 "<a xmlns:xyz=\"https://www.xmlunit.com/xyz\">" +
                 "   <b>text</b>" +
                 "   <c>" +
@@ -33,7 +33,7 @@ public class CompareAssertAreSimilarTest {
                 "   </c>" +
                 "</a>";
 
-        String xml2 = "" +
+        String controlXml = "" +
                 "<a xmlns:vwy=\"https://www.xmlunit.com/xyz\">" +
                 "   <b><![CDATA[text]]></b>" +
                 "   <c>" +
@@ -42,25 +42,25 @@ public class CompareAssertAreSimilarTest {
                 "   </c>" +
                 "</a>";
 
-        assertThat(xml1).and(xml2).areSimilar();
+        assertThat(testXml).and(controlXml).areSimilar();
     }
 
     @Test
     public void testAreSimilar_withIgnoreChildNodesOrders_shouldPass() {
 
-        String xml1 = "<!DOCTYPE a>" +
+        String testXml = "<!DOCTYPE a>" +
                 "<a>" +
                 "   <c><d/><e/></c>" +
                 "   <b>text</b>" +
                 "</a>";
 
-        String xml2 = "" +
+        String controlXml = "" +
                 "<a>" +
                 "   <b><![CDATA[text]]></b>" +
                 "   <c><e/><d/></c>" +
                 "</a>";
 
-        assertThat(xml1).and(xml2)
+        assertThat(testXml).and(controlXml)
                 .ignoreChildNodesOrder()
                 .areSimilar();
     }
@@ -72,19 +72,19 @@ public class CompareAssertAreSimilarTest {
         thrown.expectAssertionError("test2.xml");
         thrown.expectAssertionError("Expected processing instruction data 'href=\"animal.xsl\" type=\"text/xsl\"' but was 'type=\"text/xsl\" href=\"animal.xsl\"");
 
-        File xml1 = new File("../test-resources/test1.xml");
-        File xml2 = new File("../test-resources/test2.xml");
+        File testXml = new File("../test-resources/test1.xml");
+        File controlXml = new File("../test-resources/test2.xml");
 
-        assertThat(xml1).and(xml2).areSimilar();
+        assertThat(testXml).and(controlXml).areSimilar();
     }
 
     @Test
     public void testAreSimilar_withDifferenceEvaluator_shouldPass() {
 
-        final String xml1 = "<a><b attr=\"abc\"></b></a>";
-        final String xml2 = "<a><b attr=\"xyz\"></b></a>";
+        final String testXml = "<a><b attr=\"abc\"></b></a>";
+        final String controlXml = "<a><b attr=\"xyz\"></b></a>";
 
-        assertThat(xml1).and(xml2)
+        assertThat(testXml).and(controlXml)
                 .withDifferenceEvaluator(
                         chain(DifferenceEvaluators.Default,
                                 new IgnoreAttributeValueEvaluator("attr")))
