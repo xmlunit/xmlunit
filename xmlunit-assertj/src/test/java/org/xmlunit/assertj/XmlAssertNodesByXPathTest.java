@@ -21,7 +21,7 @@ import static java.lang.String.format;
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
 
-public class XmlAssertTest {
+public class XmlAssertNodesByXPathTest {
 
     @Rule
     public ExpectedException thrown = none();
@@ -37,19 +37,35 @@ public class XmlAssertTest {
 
     @Test
     public void testAssertThat_withNull_shouldFailed() {
+
         thrown.expectAssertionError(format("%nExpecting actual not to be null"));
+
         assertThat(null).nodesByXPath("//foo");
     }
 
     @Test
     public void testNodesByXPath_withNull_shouldFailed() {
+
         thrown.expectAssertionError(format("%nExpecting not blank but was:<null>"));
+
         assertThat("<a><b></b><c/></a>").nodesByXPath(null);
     }
 
     @Test
     public void testNodesByXPath_withWhitespacesOnly_shouldFailed() {
+
         thrown.expectAssertionError(format("%nExpecting not blank but was:<\" \n \t\">"));
+
         assertThat("<a><b></b><c/></a>").nodesByXPath(" \n \t");
+    }
+
+    @Test
+    public void testNodesByXPath_withInvalidXML_shouldFailed() {
+
+        thrown.expectAssertionError("Expecting code not to raise a throwable but caught");
+
+        String xml = "<b>not empty</a>";
+
+        assertThat(xml).nodesByXPath("//atom:feed/atom:entry/atom:id");
     }
 }
