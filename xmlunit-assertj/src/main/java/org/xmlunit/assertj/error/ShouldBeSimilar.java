@@ -15,14 +15,11 @@ package org.xmlunit.assertj.error;
 
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonFormatter;
-import org.xmlunit.diff.DefaultComparisonFormatter;
 
 /**
  * @since XMLUnit 2.6.1
  */
 public class ShouldBeSimilar extends ComparisonFailureErrorFactory {
-
-    private static final ComparisonFormatter comparisonFormatter = new DefaultComparisonFormatter();
 
     private final String reason;
     private final String controlString;
@@ -49,26 +46,26 @@ public class ShouldBeSimilar extends ComparisonFailureErrorFactory {
         return testString;
     }
 
-    public static ShouldBeSimilar shouldBeIdentical(String controlSystemId, String testSystemId, Comparison comparison, boolean formatXml) {
+    public static ShouldBeSimilar shouldBeIdentical(String controlSystemId, String testSystemId, Comparison comparison, ComparisonFormatter formatter, boolean formatXml) {
 
-        return new ShouldBeSimilar(createReasonPrefix(controlSystemId, testSystemId, "identical", comparison),
-                comparisonFormatter.getDetails(comparison.getControlDetails(), comparison.getType(), formatXml),
-                comparisonFormatter.getDetails(comparison.getTestDetails(), comparison.getType(), formatXml));
+        return new ShouldBeSimilar(createReasonPrefix(controlSystemId, testSystemId, "identical", comparison, formatter),
+                formatter.getDetails(comparison.getControlDetails(), comparison.getType(), formatXml),
+                formatter.getDetails(comparison.getTestDetails(), comparison.getType(), formatXml));
     }
 
-    public static ShouldBeSimilar shouldBeSimilar(String controlSystemId, String testSystemId, Comparison comparison, boolean formatXml) {
+    public static ShouldBeSimilar shouldBeSimilar(String controlSystemId, String testSystemId, Comparison comparison, ComparisonFormatter formatter, boolean formatXml) {
 
-        return new ShouldBeSimilar(createReasonPrefix(controlSystemId, testSystemId, "similar", comparison),
-                comparisonFormatter.getDetails(comparison.getControlDetails(), comparison.getType(), formatXml),
-                comparisonFormatter.getDetails(comparison.getTestDetails(), comparison.getType(), formatXml));
+        return new ShouldBeSimilar(createReasonPrefix(controlSystemId, testSystemId, "similar", comparison, formatter),
+                formatter.getDetails(comparison.getControlDetails(), comparison.getType(), formatXml),
+                formatter.getDetails(comparison.getTestDetails(), comparison.getType(), formatXml));
     }
 
-    private static String createReasonPrefix(String controlSystemId, String testSystemId, String type, Comparison difference) {
+    private static String createReasonPrefix(String controlSystemId, String testSystemId, String type, Comparison difference, ComparisonFormatter formatter) {
 
         controlSystemId = controlSystemId != null ? controlSystemId : "control instance";
         testSystemId = testSystemId != null ? testSystemId : "test instance";
 
-        String description = comparisonFormatter.getDescription(difference);
+        String description = formatter.getDescription(difference);
         return String.format("%nExpecting:%n <%s> and <%s> to be %s%n%s", controlSystemId, testSystemId, type, description);
     }
 }

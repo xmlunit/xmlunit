@@ -1,12 +1,36 @@
+/*
+  This file is licensed to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 package org.xmlunit.assertj;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xmlunit.diff.Comparison;
+import org.xmlunit.diff.ComparisonFormatter;
+import org.xmlunit.diff.ComparisonResult;
+import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DefaultNodeMatcher;
+import org.xmlunit.diff.DifferenceEvaluator;
+import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelectors;
+import org.xmlunit.util.Predicate;
 
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
+import static org.xmlunit.diff.DifferenceEvaluators.chain;
 
 public class CompareAssertAreIdenticalTest {
 
@@ -192,5 +216,159 @@ public class CompareAssertAreIdenticalTest {
         String controlXml = "abc";
 
         assertThat(testXml).and(controlXml).areIdentical();
+    }
+
+    @Test
+    public void testAreIdentical_withDifferenceEvaluator_shouldPass() {
+
+        String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry>" +
+                "       <title>title1</title>" +
+                "       <id>id1</id>" +
+                "   </entry>" +
+                "</feed>";
+
+        String controlXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry>" +
+                "       <description>description</description>" +
+                "       <uuid>uuid1</uuid>" +
+                "   </entry>" +
+                "</feed>";
+
+
+        assertThat(testXml).and(controlXml)
+                .withDifferenceEvaluator(
+                        chain(DifferenceEvaluators.Default,
+                                new IgnoreNodeEvaluator("entry")))
+                .areIdentical();
+    }
+
+    @Test
+    public void testAreIdentical_withAttributeFilter_shouldPass() {
+
+
+        String testXml = "<Element attr2=\"xyz\" attr1=\"12\"/>";
+        String controlXml = "<Element attr1=\"12\" attr2=\"xy\"/>";
+
+        assertThat(testXml).and(controlXml)
+                .withAttributeFilter(new AttributeFilter("attr2"))
+                .areIdentical();
+    }
+
+    @Test
+    public void testAreIdentical_withNodeFilter_shouldPass() {
+
+        String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry>" +
+                "       <title>title1</title>" +
+                "       <id>id1</id>" +
+                "   </entry>" +
+                "</feed>";
+
+        String controlXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry>" +
+                "       <description>description</description>" +
+                "       <uuid>uuid1</uuid>" +
+                "   </entry>" +
+                "</feed>";
+
+
+        assertThat(testXml).and(controlXml)
+                .withNodeFilter(new NodeFilter("entry"))
+                .areIdentical();
+    }
+
+    @Test
+    public void testAreIdentical_withComparisonFormatter_shouldFailed() {
+
+        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be identical");
+        thrown.expectAssertionError("foo");
+        thrown.expectAssertionErrorPattern(".*bar.*bar.*");
+
+        String testXml = "<a><c/><b/></a>";
+        String controlXml = "<a><b/><c/></a>";
+
+        assertThat(testXml).and(controlXml)
+                .withComparisonFormatter(new DummyFormatter())
+                .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
+                .areIdentical();
+    }
+
+    private final class IgnoreNodeEvaluator implements DifferenceEvaluator {
+
+        private final String nodeName;
+
+        public IgnoreNodeEvaluator(String nodeName) {
+            this.nodeName = nodeName;
+        }
+
+        @Override
+        public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
+            Node controlNode = comparison.getControlDetails().getTarget();
+
+            do {
+                if (controlNode instanceof Element) {
+                    Element elem = (Element) controlNode;
+                    if (elem.getTagName().equals(nodeName)) {
+                        return ComparisonResult.EQUAL;
+                    }
+                }
+                controlNode = controlNode.getParentNode();
+            } while (controlNode != null);
+
+            return outcome;
+        }
+    }
+
+    private final class AttributeFilter implements Predicate<Attr> {
+
+        private final String attrName;
+
+        private AttributeFilter(String attrName) {
+            this.attrName = attrName;
+        }
+
+        @Override
+        public boolean test(Attr toTest) {
+            return !attrName.equalsIgnoreCase(toTest.getName());
+        }
+    }
+
+    private final class NodeFilter implements Predicate<Node> {
+
+        private final String nodeName;
+
+        private NodeFilter(String nodeName) {
+            this.nodeName = nodeName;
+        }
+
+        @Override
+        public boolean test(Node toTest) {
+            if (toTest instanceof Element) {
+                return !nodeName.equalsIgnoreCase(((Element) toTest).getTagName());
+            }
+            return true;
+        }
+    }
+
+    private static final class DummyFormatter implements ComparisonFormatter {
+        @Override
+        public String getDescription(Comparison difference) {
+            return "foo";
+        }
+
+        @Override
+        public String getDetails(Comparison.Detail details, ComparisonType type,
+                                 boolean formatXml) {
+            return "bar";
+        }
     }
 }

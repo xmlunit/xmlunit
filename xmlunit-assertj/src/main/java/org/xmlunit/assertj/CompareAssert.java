@@ -23,6 +23,7 @@ import org.xmlunit.diff.ComparisonController;
 import org.xmlunit.diff.ComparisonControllers;
 import org.xmlunit.diff.ComparisonFormatter;
 import org.xmlunit.diff.ComparisonListener;
+import org.xmlunit.diff.DefaultComparisonFormatter;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.DifferenceEvaluator;
@@ -67,6 +68,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     private final DiffBuilder diffBuilder;
     private ComparisonController customComparisonController;
     private boolean formatXml;
+    private ComparisonFormatter formatter = new DefaultComparisonFormatter();
 
     private CompareAssert(Object actual, DiffBuilder diffBuilder) {
         super(actual, CompareAssert.class);
@@ -182,6 +184,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      */
     @Override
     public CompareAssert withComparisonFormatter(ComparisonFormatter formatter) {
+        this.formatter = formatter;
         diffBuilder.withComparisonFormatter(formatter);
         return this;
     }
@@ -341,11 +344,10 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
 
         if (diff.hasDifferences()) {
             Comparison firstDifferenceComparison = diff.getDifferences().iterator().next().getComparison();
-
             if (ComparisonContext.IDENTICAL == context) {
-                throwAssertionError(shouldBeIdentical(controlSystemId, testSystemId, firstDifferenceComparison, formatXml));
+                throwAssertionError(shouldBeIdentical(controlSystemId, testSystemId, firstDifferenceComparison, formatter, formatXml));
             } else if (ComparisonContext.SIMILAR == context) {
-                throwAssertionError(shouldBeSimilar(controlSystemId, testSystemId, firstDifferenceComparison, formatXml));
+                throwAssertionError(shouldBeSimilar(controlSystemId, testSystemId, firstDifferenceComparison, formatter, formatXml));
             }
         } else {
 
