@@ -8,34 +8,35 @@ import org.xmlunit.diff.ElementSelectors;
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
 
-public class CompareAssertAreIdenticalTest {
+public class CompareAssertAreNotIdenticalTest {
 
     @Rule
     public ExpectedException thrown = none();
 
     @Test
-    public void testAreIdentical_withSameAttributesOrder_shouldPass() {
+    public void testAreNotIdentical_withSameAttributesOrder_shouldFailed() {
+
+        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be not identical");
 
         String testXml = "<Element attr1=\"12\" attr2=\"xy\"/>";
         String controlXml = "<Element attr1=\"12\" attr2=\"xy\"/>";
 
-        assertThat(testXml).and(controlXml).areIdentical();
+        assertThat(testXml).and(controlXml).areNotIdentical();
     }
 
     @Test
-    public void testAreIdentical_withDifferentAttributesOrder_shouldPass() {
+    public void testAreNotIdentical_withDifferentAttributesOrder_shouldFailed() {
+
+        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be not identical");
 
         String testXml = "<Element attr2=\"xy\" attr1=\"12\"/>";
         String controlXml = "<Element attr1=\"12\" attr2=\"xy\"/>";
 
-        assertThat(testXml).and(controlXml).areIdentical();
+        assertThat(testXml).and(controlXml).areNotIdentical();
     }
 
     @Test
-    public void testAreIdentical_shouldFailed() {
-
-        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be identical");
-        thrown.expectAssertionError("Expected node type 'CDATA Section' but was 'Text'");
+    public void testAreNotIdentical_withCDataInsteadText_shouldPass() {
 
         String testXml = "<!DOCTYPE a>" +
                 "<a xmlns:xyz=\"https://www.xmlunit.com/xyz\">" +
@@ -55,142 +56,131 @@ public class CompareAssertAreIdenticalTest {
                 "   </c>" +
                 "</a>";
 
-        assertThat(testXml).and(controlXml).areIdentical();
+        assertThat(testXml).and(controlXml).areNotIdentical();
     }
 
     @Test
-    public void testAreIdentical_shouldFailed_withReadableMessage() {
+    public void testAreNotIdentical_withAttributeDifferentValues_shouldPass2() {
 
-        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be identical");
-        thrown.expectAssertionError("Expected attribute value 'xy' but was 'xyz'");
-        thrown.expectAssertionError("at /Element[1]/@attr2");
-        thrown.expectAssertionError("attr2=\"xyz\"");
-
-        String testXml = "<Element attr2=\"xyz\" attr1=\"12\"/>";
+        String testXml = "<Element attr1=\"12\" attr2=\"xyz\"/>";
         String controlXml = "<Element attr1=\"12\" attr2=\"xy\"/>";
 
-        assertThat(testXml).and(controlXml).areIdentical();
+        assertThat(testXml).and(controlXml).areNotIdentical();
     }
 
     @Test
-    public void testAreIdentical_shouldFailed_withElementOrderMessage() {
-
-        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be identical");
-        thrown.expectAssertionError("Expected child nodelist sequence '0' but was '1'");
-        thrown.expectAssertionError("comparing <b...> at /a[1]/b[1] to <b...> at /a[1]/b[1]");
+    public void testAreNotIdentical_withDifferentElementOrder_shouldPass() {
 
         String testXml = "<a><c/><b/></a>";
         String controlXml = "<a><b/><c/></a>";
 
         assertThat(testXml).and(controlXml)
                 .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
-                .areIdentical();
+                .areNotIdentical();
     }
 
     @Test
-    public void testAreIdentical_withWhitespaces_shouldFailed() {
-
-        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be identical");
-        thrown.expectAssertionError("Expected child nodelist length '1' but was '3'");
-        thrown.expectAssertionError("expected:<<a>[<b/>]</a>> but was:<<a>[%n <b/>%n]</a>>");
+    public void testAreNotIdentical_withWhitespaces_shouldPass() {
 
         String testXml = String.format("<a>%n <b/>%n</a>");
         String controlXml = "<a><b/></a>";
 
-        assertThat(testXml).and(controlXml).areIdentical();
+        assertThat(testXml).and(controlXml).areNotIdentical();
     }
 
     @Test
-    public void testAreIdentical_withIgnoreWhitespacees_shouldPass() {
+    public void testAreNotIdentical_withIgnoreWhitespaces_shouldFailed() {
+
+        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be not identical");
 
         String testXml = String.format("<a>%n <b/>%n</a>");
         String controlXml = "<a><b/></a>";
 
         assertThat(testXml).and(controlXml)
                 .ignoreWhitespace()
-                .areIdentical();
+                .areNotIdentical();
     }
 
     @Test
-    public void testAreIdentical_withIgnoreWhitespaceAndTextValue_shouldPass() {
+    public void testAreNotIdentical_withIgnoreWhitespaceAndTextValue_shouldFailed() {
+
+        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be not identical");
 
         String testXml = String.format("<a>%nX <b/>%n</a>");
         String controlXml = "<a>X<b/></a>";
 
         assertThat(testXml).and(controlXml)
                 .ignoreWhitespace()
-                .areIdentical();
+                .areNotIdentical();
     }
 
     @Test
-    public void testAreIdentical_withIgnoreElementContentWhitespace_shouldFailed() {
-
-        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be identical");
-        thrown.expectAssertionError("Expected text value 'x' but was '%nx '");
+    public void testAreNotIdentical_withIgnoreElementContentWhitespace_shouldPass() {
 
         String testXml = String.format("<a>%nx <b/>%n</a>");
         String controlXml = "<a>x<b/></a>";
 
         assertThat(testXml).and(controlXml)
                 .ignoreElementContentWhitespace()
-                .areIdentical();
+                .areNotIdentical();
     }
 
     @Test
-    public void testAreIdentical_withIgnoreComments_shouldPass() {
+    public void testAreNotIdentical_withIgnoreComments_shouldFailed() {
+
+        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be not identical");
 
         String testXml = "<a><!-- test --></a>";
         String controlXml = "<a></a>";
 
         assertThat(testXml).and(controlXml)
                 .ignoreComments()
-                .areIdentical();
+                .areNotIdentical();
     }
 
     @Test
-    public void testAreIdentical_withNormalizeWhitespace_shouldPass() {
+    public void testAreNotIdentical_withNormalizeWhitespace_shouldFailed() {
+
+        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be not identical");
 
         String testXml = String.format("<a>%n  <b>%n  Test%n  Node%n  </b>%n</a>");
         String controlXml = "<a><b>Test Node</b></a>";
 
         assertThat(testXml).and(controlXml)
                 .normalizeWhitespace()
-                .areIdentical();
+                .areNotIdentical();
     }
 
     @Test
-    public void testAreIdentical_withNormalizeWhitespace_shouldFailed() {
-
-        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be identical");
-        thrown.expectAssertionError("Expected text value 'TestNode' but was 'Test Node'");
+    public void testAreNotIdentical_withNormalizeWhitespace_shouldPass() {
 
         String testXml = String.format("<a>%n  <b>%n  Test%n  Node%n  </b>%n</a>");
         String controlXml = "<a><b>TestNode</b></a>";
 
         assertThat(testXml).and(controlXml)
                 .normalizeWhitespace()
-                .areIdentical();
+                .areNotIdentical();
     }
 
     @Test
-    public void testAreIdentical_withInvalidTestXml_shouldFailed() {
+    public void testAreNotIdentical_withInvalidTestXml_shouldFailed() {
 
         thrown.expectAssertionErrorPattern(".*Expecting code not to raise a throwable but caught.*Caught exception during comparison.*");
 
         String testXml = "abc";
         String controlXml = "<a><b/><c/></a>";
 
-        assertThat(testXml).and(controlXml).areIdentical();
+        assertThat(testXml).and(controlXml).areNotIdentical();
     }
 
     @Test
-    public void testAreIdentical_withInvalidControlXml_shouldFailed() {
+    public void testAreNotIdentical_withInvalidControlXml_shouldFailed() {
 
         thrown.expectAssertionErrorPattern(".*Expecting code not to raise a throwable but caught.*Caught exception during comparison.*");
 
         String testXml = "<a><b/><c/></a>";
         String controlXml = "abc";
 
-        assertThat(testXml).and(controlXml).areIdentical();
+        assertThat(testXml).and(controlXml).areNotIdentical();
     }
 }

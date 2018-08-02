@@ -23,7 +23,6 @@ import org.xmlunit.diff.ComparisonController;
 import org.xmlunit.diff.ComparisonControllers;
 import org.xmlunit.diff.ComparisonFormatter;
 import org.xmlunit.diff.ComparisonListener;
-import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.DifferenceEvaluator;
@@ -34,8 +33,10 @@ import org.xmlunit.util.Predicate;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.Map;
 
-import static org.xmlunit.assertj.error.ShouldBeDifferent.shouldBeDifferent;
-import static org.xmlunit.assertj.error.ShouldNotBeDifferent.shouldNotBeDifferent;
+import static org.xmlunit.assertj.error.ShouldBeNotSimilar.shouldBeNotIdentical;
+import static org.xmlunit.assertj.error.ShouldBeNotSimilar.shouldBeNotSimilar;
+import static org.xmlunit.assertj.error.ShouldBeSimilar.shouldBeIdentical;
+import static org.xmlunit.assertj.error.ShouldBeSimilar.shouldBeSimilar;
 import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
 
 /**
@@ -50,11 +51,16 @@ import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
  * final String test = &quot;&lt;a&gt;&lt;b attr=\&quot;xyz\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
  *
  * assertThat(test).and(control).areIdentical();
+ * assertThat(test).and(control).areNotSimilar();
  * </pre>
  *
  * @since XMLUnit 2.6.1
  */
 public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> implements DifferenceEngineConfigurer<CompareAssert> {
+
+    private enum ComparisonContext {
+        IDENTICAL, NOT_IDENTICAL, SIMILAR, NOT_SIMILAR
+    }
 
     private static final String EXPECTING_NOT_NULL = "Expecting control not to be null";
 
@@ -262,7 +268,21 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      */
     public CompareAssert areIdentical() {
         diffBuilder.checkForIdentical();
-        compare(ComparisonResult.EQUAL);
+        compare(ComparisonContext.IDENTICAL);
+        return this;
+    }
+
+    /**
+     * Check if actual and control XMLs are not identical.
+     * If custom comparison controller wasn't defined then {@link ComparisonControllers#StopWhenSimilar} is used.
+     *
+     * @throws AssertionError if the test value is invalid
+     * @throws AssertionError if the control value is invalid
+     * @see DiffBuilder#checkForSimilar()
+     */
+    public CompareAssert areNotIdentical() {
+        diffBuilder.checkForIdentical();
+        compare(ComparisonContext.NOT_IDENTICAL);
         return this;
     }
 
@@ -276,36 +296,34 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      */
     public CompareAssert areSimilar() {
         diffBuilder.checkForSimilar();
-        compare(ComparisonResult.SIMILAR);
+        compare(ComparisonContext.SIMILAR);
         return this;
     }
 
     /**
-     * Check if actual and control XMLs are different.
-     * Similar XMLs aren't different. It means that if <pre>areSimilar</pre> pass then <pre>areDifferent</pre> failed.
-     * <p>
-     * If custom comparison controller wasn't defined then {@link ComparisonControllers#StopWhenSimilar} is used.
+     * Check if actual and control XMLs are not similar.
+     * If custom comparison controller wasn't defined then {@link ComparisonControllers#StopWhenDifferent} is used.
      *
      * @throws AssertionError if the test value is invalid
      * @throws AssertionError if the control value is invalid
      * @see DiffBuilder#checkForSimilar()
      */
-    public CompareAssert areDifferent() {
+    public CompareAssert areNotSimilar() {
         diffBuilder.checkForSimilar();
-        compare(ComparisonResult.DIFFERENT);
+        compare(ComparisonContext.NOT_SIMILAR);
         return this;
     }
 
-    private void compare(ComparisonResult compareFor) {
+    private void compare(ComparisonContext context) {
 
         if (customComparisonController != null) {
             diffBuilder.withComparisonController(customComparisonController);
-        } else if (ComparisonResult.EQUAL == compareFor) {
+        } else if (ComparisonContext.IDENTICAL == context
+                || ComparisonContext.NOT_IDENTICAL == context) {
             diffBuilder.withComparisonController(ComparisonControllers.StopWhenSimilar);
-        } else if (ComparisonResult.SIMILAR == compareFor) {
+        } else if (ComparisonContext.SIMILAR == context
+                || ComparisonContext.NOT_SIMILAR == context) {
             diffBuilder.withComparisonController(ComparisonControllers.StopWhenDifferent);
-        } else {
-            diffBuilder.withComparisonController(ComparisonControllers.StopWhenSimilar);
         }
 
         Diff diff;
@@ -318,17 +336,24 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
             return; //fix compile issue
         }
 
-        if (!diff.hasDifferences() && ComparisonResult.DIFFERENT == compareFor) {
+        String controlSystemId = diff.getControlSource().getSystemId();
+        String testSystemId = diff.getTestSource().getSystemId();
 
-            String controlSystemId = diff.getControlSource().getSystemId();
-            String testSystemId = diff.getTestSource().getSystemId();
-            throwAssertionError(shouldBeDifferent(controlSystemId, testSystemId));
-
-        } else if (diff.hasDifferences() && ComparisonResult.DIFFERENT != compareFor) {
-
-            String systemId = diff.getControlSource().getSystemId();
+        if (diff.hasDifferences()) {
             Comparison firstDifferenceComparison = diff.getDifferences().iterator().next().getComparison();
-            throwAssertionError(shouldNotBeDifferent(systemId, firstDifferenceComparison, formatXml));
+
+            if (ComparisonContext.IDENTICAL == context) {
+                throwAssertionError(shouldBeIdentical(controlSystemId, testSystemId, firstDifferenceComparison, formatXml));
+            } else if (ComparisonContext.SIMILAR == context) {
+                throwAssertionError(shouldBeSimilar(controlSystemId, testSystemId, firstDifferenceComparison, formatXml));
+            }
+        } else {
+
+            if (ComparisonContext.NOT_IDENTICAL == context) {
+                throwAssertionError(shouldBeNotIdentical(controlSystemId, testSystemId));
+            } else if (ComparisonContext.NOT_SIMILAR == context) {
+                throwAssertionError(shouldBeNotSimilar(controlSystemId, testSystemId));
+            }
         }
     }
 }

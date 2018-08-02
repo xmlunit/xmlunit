@@ -20,7 +20,7 @@ import org.xmlunit.diff.DefaultComparisonFormatter;
 /**
  * @since XMLUnit 2.6.1
  */
-public class ShouldNotBeDifferent extends ComparisonFailureErrorFactory {
+public class ShouldBeSimilar extends ComparisonFailureErrorFactory {
 
     private static final ComparisonFormatter comparisonFormatter = new DefaultComparisonFormatter();
 
@@ -28,7 +28,7 @@ public class ShouldNotBeDifferent extends ComparisonFailureErrorFactory {
     private final String controlString;
     private final String testString;
 
-    private ShouldNotBeDifferent(String reason, String controlString, String testString) {
+    private ShouldBeSimilar(String reason, String controlString, String testString) {
         this.reason = reason;
         this.controlString = controlString;
         this.testString = testString;
@@ -49,21 +49,26 @@ public class ShouldNotBeDifferent extends ComparisonFailureErrorFactory {
         return testString;
     }
 
-    public static ShouldNotBeDifferent shouldNotBeDifferent(String systemId, Comparison comparison, boolean formatXml) {
+    public static ShouldBeSimilar shouldBeIdentical(String controlSystemId, String testSystemId, Comparison comparison, boolean formatXml) {
 
-        return new ShouldNotBeDifferent(createReasonPrefix(systemId, comparison),
+        return new ShouldBeSimilar(createReasonPrefix(controlSystemId, testSystemId, "identical", comparison),
                 comparisonFormatter.getDetails(comparison.getControlDetails(), comparison.getType(), formatXml),
                 comparisonFormatter.getDetails(comparison.getTestDetails(), comparison.getType(), formatXml));
     }
 
-    private static String createReasonPrefix(String systemId, Comparison difference) {
+    public static ShouldBeSimilar shouldBeSimilar(String controlSystemId, String testSystemId, Comparison comparison, boolean formatXml) {
+
+        return new ShouldBeSimilar(createReasonPrefix(controlSystemId, testSystemId, "similar", comparison),
+                comparisonFormatter.getDetails(comparison.getControlDetails(), comparison.getType(), formatXml),
+                comparisonFormatter.getDetails(comparison.getTestDetails(), comparison.getType(), formatXml));
+    }
+
+    private static String createReasonPrefix(String controlSystemId, String testSystemId, String type, Comparison difference) {
+
+        controlSystemId = controlSystemId != null ? controlSystemId : "control instance";
+        testSystemId = testSystemId != null ? testSystemId : "test instance";
+
         String description = comparisonFormatter.getDescription(difference);
-        String reason;
-        if (systemId == null) {
-            reason = description;
-        } else {
-            reason = String.format("In Source '%s' %s", systemId, description);
-        }
-        return reason;
+        return String.format("%nExpecting:%n <%s> and <%s> to be %s%n%s", controlSystemId, testSystemId, type, description);
     }
 }

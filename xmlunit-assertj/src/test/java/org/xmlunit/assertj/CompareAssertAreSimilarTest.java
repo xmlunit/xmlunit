@@ -68,8 +68,7 @@ public class CompareAssertAreSimilarTest {
     @Test
     public void testAreSimilar_fromFiles_shouldFailed() {
 
-        thrown.expectAssertionError("In Source");
-        thrown.expectAssertionError("test2.xml");
+        thrown.expectAssertionErrorPattern(".*Expecting:.*<(?:.*test2\\.xml)> and <(?:.*test1\\.xml)> to be similar.*");
         thrown.expectAssertionError("Expected processing instruction data 'href=\"animal.xsl\" type=\"text/xsl\"' but was 'type=\"text/xsl\" href=\"animal.xsl\"");
 
         File testXml = new File("../test-resources/test1.xml");

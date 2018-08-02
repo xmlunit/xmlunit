@@ -86,8 +86,9 @@ import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
  *    final String test = &quot;&lt;a&gt;&lt;b attr=\&quot;xyz\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
  *
  *    assertThat(test).and(control).areIdentical();
+ *    assertThat(test).and(control).areNotIdentical();
  *    assertThat(test).and(control).areSimilar();
- *    assertThat(test).and(control).areDifferent();
+ *    assertThat(test).and(control).areNotSimilar();
  *
  *    assertThat(test).and(control)
  *          .normalizeWhitespace()
