@@ -33,8 +33,12 @@
     <!-- location of any manifest file used by maven-jar-plugin -->
     <manifestfile>${project.build.directory}/osgi/MANIFEST.MF</manifestfile>
 
-    <!-- overridden via profile for Java 8 -->
+    <!-- overridden via profile for Java 8+ -->
     <javadoc.additionalparam></javadoc.additionalparam>
+
+    <!-- overridden via profile for Java 7+ in order to create
+         javadocs for AssertJ Support -->
+    <maven.javadoc.source>1.6</maven.javadoc.source>
   </properties>
 
   <inceptionYear>2001</inceptionYear>
@@ -255,7 +259,7 @@
               </group>
             </groups>
             <quiet>true</quiet>
-            <source>${maven.compile.source}</source>
+            <source>${maven.javadoc.source}</source>
             <encoding>${project.build.sourceEncoding}</encoding>
             <docencoding>${project.build.sourceEncoding}</docencoding>
             <notimestamp>true</notimestamp>
@@ -480,6 +484,9 @@
         <activeByDefault>false</activeByDefault>
         <jdk>[1.7,)</jdk>
       </activation>
+      <properties>
+        <maven.javadoc.source>1.7</maven.javadoc.source>
+      </properties>
       <modules>
         <module>xmlunit-assertj</module>
       </modules>
