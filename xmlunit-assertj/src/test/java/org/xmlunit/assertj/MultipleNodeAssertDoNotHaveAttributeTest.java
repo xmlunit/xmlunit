@@ -13,8 +13,11 @@
 */
 package org.xmlunit.assertj;
 
+import javax.xml.xpath.XPathFactory;
+
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static java.lang.String.format;
 import static org.xmlunit.assertj.ExpectedException.none;
@@ -223,5 +226,16 @@ public class MultipleNodeAssertDoNotHaveAttributeTest {
                 .nodesByXPath("/feed/abc")
                 .doNotHaveAttribute("attr1")
                 .doNotHaveAttribute("attr2", "value2");
+    }
+
+    @Test
+    public void usesXPathEngine() {
+        XPathFactory xFac = Mockito.mock(XPathFactory.class);
+        Mockito.when(xFac.newXPath()).thenReturn(XPathFactory.newInstance().newXPath());
+        assertThat("<foo/>")
+            .withXPathFactory(xFac)
+            .nodesByXPath("//bar")
+            .doNotHaveAttribute("attr1");
+        Mockito.verify(xFac).newXPath();
     }
 }

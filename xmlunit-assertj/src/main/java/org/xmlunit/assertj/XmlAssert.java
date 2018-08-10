@@ -18,6 +18,7 @@ import org.xmlunit.builder.Input;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.validation.Schema;
+import javax.xml.xpath.XPathFactory;
 import java.util.Map;
 
 import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
@@ -104,6 +105,7 @@ import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
 public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
 
     private DocumentBuilderFactory dbf;
+    private XPathFactory xpf;
     private Map<String, String> prefix2Uri;
 
     private XmlAssert(Object o) {
@@ -132,6 +134,17 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     }
 
     /**
+     * Sets the {@link XPathFactory} to use for XPath related assertions.
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     */
+    public XmlAssert withXPathFactory(XPathFactory xpf) {
+        isNotNull();
+        this.xpf = xpf;
+        return this;
+    }
+
+    /**
      * Utility method used for creating a namespace context mapping to be used in XPath matching.
      *
      * @param prefix2Uri prefix2Uri maps from prefix to namespace URI. It is used to resolve
@@ -154,7 +167,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     public MultipleNodeAssert nodesByXPath(String xPath) {
         isNotNull();
         try {
-            return MultipleNodeAssert.create(actual, prefix2Uri, dbf, xPath);
+            return MultipleNodeAssert.create(actual, prefix2Uri, dbf, xpf, xPath);
         } catch (Exception e) {
             throwAssertionError(shouldNotHaveThrown(e));
         }
@@ -185,7 +198,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     public ValueAssert valueByXPath(String xPath) {
         isNotNull();
         try {
-            return ValueAssert.create(actual, prefix2Uri, dbf, xPath);
+            return ValueAssert.create(actual, prefix2Uri, dbf, xpf, xPath);
         } catch (Exception e) {
             throwAssertionError(shouldNotHaveThrown(e));
         }
