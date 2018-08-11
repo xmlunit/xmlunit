@@ -179,6 +179,28 @@ public class CompareAssertAreIdenticalTest {
     }
 
     @Test
+    public void testAreIdentical_withIgnoreComments_1_0_shouldPass() {
+
+        String testXml = "<a><!-- test --></a>";
+        String controlXml = "<a></a>";
+
+        assertThat(testXml).and(controlXml)
+                .ignoreCommentsUsingXSLTVersion("1.0")
+                .areIdentical();
+    }
+
+    @Test
+    public void testAreIdentical_withIgnoreComments_2_0_shouldPass() {
+
+        String testXml = "<a><!-- test --></a>";
+        String controlXml = "<a></a>";
+
+        assertThat(testXml).and(controlXml)
+                .ignoreCommentsUsingXSLTVersion("2.0")
+                .areIdentical();
+    }
+
+    @Test
     public void testAreIdentical_withNormalizeWhitespace_shouldPass() {
 
         String testXml = String.format("<a>%n  <b>%n  Test%n  Node%n  </b>%n</a>");
