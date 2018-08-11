@@ -48,4 +48,13 @@ public class XmlAssertValueByXPathTest {
 
         assertThat("not empty").valueByXPath("count(//atom:feed/atom:entry)");
     }
+
+    @Test
+    public void valueByXPath_withInvalidXPath_shouldFail() {
+
+        thrown.expectAssertionError(format("%nExpecting code not to raise a throwable but caught"));
+
+        assertThat("<a><b></b><c/></a>").valueByXPath("this doesn't look like an XPath expression :-(");
+    }
+
 }

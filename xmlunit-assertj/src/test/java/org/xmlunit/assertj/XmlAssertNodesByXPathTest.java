@@ -68,4 +68,13 @@ public class XmlAssertNodesByXPathTest {
 
         assertThat(xml).nodesByXPath("//atom:feed/atom:entry/atom:id");
     }
+
+    @Test
+    public void nodesByXPath_withInvalidXPath_shouldFail() {
+
+        thrown.expectAssertionError(format("%nExpecting code not to raise a throwable but caught"));
+
+        assertThat("<a><b></b><c/></a>").nodesByXPath("this doesn't look like an XPath expression :-(");
+    }
+
 }
