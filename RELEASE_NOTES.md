@@ -10,6 +10,11 @@
   [#129](https://github.com/xmlunit/xmlunit/pull/129) by
   [@krystiankaluzny](https://github.com/krystiankaluzny).
 
+* The `XPathFactory` used by the XPath related Hamcrest matchers is
+  now configurable.
+  Issue [#131](https://github.com/xmlunit/xmlunit/pull/132)
+  via PRs [#132](https://github.com/xmlunit/xmlunit/pull/132)
+
 ## XMLUnit for Java 2.6.0 - /Released 2018-04-22/
 
 * add a new experimental project xmlunit-placeholders which aims to
