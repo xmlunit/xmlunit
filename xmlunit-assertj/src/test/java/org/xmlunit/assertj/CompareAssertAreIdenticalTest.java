@@ -13,11 +13,18 @@
 */
 package org.xmlunit.assertj;
 
+import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xmlunit.XMLUnitException;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonFormatter;
 import org.xmlunit.diff.ComparisonResult;
@@ -300,6 +307,54 @@ public class CompareAssertAreIdenticalTest {
                 .withComparisonFormatter(new DummyFormatter())
                 .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
                 .areIdentical();
+    }
+
+    @Test
+    public void usesDocumentBuilderFactorySpecifiedOnXmlAssert() throws Exception {
+        thrown.expectAssertionError("Expecting code not to raise a throwable but caught");
+        thrown.expectAssertionError("org.xmlunit.XMLUnitException: Caught exception during comparison");
+        thrown.expectAssertionError("java.io.IOException");
+
+        DocumentBuilderFactory dFac = Mockito.mock(DocumentBuilderFactory.class);
+        DocumentBuilder b = Mockito.mock(DocumentBuilder.class);
+        Mockito.when(dFac.newDocumentBuilder()).thenReturn(b);
+        Mockito.doThrow(new IOException())
+            .when(b).parse(Mockito.any(InputSource.class));
+
+        String control = "<a><b></b><c/></a>";
+
+        try {
+            assertThat(control)
+                .withDocumentBuilderFactory(dFac)
+                .and(control)
+                .areIdentical();
+        } finally {
+            Mockito.verify(b).parse(Mockito.any(InputSource.class));
+        }
+    }
+
+    @Test
+    public void usesDocumentBuilderFactorySpecifiedCompareXmlAssert() throws Exception {
+        thrown.expectAssertionError("Expecting code not to raise a throwable but caught");
+        thrown.expectAssertionError("org.xmlunit.XMLUnitException: Caught exception during comparison");
+        thrown.expectAssertionError("java.io.IOException");
+
+        DocumentBuilderFactory dFac = Mockito.mock(DocumentBuilderFactory.class);
+        DocumentBuilder b = Mockito.mock(DocumentBuilder.class);
+        Mockito.when(dFac.newDocumentBuilder()).thenReturn(b);
+        Mockito.doThrow(new IOException())
+            .when(b).parse(Mockito.any(InputSource.class));
+
+        String control = "<a><b></b><c/></a>";
+
+        try {
+            assertThat(control)
+                .and(control)
+                .withDocumentBuilderFactory(dFac)
+                .areIdentical();
+        } finally {
+            Mockito.verify(b).parse(Mockito.any(InputSource.class));
+        }
     }
 
     private final class IgnoreNodeEvaluator implements DifferenceEvaluator {
