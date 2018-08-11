@@ -140,7 +140,7 @@ public class XmlAssertHasXPathTest {
     }
 
     @Test
-    public void testHasXPath_withDocumentBuildFactory_shouldPass() {
+    public void testHasXPath_withDocumentBuilderFactory_shouldPass() {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<feed>" +
@@ -153,7 +153,7 @@ public class XmlAssertHasXPathTest {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
         assertThat(xml)
-                .withDocumentBuildFactory(dbf)
+                .withDocumentBuilderFactory(dbf)
                 .hasXPath("//entry/title");
     }
 

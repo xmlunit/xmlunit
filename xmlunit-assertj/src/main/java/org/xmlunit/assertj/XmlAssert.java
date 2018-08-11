@@ -127,7 +127,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      *
      * @throws AssertionError if the actual value is {@code null}.
      */
-    public XmlAssert withDocumentBuildFactory(DocumentBuilderFactory dbf) {
+    public XmlAssert withDocumentBuilderFactory(DocumentBuilderFactory dbf) {
         isNotNull();
         this.dbf = dbf;
         return this;
