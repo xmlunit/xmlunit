@@ -11,6 +11,7 @@ import org.xmlunit.xpath.JAXPXPathEngine;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
+import javax.xml.xpath.XPathFactory;
 import java.util.Map;
 
 /**
@@ -53,6 +54,7 @@ public class HasXPathMatcher extends BaseMatcher<Object> {
 
     private String xPath;
     private DocumentBuilderFactory dbf;
+    private XPathFactory xpf;
     private Map<String, String> prefix2Uri;
 
     /**
@@ -75,9 +77,19 @@ public class HasXPathMatcher extends BaseMatcher<Object> {
         return this;
     }
 
+    /**
+     * Sets the {@link XPathFactory} to use.
+     *
+     * @since XMLUnit 2.6.1
+     */
+    public HasXPathMatcher withXPathFactory(XPathFactory f) {
+        xpf = f;
+        return this;
+    }
+
     @Override
     public boolean matches(Object object) {
-        JAXPXPathEngine engine = new JAXPXPathEngine();
+        JAXPXPathEngine engine = xpf == null ? new JAXPXPathEngine() : new JAXPXPathEngine(xpf);
         if (prefix2Uri != null) {
             engine.setNamespaceContext(prefix2Uri);
         }

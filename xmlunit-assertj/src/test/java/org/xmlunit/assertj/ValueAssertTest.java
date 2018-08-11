@@ -15,11 +15,13 @@ package org.xmlunit.assertj;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -244,4 +246,17 @@ public class ValueAssertTest {
                 .valueByXPath("//atom:feed/atom:entry[2]/atom:title/text()").isEqualTo("Bing");
     }
 
+    @Test
+    public void usesXPathEngine() {
+        XPathFactory xFac = Mockito.mock(XPathFactory.class);
+        Mockito.when(xFac.newXPath()).thenReturn(XPathFactory.newInstance().newXPath());
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<fruits>" +
+                "<fruit name=\"apple\" weight=\"66.6\"/>" +
+                "</fruits>";
+        assertThat(xml)
+            .withXPathFactory(xFac)
+            .valueByXPath("//fruits/fruit/@weight").asDouble().isEqualTo(66.6);
+        Mockito.verify(xFac).newXPath();
+    }
 }

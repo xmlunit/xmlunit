@@ -11,6 +11,7 @@ import org.xmlunit.XMLUnitException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -165,4 +166,13 @@ public class EvaluateXPathMatcherTest {
                 "</fruits>";
         assertThat(xml, hasXPath("count(//fruits/fruit)", not(equalTo("3"))));
     }
+
+    @Test
+    public void usesXPathFactory() throws Exception {
+        XPathFactory xFac = Mockito.mock(XPathFactory.class);
+        Mockito.when(xFac.newXPath()).thenReturn(XPathFactory.newInstance().newXPath());
+        assertThat("<foo/>", not(hasXPath("//bar", equalTo("a")).withXPathFactory(xFac)));
+        Mockito.verify(xFac).newXPath();
+    }
+
 }

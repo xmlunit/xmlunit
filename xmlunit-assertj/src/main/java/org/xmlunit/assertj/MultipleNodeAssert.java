@@ -22,6 +22,7 @@ import org.xmlunit.xpath.JAXPXPathEngine;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
+import javax.xml.xpath.XPathFactory;
 import java.util.Map;
 
 /**
@@ -49,11 +50,12 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         super(nodes, MultipleNodeAssert.class, new NodeAssertFactory());
     }
 
-    static MultipleNodeAssert create(Object xmlSource, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf, String xPath) {
+    static MultipleNodeAssert create(Object xmlSource, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf,
+        XPathFactory xpf, String xPath) {
 
         Assertions.assertThat(xPath).isNotBlank();
 
-        final JAXPXPathEngine engine = new JAXPXPathEngine();
+        final JAXPXPathEngine engine = xpf == null ? new JAXPXPathEngine() : new JAXPXPathEngine(xpf);
         if (prefix2Uri != null) {
             engine.setNamespaceContext(prefix2Uri);
         }
