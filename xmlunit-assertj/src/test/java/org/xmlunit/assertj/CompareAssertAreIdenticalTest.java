@@ -24,7 +24,6 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
-import org.xmlunit.XMLUnitException;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonFormatter;
 import org.xmlunit.diff.ComparisonResult;
@@ -377,6 +376,24 @@ public class CompareAssertAreIdenticalTest {
         } finally {
             Mockito.verify(b).parse(Mockito.any(InputSource.class));
         }
+    }
+
+    @Test
+    public void testAreIdentical_withIgnoreChildNodesOrder_shouldPass() {
+
+        String testXml = "<a>" +
+                "   <c><d/><e/></c>" +
+                "   <b>text</b>" +
+                "</a>";
+
+        String controlXml = "<a>" +
+                "   <b>text</b>" +
+                "   <c><e/><d/></c>" +
+                "</a>";
+
+        assertThat(testXml).and(controlXml)
+                .ignoreChildNodesOrder()
+                .areIdentical();
     }
 
     private final class IgnoreNodeEvaluator implements DifferenceEvaluator {

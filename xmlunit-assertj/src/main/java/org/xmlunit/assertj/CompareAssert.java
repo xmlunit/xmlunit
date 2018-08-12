@@ -23,6 +23,8 @@ import org.xmlunit.diff.ComparisonController;
 import org.xmlunit.diff.ComparisonControllers;
 import org.xmlunit.diff.ComparisonFormatter;
 import org.xmlunit.diff.ComparisonListener;
+import org.xmlunit.diff.ComparisonResult;
+import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DefaultComparisonFormatter;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.Diff;
@@ -39,6 +41,8 @@ import static org.xmlunit.assertj.error.ShouldBeNotSimilar.shouldBeNotSimilar;
 import static org.xmlunit.assertj.error.ShouldBeSimilar.shouldBeIdentical;
 import static org.xmlunit.assertj.error.ShouldBeSimilar.shouldBeSimilar;
 import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
+import static org.xmlunit.diff.DifferenceEvaluators.Default;
+import static org.xmlunit.diff.DifferenceEvaluators.chain;
 
 /**
  * Assertion methods for XMLs comparision.
@@ -252,12 +256,22 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     }
 
     /**
-     * Equivalent for <pre>withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))</pre>
+     * Equivalent for
+     * <pre>
+     *     .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
+     *     .withDifferenceEvaluator(chain(Default, (comparison, outcome) -> {
+     *             if (comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE) {
+     *                 outcome = ComparisonResult.EQUAL;
+     *             }
+     *             return outcome;
+     *         }));
+     * </pre>
      *
      * @see DiffBuilder#withNodeMatcher(NodeMatcher)
      */
     public CompareAssert ignoreChildNodesOrder() {
         diffBuilder.withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText));
+        diffBuilder.withDifferenceEvaluator(chain(Default, IgnoreNodeListSequence));
         return this;
     }
 
@@ -358,4 +372,15 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
             }
         }
     }
+
+    private static DifferenceEvaluator IgnoreNodeListSequence = new DifferenceEvaluator() {
+
+        @Override
+        public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
+            if (comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE) {
+                outcome = ComparisonResult.EQUAL;
+            }
+            return outcome;
+        }
+    };
 }

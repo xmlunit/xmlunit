@@ -65,7 +65,7 @@ public class CompareAssertAreSimilarTest {
     }
 
     @Test
-    public void testAreSimilar_withIgnoreChildNodesOrders_shouldPass() {
+    public void testAreSimilar_withIgnoreChildNodesOrder_shouldPass() {
 
         String testXml = "<!DOCTYPE a>" +
                 "<a>" +

@@ -201,7 +201,7 @@ public class CompareAssertAreNotIdenticalTest {
     }
 
     @Test
-    public void testIsSimilarTo_withDifferenceListener_shouldCollectChanges() {
+    public void areNotIdentical_withDifferenceListener_shouldCollectChanges() {
 
         DifferenceComparisonListener differenceListener = new DifferenceComparisonListener();
 
@@ -213,6 +213,26 @@ public class CompareAssertAreNotIdenticalTest {
                 .areNotIdentical();
 
         assertThat(differenceListener.difference).isEqualTo(1);
+    }
+
+    @Test
+    public void areNotIdentical_withIgnoreChildNodesOrder_shouldFailed() {
+
+        thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be not identical");
+
+        String testXml = "<a>" +
+                "   <c><d/><e/></c>" +
+                "   <b>text</b>" +
+                "</a>";
+
+        String controlXml = "<a>" +
+                "   <b>text</b>" +
+                "   <c><e/><d/></c>" +
+                "</a>";
+
+        assertThat(testXml).and(controlXml)
+                .ignoreChildNodesOrder()
+                .areNotIdentical();
     }
 
     private final class DifferenceComparisonListener implements ComparisonListener {

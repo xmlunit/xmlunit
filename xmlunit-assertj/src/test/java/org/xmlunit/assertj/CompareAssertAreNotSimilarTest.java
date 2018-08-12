@@ -82,7 +82,7 @@ public class CompareAssertAreNotSimilarTest {
     }
 
     @Test
-    public void testAreNotSimilar_withSimilarXmlsIgnoreChildNodesOrders_shouldFailed() {
+    public void testAreNotSimilar_withSimilarXmlsIgnoreChildNodesOrder_shouldFailed() {
 
         thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be not similar");
 
