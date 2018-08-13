@@ -23,12 +23,12 @@ import org.xmlunit.diff.ComparisonController;
 import org.xmlunit.diff.ComparisonControllers;
 import org.xmlunit.diff.ComparisonFormatter;
 import org.xmlunit.diff.ComparisonListener;
-import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DefaultComparisonFormatter;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.DifferenceEvaluator;
+import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelectors;
 import org.xmlunit.diff.NodeMatcher;
 import org.xmlunit.util.Predicate;
@@ -68,6 +68,8 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     }
 
     private static final String EXPECTING_NOT_NULL = "Expecting control not to be null";
+    private static DifferenceEvaluator IgnoreNodeListSequence =
+            DifferenceEvaluators.downgradeDifferencesToEqual(ComparisonType.CHILD_NODELIST_SEQUENCE);
 
     private final DiffBuilder diffBuilder;
     private ComparisonController customComparisonController;
@@ -259,12 +261,10 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * Equivalent for
      * <pre>
      *     .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
-     *     .withDifferenceEvaluator(chain(Default, (comparison, outcome) -> {
-     *             if (comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE) {
-     *                 outcome = ComparisonResult.EQUAL;
-     *             }
-     *             return outcome;
-     *         }));
+     *     .withDifferenceEvaluator(
+     *          chain(
+     *              Default,
+     *              DifferenceEvaluators.downgradeDifferencesToEqual(ComparisonType.CHILD_NODELIST_SEQUENCE)));
      * </pre>
      *
      * @see DiffBuilder#withNodeMatcher(NodeMatcher)
@@ -372,15 +372,4 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
             }
         }
     }
-
-    private static DifferenceEvaluator IgnoreNodeListSequence = new DifferenceEvaluator() {
-
-        @Override
-        public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
-            if (comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE) {
-                outcome = ComparisonResult.EQUAL;
-            }
-            return outcome;
-        }
-    };
 }
