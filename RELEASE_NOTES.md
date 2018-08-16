@@ -1,5 +1,7 @@
 # Release Notes
 
+## XMLUnit for Java 2.6.2 - /not released, yet/
+
 ## XMLUnit for Java 2.6.1 - /Released 2018-08-16/
 
 * add a new module with AssertJ support. This module requires Java7 at
