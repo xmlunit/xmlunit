@@ -5,7 +5,7 @@ jdk:
   - oraclejdk8
   - oraclejdk9
   - oraclejdk10
-  - oraclejdk-ea
+  - openjdk11
 addons:
   apt:
     update: true
