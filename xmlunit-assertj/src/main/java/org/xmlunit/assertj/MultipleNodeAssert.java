@@ -13,7 +13,6 @@
 */
 package org.xmlunit.assertj;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.FactoryBasedNavigableIterableAssert;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
@@ -51,9 +50,9 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
     }
 
     static MultipleNodeAssert create(Object xmlSource, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf,
-        XPathFactory xpf, String xPath) {
+                                     XPathFactory xpf, String xPath) {
 
-        Assertions.assertThat(xPath).isNotBlank();
+        AssertionsAdapter.assertThat(xPath).isNotBlank();
 
         final JAXPXPathEngine engine = xpf == null ? new JAXPXPathEngine() : new JAXPXPathEngine(xpf);
         if (prefix2Uri != null) {

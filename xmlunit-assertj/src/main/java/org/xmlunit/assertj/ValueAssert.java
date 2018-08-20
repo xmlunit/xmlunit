@@ -17,7 +17,6 @@ import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.assertj.core.api.AbstractDoubleAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
-import org.assertj.core.api.Assertions;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
@@ -52,8 +51,8 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
     }
 
     static ValueAssert create(Object xmlSource, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf,
-        XPathFactory xpf, String xPath) {
-        Assertions.assertThat(xPath).isNotBlank();
+                              XPathFactory xpf, String xPath) {
+        AssertionsAdapter.assertThat(xPath).isNotBlank();
 
         final JAXPXPathEngine engine = xpf == null ? new JAXPXPathEngine() : new JAXPXPathEngine(xpf);
         if (prefix2Uri != null) {
@@ -83,7 +82,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
             throwAssertionError(shouldBeConvertible(actual, "int"));
         }
 
-        return Assertions.assertThat(value);
+        return AssertionsAdapter.assertThat(value);
     }
 
     /**
@@ -101,7 +100,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
             throwAssertionError(shouldBeConvertible(actual, "double"));
         }
 
-        return Assertions.assertThat(value);
+        return AssertionsAdapter.assertThat(value);
     }
 
     /**
@@ -128,7 +127,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
                 throwAssertionError(shouldBeConvertible(actual, "boolean"));
         }
 
-        return Assertions.assertThat(value);
+        return AssertionsAdapter.assertThat(value);
     }
 
     /**

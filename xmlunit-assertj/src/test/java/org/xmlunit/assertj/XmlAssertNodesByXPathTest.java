@@ -13,7 +13,6 @@
 */
 package org.xmlunit.assertj;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -31,8 +30,8 @@ public class XmlAssertNodesByXPathTest {
         final MultipleNodeAssert multipleNodeAssert1 = assertThat("<a><b></b><c/></a>").nodesByXPath("/a");
         final MultipleNodeAssert multipleNodeAssert2 = assertThat("<a><b></b><c/></a>").nodesByXPath("/x");
 
-        Assertions.assertThat(multipleNodeAssert1).isNotNull();
-        Assertions.assertThat(multipleNodeAssert2).isNotNull();
+        AssertionsAdapter.assertThat(multipleNodeAssert1).isNotNull();
+        AssertionsAdapter.assertThat(multipleNodeAssert2).isNotNull();
     }
 
     @Test

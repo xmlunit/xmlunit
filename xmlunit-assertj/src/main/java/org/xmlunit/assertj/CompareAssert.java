@@ -13,7 +13,6 @@
 */
 package org.xmlunit.assertj;
 
-import org.assertj.core.api.Assertions;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.DiffBuilder;
@@ -83,7 +82,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
 
     static CompareAssert create(Object actual, Object control, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf) {
 
-        Assertions.assertThat(control)
+        AssertionsAdapter.assertThat(control)
                 .as(EXPECTING_NOT_NULL)
                 .isNotNull();
 

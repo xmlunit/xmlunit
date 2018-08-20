@@ -14,7 +14,6 @@
 package org.xmlunit.assertj;
 
 import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.Assertions;
 import org.xmlunit.builder.Input;
 import org.xmlunit.validation.JAXPValidator;
 import org.xmlunit.validation.Languages;
@@ -54,9 +53,9 @@ public class ValidationAssert extends AbstractAssert<ValidationAssert, Source> {
 
     static ValidationAssert create(Object xmlSource, Object... schemaSources) {
 
-        Assertions.assertThat(xmlSource).isNotNull();
+        AssertionsAdapter.assertThat(xmlSource).isNotNull();
 
-        Assertions.assertThat(schemaSources)
+        AssertionsAdapter.assertThat(schemaSources)
                 .isNotNull()
                 .doesNotContainNull();
 
@@ -73,8 +72,8 @@ public class ValidationAssert extends AbstractAssert<ValidationAssert, Source> {
 
     static ValidationAssert create(Object xmlSource, Schema schema) {
 
-        Assertions.assertThat(xmlSource).isNotNull();
-        Assertions.assertThat(schema).isNotNull();
+        AssertionsAdapter.assertThat(xmlSource).isNotNull();
+        AssertionsAdapter.assertThat(schema).isNotNull();
 
         Source source = Input.from(xmlSource).build();
 

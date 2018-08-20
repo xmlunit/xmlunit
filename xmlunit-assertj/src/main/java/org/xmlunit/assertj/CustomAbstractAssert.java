@@ -49,7 +49,7 @@ abstract class CustomAbstractAssert<SELF extends CustomAbstractAssert<SELF, ACTU
         if (!Failures.instance().isRemoveAssertJRelatedElementsFromStackTrace()) return;
 
         List<StackTraceElement> filtered = newArrayList(assertionError.getStackTrace());
-        for (StackTraceElement element: assertionError.getStackTrace()) {
+        for (StackTraceElement element : assertionError.getStackTrace()) {
             if (isElementOfCustomAssert(element)) {
                 filtered.remove(element);
             }
