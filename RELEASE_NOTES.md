@@ -2,6 +2,9 @@
 
 ## XMLUnit for Java 2.6.2 - /not released, yet/
 
+* xmlunit-assertj can now be used with AssertJ 3.9.1 as well as 2.9.x.
+  Issue [#135](https://github.com/xmlunit/xmlunit/issues/135)
+
 ## XMLUnit for Java 2.6.1 - /Released 2018-08-16/
 
 * add a new module with AssertJ support. This module requires Java7 at
