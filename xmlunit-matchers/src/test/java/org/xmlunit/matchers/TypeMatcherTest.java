@@ -56,7 +56,7 @@ public class TypeMatcherTest {
 
         thrown.expect(AssertionError.class);
         thrown.expectMessage("XML with XPath //fruits/fruit/@name evaluated to " +
-                "string and converted to java.lang.Double <3.0>");
+                "string converted to java.lang.Double <3.0>");
         thrown.expectMessage("failed with java.lang.NumberFormatException: For input string: \"apple\"");
 
         String xml = "<fruits><fruit name=\"apple\"/></fruits>";
@@ -69,7 +69,7 @@ public class TypeMatcherTest {
 
         thrown.expect(AssertionError.class);
         thrown.expectMessage("XML with XPath //fruits/fruit/@name evaluated to " +
-                "string and converted to java.math.BigDecimal <10>");
+                "string converted to java.math.BigDecimal <10>");
         thrown.expectMessage("failed with java.lang.NumberFormatException");
 
         String xml = "<fruits><fruit name=\"apple\"/></fruits>";
@@ -82,7 +82,7 @@ public class TypeMatcherTest {
 
         thrown.expect(AssertionError.class);
         thrown.expectMessage("XML with XPath //fruits/fruit/@name evaluated to " +
-                "string and converted to java.lang.Integer <3>");
+                "string converted to java.lang.Integer <3>");
         thrown.expectMessage("failed with java.lang.NumberFormatException: For input string: \"apple\"");
 
         String xml = "<fruits><fruit name=\"apple\"/></fruits>";
@@ -95,7 +95,7 @@ public class TypeMatcherTest {
 
         thrown.expect(AssertionError.class);
         thrown.expectMessage("XML with XPath //fruits/fruit/@name evaluated to " +
-                "string and converted to java.lang.Boolean <false>");
+                "string converted to java.lang.Boolean <false>");
         thrown.expectMessage("failed with java.lang.IllegalArgumentException: \"apple\" is not a boolean value");
 
         String xml = "<fruits><fruit name=\"apple\"/></fruits>";
@@ -108,7 +108,7 @@ public class TypeMatcherTest {
 
         thrown.expect(AssertionError.class);
         thrown.expectMessage("XML with XPath count(//fruits/fruit) evaluated to " +
-                "string and converted to java.lang.Integer <2>");
+                "string converted to java.lang.Integer <2>");
         thrown.expectMessage("was <1>");
 
         String xml = "<fruits><fruit name=\"apple\"/></fruits>";
