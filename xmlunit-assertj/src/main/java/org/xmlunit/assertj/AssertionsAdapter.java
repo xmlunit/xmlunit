@@ -19,11 +19,15 @@ import org.assertj.core.api.AbstractDoubleAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractObjectArrayAssert;
 import org.assertj.core.api.AbstractObjectAssert;
-import org.assertj.core.api.Assertions;
+import org.assertj.core.api.BooleanAssert;
+import org.assertj.core.api.DoubleAssert;
+import org.assertj.core.api.IntegerAssert;
+import org.assertj.core.api.ObjectArrayAssert;
 import org.assertj.core.api.ObjectAssert;
+import org.assertj.core.api.StringAssert;
 
 /**
- * Class that is proxy for {@link org.assertj.core.api.Assertions#assertThat} used by org.xmlunit.assertj.*Assert classes.
+ * Class that is proxy for AssertJ assertions used by org.xmlunit.assertj.*Assert classes.
  * <p>
  * XMLUnit AssertJ module is compatibility with Java 7, so it use use AssertJ 2.x version.
  * In AssertJ 3.9.1 was introduced binary incompatibility,
@@ -40,22 +44,22 @@ class AssertionsAdapter {
     }
 
     static <T> AbstractObjectArrayAssert<?, T> assertThat(T[] actual) {
-        return Assertions.assertThat(actual);
+        return new ObjectArrayAssert<>(actual);
     }
 
     static AbstractCharSequenceAssert<?, String> assertThat(String actual) {
-        return Assertions.assertThat(actual);
+        return new StringAssert(actual);
     }
 
     static AbstractIntegerAssert<?> assertThat(int actual) {
-        return Assertions.assertThat(actual);
+        return new IntegerAssert(actual);
     }
 
     static AbstractDoubleAssert<?> assertThat(double actual) {
-        return Assertions.assertThat(actual);
+        return new DoubleAssert(actual);
     }
 
     static AbstractBooleanAssert<?> assertThat(boolean actual) {
-        return Assertions.assertThat(actual);
+        return new BooleanAssert(actual);
     }
 }
