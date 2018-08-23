@@ -132,10 +132,10 @@ public class TypeMatcherTest {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<fruits>" +
-                "<fruit name=\"apple\" fresh=\"True\"/>" +
+                "<fruit name=\"apple\" fresh=\"true\"/>" +
                 "<fruit name=\"orange\" fresh=\"false\"/>" +
-                "<fruit name=\"banana\" fresh=\"1\"/>" +
-                "<fruit name=\"pear\" fresh=\"0\"/>" +
+                "<fruit name=\"banana\" fresh=\"True\"/>" +
+                "<fruit name=\"pear\" fresh=\"False\"/>" +
                 "</fruits>";
 
         assertThat(xml, hasXPath("//fruits/fruit[@name=\"apple\"]/@fresh", asBoolean(equalTo(true))));
@@ -161,6 +161,26 @@ public class TypeMatcherTest {
         assertThat("1.0e1", asBigDecimal(equalTo(BigDecimal.TEN)));
         assertThat("3", asInt(lessThan(4)));
         assertThat("false", asBoolean(equalTo(false)));
+        assertThat("true", asBoolean(equalTo(true)));
+    }
+
+    @Test
+    public void conversionZeroValueToBooleanShouldFailed() {
+
+        thrown.expect(AssertionError.class);
+        thrown.expectMessage("string converted to java.lang.Boolean <false>");
+        thrown.expectMessage("failed with java.lang.IllegalArgumentException: \"0\" is not a boolean value");
+
+        assertThat("0", asBoolean(equalTo(false)));
+    }
+
+    @Test
+    public void conversionOneValueToBooleanShouldFailed() {
+
+        thrown.expect(AssertionError.class);
+        thrown.expectMessage("string converted to java.lang.Boolean <true>");
+        thrown.expectMessage("failed with java.lang.IllegalArgumentException: \"1\" is not a boolean value");
+
         assertThat("1", asBoolean(equalTo(true)));
     }
 }

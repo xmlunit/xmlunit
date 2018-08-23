@@ -36,7 +36,7 @@ import java.math.BigDecimal;
  *     assertThat("1.0e1", asBigDecimal(equalTo(BigDecimal.TEN)));
  *     assertThat("3", asInt(lessThan(4)));
  *     assertThat("false", asBoolean(equalTo(false)));
- *     assertThat("1", asBoolean(equalTo(true)));
+ *     assertThat("True", asBoolean(equalTo(true)));
  * </pre>
  *
  * <p><b>Examples with XPath evaluation</b></p>
@@ -46,7 +46,7 @@ import java.math.BigDecimal;
  *             "<fruit name=\"apple\"/>" +
  *             "<fruit name=\"orange\"/>" +
  *             "<fruit name=\"banana\"/>" +
- *             "<fruit name=\"pear\" fresh=\"0\"/>" +
+ *             "<fruit name=\"pear\" fresh=\"false\"/>" +
  *             "</fruits>";
  *
  *     assertThat(xml, hasXPath("count(//fruits/fruit)", asDouble(equalTo(4.0))));
@@ -232,10 +232,10 @@ public abstract class TypeMatcher<T> extends TypeSafeMatcher<String> {
         @Override
         protected Boolean convert(String item) {
             item = item.toLowerCase();
-            if (item.equals("1") || item.equals("true")) {
+            if (item.equals("true")) {
                 return true;
             }
-            if (item.equals("0") || item.equals("false")) {
+            if (item.equals("false")) {
                 return false;
             }
             throw new IllegalArgumentException("\"" + item + "\" is not a boolean value");
