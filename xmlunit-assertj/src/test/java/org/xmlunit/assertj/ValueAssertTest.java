@@ -91,10 +91,10 @@ public class ValueAssertTest {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<fruits>" +
-                "<fruit name=\"apple\" fresh=\"True\"/>" +
+                "<fruit name=\"apple\" fresh=\"true\"/>" +
                 "<fruit name=\"orange\" fresh=\"false\"/>" +
-                "<fruit name=\"banana\" fresh=\"1\"/>" +
-                "<fruit name=\"pear\" fresh=\"0\"/>" +
+                "<fruit name=\"banana\" fresh=\"True\"/>" +
+                "<fruit name=\"pear\" fresh=\"False\"/>" +
                 "</fruits>";
 
         assertThat(xml).valueByXPath("//fruits/fruit[@name=\"apple\"]/@fresh").asBoolean().isTrue();
@@ -111,6 +111,32 @@ public class ValueAssertTest {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<fruits>" +
                 "<fruit name=\"apple\" fresh=\"2\"/>" +
+                "</fruits>";
+
+        assertThat(xml).valueByXPath("//fruits/fruit[@name=\"apple\"]/@fresh").asBoolean();
+    }
+
+    @Test
+    public void testAsBoolean_withZeroAsArgument_shouldFailed() {
+
+        thrown.expectAssertionError("Expecting:%n <0>%nto be convertible to%n <boolean>");
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<fruits>" +
+                "<fruit name=\"apple\" fresh=\"0\"/>" +
+                "</fruits>";
+
+        assertThat(xml).valueByXPath("//fruits/fruit[@name=\"apple\"]/@fresh").asBoolean();
+    }
+
+    @Test
+    public void testAsBoolean_withOneAsArgument_shouldFailed() {
+
+        thrown.expectAssertionError("Expecting:%n <1>%nto be convertible to%n <boolean>");
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<fruits>" +
+                "<fruit name=\"apple\" fresh=\"1\"/>" +
                 "</fruits>";
 
         assertThat(xml).valueByXPath("//fruits/fruit[@name=\"apple\"]/@fresh").asBoolean();
@@ -175,10 +201,10 @@ public class ValueAssertTest {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<fruits>" +
-                "<fruit name=\"apple\" fresh=\"True\"/>" +
+                "<fruit name=\"apple\" fresh=\"true\"/>" +
                 "<fruit name=\"orange\" fresh=\"false\"/>" +
-                "<fruit name=\"banana\" fresh=\"1\"/>" +
-                "<fruit name=\"pear\" fresh=\"0\"/>" +
+                "<fruit name=\"banana\" fresh=\"True\"/>" +
+                "<fruit name=\"pear\" fresh=\"False\"/>" +
                 "</fruits>";
 
         assertThat(xml).valueByXPath("//fruits/fruit[@name=\"apple\"]/@fresh").isEqualTo(true);

@@ -106,7 +106,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
     /**
      * Returns an {@code Assert} object that allows performing assertions on boolean value of the {@link String} under test.
      * <p>
-     * If actual value after lowercasing is one of the following "true", "false", "1", "0", then it can be parsed to boolean.
+     * If actual value after lowercasing is one of the following "true", "false", then it can be parsed to boolean.
      *
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value does not contain a parsable boolean
@@ -115,11 +115,9 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
         isNotNull();
         boolean value = false;
         switch (actual.toLowerCase()) {
-            case "1":
             case "true":
                 value = true;
                 break;
-            case "0":
             case "false":
                 value = false;
                 break;
