@@ -42,12 +42,12 @@ import java.math.BigDecimal;
  * <p><b>Examples with XPath evaluation</b></p>
  *
  * <pre>
- *     String xml = "<fruits>" +
- *             "<fruit name=\"apple\"/>" +
- *             "<fruit name=\"orange\"/>" +
- *             "<fruit name=\"banana\"/>" +
- *             "<fruit name=\"pear\" fresh=\"false\"/>" +
- *             "</fruits>";
+ *     String xml = "&lt;fruits&gt;" +
+ *             "&lt;fruit name=\"apple\"/&gt;" +
+ *             "&lt;fruit name=\"orange\"/&gt;" +
+ *             "&lt;fruit name=\"banana\"/&gt;" +
+ *             "&lt;fruit name=\"pear\" fresh=\"false\"/&gt;" +
+ *             "&lt;/fruits&gt;";
  *
  *     assertThat(xml, hasXPath("count(//fruits/fruit)", asDouble(equalTo(4.0))));
  *     assertThat(xml, hasXPath("count(//fruits/fruit)", asBigDecimal(greaterThan(BigDecimal.ONE))));
