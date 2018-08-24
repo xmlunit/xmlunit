@@ -3,7 +3,13 @@
 ## XMLUnit for Java 2.6.2 - /not released, yet/
 
 * xmlunit-assertj can now be used with AssertJ 3.9.1 as well as 2.9.x.
-  Issue [#135](https://github.com/xmlunit/xmlunit/issues/135)
+  Issue [#135](https://github.com/xmlunit/xmlunit/issues/135).
+
+* added a new `TypeMatcher` to the xmlunit-matchers module that can be
+  used to conveniently translate XPath result strings into numbers or
+  booleans and verify they match type safe assetions.
+  Issue [#133](https://github.com/xmlunit/xmlunit/issues/133) via PR
+  [#137](https://github.com/xmlunit/xmlunit/pull/137).
 
 ## XMLUnit for Java 2.6.1 - /Released 2018-08-16/
 
