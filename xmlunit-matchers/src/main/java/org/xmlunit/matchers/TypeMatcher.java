@@ -231,11 +231,10 @@ public abstract class TypeMatcher<T> extends TypeSafeMatcher<String> {
 
         @Override
         protected Boolean convert(String item) {
-            item = item.toLowerCase();
-            if (item.equals("true")) {
+            if ("true".equalsIgnoreCase(item)) {
                 return true;
             }
-            if (item.equals("false")) {
+            if ("false".equalsIgnoreCase(item)) {
                 return false;
             }
             throw new IllegalArgumentException("\"" + item + "\" is not a boolean value");
