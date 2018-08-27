@@ -28,6 +28,10 @@
   <description>XMLUnit for Java Hamcrest Matchers</description>
   <url>https://www.xmlunit.org/</url>
 
+  <properties>
+    <automatic.module.name>${project.groupId}.matchers</automatic.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.xmlunit</groupId>

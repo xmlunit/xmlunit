@@ -25,6 +25,10 @@
     <name>org.xmlunit:xmlunit-placeholders</name>
     <artifactId>xmlunit-placeholders</artifactId>
 
+    <properties>
+      <automatic.module.name>${project.groupId}.placeholder</automatic.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.xmlunit</groupId>

@@ -25,6 +25,7 @@
   <properties>
     <maven.compile.source>1.7</maven.compile.source>
     <maven.compile.target>1.7</maven.compile.target>
+    <automatic.module.name>${project.groupId}.assertj</automatic.module.name>
   </properties>
 
   <artifactId>xmlunit-assertj</artifactId>

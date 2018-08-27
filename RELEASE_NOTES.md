@@ -11,6 +11,10 @@
   Issue [#133](https://github.com/xmlunit/xmlunit/issues/133) via PR
   [#137](https://github.com/xmlunit/xmlunit/pull/137).
 
+* fixed the `Automatic-Module-Name` of all modules to be valid Java
+  identifiers.
+  Issue [#136](https://github.com/xmlunit/xmlunit/issues/136).
+
 ## XMLUnit for Java 2.6.1 - /Released 2018-08-16/
 
 * add a new module with AssertJ support. This module requires Java7 at

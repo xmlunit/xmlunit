@@ -28,6 +28,10 @@
   <description>XMLUnit 1.x Compatibility Layer</description>
   <url>https://www.xmlunit.org/</url>
 
+  <properties>
+    <automatic.module.name>org.custommonkey.xmlunit</automatic.module.name>
+  </properties>
+
   <licenses>
     <license>
       <name>The BSD 3-Clause License</name>

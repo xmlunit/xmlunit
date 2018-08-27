@@ -28,6 +28,10 @@
   <description>XMLUnit for Java</description>
   <url>https://www.xmlunit.org/</url>
 
+  <properties>
+    <automatic.module.name>${project.groupId}</automatic.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
