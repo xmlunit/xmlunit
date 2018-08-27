@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.6.2 - /not released, yet/
+## XMLUnit for Java 2.6.2 - /Released 2018-08-27/
 
 * xmlunit-assertj can now be used with AssertJ 3.9.1 as well as 2.9.x.
   Issue [#135](https://github.com/xmlunit/xmlunit/issues/135).
