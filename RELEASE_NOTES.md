@@ -9,7 +9,7 @@
 
 * added a new `TypeMatcher` to the xmlunit-matchers module that can be
   used to conveniently translate XPath result strings into numbers or
-  booleans and verify they match type safe assetions.
+  booleans and verify they match type safe assertions.
   Issue [#133](https://github.com/xmlunit/xmlunit/issues/133) via PR
   [#137](https://github.com/xmlunit/xmlunit/pull/137).
 
