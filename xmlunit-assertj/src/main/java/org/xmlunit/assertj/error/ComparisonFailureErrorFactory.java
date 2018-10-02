@@ -31,7 +31,9 @@ abstract class ComparisonFailureErrorFactory implements AssertionErrorFactory {
     private static final String EXPECTED_BUT_WAS_MESSAGE = "%nExpecting:%n <%s>%nto be equal to:%n <%s>%nbut was not.";
 
     abstract String getMessage();
+
     abstract String getExpected();
+
     abstract String getActual();
 
     /**
@@ -41,7 +43,7 @@ abstract class ComparisonFailureErrorFactory implements AssertionErrorFactory {
     @Override
     public AssertionError newAssertionError(Description d, Representation representation) {
         AssertionError assertionError = getComparisonFailureInstance();
-        if(assertionError != null) {
+        if (assertionError != null) {
             return assertionError;
         }
 
@@ -51,7 +53,7 @@ abstract class ComparisonFailureErrorFactory implements AssertionErrorFactory {
 
     private AssertionError getComparisonFailureInstance() {
         Constructor<?> constructor = getComparisonFailureConstructor();
-        if(constructor != null) {
+        if (constructor != null) {
             try {
                 Object o = constructor.newInstance(getMessage(), getExpected(), getActual());
                 if (o instanceof AssertionError) return (AssertionError) o;
@@ -60,8 +62,9 @@ abstract class ComparisonFailureErrorFactory implements AssertionErrorFactory {
         }
         return null;
     }
-    private Constructor<?> getComparisonFailureConstructor() {
-        if(comparisonFailureConstructor == null) {
+
+    private static Constructor<?> getComparisonFailureConstructor() {
+        if (comparisonFailureConstructor == null) {
             try {
                 Class<?> targetType = Class.forName("org.junit.ComparisonFailure");
                 comparisonFailureConstructor = targetType.getConstructor(String.class, String.class, String.class);

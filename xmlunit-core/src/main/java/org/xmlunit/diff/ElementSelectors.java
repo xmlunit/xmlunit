@@ -162,7 +162,7 @@ public final class ElementSelectors {
         if (any(qs, new IsNullPredicate())) {
             throw new IllegalArgumentException(ATTRIBUTES_MUST_NOT_CONTAIN_NULL_VALUES);
         }
-        final HashSet<String> as = new HashSet(qs);
+        final HashSet<String> as = new HashSet<String>(qs);
         return new ElementSelector() {
             @Override
             public boolean canBeCompared(Element controlElement,
@@ -506,13 +506,14 @@ public final class ElementSelectors {
         return new Predicate<Element>() {
             @Override
             public boolean test(Element e) {
-                return e == null ? false : expectedName.equals(Nodes.getQName(e));
+                return e != null && expectedName.equals(Nodes.getQName(e));
             }
         };
     }
 
     private static class CanBeComparedPredicate implements Predicate<ElementSelector> {
-        private final Element e1, e2;
+        private final Element e1;
+        private final Element e2;
 
         private CanBeComparedPredicate(Element e1, Element e2) {
             this.e1 = e1;

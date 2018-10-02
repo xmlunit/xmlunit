@@ -39,6 +39,9 @@ import org.assertj.core.api.StringAssert;
  */
 class AssertionsAdapter {
 
+    private AssertionsAdapter() {
+    }
+
     static <T> AbstractObjectAssert<?, T> assertThat(T actual) {
         return new ObjectAssert<>(actual);
     }

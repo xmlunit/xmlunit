@@ -343,7 +343,7 @@ public final class CompareMatcher extends BaseMatcher<Object>
      * Calls the Constructor {@link org.junit.ComparisonFailure#ComparisonFailure(String, String, String)} with
      * reflections and return <code>null</code> if the {@link org.junit.ComparisonFailure} class is not available.
      */
-    private AssertionError createComparisonFailure(final String reason, final String controlString,
+    private static AssertionError createComparisonFailure(final String reason, final String controlString,
             final String testString) {
         try {
             if (comparisonFailureConstructor == null) {
@@ -375,7 +375,7 @@ public final class CompareMatcher extends BaseMatcher<Object>
         final String testString = comparisonFormatter.getDetails(difference.getControlDetails(), difference.getType(),
             formatXml);
 
-        description.appendText(String.format("%s:\n%s", reason, testString));
+        description.appendText(String.format("%s:%n%s", reason, testString));
     }
 
     private String createReasonPrefix(final String systemId, final Comparison difference) {
@@ -395,7 +395,7 @@ public final class CompareMatcher extends BaseMatcher<Object>
         final String controlString = comparisonFormatter.getDetails(difference.getTestDetails(), difference.getType(),
             formatXml);
 
-        description.appendText(String.format("result was: \n%s", controlString));
+        description.appendText(String.format("result was: %n%s", controlString));
     }
 
     private Comparison firstComparison() {
