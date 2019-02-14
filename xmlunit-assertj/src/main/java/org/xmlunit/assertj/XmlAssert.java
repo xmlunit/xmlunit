@@ -108,7 +108,12 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     private XPathFactory xpf;
     private Map<String, String> prefix2Uri;
 
-    private XmlAssert(Object o) {
+    /**
+     * Constructor for {@link XmlAssert}
+     *
+     * @param o object with type supported by {@link Input#from(Object)}
+     */
+    public XmlAssert(Object o) {
         super(o, XmlAssert.class);
     }
 
