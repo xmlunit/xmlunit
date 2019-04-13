@@ -26,4 +26,4 @@ Java
 Claimed
 -------
 
-* .NET Core support (without breaking the .NET 3.5 builds)
+
