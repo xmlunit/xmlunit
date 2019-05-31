@@ -314,4 +314,43 @@ public class PlaceholderDifferenceEvaluatorTest {
         }
     }
 
+	@Test
+	public void hasIsNumberPlaceholder_Attribute_NotNumber() {
+		String control = "<elem1 attr='${xmlunit.isNumber}'/>";
+		String test = "<elem1 attr='abc'/>";
+		Diff diff = DiffBuilder.compare(control).withTest(test)
+				.withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+		assertTrue(diff.hasDifferences());
+	}
+
+	@Test
+	public void hasIsNumberPlaceholder_Attribute_IsNumber() {
+		String control = "<elem1 attr='${xmlunit.isNumber}'/>";
+		String test = "<elem1 attr='123'/>";
+		Diff diff = DiffBuilder.compare(control).withTest(test)
+				.withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+		assertFalse(diff.hasDifferences());
+	}
+
+	@Test
+	public void hasIsNumberPlaceholder_Element_NotNumber() {
+		String control = "<elem1>${xmlunit.isNumber}</elem1>";
+		String test = "<elem1>abc</elem1>";
+		Diff diff = DiffBuilder.compare(control).withTest(test)
+				.withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+		assertTrue(diff.hasDifferences());
+	}
+
+	@Test
+	public void hasIsNumberPlaceholder_Element_IsNumber() {
+		String control = "<elem1>${xmlunit.isNumber}</elem1>";
+		String test = "<elem1>123</elem1>";
+		Diff diff = DiffBuilder.compare(control).withTest(test)
+				.withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+		assertFalse(diff.hasDifferences());
+	}
 }
