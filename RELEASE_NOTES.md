@@ -2,6 +2,11 @@
 
 ## XMLUnit for Java 2.6.3 - /not released, yet/
 
+* add a new `${xmlunit.isNumber}` placeholder
+  Issue [#153](https://github.com/xmlunit/xmlunit/issues/153) via PR
+  [#154](https://github.com/xmlunit/xmlunit/pull/154) by
+  [@NathanAtClarity](https://github.com/NathanAtClarity).
+
 ## XMLUnit for Java 2.6.2 - /Released 2018-08-27/
 
 * xmlunit-assertj can now be used with AssertJ 3.9.1+ as well as 2.9.x.
