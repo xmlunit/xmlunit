@@ -757,6 +757,61 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         assertEquals(0, ex.invoked);
     }
 
+    @Test
+    /**
+     * @see "https://sourceforge.net/p/xmlunit/discussion/73273/thread/92c980ec5b/"
+     */
+    public void sourceforgeForumThread92c980ec5b() {
+        Element gp1 = doc.createElement("grandparent");
+        Element p1_0 = doc.createElement("parent");
+        p1_0.setAttribute("id", "0");
+        gp1.appendChild(p1_0);
+        Element p1_1 = doc.createElement("parent");
+        p1_1.setAttribute("id", "1");
+        gp1.appendChild(p1_1);
+        Element c1_1 = doc.createElement("child");
+        c1_1.setAttribute("id", "1");
+        p1_1.appendChild(c1_1);
+
+        Element gp2 = doc.createElement("grandparent");
+        Element p2_1 = doc.createElement("parent");
+        p2_1.setAttribute("id", "1");
+        gp2.appendChild(p2_1);
+        Element c2_1 = doc.createElement("child");
+        c2_1.setAttribute("id", "1");
+        p2_1.appendChild(c2_1);
+        Element c2_2 = doc.createElement("child");
+        c2_2.setAttribute("id", "2");
+        p2_1.appendChild(c2_2);
+
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.CHILD_LOOKUP,
+                                           null, "/grandparent[1]/parent[1]/child[2]")
+            .withParentXPath("/grandparent[1]/parent[2]", "/grandparent[1]/parent[1]");
+        d.addDifferenceListener(ex);
+        DifferenceEvaluator ev = new DifferenceEvaluator() {
+                public ComparisonResult evaluate(Comparison comparison,
+                                                 ComparisonResult outcome) {
+                    if (comparison.getType() == ComparisonType.CHILD_NODELIST_LENGTH
+                        || comparison.getType() == ComparisonType.CHILD_NODELIST_SEQUENCE) {
+                        return ComparisonResult.EQUAL;
+                    }
+                    if (comparison.getType() == ComparisonType.CHILD_LOOKUP
+                        && comparison.getTestDetails().getTarget() == null) {
+                        return ComparisonResult.EQUAL;
+                    }
+                    return outcome;
+                }
+            };
+        d.setDifferenceEvaluator(ev);
+        d.setComparisonController(ComparisonControllers.StopWhenDifferent);
+        d.setNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndAllAttributes));
+        assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),
+                     d.compareNodes(gp1, new XPathContext(gp1),
+                                    gp2, new XPathContext(gp2)));
+        assertEquals(1, ex.invoked);
+    }
+
     @Test public void textAndCDataMatchRecursively() {
         Element e1 = doc.createElement("foo");
         Element e2 = doc.createElement("foo");
