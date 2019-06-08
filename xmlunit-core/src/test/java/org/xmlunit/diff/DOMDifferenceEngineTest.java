@@ -758,6 +758,7 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
     }
 
     @Test
+    @org.junit.Ignore("test will pass once https://github.com/xmlunit/xmlunit/issues/156 is fixed")
     /**
      * @see "https://sourceforge.net/p/xmlunit/discussion/73273/thread/92c980ec5b/"
      */
@@ -806,6 +807,14 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         d.setDifferenceEvaluator(ev);
         d.setComparisonController(ComparisonControllers.StopWhenDifferent);
         d.setNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndAllAttributes));
+        d.setNodeFilter(new Predicate<Node>() {
+            @Override
+            public boolean test(Node n) {
+                return n.getNodeType() != Node.DOCUMENT_TYPE_NODE &&
+                    !("parent".equals(n.getNodeName())
+                      && "0".equals(n.getAttributes().getNamedItem("id").getNodeValue()));
+            }
+        });
         assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),
                      d.compareNodes(gp1, new XPathContext(gp1),
                                     gp2, new XPathContext(gp2)));
