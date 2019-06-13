@@ -18,6 +18,10 @@ import org.xmlunit.diff.ComparisonResult;
 import static org.xmlunit.diff.ComparisonResult.DIFFERENT;
 import static org.xmlunit.diff.ComparisonResult.EQUAL;
 
+/**
+ * Handler for the {@code isNumber} placeholder keyword.
+ * @since 2.6.3
+ */
 public class IsNumberPlaceholderHandler implements PlaceholderHandler {
     private static final String PLACEHOLDER_NAME = "isNumber";
 
