@@ -109,12 +109,14 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
      */
     ComparisonState compareNodes(final Node control, final XPathContext controlContext,
                                  final Node test, final XPathContext testContext) {
+        final Iterable<Node> allControlChildren =
+            new IterableNodeList(control.getChildNodes());
         final Iterable<Node> controlChildren =
-            Linqy.filter(new IterableNodeList(control.getChildNodes()),
-                         getNodeFilter());
+            Linqy.filter(allControlChildren, getNodeFilter());
+        final Iterable<Node> allTestChildren =
+            new IterableNodeList(test.getChildNodes());
         final Iterable<Node> testChildren =
-            Linqy.filter(new IterableNodeList(test.getChildNodes()),
-                         getNodeFilter());
+            Linqy.filter(allTestChildren, getNodeFilter());
 
         return compare(new Comparison(ComparisonType.NODE_TYPE,
                                       control, getXPath(controlContext),
@@ -147,8 +149,10 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             // and finally recurse into children
             .andIfTrueThen(control.getNodeType() != Node.ATTRIBUTE_NODE,
                            compareChildren(controlContext,
+                                           allControlChildren,
                                            controlChildren,
                                            testContext,
+                                           allTestChildren,
                                            testChildren));
     }
 
@@ -210,18 +214,20 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     }
 
     private DeferredComparison compareChildren(final XPathContext controlContext,
+                                               final Iterable<Node> allControlChildren,
                                                final Iterable<Node> controlChildren,
                                                final XPathContext testContext,
+                                               final Iterable<Node> allTestChildren,
                                                final Iterable<Node> testChildren) {
         return new DeferredComparison() {
             @Override
             public ComparisonState apply() {
                 controlContext
-                    .setChildren(Linqy.map(controlChildren, ElementSelectors.TO_NODE_INFO));
+                    .setChildren(Linqy.map(allControlChildren, ElementSelectors.TO_NODE_INFO));
                 testContext
-                    .setChildren(Linqy.map(testChildren, ElementSelectors.TO_NODE_INFO));
-                return compareNodeLists(controlChildren, controlContext,
-                                        testChildren, testContext);
+                    .setChildren(Linqy.map(allTestChildren, ElementSelectors.TO_NODE_INFO));
+                return compareNodeLists(allControlChildren, controlChildren, controlContext,
+                                        allTestChildren, testChildren, testContext);
             }
         };
     }
@@ -534,14 +540,18 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
      * <p>Also performs CHILD_LOOKUP comparisons for each node that
      * couldn't be matched to one of the "other" list.</p>
      */
-    private ComparisonState compareNodeLists(Iterable<Node> controlSeq,
+    private ComparisonState compareNodeLists(Iterable<Node> allControlChildren,
+                                             Iterable<Node> controlSeq,
                                              final XPathContext controlContext,
+                                             Iterable<Node> allTestChildren,
                                              Iterable<Node> testSeq,
                                              final XPathContext testContext) {
         ComparisonState chain = new OngoingComparisonState();
 
         Iterable<Map.Entry<Node, Node>> matches =
             getNodeMatcher().match(controlSeq, testSeq);
+        List<Node> controlListForXpath = Linqy.asList(allControlChildren);
+        List<Node> testListForXpath = Linqy.asList(allTestChildren);
         List<Node> controlList = Linqy.asList(controlSeq);
         List<Node> testList = Linqy.asList(testSeq);
         Set<Node> seen = new HashSet<Node>();
@@ -550,11 +560,13 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             seen.add(control);
             final Node test = pair.getValue();
             seen.add(test);
+            int controlIndexForXpath = controlListForXpath.indexOf(control);
+            int testIndexForXpath = testListForXpath.indexOf(test);
             int controlIndex = controlList.indexOf(control);
             int testIndex = testList.indexOf(test);
 
-            controlContext.navigateToChild(controlIndex);
-            testContext.navigateToChild(testIndex);
+            controlContext.navigateToChild(controlIndexForXpath);
+            testContext.navigateToChild(testIndexForXpath);
             try {
                 chain =
                     chain.andThen(new Comparison(ComparisonType.CHILD_NODELIST_SEQUENCE,

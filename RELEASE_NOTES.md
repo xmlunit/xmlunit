@@ -7,6 +7,10 @@
   [#154](https://github.com/xmlunit/xmlunit/pull/154) by
   [@NathanAtClarity](https://github.com/NathanAtClarity).
 
+* the XPath values of a comparison should not be affected by any
+  `NodeFilter` being in effect.
+  Issue [#156](https://github.com/xmlunit/xmlunit/issues/156)
+
 ## XMLUnit for Java 2.6.2 - /Released 2018-08-27/
 
 * xmlunit-assertj can now be used with AssertJ 3.9.1+ as well as 2.9.x.

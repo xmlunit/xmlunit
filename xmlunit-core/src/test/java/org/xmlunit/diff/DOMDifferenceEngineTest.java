@@ -758,7 +758,6 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
     }
 
     @Test
-    @org.junit.Ignore("test will pass once https://github.com/xmlunit/xmlunit/issues/156 is fixed")
     /**
      * @see "https://sourceforge.net/p/xmlunit/discussion/73273/thread/92c980ec5b/"
      */
