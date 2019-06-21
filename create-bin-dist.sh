@@ -34,8 +34,6 @@ mv xmlunit-$1-bin.* ..
 
 cd ..
 for i in *.zip *.tar.gz *.tar.bz2; do
-    md5sum $i > $i.md5
-    sha1sum $i > $i.sha1
     sha256sum $i > $i.sha256
     gpg --use-agent --detach-sign --armor $i
 done
