@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.6.3 - /not released, yet/
+## XMLUnit for Java 2.6.3 - /Released 2019-06-21/
 
 * add a new `${xmlunit.isNumber}` placeholder
   Issue [#153](https://github.com/xmlunit/xmlunit/issues/153) via PR
