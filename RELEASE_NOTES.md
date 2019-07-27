@@ -2,6 +2,11 @@
 
 ## XMLUnit for Java 2.6.4 - /not released, yet/
 
+* the dependencies on JAXB implementation and its transitive
+  dependencies has been promoted from test scope to optional for Java
+  9 and later
+  Issue [#162](https://github.com/xmlunit/xmlunit/issues/162)
+
 ## XMLUnit for Java 2.6.3 - /Released 2019-06-21/
 
 * add a new `${xmlunit.isNumber}` placeholder
