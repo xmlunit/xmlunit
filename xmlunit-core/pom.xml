@@ -69,17 +69,17 @@
         <dependency>
           <groupId>com.sun.xml.bind</groupId>
           <artifactId>jaxb-core</artifactId>
-          <scope>optional</scope>
+          <optional>true</optional>
         </dependency>
         <dependency>
           <groupId>com.sun.xml.bind</groupId>
           <artifactId>jaxb-impl</artifactId>
-          <scope>optional</scope>
+          <optional>true</optional>
         </dependency>
         <dependency>
           <groupId>javax.activation</groupId>
           <artifactId>activation</artifactId>
-          <scope>optional</scope>
+          <optional>true</optional>
         </dependency>
       </dependencies>
     </profile>
