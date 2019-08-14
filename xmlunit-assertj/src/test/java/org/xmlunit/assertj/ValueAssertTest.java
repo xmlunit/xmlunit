@@ -13,21 +13,22 @@
 */
 package org.xmlunit.assertj;
 
+import static org.xmlunit.assertj.ExpectedException.none;
+import static org.xmlunit.assertj.XmlAssert.assertThat;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPathFactory;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPathFactory;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-
-import static org.xmlunit.assertj.ExpectedException.none;
-import static org.xmlunit.assertj.XmlAssert.assertThat;
 
 public class ValueAssertTest {
     @Rule
@@ -158,7 +159,7 @@ public class ValueAssertTest {
     @Test
     public void testAsXml_shouldPass() {
 
-        String xml ="<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<a><b>" +
                 "<![CDATA[<c><d attr=\"xyz\"></d></c>]]>" +
                 "</b></a>";
@@ -166,6 +167,39 @@ public class ValueAssertTest {
         assertThat(xml).valueByXPath("//a/b/text()")
                 .isEqualTo("<c><d attr=\"xyz\"></d></c>")
                 .asXml().hasXPath("/c/d");
+    }
+
+    @Test
+    public void testAsXml_shouldFailed() {
+
+        thrown.expectAssertionError("The markup in the document following the root element must be well-formed");
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<a><b>" +
+                "<![CDATA[<d attr=\"xyz\"></d><c></c>]]>" +
+                "</b></a>";
+
+        assertThat(xml).valueByXPath("//a/b/text()")
+                .isEqualTo("<d attr=\"xyz\"></d><c></c>")
+                .asXml().hasXPath("/c");
+    }
+
+    @Test
+    public void testAsXml_withWrappingNodeName_shouldPass() {
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<a><b>" +
+                "<![CDATA[<d attr=\"xyz\"></d><c></c>]]>" +
+                "</b></a>";
+
+        final XmlAssert xmlAssert = assertThat(xml).valueByXPath("//a/b/text()")
+                .isEqualTo("<d attr=\"xyz\"></d><c></c>")
+                .asXml("x");
+
+        xmlAssert.hasXPath("/x/d");
+        xmlAssert.hasXPath("/x/c");
+        xmlAssert.doesNotHaveXPath("/d");
+        xmlAssert.doesNotHaveXPath("/c");
     }
 
     @Test
@@ -281,8 +315,8 @@ public class ValueAssertTest {
                 "<fruit name=\"apple\" weight=\"66.6\"/>" +
                 "</fruits>";
         assertThat(xml)
-            .withXPathFactory(xFac)
-            .valueByXPath("//fruits/fruit/@weight").asDouble().isEqualTo(66.6);
+                .withXPathFactory(xFac)
+                .valueByXPath("//fruits/fruit/@weight").asDouble().isEqualTo(66.6);
         Mockito.verify(xFac).newXPath();
     }
 }

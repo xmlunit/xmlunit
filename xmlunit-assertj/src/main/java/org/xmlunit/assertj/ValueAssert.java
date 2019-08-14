@@ -13,6 +13,14 @@
 */
 package org.xmlunit.assertj;
 
+import static org.xmlunit.assertj.error.ShouldBeConvertible.shouldBeConvertible;
+
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Source;
+import javax.xml.xpath.XPathFactory;
+
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.assertj.core.api.AbstractDoubleAssert;
@@ -21,13 +29,6 @@ import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
 import org.xmlunit.xpath.JAXPXPathEngine;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Source;
-import javax.xml.xpath.XPathFactory;
-import java.util.Map;
-
-import static org.xmlunit.assertj.error.ShouldBeConvertible.shouldBeConvertible;
 
 /**
  * Assertion methods for {@link String} result of XPath evaluation.
@@ -135,7 +136,39 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
      */
     public XmlAssert asXml() {
         isNotNull();
-        return XmlAssert.assertThat(actual);
+        return asXml(null);
+    }
+
+    /**
+     * Returns an {@code XmlAssert} object that allows performing assertions on XML value of the {@link String} under test
+     * wrapping around tag with name given in <b>wrapNodeName</b>.
+     * If wrapNodeName is null or empty then wrapping is not applied.
+     *
+     * Pseudocode:
+     * <pre>
+     *
+     *  // given
+     *  wrapNodeName = "ul";
+     *  actual = "<li>a</li><li></li>";
+     *
+     *  // then
+     *  xml = "<ul><li>a</li><li></li></ul>";
+     *  return XmlAssert.assertThat(xml);
+     * </pre>
+     *
+     * @throws AssertionError if the actual value is {@code null}.
+     * @since XMLUnit 2.6.4
+     */
+    public XmlAssert asXml(String wrapNodeName) {
+        isNotNull();
+        final String xml;
+        if (wrapNodeName == null || wrapNodeName.isEmpty()) {
+            xml = actual;
+        } else {
+            xml = String.format("<%s>%s</%s>", wrapNodeName, actual, wrapNodeName);
+        }
+
+        return XmlAssert.assertThat(xml);
     }
 
     /**
