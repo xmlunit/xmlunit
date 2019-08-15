@@ -15,13 +15,18 @@ package org.xmlunit.assertj;
 
 import static org.xmlunit.assertj.error.ShouldAnyNodeHaveXPath.shouldAnyNodeHaveXPath;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.xpath.XPathFactory;
 
+import org.assertj.core.api.AbstractListAssert;
 import org.assertj.core.api.FactoryBasedNavigableIterableAssert;
+import org.assertj.core.api.ObjectAssert;
+import org.assertj.core.description.Description;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
@@ -200,7 +205,6 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
      * @since XMLUnit 2.6.4
      */
     public MultipleNodeAssert containsAllNodesHavingXPath(final String xPath) {
-
         isNotNull();
 
         allSatisfy(new SingleNodeAssertConsumer() {
@@ -211,6 +215,28 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         });
 
         return this;
+    }
+
+    /**
+     * Extracting values of given node's attribute.
+     * If a node doesn't have the attribute then {@code null} value is return.
+     *
+     * @throws AssertionError if the actual nodes iterable is {@code null}.
+     * @since XMLUnit 2.6.4
+     */
+    public AbstractListAssert<?, List<? extends String>, String, ObjectAssert<String>> extractingAttribute(String attribute) {
+        isNotNull();
+
+        List<String> values = new ArrayList<>();
+
+        for (Node node : actual) {
+            values.add(NodeUtils.attributeValue(node, attribute));
+        }
+
+        String extractedDescription = String.format("Extracted attribute: %s", attribute);
+        String description = Description.mostRelevantDescription(this.info.description(), extractedDescription);
+
+        return newListAssertInstance(values).as(description);
     }
 
     private void allSatisfy(SingleNodeAssertConsumer consumer) {

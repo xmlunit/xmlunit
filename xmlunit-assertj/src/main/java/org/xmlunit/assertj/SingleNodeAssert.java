@@ -25,7 +25,6 @@ import javax.xml.namespace.QName;
 
 import org.assertj.core.api.AbstractAssert;
 import org.w3c.dom.Node;
-import org.xmlunit.util.Nodes;
 import org.xmlunit.xpath.JAXPXPathEngine;
 
 /**
@@ -61,8 +60,8 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
     public SingleNodeAssert hasAttribute(String attributeName) {
         isNotNull();
 
-        final Map.Entry<QName, String> entry = attributeForName(attributeName);
-        if (entry == null) {
+        final String value = NodeUtils.attributeValue(actual, attributeName);
+        if (value == null) {
             throwAssertionError(shouldHaveAttribute(actual.getNodeName(), attributeName));
         }
         return this;
@@ -77,8 +76,8 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
     public SingleNodeAssert hasAttribute(String attributeName, String attributeValue) {
         isNotNull();
 
-        final Map.Entry<QName, String> attribute = attributeForName(attributeName);
-        if (attribute == null || !attribute.getValue().equals(attributeValue)) {
+        final String value = NodeUtils.attributeValue(actual, attributeName);
+        if (value == null || !value.equals(attributeValue)) {
             throwAssertionError(shouldHaveAttributeWithValue(actual.getNodeName(), attributeName, attributeValue));
         }
 
@@ -94,8 +93,8 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
     public SingleNodeAssert doesNotHaveAttribute(String attributeName) {
         isNotNull();
 
-        final Map.Entry<QName, String> entry = attributeForName(attributeName);
-        if (entry != null) {
+        final String value = NodeUtils.attributeValue(actual, attributeName);
+        if (value != null) {
             throwAssertionError(shouldNotHaveAttribute(actual.getNodeName(), attributeName));
         }
         return this;
@@ -110,8 +109,8 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
     public SingleNodeAssert doesNotHaveAttribute(String attributeName, String attributeValue) {
         isNotNull();
 
-        final Map.Entry<QName, String> attribute = attributeForName(attributeName);
-        if (attribute != null && attribute.getValue().equals(attributeValue)) {
+        final String value = NodeUtils.attributeValue(actual, attributeName);
+        if (value != null && value.equals(attributeValue)) {
             throwAssertionError(shouldNotHaveAttributeWithValue(actual.getNodeName(), attributeName, attributeValue));
         }
 
@@ -139,26 +138,5 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
 
     boolean isNodeSetEmpty(String xPath) {
         return !engine.selectNodes(xPath, actual).iterator().hasNext();
-    }
-
-    private Map.Entry<QName, String> attributeForName(String attributeName) {
-
-        Map<QName, String> attributes = Nodes.getAttributes(actual);
-
-        for (Map.Entry<QName, String> entry : attributes.entrySet()) {
-            final QName qName = entry.getKey();
-            if (matchQName(qName, attributeName)) {
-                return entry;
-            }
-        }
-
-        return null;
-    }
-
-    private static boolean matchQName(QName qName, String name) {
-
-        return qName.toString().equals(name)
-                || (qName.getPrefix() + ":" + qName.getLocalPart()).equals(name)
-                || qName.getLocalPart().equals(name);
     }
 }

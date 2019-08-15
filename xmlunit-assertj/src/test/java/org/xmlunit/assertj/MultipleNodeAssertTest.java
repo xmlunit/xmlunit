@@ -97,4 +97,22 @@ public class MultipleNodeAssertTest {
                 .hasXPath("/feed/entry")
                 .containsAllNodesHavingXPath("./title");
     }
+
+    @Test
+    public void testExtractingAttribute_shouldPass() {
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry attr1=\"value1\" />" +
+                "   <entry attr1=\"value2\"/>" +
+                "   <entry />" +
+                "   <entry attr1=\"value4\" />" +
+                "</feed>";
+
+        assertThat(xml)
+                .nodesByXPath("/feed/entry")
+                .extractingAttribute("attr1")
+                .containsExactly("value1", "value2", null, "value4");
+    }
 }
