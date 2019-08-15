@@ -13,17 +13,20 @@
 */
 package org.xmlunit.assertj;
 
+import static org.xmlunit.assertj.error.ShouldHaveAttribute.shouldHaveAttribute;
+import static org.xmlunit.assertj.error.ShouldHaveAttribute.shouldHaveAttributeWithValue;
+import static org.xmlunit.assertj.error.ShouldHaveXPath.shouldHaveXPath;
+import static org.xmlunit.assertj.error.ShouldNotHaveAttribute.shouldNotHaveAttribute;
+import static org.xmlunit.assertj.error.ShouldNotHaveAttribute.shouldNotHaveAttributeWithValue;
+
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import org.assertj.core.api.AbstractAssert;
 import org.w3c.dom.Node;
 import org.xmlunit.util.Nodes;
-
-import javax.xml.namespace.QName;
-import java.util.Map;
-
-import static org.xmlunit.assertj.error.ShouldHaveAttribute.shouldHaveAttribute;
-import static org.xmlunit.assertj.error.ShouldHaveAttribute.shouldHaveAttributeWithValue;
-import static org.xmlunit.assertj.error.ShouldNotHaveAttribute.shouldNotHaveAttribute;
-import static org.xmlunit.assertj.error.ShouldNotHaveAttribute.shouldNotHaveAttributeWithValue;
+import org.xmlunit.xpath.JAXPXPathEngine;
 
 /**
  * Assertion methods for {@link Node}.
@@ -37,16 +40,20 @@ import static org.xmlunit.assertj.error.ShouldNotHaveAttribute.shouldNotHaveAttr
  *
  * assertThat(xml).nodesByXPath("//a/b").first().hasAttribute("attr", "abc").
  * </pre>
+ *
  * @since XMLUnit 2.6.1
  */
 public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
 
-    SingleNodeAssert(Node node) {
+    private final JAXPXPathEngine engine;
+
+    SingleNodeAssert(Node node, JAXPXPathEngine engine) {
         super(node, SingleNodeAssert.class);
+        this.engine = engine;
     }
 
     /**
-     * Verifies that node has attribute with given name.
+     * Verifies that the actual node has attribute with given name.
      *
      * @throws AssertionError if the actual node is {@code null}.
      * @throws AssertionError if node has not attribute with given name.
@@ -62,7 +69,7 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
     }
 
     /**
-     * Verifies that node has attribute with given name and value.
+     * Verifies that the actual node has attribute with given name and value.
      *
      * @throws AssertionError if the actual node is {@code null}.
      * @throws AssertionError if node has not attribute with given name and value.
@@ -79,7 +86,7 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
     }
 
     /**
-     * Verifies that node has not attribute with given name.
+     * Verifies that the actual node has not attribute with given name.
      *
      * @throws AssertionError if the actual node is {@code null}.
      * @throws AssertionError if node has attribute with given name.
@@ -95,7 +102,7 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
     }
 
     /**
-     * Verifies that node has not attribute with given name and value.
+     * Verifies that the actual node has not attribute with given name and value.
      *
      * @throws AssertionError if the actual node is {@code null}.
      * @throws AssertionError if node has attribute with given name and value.
@@ -109,6 +116,29 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
         }
 
         return this;
+    }
+
+    /**
+     * Verifies that the actual node or any child node matches given {@code xPath}.
+     * The actual node is the root for {@code xPath}.
+     *
+     * @throws AssertionError if the actual node is {@code null}.
+     * @throws AssertionError if node has attribute with given name and value.
+     *
+     * @since XMLUnit 2.6.4
+     */
+    public SingleNodeAssert hasXPath(String xPath) {
+        isNotNull();
+
+        if (isNodeSetEmpty(xPath)) {
+            throwAssertionError(shouldHaveXPath(actual.getNodeName(), xPath));
+        }
+
+        return this;
+    }
+
+    boolean isNodeSetEmpty(String xPath) {
+        return !engine.selectNodes(xPath, actual).iterator().hasNext();
     }
 
     private Map.Entry<QName, String> attributeForName(String attributeName) {

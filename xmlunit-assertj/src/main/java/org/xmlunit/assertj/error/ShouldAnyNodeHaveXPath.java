@@ -11,25 +11,22 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-package org.xmlunit.assertj;
+package org.xmlunit.assertj.error;
 
-import org.assertj.core.api.AssertFactory;
-import org.w3c.dom.Node;
-import org.xmlunit.xpath.JAXPXPathEngine;
+import org.assertj.core.error.BasicErrorMessageFactory;
+import org.assertj.core.error.ErrorMessageFactory;
 
 /**
- * @since XMLUnit 2.6.1
+ * @since XMLUnit 2.6.4
  */
-class NodeAssertFactory implements AssertFactory<Node, SingleNodeAssert> {
+public class ShouldAnyNodeHaveXPath extends BasicErrorMessageFactory {
 
-    private JAXPXPathEngine engine;
-
-    public NodeAssertFactory(JAXPXPathEngine engine) {
-        this.engine = engine;
+    public static ErrorMessageFactory shouldAnyNodeHaveXPath(String xPath) {
+        return new ShouldAnyNodeHaveXPath(xPath);
     }
 
-    @Override
-    public SingleNodeAssert createAssert(Node node) {
-        return new SingleNodeAssert(node, engine);
+    private ShouldAnyNodeHaveXPath(String xPath) {
+        super("%nExpecting:%nany node in set have XPath: <%s>",
+            unquotedString(xPath));
     }
 }

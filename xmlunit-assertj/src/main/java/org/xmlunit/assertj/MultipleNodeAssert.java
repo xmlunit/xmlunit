@@ -13,16 +13,19 @@
 */
 package org.xmlunit.assertj;
 
+import static org.xmlunit.assertj.error.ShouldAnyNodeHaveXPath.shouldAnyNodeHaveXPath;
+
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Source;
+import javax.xml.xpath.XPathFactory;
+
 import org.assertj.core.api.FactoryBasedNavigableIterableAssert;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
 import org.xmlunit.xpath.JAXPXPathEngine;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Source;
-import javax.xml.xpath.XPathFactory;
-import java.util.Map;
 
 /**
  * Assertion methods for {@link Iterable} of {@link Node}.
@@ -45,8 +48,8 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         void accept(SingleNodeAssert t);
     }
 
-    private MultipleNodeAssert(Iterable<Node> nodes) {
-        super(nodes, MultipleNodeAssert.class, new NodeAssertFactory());
+    private MultipleNodeAssert(Iterable<Node> nodes, JAXPXPathEngine engine) {
+        super(nodes, MultipleNodeAssert.class, new NodeAssertFactory(engine));
     }
 
     static MultipleNodeAssert create(Object xmlSource, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf,
@@ -63,7 +66,7 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
         Iterable<Node> nodes = engine.selectNodes(xPath, root);
 
-        return new MultipleNodeAssert(nodes)
+        return new MultipleNodeAssert(nodes, engine)
                 .describedAs("XPath \"%s\" evaluated to node set", xPath);
     }
 
@@ -159,6 +162,51 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
             @Override
             public void accept(SingleNodeAssert singleNodeAssert) {
                 singleNodeAssert.doesNotHaveAttribute(attributeName, attributeValue);
+            }
+        });
+
+        return this;
+    }
+
+    /**
+     * Verifies that any of actual nodes has given {@code xPath}.
+     *
+     * @throws AssertionError if the actual nodes iterable is {@code null}.
+     * @throws AssertionError if all nodes don't have xpath.
+     * @since XMLUnit 2.6.4
+     */
+    public MultipleNodeAssert containsAnyNodeHavingXPath(String xPath) {
+
+        isNotNull();
+
+        int index = 0;
+        for (Node node : actual) {
+            final SingleNodeAssert singleNodeAssert = toAssert(node, navigationDescription("check node at index " + index));
+            if (!singleNodeAssert.isNodeSetEmpty(xPath)) {
+                return this;
+            }
+            index++;
+        }
+
+        throwAssertionError(shouldAnyNodeHaveXPath(xPath));
+        return null; //fix compile issue
+    }
+
+    /**
+     * Verifies that all of actual nodes have given {@code xPath}.
+     *
+     * @throws AssertionError if the actual nodes iterable is {@code null}.
+     * @throws AssertionError if some node doesn't have xpath.
+     * @since XMLUnit 2.6.4
+     */
+    public MultipleNodeAssert containsAllNodesHavingXPath(final String xPath) {
+
+        isNotNull();
+
+        allSatisfy(new SingleNodeAssertConsumer() {
+            @Override
+            public void accept(SingleNodeAssert singleNodeAssert) {
+                singleNodeAssert.hasXPath(xPath);
             }
         });
 
