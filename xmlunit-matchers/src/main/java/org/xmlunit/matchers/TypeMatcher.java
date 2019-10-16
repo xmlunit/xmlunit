@@ -15,7 +15,6 @@
 package org.xmlunit.matchers;
 
 import org.hamcrest.Description;
-import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
@@ -128,7 +127,6 @@ public abstract class TypeMatcher<T> extends TypeSafeMatcher<String> {
      * @param valueMatcher valueMatcher for the converted value
      * @return the BigDecimal matcher
      */
-    @Factory
     public static TypeMatcher<BigDecimal> asBigDecimal(Matcher<? extends BigDecimal> valueMatcher) {
         return new BigDecimalTypeMatcher(valueMatcher);
     }
@@ -146,7 +144,6 @@ public abstract class TypeMatcher<T> extends TypeSafeMatcher<String> {
      * @param valueMatcher valueMatcher for the converted value
      * @return the Double matcher
      */
-    @Factory
     public static TypeMatcher<Double> asDouble(Matcher<? extends Double> valueMatcher) {
         return new DoubleTypeMatcher(valueMatcher);
     }
@@ -164,7 +161,6 @@ public abstract class TypeMatcher<T> extends TypeSafeMatcher<String> {
      * @param valueMatcher valueMatcher for the converted value
      * @return the Integer matcher
      */
-    @Factory
     public static TypeMatcher<Integer> asInt(Matcher<? extends Integer> valueMatcher) {
         return new IntegerTypeMatcher(valueMatcher);
     }
@@ -182,7 +178,6 @@ public abstract class TypeMatcher<T> extends TypeSafeMatcher<String> {
      * @param valueMatcher valueMatcher for the converted value
      * @return the Boolean matcher
      */
-    @Factory
     public static TypeMatcher<Boolean> asBoolean(Matcher<? extends Boolean> valueMatcher) {
         return new BooleanTypeMatcher(valueMatcher);
     }

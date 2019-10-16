@@ -33,7 +33,6 @@ import org.xmlunit.util.Predicate;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
-import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 
 import java.lang.reflect.Constructor;
@@ -112,7 +111,6 @@ public final class CompareMatcher extends BaseMatcher<Object>
      * <p>
      * As input all types are supported which are supported by {@link Input#from(Object)}.
      */
-    @Factory
     public static CompareMatcher isIdenticalTo(final Object control) {
         return new CompareMatcher(control).checkForIdentical();
     }
@@ -128,7 +126,6 @@ public final class CompareMatcher extends BaseMatcher<Object>
      * <p>
      * As input all types are supported which are supported by {@link Input#from(Object)}.
      */
-    @Factory
     public static CompareMatcher isSimilarTo(final Object control) {
         return new CompareMatcher(control).checkForSimilar();
     }

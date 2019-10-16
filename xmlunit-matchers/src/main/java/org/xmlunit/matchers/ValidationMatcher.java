@@ -27,7 +27,6 @@ import org.xmlunit.validation.ValidationProblem;
 import org.xmlunit.validation.ValidationResult;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
-import org.hamcrest.Factory;
 
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
@@ -121,7 +120,6 @@ public class ValidationMatcher extends BaseMatcher {
         }
     }
 
-    @Factory
     public static ValidationMatcher valid(final Object schemaSource) {
         return new ValidationMatcher(schemaSource);
     }
@@ -129,7 +127,6 @@ public class ValidationMatcher extends BaseMatcher {
     /**
      * @since XMLUnit 2.3.0
      */
-    @Factory
     public static ValidationMatcher valid(final Schema schema) {
         return new ValidationMatcher(schema);
     }

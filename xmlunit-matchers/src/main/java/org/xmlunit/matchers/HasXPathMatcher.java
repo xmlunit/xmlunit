@@ -16,7 +16,6 @@ package org.xmlunit.matchers;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
-import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
@@ -135,7 +134,6 @@ public class HasXPathMatcher extends BaseMatcher<Object> {
      * @param xPath the target xpath
      * @return the xpath matcher
      */
-    @Factory
     public static HasXPathMatcher hasXPath(String xPath) {
         return new HasXPathMatcher(xPath);
     }
