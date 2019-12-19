@@ -27,6 +27,6 @@ public class ShouldAnyNodeHaveXPath extends BasicErrorMessageFactory {
 
     private ShouldAnyNodeHaveXPath(String xPath) {
         super("%nExpecting:%nany node in set have XPath: <%s>",
-            unquotedString(xPath));
+                unquotedString(xPath));
     }
 }

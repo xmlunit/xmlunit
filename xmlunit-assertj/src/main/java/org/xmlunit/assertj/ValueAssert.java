@@ -13,14 +13,6 @@
 */
 package org.xmlunit.assertj;
 
-import static org.xmlunit.assertj.error.ShouldBeConvertible.shouldBeConvertible;
-
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Source;
-import javax.xml.xpath.XPathFactory;
-
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.assertj.core.api.AbstractDoubleAssert;
@@ -29,6 +21,14 @@ import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
 import org.xmlunit.xpath.JAXPXPathEngine;
+
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Source;
+import javax.xml.xpath.XPathFactory;
+
+import static org.xmlunit.assertj.error.ShouldBeConvertible.shouldBeConvertible;
 
 /**
  * Assertion methods for {@link String} result of XPath evaluation.
@@ -143,7 +143,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
      * Returns an {@code XmlAssert} object that allows performing assertions on XML value of the {@link String} under test
      * wrapping around tag with name given in <b>wrapNodeName</b>.
      * If wrapNodeName is null or empty then wrapping is not applied.
-     *
+     * <p>
      * Pseudocode:
      * <pre>
      *

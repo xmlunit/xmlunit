@@ -13,12 +13,12 @@
 */
 package org.xmlunit.assertj;
 
+import org.junit.Rule;
+import org.junit.Test;
+
 import static java.lang.String.format;
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
-
-import org.junit.Rule;
-import org.junit.Test;
 
 public class SingleNodeAssertTest {
 

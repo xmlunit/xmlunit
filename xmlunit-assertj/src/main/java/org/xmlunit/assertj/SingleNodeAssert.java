@@ -13,19 +13,15 @@
 */
 package org.xmlunit.assertj;
 
+import org.assertj.core.api.AbstractAssert;
+import org.w3c.dom.Node;
+import org.xmlunit.xpath.JAXPXPathEngine;
+
 import static org.xmlunit.assertj.error.ShouldHaveAttribute.shouldHaveAttribute;
 import static org.xmlunit.assertj.error.ShouldHaveAttribute.shouldHaveAttributeWithValue;
 import static org.xmlunit.assertj.error.ShouldHaveXPath.shouldHaveXPath;
 import static org.xmlunit.assertj.error.ShouldNotHaveAttribute.shouldNotHaveAttribute;
 import static org.xmlunit.assertj.error.ShouldNotHaveAttribute.shouldNotHaveAttributeWithValue;
-
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-
-import org.assertj.core.api.AbstractAssert;
-import org.w3c.dom.Node;
-import org.xmlunit.xpath.JAXPXPathEngine;
 
 /**
  * Assertion methods for {@link Node}.
@@ -123,7 +119,6 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
      *
      * @throws AssertionError if the actual node is {@code null}.
      * @throws AssertionError if node has attribute with given name and value.
-     *
      * @since XMLUnit 2.6.4
      */
     public SingleNodeAssert hasXPath(String xPath) {

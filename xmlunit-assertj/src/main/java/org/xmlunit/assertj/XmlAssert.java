@@ -16,10 +16,11 @@ package org.xmlunit.assertj;
 import org.assertj.core.api.AbstractAssert;
 import org.xmlunit.builder.Input;
 
+import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.validation.Schema;
 import javax.xml.xpath.XPathFactory;
-import java.util.Map;
 
 import static org.xmlunit.assertj.error.ShouldNotHaveThrown.shouldNotHaveThrown;
 

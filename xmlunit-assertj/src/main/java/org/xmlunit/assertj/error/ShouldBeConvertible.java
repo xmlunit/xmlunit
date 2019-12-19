@@ -22,7 +22,7 @@ public class ShouldBeConvertible extends BasicErrorMessageFactory {
 
     public static ShouldBeConvertible shouldBeConvertible(String value, String targetType) {
 
-        return new ShouldBeConvertible(value,targetType);
+        return new ShouldBeConvertible(value, targetType);
     }
 
     private ShouldBeConvertible(String value, String targetType) {

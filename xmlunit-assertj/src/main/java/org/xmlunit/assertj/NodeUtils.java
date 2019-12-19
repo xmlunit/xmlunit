@@ -13,12 +13,12 @@
 */
 package org.xmlunit.assertj;
 
+import org.w3c.dom.Node;
+import org.xmlunit.util.Nodes;
+
 import java.util.Map;
 
 import javax.xml.namespace.QName;
-
-import org.w3c.dom.Node;
-import org.xmlunit.util.Nodes;
 
 class NodeUtils {
 

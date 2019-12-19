@@ -13,7 +13,14 @@
 */
 package org.xmlunit.assertj;
 
-import static org.xmlunit.assertj.error.ShouldAnyNodeHaveXPath.shouldAnyNodeHaveXPath;
+import org.assertj.core.api.AbstractListAssert;
+import org.assertj.core.api.FactoryBasedNavigableIterableAssert;
+import org.assertj.core.api.ObjectAssert;
+import org.assertj.core.description.Description;
+import org.w3c.dom.Node;
+import org.xmlunit.builder.Input;
+import org.xmlunit.util.Convert;
+import org.xmlunit.xpath.JAXPXPathEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +30,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.xpath.XPathFactory;
 
-import org.assertj.core.api.AbstractListAssert;
-import org.assertj.core.api.FactoryBasedNavigableIterableAssert;
-import org.assertj.core.api.ObjectAssert;
-import org.assertj.core.description.Description;
-import org.w3c.dom.Node;
-import org.xmlunit.builder.Input;
-import org.xmlunit.util.Convert;
-import org.xmlunit.xpath.JAXPXPathEngine;
+import static org.xmlunit.assertj.error.ShouldAnyNodeHaveXPath.shouldAnyNodeHaveXPath;
 
 /**
  * Assertion methods for {@link Iterable} of {@link Node}.

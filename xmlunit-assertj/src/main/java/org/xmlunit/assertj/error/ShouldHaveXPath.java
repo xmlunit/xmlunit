@@ -27,7 +27,7 @@ public class ShouldHaveXPath extends BasicErrorMessageFactory {
 
     private ShouldHaveXPath(String nodeName, String xPath) {
         super("%nExpecting:%n <%s>%nto have XPath: <%s>",
-            unquotedString(nodeName),
-            unquotedString(xPath));
+                unquotedString(nodeName),
+                unquotedString(xPath));
     }
 }

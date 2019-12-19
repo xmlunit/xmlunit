@@ -32,8 +32,9 @@ import org.xmlunit.diff.ElementSelectors;
 import org.xmlunit.diff.NodeMatcher;
 import org.xmlunit.util.Predicate;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import static org.xmlunit.assertj.error.ShouldBeNotSimilar.shouldBeNotIdentical;
 import static org.xmlunit.assertj.error.ShouldBeNotSimilar.shouldBeNotSimilar;
@@ -52,7 +53,7 @@ import static org.xmlunit.diff.DifferenceEvaluators.chain;
  * import static org.xmlunit.assertj.XmlAssert.assertThat;
  *
  * final String control = &quot;&lt;a&gt;&lt;b attr=\&quot;abc\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
- * final String test = &quot;&lt;a&gt;&lt;b attr=\&quot;xyz\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
+ * final String test = &quot;&lt;a&gt;&lt;b attr=\&quot;xyz\&quot;NodeAssertFactory&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
  *
  * assertThat(test).and(control).areIdentical();
  * assertThat(test).and(control).areNotSimilar();

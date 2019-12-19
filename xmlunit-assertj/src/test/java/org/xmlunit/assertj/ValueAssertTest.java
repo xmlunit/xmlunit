@@ -13,8 +13,11 @@
 */
 package org.xmlunit.assertj;
 
-import static org.xmlunit.assertj.ExpectedException.none;
-import static org.xmlunit.assertj.XmlAssert.assertThat;
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -24,11 +27,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathFactory;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
+import static org.xmlunit.assertj.ExpectedException.none;
+import static org.xmlunit.assertj.XmlAssert.assertThat;
 
 public class ValueAssertTest {
     @Rule

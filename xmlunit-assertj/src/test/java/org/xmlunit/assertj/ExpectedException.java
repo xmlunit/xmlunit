@@ -20,7 +20,7 @@ import org.junit.runners.model.Statement;
 
 import java.util.regex.Pattern;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 import static java.util.regex.Pattern.DOTALL;
 import static org.junit.internal.matchers.ThrowableMessageMatcher.hasMessage;
 
@@ -54,11 +54,12 @@ public class ExpectedException implements TestRule {
 
     private void expectAssertionError() {
 
-        if(!checkAssertionType) {
+        if (!checkAssertionType) {
             delegate.expect(AssertionError.class);
             checkAssertionType = true;
         }
     }
+
     private class MatchesPattern extends TypeSafeMatcher<String> {
         private String regex;
 

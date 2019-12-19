@@ -14,6 +14,7 @@
 
 /**
  * AssertJ assertions on top of XMLUnit's core.
+ *
  * @since XMLUnit 2.6.1
  */
 package org.xmlunit.assertj;

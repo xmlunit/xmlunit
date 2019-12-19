@@ -13,10 +13,6 @@
 */
 package org.xmlunit.assertj;
 
-import java.io.IOException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -33,6 +29,11 @@ import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelectors;
 import org.xmlunit.util.Predicate;
+
+import java.io.IOException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
@@ -340,15 +341,15 @@ public class CompareAssertAreIdenticalTest {
         DocumentBuilder b = Mockito.mock(DocumentBuilder.class);
         Mockito.when(dFac.newDocumentBuilder()).thenReturn(b);
         Mockito.doThrow(new IOException())
-            .when(b).parse(Mockito.any(InputSource.class));
+                .when(b).parse(Mockito.any(InputSource.class));
 
         String control = "<a><b></b><c/></a>";
 
         try {
             assertThat(control)
-                .withDocumentBuilderFactory(dFac)
-                .and(control)
-                .areIdentical();
+                    .withDocumentBuilderFactory(dFac)
+                    .and(control)
+                    .areIdentical();
         } finally {
             Mockito.verify(b).parse(Mockito.any(InputSource.class));
         }
@@ -364,15 +365,15 @@ public class CompareAssertAreIdenticalTest {
         DocumentBuilder b = Mockito.mock(DocumentBuilder.class);
         Mockito.when(dFac.newDocumentBuilder()).thenReturn(b);
         Mockito.doThrow(new IOException())
-            .when(b).parse(Mockito.any(InputSource.class));
+                .when(b).parse(Mockito.any(InputSource.class));
 
         String control = "<a><b></b><c/></a>";
 
         try {
             assertThat(control)
-                .and(control)
-                .withDocumentBuilderFactory(dFac)
-                .areIdentical();
+                    .and(control)
+                    .withDocumentBuilderFactory(dFac)
+                    .areIdentical();
         } finally {
             Mockito.verify(b).parse(Mockito.any(InputSource.class));
         }
