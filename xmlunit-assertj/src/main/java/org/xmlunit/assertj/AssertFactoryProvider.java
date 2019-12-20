@@ -1,9 +1,10 @@
 package org.xmlunit.assertj;
 
 import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.NamingStrategy;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
+import net.bytebuddy.utility.RandomString;
 
 import org.assertj.core.api.Assert;
 import org.assertj.core.api.AssertFactory;
@@ -13,8 +14,6 @@ import org.xmlunit.xpath.JAXPXPathEngine;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-
-import static net.bytebuddy.NamingStrategy.SuffixingRandom.BaseNameResolver.ForFixedValue;
 
 /**
  * In AssertJ before 3.13.0 {@link AssertFactory} class looks like this:
@@ -56,6 +55,8 @@ import static net.bytebuddy.NamingStrategy.SuffixingRandom.BaseNameResolver.ForF
  */
 class AssertFactoryProvider {
 
+    private static Class<? extends AssertFactory> assertFactoryClass;
+
     AssertFactory<Node, SingleNodeAssert> create(JAXPXPathEngine engine) {
 
         if (hasAssertFactoryUpperBoundOnAssertType()) {
@@ -85,14 +86,18 @@ class AssertFactoryProvider {
     private AssertFactory<Node, SingleNodeAssert> createProxyInstance(JAXPXPathEngine engine) {
 
         try {
-            Class<? extends AssertFactory> assertFactoryClass = new ByteBuddy()
-                    .with(new NamingStrategy.SuffixingRandom("XmlUnit$AssertFactory", new ForFixedValue(NodeAssertFactory.class.getName())))
-                    .subclass(AssertFactory.class)
-                    .method(ElementMatchers.named("createAssert"))
-                    .intercept(MethodDelegation.to(new NodeAssertFactoryDelegate(createDefaultInstance(engine))))
-                    .make()
-                    .load(getClass().getClassLoader())
-                    .getLoaded();
+            synchronized (AssertFactoryProvider.class) {
+                if (assertFactoryClass == null) {
+                    assertFactoryClass = new ByteBuddy()
+                            .subclass(AssertFactory.class)
+                            .name(NodeAssertFactoryDelegate.class.getPackage().getName() + ".XmlUnit$AssertFactory$" + RandomString.make())
+                            .method(ElementMatchers.named("createAssert"))
+                            .intercept(MethodDelegation.to(new NodeAssertFactoryDelegate(createDefaultInstance(engine))))
+                            .make()
+                            .load(getClass().getClassLoader(), ClassLoadingStrategy.Default.INJECTION)
+                            .getLoaded();
+                }
+            }
 
             return (AssertFactory<Node, SingleNodeAssert>) assertFactoryClass.newInstance();
 
@@ -109,9 +114,9 @@ class AssertFactoryProvider {
 
     /**
      * This class should has delegate method with signature matching to type erasure AssertFactory class from AssertJ 3.13.0 or higher
-     * which is `Assert createAssert(Object obj)`
+     * which is `Assert createAssert(Object var1)`
      */
-    public static class NodeAssertFactoryDelegate {
+    static class NodeAssertFactoryDelegate {
 
         private final NodeAssertFactory delegate;
 
@@ -119,7 +124,7 @@ class AssertFactoryProvider {
             this.delegate = delegate;
         }
 
-        public Assert delegate(Object obj) {
+        Assert delegate(Object obj) {
             return delegate.createAssert((Node) obj);
         }
     }
