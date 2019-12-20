@@ -55,6 +55,7 @@ import java.lang.reflect.TypeVariable;
  */
 class AssertFactoryProvider {
 
+    @SuppressWarnings("rawtypes")
     private static Class<? extends AssertFactory> assertFactoryClass;
 
     AssertFactory<Node, SingleNodeAssert> create(JAXPXPathEngine engine) {
@@ -68,6 +69,7 @@ class AssertFactoryProvider {
 
     private boolean hasAssertFactoryUpperBoundOnAssertType() {
 
+        @SuppressWarnings("rawtypes")
         TypeVariable<Class<AssertFactory>>[] typeParameters = AssertFactory.class.getTypeParameters();
         if (typeParameters.length == 2) {
             Type[] bounds = typeParameters[1].getBounds();
@@ -99,7 +101,9 @@ class AssertFactoryProvider {
                 }
             }
 
-            return (AssertFactory<Node, SingleNodeAssert>) assertFactoryClass.newInstance();
+            @SuppressWarnings("unchecked")
+            AssertFactory<Node, SingleNodeAssert> instance = (AssertFactory<Node, SingleNodeAssert>) assertFactoryClass.newInstance();
+            return instance;
 
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
@@ -124,6 +128,7 @@ class AssertFactoryProvider {
             this.delegate = delegate;
         }
 
+        @SuppressWarnings("rawtypes")
         Assert delegate(Object obj) {
             return delegate.createAssert((Node) obj);
         }
