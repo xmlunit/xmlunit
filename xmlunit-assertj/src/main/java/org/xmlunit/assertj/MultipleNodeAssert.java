@@ -53,8 +53,10 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         void accept(SingleNodeAssert t);
     }
 
+    private static final AssertFactoryProvider ASSERT_FACTORY_PROVIDER = new AssertFactoryProvider();
+
     private MultipleNodeAssert(Iterable<Node> nodes, JAXPXPathEngine engine) {
-        super(nodes, MultipleNodeAssert.class, new NodeAssertFactory(engine));
+        super(nodes, MultipleNodeAssert.class, ASSERT_FACTORY_PROVIDER.create(engine));
     }
 
     static MultipleNodeAssert create(Object xmlSource, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf,
