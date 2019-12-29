@@ -24,3 +24,4 @@ notifications:
     - xmlunit-commits@lists.sourceforge.net
 after_success:
   - mvn clean test jacoco:report coveralls:report -Pjacoco
+  - mvn -f compat-tests/hamcrest-2.x/pom.xml test
