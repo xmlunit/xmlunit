@@ -201,6 +201,9 @@ The core library is complemented by Hamcrest 1.x matchers and AssertJ
 assertions.  There also exists a `legacy` project that provides the
 API of XMLUnit 1.x on top of the 2.x core library.
 
+While the Hamcrest matchers are built against Hamcrest 1.x they are
+supposed to work with Hamcrest 2.x as well.
+
 ## Checking out XMLUnit for Java
 
 XMLUnit for Java uses a git submodule for test resources it shares
