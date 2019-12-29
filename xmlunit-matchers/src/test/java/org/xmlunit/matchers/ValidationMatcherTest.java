@@ -30,6 +30,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeTrue;
+import static org.xmlunit.TestResources.TEST_RESOURCE_DIR;
 import static org.xmlunit.matchers.ValidationMatcher.valid;
 
 /**
@@ -42,8 +43,8 @@ public class ValidationMatcherTest {
 
     @Test
     public void shouldSuccessfullyValidateInstance() {
-        assertThat(new StreamSource(new File("../test-resources/BookXsdGenerated.xml")),
-                   is(valid(new StreamSource(new File("../test-resources/Book.xsd")))));
+        assertThat(new StreamSource(new File(TEST_RESOURCE_DIR + "BookXsdGenerated.xml")),
+                   is(valid(new StreamSource(new File(TEST_RESOURCE_DIR + "Book.xsd")))));
 
     }
 
@@ -51,29 +52,29 @@ public class ValidationMatcherTest {
     public void shouldSuccessfullyValidateInstanceWhenSchemaIsCreatedExternally()
         throws Exception {
         SchemaFactory f = SchemaFactory.newInstance(Languages.W3C_XML_SCHEMA_NS_URI);
-        assertThat(new StreamSource(new File("../test-resources/BookXsdGenerated.xml")),
-                   is(valid(f.newSchema(new StreamSource(new File("../test-resources/Book.xsd"))))));
+        assertThat(new StreamSource(new File(TEST_RESOURCE_DIR + "BookXsdGenerated.xml")),
+                   is(valid(f.newSchema(new StreamSource(new File(TEST_RESOURCE_DIR + "Book.xsd"))))));
 
     }
 
     @Test
     public void shouldFailOnBrokenInstance() {
-        assertThat(new StreamSource(new File("../test-resources/invalidBook.xml")),
-                   is(not(valid(new StreamSource(new File("../test-resources/Book.xsd"))))));
+        assertThat(new StreamSource(new File(TEST_RESOURCE_DIR + "invalidBook.xml")),
+                   is(not(valid(new StreamSource(new File(TEST_RESOURCE_DIR + "Book.xsd"))))));
     }
 
     @Test
     public void shouldFailOnBrokenInstanceWhenSchemaIsCreatedExternally()
         throws Exception {
         SchemaFactory f = SchemaFactory.newInstance(Languages.W3C_XML_SCHEMA_NS_URI);
-        assertThat(new StreamSource(new File("../test-resources/invalidBook.xml")),
-                   is(not(valid(f.newSchema(new StreamSource(new File("../test-resources/Book.xsd")))))));
+        assertThat(new StreamSource(new File(TEST_RESOURCE_DIR + "invalidBook.xml")),
+                   is(not(valid(f.newSchema(new StreamSource(new File(TEST_RESOURCE_DIR + "Book.xsd")))))));
     }
 
     @Test(expected = AssertionError.class)
     public void shouldThrowOnBrokenInstance() {
-        assertThat(new StreamSource(new File("../test-resources/invalidBook.xml")),
-                   is(valid(new StreamSource(new File("../test-resources/Book.xsd")))));
+        assertThat(new StreamSource(new File(TEST_RESOURCE_DIR + "invalidBook.xml")),
+                   is(valid(new StreamSource(new File(TEST_RESOURCE_DIR + "Book.xsd")))));
     }
 
     @Test
@@ -84,14 +85,14 @@ public class ValidationMatcherTest {
             assumeTrue("Skipping on Java6 as it doesn't like xmlunit.org's certificate",
                        false);
         }
-        assertThat(new StreamSource(new File("../test-resources/BookXsdGenerated.xml")),
+        assertThat(new StreamSource(new File(TEST_RESOURCE_DIR + "BookXsdGenerated.xml")),
                    is(new ValidationMatcher()));
 
     }
 
     @Test(expected = AssertionError.class)
     public void shouldThrowOnBrokenInstanceWithoutExplicitSchemaSource() {
-        assertThat(new StreamSource(new File("../test-resources/invalidBook.xml")),
+        assertThat(new StreamSource(new File(TEST_RESOURCE_DIR + "invalidBook.xml")),
                    is(new ValidationMatcher()));
 
     }
@@ -118,14 +119,14 @@ public class ValidationMatcherTest {
     @Test(expected = AssertionError.class)
     public void canBeCombinedWithFailingMatcher() {
         assertThat("not empty", both(isEmptyString())
-                   .and(valid(new StreamSource(new File("../test-resources/Book.xsd")))));
+                   .and(valid(new StreamSource(new File(TEST_RESOURCE_DIR + "Book.xsd")))));
     }
 
     @Test
     public void canBeCombinedWithPassinggMatcher() {
-        assertThat(new StreamSource(new File("../test-resources/BookXsdGenerated.xml")),
+        assertThat(new StreamSource(new File(TEST_RESOURCE_DIR + "BookXsdGenerated.xml")),
                    both(not(nullValue()))
-                   .and(valid(new StreamSource(new File("../test-resources/Book.xsd")))));
+                   .and(valid(new StreamSource(new File(TEST_RESOURCE_DIR + "Book.xsd")))));
 
     }
 
@@ -134,8 +135,8 @@ public class ValidationMatcherTest {
         thrown.expect(AssertionError.class);
         thrown.expectMessage("not  that");
         thrown.expectMessage("validates");
-        assertThat(new StreamSource(new File("../test-resources/BookXsdGenerated.xml")),
-                   not(valid(new StreamSource(new File("../test-resources/Book.xsd")))));
+        assertThat(new StreamSource(new File(TEST_RESOURCE_DIR + "BookXsdGenerated.xml")),
+                   not(valid(new StreamSource(new File(TEST_RESOURCE_DIR + "Book.xsd")))));
 
     }
 
