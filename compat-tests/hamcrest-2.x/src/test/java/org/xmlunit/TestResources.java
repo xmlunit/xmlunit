@@ -14,5 +14,5 @@
 package org.xmlunit;
 
 public final class TestResources {
-    public static final String TEST_RESOURCE_DIR = "../../../test-resources/";
+    public static final String TEST_RESOURCE_DIR = "../../test-resources/";
 }
