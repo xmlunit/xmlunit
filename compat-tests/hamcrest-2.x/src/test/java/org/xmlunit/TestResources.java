@@ -15,4 +15,14 @@ package org.xmlunit;
 
 public final class TestResources {
     public static final String TEST_RESOURCE_DIR = "../../test-resources/";
+
+    public static final String ANIMAL_FILE = TEST_RESOURCE_DIR + "test1.xml";
+    public static final String BLAME_FILE = TEST_RESOURCE_DIR + "test.blame.html";
+    public static final String ANIMAL_XSL = TEST_RESOURCE_DIR + "animal.xsl";
+    public static final String DOG_FILE = TEST_RESOURCE_DIR + "testAnimal.xml";
+
+    public static final String BOOK_DTD = TEST_RESOURCE_DIR + "Book.dtd";
+    public static final String BOOK_XSD = TEST_RESOURCE_DIR + "Book.xsd";
+
+    private TestResources() { }
 }
