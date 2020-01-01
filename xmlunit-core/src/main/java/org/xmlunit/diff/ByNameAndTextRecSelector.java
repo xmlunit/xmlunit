@@ -16,7 +16,6 @@ package org.xmlunit.diff;
 import java.util.AbstractMap;
 import java.util.Map;
 
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.w3c.dom.Node;
@@ -113,7 +112,7 @@ public class ByNameAndTextRecSelector implements ElementSelector {
     }
 
     private static boolean isText(Node n) {
-        return n instanceof Text || n instanceof CDATASection;
+        return n instanceof Text;
     }
 
 }

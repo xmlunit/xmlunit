@@ -13,7 +13,6 @@
 */
 package org.xmlunit.diff;
 
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
@@ -110,6 +109,6 @@ public class MultiLevelByNameAndTextSelector implements ElementSelector {
     }
 
     private static boolean isText(Node n) {
-        return n instanceof Text || n instanceof CDATASection;
+        return n instanceof Text;
     }
 }
