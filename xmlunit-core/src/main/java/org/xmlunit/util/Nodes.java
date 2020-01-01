@@ -20,7 +20,6 @@ import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Attr;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -58,7 +57,7 @@ public final class Nodes {
     public static String getMergedNestedText(Node n) {
         StringBuilder sb = new StringBuilder();
         for (Node child : new IterableNodeList(n.getChildNodes())) {
-            if (child instanceof Text || child instanceof CDATASection) {
+            if (child instanceof Text) {
                 String s = child.getNodeValue();
                 if (s != null) {
                     sb.append(s);
@@ -148,7 +147,7 @@ public final class Nodes {
         for (Node child : new IterableNodeList(n.getChildNodes())) {
             handleWsRec(child, normalize);
             if (!(n instanceof Attr)
-                && (child instanceof Text || child instanceof CDATASection)
+                && (child instanceof Text)
                 && child.getNodeValue().length() == 0) {
                 toRemove.add(child);
             }
@@ -200,7 +199,7 @@ public final class Nodes {
         for (Node child : new IterableNodeList(n.getChildNodes())) {
             stripECW(child);
             if (!(n instanceof Attr)
-                && (child instanceof Text || child instanceof CDATASection)
+                && (child instanceof Text)
                 && child.getNodeValue().trim().length() == 0) {
                 toRemove.add(child);
             }
