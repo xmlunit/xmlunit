@@ -434,9 +434,7 @@ public class Diff
 
     private boolean usesUnknownElementQualifier() {
         return elementQualifierDelegate != null
-            && !(elementQualifierDelegate instanceof ElementNameQualifier)
-            && !(elementQualifierDelegate instanceof ElementNameAndTextQualifier)
-            && !(elementQualifierDelegate instanceof ElementNameAndAttributeQualifier);
+            && !(elementQualifierDelegate instanceof ElementNameQualifier);
     }
 
     private static Document toDocument(DOMSource d) {
