@@ -13,6 +13,8 @@
 */
 package org.xmlunit.diff;
 
+import java.util.Arrays;
+import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.dom.DOMSource;
 import org.xmlunit.NullNode;
@@ -1164,6 +1166,54 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         assertEquals(1, Linqy.count(diff.getDifferences()));
         assertEquals(ComparisonResult.SIMILAR, diff.getDifferences().iterator().next().getResult());
         assertEquals(ComparisonType.NAMESPACE_PREFIX, diff.getDifferences().iterator().next().getComparison().getType());
+    }
+
+    @Test
+    public void xPathKnowsAboutNodeFiltersForUnmatchedControlNodes() {
+        final Diff diff = DiffBuilder.compare("<Document><Section><Binding /><Binding /><Finding /><Finding /><Finding /><Finding /><Finding /><Finding /><Finding /></Section></Document>")
+            .withTest("<Document><Section><Binding /><Binding /><Finding /><Finding /><Finding /><Finding /><Finding /><Finding /></Section></Document>")
+            .ignoreWhitespace()
+            .withNodeFilter(new Predicate<Node>() {
+                @Override
+                public boolean test(final Node node) {
+                    return Arrays.asList("Document", "Section", "Finding").contains(node.getNodeName());
+                }
+            })
+            .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
+            .build();
+        final List<Difference> differences = Linqy.asList(diff.getDifferences());
+        assertEquals(2, differences.size());
+        assertEquals(ComparisonType.CHILD_NODELIST_LENGTH, differences.get(0).getComparison().getType());
+        assertEquals("/Document[1]/Section[1]", differences.get(0).getComparison().getControlDetails().getXPath());
+        assertEquals("/Document[1]/Section[1]", differences.get(0).getComparison().getTestDetails().getXPath());
+        assertEquals(ComparisonType.CHILD_LOOKUP, differences.get(1).getComparison().getType());
+        assertEquals("/Document[1]/Section[1]/Finding[7]", differences.get(1).getComparison().getControlDetails().getXPath());
+        assertNull(differences.get(1).getComparison().getTestDetails().getXPath());
+        assertEquals("/Document[1]/Section[1]", differences.get(1).getComparison().getTestDetails().getParentXPath());
+    }
+
+    @Test
+    public void xPathKnowsAboutNodeFiltersForUnmatchedTestNodes() {
+        final Diff diff = DiffBuilder.compare("<Document><Section><Binding /><Binding /><Finding /><Finding /><Finding /><Finding /><Finding /><Finding /></Section></Document>")
+            .withTest("<Document><Section><Binding /><Binding /><Finding /><Finding /><Finding /><Finding /><Finding /><Finding /><Finding /></Section></Document>")
+            .ignoreWhitespace()
+            .withNodeFilter(new Predicate<Node>() {
+                @Override
+                public boolean test(final Node node) {
+                    return Arrays.asList("Document", "Section", "Finding").contains(node.getNodeName());
+                }
+            })
+            .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
+            .build();
+        final List<Difference> differences = Linqy.asList(diff.getDifferences());
+        assertEquals(2, differences.size());
+        assertEquals(ComparisonType.CHILD_NODELIST_LENGTH, differences.get(0).getComparison().getType());
+        assertEquals("/Document[1]/Section[1]", differences.get(0).getComparison().getControlDetails().getXPath());
+        assertEquals("/Document[1]/Section[1]", differences.get(0).getComparison().getTestDetails().getXPath());
+        assertEquals(ComparisonType.CHILD_LOOKUP, differences.get(1).getComparison().getType());
+        assertEquals("/Document[1]/Section[1]/Finding[7]", differences.get(1).getComparison().getTestDetails().getXPath());
+        assertNull(differences.get(1).getComparison().getControlDetails().getXPath());
+        assertEquals("/Document[1]/Section[1]", differences.get(1).getComparison().getControlDetails().getParentXPath());
     }
 
     private Document documentForString(String s) {

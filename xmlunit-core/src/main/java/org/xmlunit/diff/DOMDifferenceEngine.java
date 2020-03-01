@@ -587,18 +587,22 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             }
         }
 
-        return chain.andThen(new UnmatchedControlNodes(controlList, controlContext, seen, testContext))
-            .andThen(new UnmatchedTestNodes(testList, testContext, seen, controlContext));
+        return chain.andThen(new UnmatchedControlNodes(controlListForXpath, controlList, controlContext, seen,
+                testContext))
+            .andThen(new UnmatchedTestNodes(testListForXpath, testList, testContext, seen,
+                controlContext));
     }
 
     private class UnmatchedControlNodes implements DeferredComparison {
+        private final List<Node> controlListForXpath;
         private final List<Node> controlList;
         private final XPathContext controlContext;
         private final Set<Node> seen;
         private final XPathContext testContext;
 
-        private UnmatchedControlNodes(List<Node> controlList, XPathContext controlContext,
+        private UnmatchedControlNodes(List<Node> controlListForXpath, List<Node> controlList, XPathContext controlContext,
                                       Set<Node> seen, XPathContext testContext) {
+            this.controlListForXpath = controlListForXpath;
             this.controlList = controlList;
             this.controlContext = controlContext;
             this.seen = seen;
@@ -611,7 +615,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             final int controlSize = controlList.size();
             for (int i = 0; i < controlSize; i++) {
                 if (!seen.contains(controlList.get(i))) {
-                    controlContext.navigateToChild(i);
+                    controlContext.navigateToChild(controlListForXpath.indexOf(controlList.get(i)));
                     try {
                         chain =
                             chain.andThen(new Comparison(ComparisonType.CHILD_LOOKUP,
@@ -629,13 +633,15 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     }
 
     private class UnmatchedTestNodes implements DeferredComparison {
+        private final List<Node> testListForXpath;
         private final List<Node> testList;
         private final XPathContext testContext;
         private final Set<Node> seen;
         private final XPathContext controlContext;
 
-        private UnmatchedTestNodes(List<Node> testList, XPathContext testContext,
-                                      Set<Node> seen, XPathContext controlContext) {
+        private UnmatchedTestNodes(List<Node> testListForXpath, List<Node> testList, XPathContext testContext,
+                                   Set<Node> seen, XPathContext controlContext) {
+            this.testListForXpath = testListForXpath;
             this.testList = testList;
             this.testContext = testContext;
             this.seen = seen;
@@ -648,7 +654,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             final int testSize = testList.size();
             for (int i = 0; i < testSize; i++) {
                 if (!seen.contains(testList.get(i))) {
-                    testContext.navigateToChild(i);
+                    testContext.navigateToChild(testListForXpath.indexOf(testList.get(i)));
                     try {
                         chain =
                             chain.andThen(new Comparison(ComparisonType.CHILD_LOOKUP,

@@ -7,6 +7,11 @@
   9 and later
   Issue [#162](https://github.com/xmlunit/xmlunit/issues/162)
 
+* the XPath values for comparisons resulting in `CHILD_LOOKUP`
+  differences could be wrong when `NodeFilter`s were present.
+  XMLUnit.NET Issue
+  [xmlunit/#29](https://github.com/xmlunit/xmlunit.net/issues/29)
+
 ## XMLUnit for Java 2.6.3 - /Released 2019-06-21/
 
 * add a new `${xmlunit.isNumber}` placeholder
