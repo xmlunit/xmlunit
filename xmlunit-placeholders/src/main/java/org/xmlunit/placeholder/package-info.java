@@ -38,6 +38,9 @@
  * <li>{@code ${xmlunit.ignore}} which makes XMLUnit ignore the nested
  * text or attribute completely. This is handled by {@link
  * IgnorePlaceholderHandler}.</li>
+ * <li>{@code ${xmlunit.isNumber}} makes the comparison pass if the
+ * textual content of the element or attributes looks like a
+ * number. This is handled by {@link IsNumberPlaceholderHandler}.</li>
  *
  * </ul>
  *
