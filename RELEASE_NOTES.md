@@ -7,6 +7,18 @@
   9 and later
   Issue [#162](https://github.com/xmlunit/xmlunit/issues/162)
 
+* added `containsAnyNodeHavingXPath`, `containsAllNodesHavingXPath`
+  and `hasXPath` assertions to xmlunit-assertj.
+
+* added `extractingAttribute` method to xmlunit-assertj.
+
+* removed some redundant `instanceof` checks.
+  PR [#171](https://github.com/xmlunit/xmlunit/issues/171) by
+  [@PascalSchumacher](https://github.com/PascalSchumacher).
+
+* xmlunit-assertj should now work with AssertJ-Core 3.13.x
+  Issue [#166](https://github.com/xmlunit/xmlunit/issues/166)
+
 * the XPath values for comparisons resulting in `CHILD_LOOKUP`
   differences could be wrong when `NodeFilter`s were present.
   XMLUnit.NET Issue
