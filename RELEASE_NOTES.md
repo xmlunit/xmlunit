@@ -24,6 +24,9 @@
   XMLUnit.NET Issue
   [xmlunit/#29](https://github.com/xmlunit/xmlunit.net/issues/29)
 
+* xmlunit-legacy will now use `NewDifferenceEngine` even when an
+  `ElementQualifier` different from the built-in ones is used.
+
 ## XMLUnit for Java 2.6.3 - /Released 2019-06-21/
 
 * add a new `${xmlunit.isNumber}` placeholder

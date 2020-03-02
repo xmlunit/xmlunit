@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008,2010,2014-2016 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2010,2014-2016,2020 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -419,24 +419,12 @@ public class Diff
      */
     private DifferenceEngineContract getDifferenceEngine() {
         if (differenceEngine == null) {
-            if (
-                XMLUnit.getIgnoreAttributeOrder()
-                &&
-                (!usesUnknownElementQualifier()
-                 || XMLUnit.getCompareUnmatched())
-                ) {
+            if (XMLUnit.getIgnoreAttributeOrder()) {
                 return new NewDifferenceEngine(this, matchTrackerDelegate);
             }
             return new DifferenceEngine(this, matchTrackerDelegate);
         }
         return differenceEngine;
-    }
-
-    private boolean usesUnknownElementQualifier() {
-        return elementQualifierDelegate != null
-            && !(elementQualifierDelegate instanceof ElementNameQualifier)
-            && !(elementQualifierDelegate instanceof ElementNameAndTextQualifier)
-            && !(elementQualifierDelegate instanceof ElementNameAndAttributeQualifier);
     }
 
     private static Document toDocument(DOMSource d) {
