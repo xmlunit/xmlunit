@@ -24,7 +24,7 @@
 * the XPath values for comparisons resulting in `CHILD_LOOKUP`
   differences could be wrong when `NodeFilter`s were present.
   XMLUnit.NET Issue
-  [xmlunit/#29](https://github.com/xmlunit/xmlunit.net/issues/29)
+  [xmlunit.net/#29](https://github.com/xmlunit/xmlunit.net/issues/29)
 
 * xmlunit-legacy will now use `NewDifferenceEngine` even when an
   `ElementQualifier` different from the built-in ones is used.
