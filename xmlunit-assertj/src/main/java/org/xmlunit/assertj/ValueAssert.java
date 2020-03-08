@@ -149,10 +149,10 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
      *
      *  // given
      *  wrapNodeName = "ul";
-     *  actual = "<li>a</li><li></li>";
+     *  actual = "%lt;li&gt;a&lt;/li&gt;&lt;li&gt;&lt;/li&gt;";
      *
      *  // then
-     *  xml = "<ul><li>a</li><li></li></ul>";
+     *  xml = "&lt;ul&gt;&lt;li&gt;a&lt;/li&gt;&lt;li&gt;&lt;/li&gt;&lt;/ul&gt;";
      *  return XmlAssert.assertThat(xml);
      * </pre>
      *
