@@ -1,5 +1,7 @@
 # Release Notes
 
+## XMLUnit for Java 2.6.5 - /not released, yet/
+
 ## XMLUnit for Java 2.6.4 - /Released 2020-03-08/
 
 * the dependencies on JAXB implementation and its transitive
