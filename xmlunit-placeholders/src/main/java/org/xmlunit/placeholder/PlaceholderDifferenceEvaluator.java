@@ -243,10 +243,23 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
     }
 
     private boolean isKnown(String keyword) {
-        return KNOWN_HANDLERS.containsKey(keyword);
+        // extract placeholder name if parameters present
+        Pattern pattern = Pattern.compile("(\\w+)\\(?");
+        Matcher matcher = pattern.matcher(keyword);
+        if (matcher.find()) {
+            return KNOWN_HANDLERS.containsKey(matcher.group(1));
+        }
+        return false;
     }
 
     private ComparisonResult evaluate(String keyword, String testText) {
-        return KNOWN_HANDLERS.get(keyword).evaluate(testText);
+        Pattern pattern = Pattern.compile("^(\\w+)(?:\\((.+)\\))?$");
+        Matcher matcher = pattern.matcher(keyword);
+        String placeholderParam = "";
+        if (matcher.find()) {
+            keyword = matcher.group(1);
+            placeholderParam = matcher.group(2);
+        }
+        return KNOWN_HANDLERS.get(keyword).evaluate(testText, placeholderParam);
     }
 }

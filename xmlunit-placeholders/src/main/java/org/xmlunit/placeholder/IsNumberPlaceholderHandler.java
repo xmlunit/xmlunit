@@ -33,7 +33,7 @@ public class IsNumberPlaceholderHandler implements PlaceholderHandler {
     }
 
     @Override
-    public ComparisonResult evaluate(String testText) {
+    public ComparisonResult evaluate(String testText, String... param) {
         return testText != null && testText.trim().matches(NUMBER_PATTERN) ? EQUAL : DIFFERENT;
     }
 }

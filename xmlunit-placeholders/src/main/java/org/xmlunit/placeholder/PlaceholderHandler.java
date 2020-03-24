@@ -36,5 +36,5 @@ public interface PlaceholderHandler {
      * Evaluate the test value when control contained the placeholder
      * handled by this class.
      */
-    ComparisonResult evaluate(String testText);
+    ComparisonResult evaluate(String testText, String... placeholderParameters);
 }
