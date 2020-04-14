@@ -335,7 +335,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.2.0</version>
         <inherited>false</inherited>
         <configuration>
           <descriptorRefs>
@@ -505,7 +505,7 @@
           <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>2.9.0</version>
+            <version>3.15.0</version>
           </dependency>
           <dependency>
             <groupId>net.bytebuddy</groupId>
