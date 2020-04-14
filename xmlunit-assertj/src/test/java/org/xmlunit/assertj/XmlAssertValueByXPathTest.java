@@ -13,6 +13,8 @@
 */
 package org.xmlunit.assertj;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -24,6 +26,18 @@ public class XmlAssertValueByXPathTest {
 
     @Rule
     public ExpectedException thrown = none();
+
+    private static LocaleModifier locale = new LocaleModifier();
+
+    @BeforeClass
+    public static void overwriteLocale() {
+        locale.setEnglish();
+    }
+
+    @AfterClass
+    public static void restoreLocale() {
+        locale.restore();
+    }
 
     @Test
     public void testValueByXPath_withNull_shouldFailed() {

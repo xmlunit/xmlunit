@@ -13,19 +13,20 @@
 */
 package org.xmlunit.assertj;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
@@ -33,6 +34,18 @@ import static org.xmlunit.assertj.XmlAssert.assertThat;
 public class ValueAssertTest {
     @Rule
     public ExpectedException thrown = none();
+
+    private static LocaleModifier locale = new LocaleModifier();
+
+    @BeforeClass
+    public static void overwriteLocale() {
+        locale.setEnglish();
+    }
+
+    @AfterClass
+    public static void restoreLocale() {
+        locale.restore();
+    }
 
     @Test
     public void testAsInt_shouldPass() {

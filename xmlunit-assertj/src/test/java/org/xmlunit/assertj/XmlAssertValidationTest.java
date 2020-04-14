@@ -13,15 +13,16 @@
 */
 package org.xmlunit.assertj;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.xmlunit.validation.Languages;
 
-import java.io.File;
-
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import java.io.File;
 
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
@@ -30,6 +31,18 @@ public class XmlAssertValidationTest {
 
     @Rule
     public ExpectedException thrown = none();
+
+    private static LocaleModifier locale = new LocaleModifier();
+
+    @BeforeClass
+    public static void overwriteLocale() {
+        locale.setEnglish();
+    }
+
+    @AfterClass
+    public static void restoreLocale() {
+        locale.restore();
+    }
 
     @Test
     public void testIsValidAgainst_shouldPass() {
@@ -89,7 +102,8 @@ public class XmlAssertValidationTest {
         StreamSource xml = new StreamSource(new File("../test-resources/BookXsdGenerated.xml"));
 
         assertThat(xml).isValidAgainst();
-        assertThat(xml).isValidAgainst(new Object[0]);
+        final Object[] emptyArray = new Object[0];
+        assertThat(xml).isValidAgainst(emptyArray);
     }
 
     @Test
