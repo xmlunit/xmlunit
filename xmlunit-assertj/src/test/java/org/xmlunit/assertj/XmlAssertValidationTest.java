@@ -19,10 +19,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.xmlunit.validation.Languages;
 
+import java.io.File;
+
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import java.io.File;
 
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
