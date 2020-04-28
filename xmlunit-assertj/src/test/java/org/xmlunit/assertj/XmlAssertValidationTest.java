@@ -13,9 +13,11 @@
 */
 package org.xmlunit.assertj;
 
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.xmlunit.validation.Languages;
+import org.xmlunit.assertj.util.SetEnglishLocaleRule;
 
 import java.io.File;
 
@@ -30,6 +32,9 @@ public class XmlAssertValidationTest {
 
     @Rule
     public ExpectedException thrown = none();
+
+    @ClassRule
+    public static SetEnglishLocaleRule locale = new SetEnglishLocaleRule();
 
     @Test
     public void testIsValidAgainst_shouldPass() {

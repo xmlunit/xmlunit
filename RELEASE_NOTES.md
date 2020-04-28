@@ -2,6 +2,9 @@
 
 ## XMLUnit for Java 2.6.5 - /not released, yet/
 
+* the AssertJ tests now pass on non-English locales as well
+  Issue [#180](https://github.com/xmlunit/xmlunit/pull/180)
+
 ## XMLUnit for Java 2.6.4 - /Released 2020-03-08/
 
 * the dependencies on JAXB implementation and its transitive

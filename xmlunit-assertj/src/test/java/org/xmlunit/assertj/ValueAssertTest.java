@@ -13,11 +13,13 @@
 */
 package org.xmlunit.assertj;
 
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
+import org.xmlunit.assertj.util.SetEnglishLocaleRule;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -33,6 +35,9 @@ import static org.xmlunit.assertj.XmlAssert.assertThat;
 public class ValueAssertTest {
     @Rule
     public ExpectedException thrown = none();
+
+    @ClassRule
+    public static SetEnglishLocaleRule locale = new SetEnglishLocaleRule();
 
     @Test
     public void testAsInt_shouldPass() {
