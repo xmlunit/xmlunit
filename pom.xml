@@ -516,5 +516,16 @@
         </dependencies>
       </dependencyManagement>
     </profile>
+    <profile>
+      <id>java14+</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <jdk>[14,)</jdk>
+      </activation>
+      <properties>
+        <maven.compile.source>1.7</maven.compile.source>
+        <maven.compile.target>1.7</maven.compile.target>
+      </properties>
+    </profile>
   </profiles>
 </project>
