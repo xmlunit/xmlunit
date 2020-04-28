@@ -34,7 +34,7 @@ public class DefaultComparisonFormatterTest {
 
     private DefaultComparisonFormatter compFormatter = new DefaultComparisonFormatter();
 
-    private static final boolean JAVA_9_PLUS;
+    private static final boolean JAVA_9_PLUS, JAVA_14_PLUS;
     static {
         boolean j9 = false;
         try {
@@ -44,6 +44,14 @@ public class DefaultComparisonFormatterTest {
         } catch (Error e) {
         }
         JAVA_9_PLUS = j9;
+        boolean j14 = false;
+        try {
+            Class.forName("java.lang.reflect.RecordComponent");
+            j14 = true;
+        } catch (ClassNotFoundException e) {
+        } catch (Error e) {
+        }
+        JAVA_14_PLUS = j14;
     }
 
     @Test
@@ -291,7 +299,7 @@ public class DefaultComparisonFormatterTest {
                 description);
 
         assertEquals("<a>Text</a>", controlDetails);
-        if (JAVA_9_PLUS) {
+        if (JAVA_9_PLUS && !JAVA_14_PLUS) {
             assertEquals("<a>\n  <![CDATA[Text]]>\n</a>", testDetails);
         } else {
             assertEquals("<a><![CDATA[Text]]></a>", testDetails);
