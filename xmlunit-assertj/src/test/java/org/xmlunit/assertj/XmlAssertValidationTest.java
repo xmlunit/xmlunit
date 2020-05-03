@@ -16,10 +16,12 @@ package org.xmlunit.assertj;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.xmlunit.TestResources;
 import org.xmlunit.validation.Languages;
 import org.xmlunit.assertj.util.SetEnglishLocaleRule;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -38,16 +40,16 @@ public class XmlAssertValidationTest {
 
     @Test
     public void testIsValidAgainst_shouldPass() {
-        StreamSource xml = new StreamSource(new File("../test-resources/BookXsdGenerated.xml"));
-        StreamSource xsd = new StreamSource(new File("../test-resources/Book.xsd"));
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "BookXsdGenerated.xml"));
+        StreamSource xsd = new StreamSource(new File(TestResources.BOOK_XSD));
 
         assertThat(xml).isValidAgainst(xsd);
     }
 
     @Test
     public void testIsValidAgainst_withExternallyCreatedSchemaInstance_shouldPass() throws Exception {
-        StreamSource xml = new StreamSource(new File("../test-resources/BookXsdGenerated.xml"));
-        StreamSource xsd = new StreamSource(new File("../test-resources/Book.xsd"));
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "BookXsdGenerated.xml"));
+        StreamSource xsd = new StreamSource(new File(TestResources.BOOK_XSD));
 
         SchemaFactory factory = SchemaFactory.newInstance(Languages.W3C_XML_SCHEMA_NS_URI);
         Schema schema = factory.newSchema(xsd);
@@ -57,16 +59,16 @@ public class XmlAssertValidationTest {
 
     @Test
     public void testIsNotValidAgainst_withBrokenXml_shouldPass() {
-        final StreamSource xml = new StreamSource(new File("../test-resources/invalidBook.xml"));
-        final StreamSource xsd = new StreamSource(new File("../test-resources/Book.xsd"));
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "invalidBook.xml"));
+        StreamSource xsd = new StreamSource(new File(TestResources.BOOK_XSD));
 
         assertThat(xml).isNotValidAgainst(xsd);
     }
 
     @Test
     public void testIsNotValidAgainst_withBrokenXml_andExternallyCreatedSchemaInstance_shouldPass() throws Exception {
-        StreamSource xml = new StreamSource(new File("../test-resources/invalidBook.xml"));
-        StreamSource xsd = new StreamSource(new File("../test-resources/Book.xsd"));
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "invalidBook.xml"));
+        StreamSource xsd = new StreamSource(new File(TestResources.BOOK_XSD));
 
         SchemaFactory factory = SchemaFactory.newInstance(Languages.W3C_XML_SCHEMA_NS_URI);
         Schema schema = factory.newSchema(xsd);
@@ -77,13 +79,13 @@ public class XmlAssertValidationTest {
     @Test
     public void testIsValidAgainst_withBrokenXml_shouldFailed() {
 
-        thrown.expectAssertionErrorPattern("^\\nExpecting:\\n <.*\\.\\.\\/test-resources\\/invalidBook.xml>\\nto be valid but found following problems:\\n.*");
+        thrown.expectAssertionErrorPattern("^\\nExpecting:\\n <.*" + Pattern.quote(TestResources.TEST_RESOURCE_DIR) + "invalidBook.xml>\\nto be valid but found following problems:\\n.*");
         thrown.expectAssertionError("1. line=9; column=8; type=ERROR;" +
                 " message=cvc-complex-type.2.4.b: The content of element 'Book' is not complete." +
                 " One of '{\"https://www.xmlunit.org/publishing\":Publisher}' is expected.");
 
-        StreamSource xml = new StreamSource(new File("../test-resources/invalidBook.xml"));
-        StreamSource xsd = new StreamSource(new File("../test-resources/Book.xsd"));
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "invalidBook.xml"));
+        StreamSource xsd = new StreamSource(new File(TestResources.BOOK_XSD));
 
         assertThat(xml).isValidAgainst(xsd);
     }
@@ -91,7 +93,7 @@ public class XmlAssertValidationTest {
     @Test
     public void testIsValidAgainst_withEmptySourcesArray_shouldPass() {
 
-        StreamSource xml = new StreamSource(new File("../test-resources/BookXsdGenerated.xml"));
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "BookXsdGenerated.xml"));
 
         assertThat(xml).isValidAgainst();
         assertThat(xml).isValidAgainst(new Object[0]);
@@ -104,7 +106,7 @@ public class XmlAssertValidationTest {
                 " message=cvc-complex-type.2.4.b: The content of element 'Book' is not complete." +
                 " One of '{\"https://www.xmlunit.org/publishing\":Publisher}' is expected.");
 
-        StreamSource xml = new StreamSource(new File("../test-resources/invalidBook.xml"));
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "invalidBook.xml"));
 
         assertThat(xml).isValidAgainst();
     }
@@ -112,7 +114,7 @@ public class XmlAssertValidationTest {
     @Test
     public void testIsValid_shouldPass() {
 
-        StreamSource xml = new StreamSource(new File("../test-resources/BookXsdGenerated.xml"));
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "BookXsdGenerated.xml"));
 
         assertThat(xml).isValid();
     }
@@ -124,7 +126,7 @@ public class XmlAssertValidationTest {
                 " message=cvc-complex-type.2.4.b: The content of element 'Book' is not complete." +
                 " One of '{\"https://www.xmlunit.org/publishing\":Publisher}' is expected.");
 
-        StreamSource xml = new StreamSource(new File("../test-resources/invalidBook.xml"));
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "invalidBook.xml"));
 
         assertThat(xml).isValid();
     }
@@ -132,7 +134,7 @@ public class XmlAssertValidationTest {
     @Test
     public void testIsInvalid_withBrokenXml_shouldPass() {
 
-        StreamSource xml = new StreamSource(new File("../test-resources/invalidBook.xml"));
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "invalidBook.xml"));
 
         assertThat(xml).isInvalid();
     }
@@ -140,9 +142,10 @@ public class XmlAssertValidationTest {
     @Test
     public void testIsInvalid_shouldField() {
 
-        thrown.expectAssertionErrorPattern("^\\nExpecting:\\n <.*\\.\\.\\/test-resources\\/BookXsdGenerated.xml>\\nto be invalid");
+        thrown.expectAssertionErrorPattern("^\\nExpecting:\\n <.*"
+            + Pattern.quote(TestResources.TEST_RESOURCE_DIR) + "BookXsdGenerated.xml>\\nto be invalid");
 
-        StreamSource xml = new StreamSource(new File("../test-resources/BookXsdGenerated.xml"));
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "BookXsdGenerated.xml"));
 
         assertThat(xml).isInvalid();
     }
@@ -152,7 +155,7 @@ public class XmlAssertValidationTest {
 
         thrown.expectAssertionError("actual not to be null");
 
-        StreamSource xml = new StreamSource(new File("../test-resources/BookXsdGenerated.xml"));
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "BookXsdGenerated.xml"));
 
         assertThat(xml).isValidAgainst((Object[]) null);
     }
@@ -162,7 +165,7 @@ public class XmlAssertValidationTest {
 
         thrown.expectAssertionError("actual not to be null");
 
-        StreamSource xml = new StreamSource(new File("../test-resources/BookXsdGenerated.xml"));
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "BookXsdGenerated.xml"));
 
         assertThat(xml).isValidAgainst((Schema) null);
     }

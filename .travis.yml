@@ -24,6 +24,9 @@ install: true
 script:
   - mvn install -B
   - cd compat-tests && ./hamcrest-test.sh 2.6.5-SNAPSHOT 2.2
+  - cd compat-tests && ./assertj-test.sh 2.6.5-SNAPSHOT 3.9.1
+#  - cd compat-tests && ./assertj-test.sh 2.6.5-SNAPSHOT 3.13.0
+#  - cd compat-tests && ./assertj-test.sh 2.6.5-SNAPSHOT 3.15.0
 notifications:
   email:
     - xmlunit-commits@lists.sourceforge.net

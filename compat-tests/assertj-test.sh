@@ -2,14 +2,14 @@
 set -e
 
 if [ "$#" -ne 2 ]; then
-    echo "Usage: hamcrest-test.sh XMLUNIT_VERSION HAMCREST_VERSION"
+    echo "Usage: assertj-test.sh XMLUNIT_VERSION ASSERTJ_VERSION"
     exit 1
 fi
 
 XMLUNIT_VERSION=$1
-HAMCREST_VERSION=$2
+ASSERTJ_VERSION=$2
 
-SCRATCH_DIR=scratch/hamcrest-${HAMCREST_VERSION}
+SCRATCH_DIR=scratch/assertj-${ASSERTJ_VERSION}
 
 rm -rf scratch && mkdir -p ${SCRATCH_DIR}/src/test/java/org/xmlunit/
 
@@ -26,15 +26,17 @@ cat > ${SCRATCH_DIR}/pom.xml <<EOF
   </parent>
 
   <groupId>org.xmlunit</groupId>
-  <artifactId>xmlunit-compat-tests-hamcrest-${HAMCREST_VERSION}</artifactId>
+  <artifactId>xmlunit-compat-tests-assertj-${ASSERTJ_VERSION}</artifactId>
   <packaging>jar</packaging>
-  <name>org.xmlunit:xmlunit-compat-tests-hamcrest-${HAMCREST_VERSION}</name>
-  <description>Verifies the Hamcrest Matchers are compatible with Hamcrest ${HAMCREST_VERSION}</description>
+  <name>org.xmlunit:xmlunit-compat-tests-assertj-${ASSERTJ_VERSION}</name>
+  <description>Verifies the AssertJ assertions are compatible with AssertJ ${ASSERTJ_VERSION}</description>
   <url>https://www.xmlunit.org/</url>
 
   <properties>
-    <automatic.module.name>\${project.groupId}.compat-tests-hamcrest-${HAMCREST_VERSION}</automatic.module.name>
-    <hamcrest.version>${HAMCREST_VERSION}</hamcrest.version>
+    <automatic.module.name>\${project.groupId}.compat-tests-assertj-${ASSERTJ_VERSION}</automatic.module.name>
+    <assertj.version>${ASSERTJ_VERSION}</assertj.version>
+    <maven.compile.source>1.7</maven.compile.source>
+    <maven.compile.target>1.7</maven.compile.target>
   </properties>
 
   <dependencies>
@@ -45,19 +47,18 @@ cat > ${SCRATCH_DIR}/pom.xml <<EOF
     </dependency>
     <dependency>
       <groupId>org.xmlunit</groupId>
-      <artifactId>xmlunit-matchers</artifactId>
+      <artifactId>xmlunit-assertj</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
-      <version>\${hamcrest.version}</version>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>\${assertj.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-library</artifactId>
-      <version>\${hamcrest.version}</version>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -76,8 +77,6 @@ EOF
 
 cp TestResources.java ${SCRATCH_DIR}/src/test/java/org/xmlunit/
 
-cp -r ../xmlunit-matchers/src/test/java/org/xmlunit/bugreports ${SCRATCH_DIR}/src/test/java/org/xmlunit
-cp -r ../xmlunit-matchers/src/test/java/org/xmlunit/matchers ${SCRATCH_DIR}/src/test/java/org/xmlunit
+cp -r ../xmlunit-assertj/src/test/java/org/xmlunit/assertj ${SCRATCH_DIR}/src/test/java/org/xmlunit
 
 mvn -f ${SCRATCH_DIR}/pom.xml test
-

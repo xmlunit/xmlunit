@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xmlunit.TestResources;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonController;
 import org.xmlunit.diff.ComparisonListener;
@@ -90,8 +91,8 @@ public class CompareAssertAreSimilarTest {
         thrown.expectAssertionErrorPattern(".*Expecting:.*<(?:.*test2\\.xml)> and <(?:.*test1\\.xml)> to be similar.*");
         thrown.expectAssertionError("Expected processing instruction data 'href=\"animal.xsl\" type=\"text/xsl\"' but was 'type=\"text/xsl\" href=\"animal.xsl\"");
 
-        File testXml = new File("../test-resources/test1.xml");
-        File controlXml = new File("../test-resources/test2.xml");
+        File testXml = new File(TestResources.ANIMAL_FILE);
+        File controlXml = new File(TestResources.TEST_RESOURCE_DIR + "test2.xml");
 
         assertThat(testXml).and(controlXml).areSimilar();
     }

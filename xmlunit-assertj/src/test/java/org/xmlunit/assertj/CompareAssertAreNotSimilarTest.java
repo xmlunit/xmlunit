@@ -15,6 +15,7 @@ package org.xmlunit.assertj;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.xmlunit.TestResources;
 
 import java.io.File;
 
@@ -38,8 +39,8 @@ public class CompareAssertAreNotSimilarTest {
     @Test
     public void testAreNotSimilar_fromFiles_shouldPass() {
 
-        File testXml = new File("../test-resources/test1.xml");
-        File controlXml = new File("../test-resources/test2.xml");
+        File testXml = new File(TestResources.ANIMAL_FILE);
+        File controlXml = new File(TestResources.TEST_RESOURCE_DIR + "test2.xml");
 
         assertThat(testXml).and(controlXml).areNotSimilar();
     }
