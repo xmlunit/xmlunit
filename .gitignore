@@ -5,3 +5,4 @@ target
 .project
 .idea
 *.iml
+/compat-tests/scratch/

@@ -23,7 +23,7 @@ addons:
 install: true
 script:
   - mvn install -B
-  - mvn -f compat-tests/hamcrest-2.x/pom.xml test
+  - cd compat-tests && ./hamcrest-test.sh 2.6.5-SNAPSHOT 2.2
 notifications:
   email:
     - xmlunit-commits@lists.sourceforge.net
