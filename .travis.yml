@@ -25,9 +25,9 @@ install: true
 script:
   - mvn install -B
   - (cd compat-tests && ./hamcrest-test.sh ${VERSION} 2.2)
-  - (cd compat-tests && ./assertj-test.sh ${VERSION} 3.9.1)
-#  - (cd compat-tests && ./assertj-test.sh ${VERSION} 3.13.0)
-#  - (cd compat-tests && ./assertj-test.sh ${VERSION} 3.15.0)
+  - test "openjdk7" != "${TRAVIS_JDK_VERSION}" && (cd compat-tests && ./assertj-test.sh ${VERSION} 3.9.1)
+  - test "openjdk7" != "${TRAVIS_JDK_VERSION}" && (cd compat-tests && ./assertj-test.sh ${VERSION} 3.13.2)
+#  - test "openjdk7" != "${TRAVIS_JDK_VERSION}" && (cd compat-tests && ./assertj-test.sh ${VERSION} 3.15.0)
 notifications:
   email:
     - xmlunit-commits@lists.sourceforge.net
