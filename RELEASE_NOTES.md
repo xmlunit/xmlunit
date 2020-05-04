@@ -5,6 +5,10 @@
 * the AssertJ tests now pass on non-English locales as well
   Issue [#180](https://github.com/xmlunit/xmlunit/pull/180)
 
+* added a workaround for a binary incompatible change in AssertJ that
+  caused xmlunit-assertj to be incompatible with AssertJ 3.15.0
+  Issue [#181](https://github.com/xmlunit/xmlunit/issues/181)
+
 ## XMLUnit for Java 2.6.4 - /Released 2020-03-08/
 
 * the dependencies on JAXB implementation and its transitive
