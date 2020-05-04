@@ -539,13 +539,13 @@
             <version>3.3.3</version>
             <scope>test</scope>
           </dependency>
+          <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.10.10</version>
+            <scope>provided</scope>
+          </dependency>
         </dependencies>
-        <dependency>
-          <groupId>net.bytebuddy</groupId>
-          <artifactId>byte-buddy</artifactId>
-          <version>1.10.10</version>
-          <scope>provided</scope>
-        </dependency>
       </dependencyManagement>
     </profile>
   </profiles>
