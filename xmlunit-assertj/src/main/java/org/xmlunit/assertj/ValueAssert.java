@@ -17,6 +17,7 @@ import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.assertj.core.api.AbstractDoubleAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
+import org.assertj.core.util.CheckReturnValue;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
@@ -196,5 +197,14 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
         asBoolean().isEqualTo(expected);
 
         return this;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @CheckReturnValue
+    // deal with binary incompatible change in AssertJ 3.15.0, see https://github.com/xmlunit/xmlunit/issues/181
+    public ValueAssert describedAs(final String description, final Object... args) {
+        getWritableAssertionInfo().description(description, args);
+        return myself;
     }
 }
