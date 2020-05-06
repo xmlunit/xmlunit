@@ -25,16 +25,22 @@ import org.xmlunit.diff.ComparisonResult;
  * <p>Implementations are expected to be thread-safe, the {@link
  * #evaluate} method may be invoked by multiple threads in
  * parallel.</p>
- * @since 2.6.0
+ * @since 2.7.0
  */
 public interface PlaceholderHandler {
     /**
      * The placeholder keyword this handler is responsible for.
      */
     String getKeyword();
+
     /**
      * Evaluate the test value when control contained the placeholder
      * handled by this class.
+     *
+     * @param testText the textual content of the element or attribute
+     * this placeholder has been added to.
+     * @param placeholderParameters any arguments provided to the
+     * placeholder.
      */
     ComparisonResult evaluate(String testText, String... placeholderParameters);
 }
