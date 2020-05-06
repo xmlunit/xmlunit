@@ -34,7 +34,7 @@ public class IgnorePlaceholderHandler implements PlaceholderHandler {
     }
 
     @Override
-    public ComparisonResult evaluate(String testText) {
+    public ComparisonResult evaluate(String testText, String... param) {
         return ComparisonResult.EQUAL;
     }
 }
