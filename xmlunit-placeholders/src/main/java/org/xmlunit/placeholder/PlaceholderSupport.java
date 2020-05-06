@@ -57,8 +57,47 @@ public class PlaceholderSupport {
     public static <D extends DifferenceEngineConfigurer<D>>
         D withPlaceholderSupportUsingDelimiters(D configurer, String placeholderOpeningDelimiterRegex,
             String placeholderClosingDelimiterRegex) {
+        return withPlaceholderSupportUsingDelimiters(configurer, placeholderOpeningDelimiterRegex,
+            placeholderClosingDelimiterRegex, null, null, null);
+    }
+
+    /**
+     * Adds placeholder support to a {@link DifferenceEngineConfigurer}.
+     * @param configurer the configurer to add support to
+     * @param placeholderOpeningDelimiterRegex regular expression for
+     * the opening delimiter of placeholder, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX}
+     * if the parameter is null or blank
+     * @param placeholderClosingDelimiterRegex regular expression for
+     * the closing delimiter of placeholder, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX}
+     * if the parameter is null or blank
+     * @param placeholderArgsOpeningDelimiterRegex regular expression for
+     * the opening delimiter of the placeholder's argument list, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_ARGS_OPENING_DELIMITER_REGEX}
+     * if the parameter is null or blank
+     * @param placeholderArgsClosingDelimiterRegex regular expression for
+     * the closing delimiter of the placeholder's argument list, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_ARGS_CLOSING_DELIMITER_REGEX}
+     * if the parameter is null or blank
+     * @param placeholderArgsSeparatorRegex regular expression for the
+     * delimiter between arguments inside of the placeholder's
+     * argument list, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_ARGS_SEPARATOR_REGEX}
+     * if the parameter is null or blank
+     * @return the configurer with placeholder support added in
+     * @since 2.7.0
+     */
+    public static <D extends DifferenceEngineConfigurer<D>>
+        D withPlaceholderSupportUsingDelimiters(final D configurer,
+            final String placeholderOpeningDelimiterRegex,
+            final String placeholderClosingDelimiterRegex,
+            final String placeholderArgsOpeningDelimiterRegex,
+            final String placeholderArgsClosingDelimiterRegex,
+            final String placeholderArgsSeparatorRegex) {
         return configurer.withDifferenceEvaluator(new PlaceholderDifferenceEvaluator(placeholderOpeningDelimiterRegex,
-            placeholderClosingDelimiterRegex));
+            placeholderClosingDelimiterRegex, placeholderArgsOpeningDelimiterRegex,
+            placeholderArgsClosingDelimiterRegex, placeholderArgsSeparatorRegex));
     }
 
     /**
@@ -93,8 +132,50 @@ public class PlaceholderSupport {
     public static <D extends DifferenceEngineConfigurer<D>>
         D withPlaceholderSupportUsingDelimitersChainedAfter(D configurer, String placeholderOpeningDelimiterRegex,
             String placeholderClosingDelimiterRegex, DifferenceEvaluator evaluator) {
+        return withPlaceholderSupportUsingDelimitersChainedAfter(configurer, placeholderOpeningDelimiterRegex,
+            placeholderClosingDelimiterRegex, null, null, null, evaluator);
+    }
+
+    /**
+     * Adds placeholder support to a {@link DifferenceEngineConfigurer} considering an additional {@link DifferenceEvaluator}.
+     *
+     * @param configurer the configurer to add support to
+     * @param placeholderOpeningDelimiterRegex regular expression for
+     * the opening delimiter of placeholder, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX}
+     * if the parameter is null or blank
+     * @param placeholderClosingDelimiterRegex regular expression for
+     * the closing delimiter of placeholder, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX}
+     * if the parameter is null or blank
+     * @param evaluator the additional evaluator - placeholder support is
+     * {@link DifferenceEvaluators#chain chain}ed after the given
+     * evaluator
+     * @param placeholderArgsOpeningDelimiterRegex regular expression for
+     * the opening delimiter of the placeholder's argument list, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_ARGS_OPENING_DELIMITER_REGEX}
+     * if the parameter is null or blank
+     * @param placeholderArgsClosingDelimiterRegex regular expression for
+     * the closing delimiter of the placeholder's argument list, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_ARGS_CLOSING_DELIMITER_REGEX}
+     * if the parameter is null or blank
+     * @param placeholderArgsSeparatorRegex regular expression for the
+     * delimiter between arguments inside of the placeholder's
+     * argument list, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_ARGS_SEPARATOR_REGEX}
+     * if the parameter is null or blank
+     */
+    public static <D extends DifferenceEngineConfigurer<D>>
+        D withPlaceholderSupportUsingDelimitersChainedAfter(D configurer,
+            final String placeholderOpeningDelimiterRegex,
+            final String placeholderClosingDelimiterRegex,
+            final String placeholderArgsOpeningDelimiterRegex,
+            final String placeholderArgsClosingDelimiterRegex,
+            final String placeholderArgsSeparatorRegex,
+            final DifferenceEvaluator evaluator) {
         return configurer.withDifferenceEvaluator(DifferenceEvaluators.chain(
           evaluator, new PlaceholderDifferenceEvaluator(placeholderOpeningDelimiterRegex,
-              placeholderClosingDelimiterRegex)));
+              placeholderClosingDelimiterRegex, placeholderArgsOpeningDelimiterRegex,
+              placeholderArgsClosingDelimiterRegex, placeholderArgsSeparatorRegex)));
     }
 }

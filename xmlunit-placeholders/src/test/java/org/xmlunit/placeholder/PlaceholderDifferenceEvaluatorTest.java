@@ -20,6 +20,7 @@ import org.xmlunit.diff.*;
 
 import javax.xml.namespace.QName;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
@@ -393,10 +394,10 @@ public class PlaceholderDifferenceEvaluatorTest {
 
     @Test
     public void hasMatchesRegexPlaceholder_Element_Exception_MalformedRegex() {
-        String control = "<elem1>${xmlunit.matchesRegex(^(\\d+$)}</elem1>";
+        String control = "<elem1>${xmlunit.matchesRegex[^(\\d+$]}</elem1>";
         String test = "<elem1>23abc</elem1>";
         DiffBuilder diffBuilder = DiffBuilder.compare(control).withTest(test)
-                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator());
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator(null, null, Pattern.quote("["), Pattern.quote("]"), null));
 
         try {
             diffBuilder.build();

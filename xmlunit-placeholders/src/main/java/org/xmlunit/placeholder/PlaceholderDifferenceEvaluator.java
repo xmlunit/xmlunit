@@ -44,19 +44,36 @@ import org.xmlunit.util.Nodes;
  * (PlaceholderDifferenceEvaluatorTest).</p>
  *
  * <p>Default delimiters for placeholder are <code>${</code> and
- * <code>}</code>. To use custom delimiters (in regular expression),
- * create instance with the
- * <code>PlaceholderDifferenceEvaluator(String
- * placeholderOpeningDelimiterRegex, String
- * placeholderClosingDelimiterRegex)</code> constructor.</p>
+ * <code>}</code>. Arguments to placeholders are by default enclosed
+ * in {@code (} and {@code )} and separated by {@code ,} - whitespace
+ * is significant, arguments are not quoted.</p>
+ *
+ * <p>To use custom delimiters (in regular expression), create
+ * instance with the {@link PlaceholderDifferenceEvaluator(String,
+ * String)} or {@link PlaceholderDifferenceEvaluator(String, String,
+ * String, String, String)} constructors.</p>
  *
  * @since 2.6.0
  */
 public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
     public static final String PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX = Pattern.quote("${");
     public static final String PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX = Pattern.quote("}");
+    /**
+     * @since 2.7.0
+     */
+    public static final String PLACEHOLDER_DEFAULT_ARGS_OPENING_DELIMITER_REGEX = Pattern.quote("(");
+    /**
+     * @since 2.7.0
+     */
+    public static final String PLACEHOLDER_DEFAULT_ARGS_CLOSING_DELIMITER_REGEX = Pattern.quote(")");
+    /**
+     * @since 2.7.0
+     */
+    public static final String PLACEHOLDER_DEFAULT_ARGS_SEPARATOR_REGEX = Pattern.quote(",");
+
     private static final String PLACEHOLDER_PREFIX_REGEX = Pattern.quote("xmlunit.");
     private static final Map<String, PlaceholderHandler> KNOWN_HANDLERS;
+    private static final String[] NO_ARGS = new String[0];
 
     static {
         Map<String, PlaceholderHandler> m = new HashMap<String, PlaceholderHandler>();
@@ -67,6 +84,8 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
     }
 
     private final Pattern placeholderRegex;
+    private final Pattern argsRegex;
+    private final String argsSplitter;
 
     /**
      * Creates a PlaceholderDifferenceEvaluator with default
@@ -88,8 +107,42 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
      * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX}
      * if the parameter is null or blank
      */
+    public PlaceholderDifferenceEvaluator(final String placeholderOpeningDelimiterRegex,
+                                          final String placeholderClosingDelimiterRegex) {
+        this(placeholderOpeningDelimiterRegex, placeholderClosingDelimiterRegex, null, null, null);
+    }
+
+    /**
+     * Creates a PlaceholderDifferenceEvaluator with custom delimiters.
+     * @param placeholderOpeningDelimiterRegex regular expression for
+     * the opening delimiter of placeholder, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX}
+     * if the parameter is null or blank
+     * @param placeholderClosingDelimiterRegex regular expression for
+     * the closing delimiter of placeholder, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX}
+     * if the parameter is null or blank
+     * @param placeholderArgsOpeningDelimiterRegex regular expression for
+     * the opening delimiter of the placeholder's argument list, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_ARGS_OPENING_DELIMITER_REGEX}
+     * if the parameter is null or blank
+     * @param placeholderArgsClosingDelimiterRegex regular expression for
+     * the closing delimiter of the placeholder's argument list, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_ARGS_CLOSING_DELIMITER_REGEX}
+     * if the parameter is null or blank
+     * @param placeholderArgsSeparatorRegex regular expression for the
+     * delimiter between arguments inside of the placeholder's
+     * argument list, defaults to {@link
+     * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_ARGS_SEPARATOR_REGEX}
+     * if the parameter is null or blank
+     *
+     * @since 2.7.0
+     */
     public PlaceholderDifferenceEvaluator(String placeholderOpeningDelimiterRegex,
-                                          String placeholderClosingDelimiterRegex) {
+        String placeholderClosingDelimiterRegex,
+        String placeholderArgsOpeningDelimiterRegex,
+        String placeholderArgsClosingDelimiterRegex,
+        String placeholderArgsSeparatorRegex) {
         if (placeholderOpeningDelimiterRegex == null
             || placeholderOpeningDelimiterRegex.trim().length() == 0) {
             placeholderOpeningDelimiterRegex = PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX;
@@ -98,10 +151,26 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
             || placeholderClosingDelimiterRegex.trim().length() == 0) {
             placeholderClosingDelimiterRegex = PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX;
         }
+        if (placeholderArgsOpeningDelimiterRegex == null
+            || placeholderArgsOpeningDelimiterRegex.trim().length() == 0) {
+            placeholderArgsOpeningDelimiterRegex = PLACEHOLDER_DEFAULT_ARGS_OPENING_DELIMITER_REGEX;
+        }
+        if (placeholderArgsClosingDelimiterRegex == null
+            || placeholderArgsClosingDelimiterRegex.trim().length() == 0) {
+            placeholderArgsClosingDelimiterRegex = PLACEHOLDER_DEFAULT_ARGS_CLOSING_DELIMITER_REGEX;
+        }
+        if (placeholderArgsSeparatorRegex == null
+            || placeholderArgsSeparatorRegex.trim().length() == 0) {
+            placeholderArgsSeparatorRegex = PLACEHOLDER_DEFAULT_ARGS_SEPARATOR_REGEX;
+        }
 
         placeholderRegex = Pattern.compile("(\\s*" + placeholderOpeningDelimiterRegex
             + "\\s*" + PLACEHOLDER_PREFIX_REGEX + "(.+)" + "\\s*"
             + placeholderClosingDelimiterRegex + "\\s*)");
+        argsRegex = Pattern.compile("((.*)\\s*" + placeholderArgsOpeningDelimiterRegex
+            + "(.+)"
+            + "\\s*" + placeholderArgsClosingDelimiterRegex + "\\s*)");
+        argsSplitter = placeholderArgsSeparatorRegex;
     }
 
     public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
@@ -227,14 +296,24 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
 
     private ComparisonResult evaluateConsideringPlaceholders(String controlText, String testText,
         ComparisonResult outcome) {
-        Matcher m = placeholderRegex.matcher(controlText);
-        if (m.find()) {
-            String keyword = m.group(2).trim();
+        final Matcher placeholderMatcher = placeholderRegex.matcher(controlText);
+        if (placeholderMatcher.find()) {
+            final String content = placeholderMatcher.group(2).trim();
+            final Matcher argsMatcher = argsRegex.matcher(content);
+            final String keyword;
+            final String[] args;
+            if (argsMatcher.find()) {
+                keyword = argsMatcher.group(2).trim();
+                args = argsMatcher.group(3).split(argsSplitter);
+            } else {
+                keyword = content;
+                args = NO_ARGS;
+            }
             if (isKnown(keyword)) {
-                if (!m.group(1).trim().equals(controlText.trim())) {
+                if (!placeholderMatcher.group(1).trim().equals(controlText.trim())) {
                     throw new RuntimeException("The placeholder must exclusively occupy the text node.");
                 }
-                return evaluate(keyword, testText);
+                return evaluate(keyword, testText, args);
             }
         }
 
@@ -242,24 +321,11 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
         return outcome;
     }
 
-    private boolean isKnown(String keyword) {
-        // extract placeholder name if parameters present
-        Pattern pattern = Pattern.compile("(\\w+)\\(?");
-        Matcher matcher = pattern.matcher(keyword);
-        if (matcher.find()) {
-            return KNOWN_HANDLERS.containsKey(matcher.group(1));
-        }
-        return false;
+    private boolean isKnown(final String keyword) {
+        return KNOWN_HANDLERS.containsKey(keyword);
     }
 
-    private ComparisonResult evaluate(String keyword, String testText) {
-        Pattern pattern = Pattern.compile("^(\\w+)(?:\\((.+)\\))?$");
-        Matcher matcher = pattern.matcher(keyword);
-        String placeholderParam = "";
-        if (matcher.find()) {
-            keyword = matcher.group(1);
-            placeholderParam = matcher.group(2);
-        }
-        return KNOWN_HANDLERS.get(keyword).evaluate(testText, placeholderParam);
+    private ComparisonResult evaluate(final String keyword, final String testText, final String[] args) {
+        return KNOWN_HANDLERS.get(keyword).evaluate(testText, args);
     }
 }

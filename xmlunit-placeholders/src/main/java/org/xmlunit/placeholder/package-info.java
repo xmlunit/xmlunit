@@ -21,7 +21,7 @@
  * and any API may change between releases of XMLUnit.</b></p>
  *
  * <p>The placeholder feature allows a placeholder sequence of {@code
- * ${xmlunit.KEYWORD}} to be used as nested text in elements or as
+ * ${xmlunit.KEYWORD(args...)}} to be used as nested text in elements or as
  * attribute values of the control document and trigger special
  * handling based on the keyword.</p>
  *
@@ -31,6 +31,14 @@
  * {@code java.util.ServiceLoader} so it is possible to extend the set
  * of handlers via your own modules.</p>
  *
+ * <p>The placeholder sequence can take any number of string values as
+ * arguments in the form {@code ${xmlunit.KEYWORD(args1,arg2)}} - if
+ * no arguments are used the parentheses can be omitted
+ * completely. Arguments are not quoted, whitespace inside of the
+ * argument list is significant. All separators (by default
+ * <code>${</code>, <code>}</code>, {@code (}, {@code )}, and {@code
+ * ,}) can be configured explicitly.</p>
+ *
  * <p>Keywords currently supported by built-in handlers are:</p>
  *
  * <ul>
@@ -38,9 +46,16 @@
  * <li>{@code ${xmlunit.ignore}} which makes XMLUnit ignore the nested
  * text or attribute completely. This is handled by {@link
  * IgnorePlaceholderHandler}.</li>
+ *
  * <li>{@code ${xmlunit.isNumber}} makes the comparison pass if the
  * textual content of the element or attributes looks like a
  * number. This is handled by {@link IsNumberPlaceholderHandler}.</li>
+ *
+ * <li>{@code ${xmlunit.matchesRegex}} makes the comparison pass if
+ * the textual content of the element or attribute matches the regular
+ * expression specified as the first (and only) argument.  If there is
+ * no argument at all, the comparison will fail. This is handled by
+ * {@link MatchesRegexPlaceholderHandler}.</li>
  *
  * </ul>
  *
