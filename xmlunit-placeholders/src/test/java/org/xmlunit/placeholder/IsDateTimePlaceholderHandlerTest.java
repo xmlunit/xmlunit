@@ -65,4 +65,12 @@ public class IsDateTimePlaceholderHandlerTest {
         assertThat(placeholderHandler.evaluate("This is a test date 2020-01-01"),
                    equalTo(ComparisonResult.DIFFERENT));
     }
+
+    @Test
+    public void shouldParseExplicitPattern() {
+        assertThat(placeholderHandler.evaluate("31 01 2020 12:34", "dd MM yyyy HH:mm"),
+                   equalTo(ComparisonResult.EQUAL));
+        assertThat(placeholderHandler.evaluate("abc", "dd MM yyyy HH:mm"),
+                   equalTo(ComparisonResult.DIFFERENT));
+    }
 }

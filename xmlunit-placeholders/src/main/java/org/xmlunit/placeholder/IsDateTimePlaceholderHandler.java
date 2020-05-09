@@ -51,7 +51,12 @@ public class IsDateTimePlaceholderHandler implements PlaceholderHandler {
     }
 
     @Override
-    public ComparisonResult evaluate(final String testText, final String... param) {
+    public ComparisonResult evaluate(final String testText, final String... args) {
+        if (args != null && args.length == 1) {
+            return canParse(new SimpleDateFormat(args[0]), testText)
+                ? ComparisonResult.EQUAL
+                : ComparisonResult.DIFFERENT;
+        }
         return canParse(testText)
             ? ComparisonResult.EQUAL
             : ComparisonResult.DIFFERENT;

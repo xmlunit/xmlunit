@@ -57,6 +57,13 @@
  * no argument at all, the comparison will fail. This is handled by
  * {@link MatchesRegexPlaceholderHandler}.</li>
  *
+ * <li>{@code ${xmlunit.isDateTime}} makes the comparison pass if the
+ * textual content of the element or attributes looks like a date or
+ * datetime in the current locale or parsed by ISO rules. An optional
+ * argument can be used to specify a {@link
+ * java.text.SimpleDateFormat} pattern to use when trying to parse the
+ * test. This is handled by {@link IsDateTimePlaceholderHandler}.</li>
+ *
  * </ul>
  *
  * <p>The default delimiters of <code>${</code> and <code>}</code> can
