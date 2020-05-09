@@ -7,7 +7,7 @@ This version contains a backwards incompatible change to the
 placeholders module: The `evaluate` method now receives a variable
 number of string arguments in addition to the textual content of the
 element/attribute. This allows placeholders like
-`${xmlunit.matchesRegex("some\s*regex")}`.
+`${xmlunit.matchesRegex(some\s*regex)}`.
 
 * the AssertJ tests now pass on non-English locales as well
   Issue [#180](https://github.com/xmlunit/xmlunit/pull/180)
@@ -16,7 +16,7 @@ element/attribute. This allows placeholders like
   caused xmlunit-assertj to be incompatible with AssertJ 3.15.0
   Issue [#181](https://github.com/xmlunit/xmlunit/issues/181)
 
-* added a `matchesRegex` placeholder
+* added a new `${xmlunit.matchesRegex(regex)}` placeholder
   PR [#178](https://github.com/xmlunit/xmlunit/issues/178) by
   [@Jazzyekim](https://github.com/Jazzyekim).
 
