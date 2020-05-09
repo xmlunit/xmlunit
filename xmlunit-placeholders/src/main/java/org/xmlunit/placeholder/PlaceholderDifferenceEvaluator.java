@@ -49,8 +49,8 @@ import org.xmlunit.util.Nodes;
  * is significant, arguments are not quoted.</p>
  *
  * <p>To use custom delimiters (in regular expression), create
- * instance with the {@link PlaceholderDifferenceEvaluator(String,
- * String)} or {@link PlaceholderDifferenceEvaluator(String, String,
+ * instance with the {@link #PlaceholderDifferenceEvaluator(String,
+ * String)} or {@link #PlaceholderDifferenceEvaluator(String, String,
  * String, String, String)} constructors.</p>
  *
  * @since 2.6.0
