@@ -20,6 +20,12 @@ element/attribute. This allows placeholders like
   PR [#178](https://github.com/xmlunit/xmlunit/issues/178) by
   [@Jazzyekim](https://github.com/Jazzyekim).
 
+* add a new `${xmlunit.isDateTime}` placeholder
+  inspired by [#xmlunit.net/31](https://github.com/xmlunit/xmlunit.net/pull/31) and
+  [#xmlunit.net/32](https://github.com/xmlunit/xmlunit.net/pull/32) by
+  [MilkyWare](https://github.com/MilkyWare)
+  Issue [#174](https://github.com/xmlunit/xmlunit/issues/174)
+
 ## XMLUnit for Java 2.6.4 - /Released 2020-03-08/
 
 * the dependencies on JAXB implementation and its transitive

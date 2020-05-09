@@ -415,4 +415,40 @@ public class PlaceholderDifferenceEvaluatorTest {
 
         assertTrue(diff.hasDifferences());
     }
+
+    @Test
+    public void isDateTimePlaceholder_Attribute_NotDateTime() {
+        String control = "<elem1 attr='${xmlunit.isDateTime}'/>";
+        String test = "<elem1 attr='abc'/>";
+        Diff diff = PlaceholderSupport.withPlaceholderSupport(DiffBuilder.compare(control).withTest(test)).build();
+
+        assertTrue(diff.hasDifferences());
+    }
+
+    @Test
+    public void isDateTimePlaceholder_Attribute_IsDateTime() {
+        String control = "<elem1 attr='${xmlunit.isDateTime}'/>";
+        String test = "<elem1 attr='2020-01-01 15:00:00Z'/>";
+        Diff diff = PlaceholderSupport.withPlaceholderSupport(DiffBuilder.compare(control).withTest(test)).build();
+
+        assertFalse(diff.hasDifferences());
+    }
+
+    @Test
+    public void isDateTimePlaceholder_Element_NotDateTime() {
+        String control = "<elem1>${xmlunit.isDateTime}</elem1>";
+        String test = "<elem1>abc</elem1>";
+        Diff diff = PlaceholderSupport.withPlaceholderSupport(DiffBuilder.compare(control).withTest(test)).build();
+
+        assertTrue(diff.hasDifferences());
+    }
+
+    @Test
+    public void isDateTimePlaceholder_Element_IsDateTime() {
+        String control = "<elem1>${xmlunit.isDateTime}</elem1>";
+        String test = "<elem1>2020-01-01 15:00:00Z</elem1>";
+        Diff diff = PlaceholderSupport.withPlaceholderSupport(DiffBuilder.compare(control).withTest(test)).build();
+
+        assertFalse(diff.hasDifferences());
+    }
 }

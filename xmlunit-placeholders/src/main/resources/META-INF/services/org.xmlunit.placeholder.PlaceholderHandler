@@ -1,3 +1,4 @@
 org.xmlunit.placeholder.IgnorePlaceholderHandler
 org.xmlunit.placeholder.IsNumberPlaceholderHandler
 org.xmlunit.placeholder.MatchesRegexPlaceholderHandler
+org.xmlunit.placeholder.IsDateTimePlaceholderHandler
