@@ -1142,9 +1142,14 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void cantUseNullDocumentBuilderFactory() {
+    public void cantUseNullDocumentBuilderFactoryInSetter() {
         DOMDifferenceEngine d = new DOMDifferenceEngine();
         d.setDocumentBuilderFactory(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void cantUseNullDocumentBuilderFactoryInConstructor() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine(null);
     }
 
     // https://github.com/xmlunit/xmlunit.net/issues/22

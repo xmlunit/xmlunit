@@ -53,8 +53,33 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             public QName apply(Node n) { return Nodes.getQName(n); }
         };
 
-    private DocumentBuilderFactory documentBuilderFactory =
-        DocumentBuilderFactoryConfigurer.Default.configure(DocumentBuilderFactory.newInstance());
+    private DocumentBuilderFactory documentBuilderFactory;
+
+    /**
+     * Creates a new DOMDifferenceEngine using the default {@link DocumentBuilderFactory}.
+     */
+    public DOMDifferenceEngine() {
+        this(DocumentBuilderFactoryConfigurer.Default.configure(DocumentBuilderFactory.newInstance()));
+    }
+
+    /**
+     * Creates a new DOMDifferenceEngine.
+     *
+     * <p>The {@link DocumentBuilderFactory} is only used if the
+     * {@code Source} passed to {@link #compare} is not already a
+     * {@link javax.xml.transform.dom.DOMSource}.</p>
+     *
+     * @param f {@code DocumentBuilderFactory} to use when creating a
+     * {@link Document} from the {@link Source}s to compare.
+     *
+     * @since XMLUnit 2.7.0
+     */
+    public DOMDifferenceEngine(final DocumentBuilderFactory f) {
+        if (f == null) {
+            throw new IllegalArgumentException("factory must not be null");
+        }
+        documentBuilderFactory = f;
+    }
 
     /**
      * Sets the {@link DocumentBuilderFactory} to use when creating a
@@ -63,7 +88,11 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
      * <p>This is only used if the {@code Source} passed to {@link #compare}
      * is not already a {@link javax.xml.transform.dom.DOMSource}.</p>
      *
+     * @param f {@code DocumentBuilderFactory} to use when creating a
+     * {@link Document} from the {@link Source}s to compare.
+     *
      * @since XMLUnit 2.2.0
+     * @deprecated use the one-arg constructor instead
      */
     public void setDocumentBuilderFactory(DocumentBuilderFactory f) {
         if (f == null) {

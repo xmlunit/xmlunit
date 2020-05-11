@@ -26,6 +26,11 @@ element/attribute. This allows placeholders like
   [MilkyWare](https://github.com/MilkyWare)
   Issue [#174](https://github.com/xmlunit/xmlunit/issues/174)
 
+* avoid unnecessary creation of `DocumentBuilderFactory` in
+  `DOMDifferenceEngine` when a custom factory has been provided to
+  `DiffBuilder`.
+  Issue [#182](https://github.com/xmlunit/xmlunit/issues/182)
+
 ## XMLUnit for Java 2.6.4 - /Released 2020-03-08/
 
 * the dependencies on JAXB implementation and its transitive

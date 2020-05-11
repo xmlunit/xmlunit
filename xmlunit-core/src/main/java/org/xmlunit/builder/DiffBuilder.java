@@ -383,7 +383,8 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      */
     public Diff build() {
 
-        final DOMDifferenceEngine d = new DOMDifferenceEngine();
+        final DOMDifferenceEngine d = documentBuilderFactory != null
+            ? new DOMDifferenceEngine(documentBuilderFactory) : new DOMDifferenceEngine();
         final CollectResultsListener collectResultsListener = new CollectResultsListener(comparisonResultsToCheck);
         d.addDifferenceListener(collectResultsListener);
         if (nodeMatcher != null) {
@@ -405,9 +406,6 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
         }
         if (nodeFilter != null) {
             d.setNodeFilter(nodeFilter);
-        }
-        if (documentBuilderFactory != null) {
-            d.setDocumentBuilderFactory(documentBuilderFactory);
         }
         d.compare(wrap(controlSource), wrap(testSource));
 
