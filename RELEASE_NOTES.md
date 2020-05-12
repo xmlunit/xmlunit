@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.7.0 - /not released, yet/
+## XMLUnit for Java 2.7.0 - /Released 2020-05-12/
 
 This version contains a backwards incompatible change to the
 `PlaceholderHandler` interface that is part of the experimental
