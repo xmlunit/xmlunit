@@ -43,6 +43,9 @@
     <!-- 2.20.1 works for Java6 but not for Java 10 - for 2.21.0
          things are reversed -->
     <maven.surefire.plugin.version>2.20.1</maven.surefire.plugin.version>
+
+    <!-- Jakarta XML Binding version -->
+    <jakarta.xml.bind.version>2.3.3</jakarta.xml.bind.version>
   </properties>
 
   <inceptionYear>2001</inceptionYear>
@@ -100,9 +103,14 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>javax.xml.bind</groupId>
-        <artifactId>jaxb-api</artifactId>
-        <version>2.3.0</version>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>${jakarta.xml.bind.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+        <version>${jakarta.xml.bind.version}</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
@@ -145,22 +153,6 @@
         <artifactId>mockito-core</artifactId>
         <version>2.1.0</version>
         <scope>test</scope>
-      </dependency>
-      <!-- needed during tests when running on Java9+ -->
-      <dependency>
-        <groupId>com.sun.xml.bind</groupId>
-        <artifactId>jaxb-core</artifactId>
-        <version>2.3.0.1</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.xml.bind</groupId>
-        <artifactId>jaxb-impl</artifactId>
-        <version>2.3.0.1</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.activation</groupId>
-        <artifactId>activation</artifactId>
-        <version>1.1.1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
