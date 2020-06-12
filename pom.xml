@@ -507,7 +507,7 @@
           <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.10.0</version>
+            <version>1.10.10</version>
             <scope>provided</scope>
           </dependency>
         </dependencies>
@@ -530,12 +530,6 @@
             <artifactId>mockito-core</artifactId>
             <version>3.3.3</version>
             <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy</artifactId>
-            <version>1.10.10</version>
-            <scope>provided</scope>
           </dependency>
         </dependencies>
       </dependencyManagement>
