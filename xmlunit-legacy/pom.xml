@@ -35,7 +35,7 @@
   <licenses>
     <license>
       <name>The BSD 3-Clause License</name>
-      <url>https://github.com/xmlunit/xmlunit/blob/master/xmlunit-legacy/LICENSE.txt</url>
+      <url>https://github.com/xmlunit/xmlunit/blob/main/xmlunit-legacy/LICENSE.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
