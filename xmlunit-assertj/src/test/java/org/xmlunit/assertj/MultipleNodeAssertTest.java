@@ -115,4 +115,90 @@ public class MultipleNodeAssertTest {
                 .extractingAttribute("attr1")
                 .containsExactly("value1", "value2", null, "value4");
     }
+
+    @Test
+    public void testExtractingTextSingleNode_shouldPass() {
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>My Simple Feed</title>" +
+                "   <entry attr1=\"value1\" />" +
+                "   <entry attr1=\"value2\"/>" +
+                "   <entry />" +
+                "   <entry attr1=\"value4\" />" +
+                "</feed>";
+
+        assertThat(xml)
+                .nodesByXPath("/feed/title")
+                .extractingText()
+                .containsExactly("My Simple Feed");
+    }
+
+    @Test
+    public void testExtractingTextSingleNodeWithWhiteSpace_shouldPass() {
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>" +
+                "           My Simple Feed" +
+                "   </title>" +
+                "   <entry attr1=\"value1\" />" +
+                "   <entry attr1=\"value2\"/>" +
+                "   <entry />" +
+                "   <entry attr1=\"value4\" />" +
+                "</feed>";
+
+        assertThat(xml)
+                .nodesByXPath("/feed/title")
+                .extractingText()
+                .containsExactly("My Simple Feed");
+    }
+
+    @Test
+    public void testExtractingTextMultipleNodes_shouldPass() {
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<document>" +
+                "   <h2> A header</h2>" +
+                " <h2>Just another header</h2>" +
+                "</document>";
+
+        assertThat(xml)
+                .nodesByXPath("/document/h2")
+                .extractingText()
+                .containsExactly("A header", "Just another header");
+    }
+
+    @Test
+    public void testExtractingTextMultipleNodesOneEmpty_shouldPass() {
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<document>" +
+                "   <h2> A header</h2>" +
+                " <h2/>" +
+                "</document>";
+
+        assertThat(xml)
+                .nodesByXPath("/document/h2")
+                .extractingText()
+                .containsExactly("A header", "");
+    }
+
+    @Test
+    public void testExtractingTextMultipleNodes_shouldFailed() {
+
+        thrown.expectAssertionError("[XPath \"/document/h2\" evaluated to node set] ");
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<document>" +
+                "   <h2> Matching header</h2>" +
+                " <h2>Not matching</h2>" +
+                "</document>";
+
+        assertThat(xml)
+                .nodesByXPath("/document/h2")
+                .extractingText()
+                .containsExactly("Matching header", "Header not matching");
+    }
+
 }

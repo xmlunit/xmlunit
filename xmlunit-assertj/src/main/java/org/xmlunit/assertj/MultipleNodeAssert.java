@@ -241,6 +241,33 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         return newListAssertInstance(values).as(description);
     }
 
+    /**
+     * Extracting text content of given nodes.
+     * If a node doesn't have the text then an empty string is returned.
+     *
+     * @throws AssertionError if the actual nodes iterable is {@code null}.
+     * @since XMLUnit 2.8.0
+     */
+    public AbstractListAssert<?, List<? extends String>, String, ObjectAssert<String>> extractingText() {
+        isNotNull();
+
+        List<String> values = new ArrayList<>();
+
+        for (Node node : actual) {
+            String textContent = node.getTextContent();
+            if (textContent != null) {
+                textContent = textContent.trim();
+            }
+            values.add(textContent);
+        }
+
+        String extractedDescription = "Extracted text content";
+        String description = Description.mostRelevantDescription(this.info.description(), extractedDescription);
+
+        return newListAssertInstance(values).as(description);
+    }
+
+
     private void allSatisfy(SingleNodeAssertConsumer consumer) {
         int index = 0;
         for (Node node : actual) {
