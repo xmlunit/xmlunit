@@ -6,6 +6,13 @@
   PR [#186](https://github.com/xmlunit/xmlunit/pull/186)
   by [@endrejeges](https://github.com/endrejeges)
 
+* added a new `extractingText` method to `MultipleNodeAssert` to make
+  it possible to write AssertJ assertions against the textual content
+  of nodes more easily.
+  Issue [#192](https://github.com/xmlunit/xmlunit/issues/192) and PR
+  [#193](https://github.com/xmlunit/xmlunit/pull/193)
+  by [@keesvandieren](https://github.com/keesvandieren)
+
 ## XMLUnit for Java 2.7.0 - /Released 2020-05-12/
 
 This version contains a backwards incompatible change to the
