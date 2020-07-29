@@ -6,6 +6,10 @@
   PR [#186](https://github.com/xmlunit/xmlunit/pull/186)
   by [@endrejeges](https://github.com/endrejeges)
 
+* bumped the bytebuddy dependency to 1.10.10 for the AssertJ module in
+  the hope it would help with
+  [#188](https://github.com/xmlunit/xmlunit/issues/188)
+
 * added a new `extractingText` method to `MultipleNodeAssert` to make
   it possible to write AssertJ assertions against the textual content
   of nodes more easily.
