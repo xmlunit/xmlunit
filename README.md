@@ -182,7 +182,7 @@ assertThat(createDocument()).isValidAgainst(Input.fromFile("local.xsd"));
 
 Starting with version 2.8.0 XMLUnit requires Java 7, which has always
 been the minimum requirement for the AssertJ module. All other modules
-in ersions 2.0.0 to 2.7.0 required Java 6.
+in versions 2.0.0 to 2.7.0 required Java 6.
 
 The `core` library provides all functionality needed to test XML
 output and hasn't got any dependencies.  It uses JUnit 4.x for its own
