@@ -85,17 +85,11 @@ public class test_DoctypeInputStream extends AbstractDoctypeTests {
 
     protected void assertEquals(String expected, String input, String docType,
                                 String systemId) throws IOException {
-        FileInputStream fis = null;
-        try {
-            fis = testDocument(input);
+        try (FileInputStream fis = testDocument(input)) {
             DoctypeInputStream doctypeInputStream =
                 new DoctypeInputStream(fis, "ISO-8859-1", docType, systemId);
 
             assertEquals(expected, readFully(doctypeInputStream));
-        } finally {
-            if (fis != null) {
-                fis.close();
-            }
         }
     }
 

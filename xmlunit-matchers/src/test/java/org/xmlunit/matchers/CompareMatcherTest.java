@@ -506,28 +506,19 @@ public class CompareMatcherTest {
         }
 
         private File writeIntoTestResultFolder(final Source source) throws TransformerFactoryConfigurationError {
-            FileOutputStream fop = null;
             File file = new File(getTestResultFolder(), this.fileName);
             try {
                 if (!file.exists()) {
                     file.createNewFile();
                 }
-                fop = new FileOutputStream(file);
-                marshal(source, fop);
-                fop.flush();
-                fop.close();
+                try (FileOutputStream fop = new FileOutputStream(file)) {
+                    marshal(source, fop);
+                    fop.flush();
+                }
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {
                 throw new RuntimeException(e);
-            } finally {
-                if (fop != null) {
-                    try {
-                        fop.close();
-                    } catch (IOException e) {
-                        // ignore exception during close
-                    }
-                }
             }
             return file;
         }

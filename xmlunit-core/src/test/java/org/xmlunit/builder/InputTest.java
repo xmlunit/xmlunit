@@ -68,43 +68,21 @@ public class InputTest {
     }
 
     @Test public void shouldParseAnExistingFileFromStream() throws Exception {
-        FileInputStream is = null;
-        try {
-            is = new FileInputStream(TestResources.ANIMAL_FILE);
+        try (FileInputStream is = new FileInputStream(TestResources.ANIMAL_FILE)) {
             allIsWellFor(Input.fromStream(is).build());
-        } finally {
-            if (is != null) {
-                is.close();
-            }
         }
     }
 
     @Test public void shouldParseAnExistingFileFromReader() throws Exception {
-        FileReader r = null;
-        try {
-            r = new FileReader(TestResources.ANIMAL_FILE);
+        try (FileReader r = new FileReader(TestResources.ANIMAL_FILE)) {
             allIsWellFor(Input.fromReader(r).build());
-        } finally {
-            if (r != null) {
-                r.close();
-            }
         }
     }
 
     @Test public void shouldParseAnExistingFileFromChannel() throws Exception {
-        FileChannel fc = null;
-        FileInputStream is = null;
-        try {
-            is = new FileInputStream(TestResources.ANIMAL_FILE);
-            fc = is.getChannel();
+         try (FileInputStream is = new FileInputStream(TestResources.ANIMAL_FILE);
+              FileChannel fc = is.getChannel()) {
             allIsWellFor(Input.fromChannel(fc).build());
-        } finally {
-            if (fc != null) {
-                fc.close();
-            }
-            if (is != null) {
-                is.close();
-            }
         }
     }
 
@@ -172,29 +150,13 @@ public class InputTest {
         // from Jaxb-Object
         allIsWellFor(Input.from(new ComplexNode()).build(), "complexNode");
         // from InputStream
-        FileInputStream is = null;
-        try {
-            is = new FileInputStream(TestResources.ANIMAL_FILE);
+        try (FileInputStream is = new FileInputStream(TestResources.ANIMAL_FILE)) {
             allIsWellFor(Input.from(is).build());
-        } finally {
-            if (is != null) {
-                is.close();
-                is = null;
-            }
         }
         assertNotNull(Input.from(new NullNode()).build());
-        FileChannel fc = null;
-        try {
-            is = new FileInputStream(TestResources.ANIMAL_FILE);
-            fc = is.getChannel();
+        try (FileInputStream is = new FileInputStream(TestResources.ANIMAL_FILE);
+             FileChannel fc = is.getChannel()) {
             allIsWellFor(Input.from(fc).build());
-        } finally {
-            if (fc != null) {
-                fc.close();
-            }
-            if (is != null) {
-                is.close();
-            }
         }
     }
 

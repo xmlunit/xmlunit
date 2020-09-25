@@ -208,9 +208,7 @@ public class Input {
      */
     public static Builder fromURL(URL url) {
         try {
-            InputStream in = null;
-            try {
-                in = url.openStream();
+            try (InputStream in = url.openStream()) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 int read = -1;
                 byte[] buf = new byte[4096];
@@ -229,10 +227,6 @@ public class Input {
                     b.setSystemId(url.toString());
                 }
                 return b;
-            } finally {
-                if (in != null) {
-                    in.close();
-                }
             }
         } catch (IOException ex) {
             throw new XMLUnitException(ex);

@@ -62,15 +62,12 @@ public class test_Validator extends XMLTestCase {
         assertTrue("xsdFile " + xsdFile.getAbsolutePath() + " exists",
                    xsdFile.exists());
                 
-        InputStream xmlFile = test_Validator.class.getResourceAsStream("/BookXsdGenerated.xml");
-        assertNotNull("xmlFile exists", xmlFile);
-        try {
+        try (InputStream xmlFile = test_Validator.class.getResourceAsStream("/BookXsdGenerated.xml")) {
+            assertNotNull("xmlFile exists", xmlFile);
             validator = new Validator(new InputSource(xmlFile));
 
             validator.useXMLSchema(true);
             assertTrue("Schema " + validator.toString(), validator.isValid());
-        } finally {
-            xmlFile.close();
         }
     }
 
