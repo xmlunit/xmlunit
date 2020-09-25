@@ -17,6 +17,10 @@
   [#193](https://github.com/xmlunit/xmlunit/pull/193)
   by [@keesvandieren](https://github.com/keesvandieren)
 
+* changed the minimum Java version required from Java 6 to Java 7 for
+  all modules (it has already been Java 7 for the AssertJ module
+  before).
+
 ## XMLUnit for Java 2.7.0 - /Released 2020-05-12/
 
 This version contains a backwards incompatible change to the

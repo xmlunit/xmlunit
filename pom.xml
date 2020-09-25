@@ -24,8 +24,8 @@
   <url>https://www.xmlunit.org/</url>
 
   <properties>
-    <maven.compile.source>1.6</maven.compile.source>
-    <maven.compile.target>1.6</maven.compile.target>
+    <maven.compile.source>1.7</maven.compile.source>
+    <maven.compile.target>1.7</maven.compile.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -36,13 +36,9 @@
     <!-- overridden via profile for Java 8+ -->
     <javadoc.additionalparam></javadoc.additionalparam>
 
-    <!-- overridden via profile for Java 7+ in order to create
-         javadocs for AssertJ Support -->
-    <maven.javadoc.source>1.6</maven.javadoc.source>
+    <maven.javadoc.source>1.7</maven.javadoc.source>
 
-    <!-- 2.20.1 works for Java6 but not for Java 10 - for 2.21.0
-         things are reversed -->
-    <maven.surefire.plugin.version>2.20.1</maven.surefire.plugin.version>
+    <maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 
     <!-- Jakarta XML Binding version -->
     <jakarta.xml.bind.version>2.3.3</jakarta.xml.bind.version>
@@ -85,6 +81,7 @@
 
   <modules>
     <module>xmlunit-core</module>
+    <module>xmlunit-assertj</module>
     <module>xmlunit-matchers</module>
     <module>xmlunit-legacy</module>
     <module>xmlunit-placeholders</module>
@@ -497,29 +494,11 @@
       </properties>
     </profile>
     <profile>
-      <id>java7+</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-        <jdk>[1.7,)</jdk>
-      </activation>
-      <properties>
-        <maven.javadoc.source>1.7</maven.javadoc.source>
-        <maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
-      </properties>
-      <modules>
-        <module>xmlunit-assertj</module>
-      </modules>
-    </profile>
-    <profile>
       <id>java14+</id>
       <activation>
         <activeByDefault>false</activeByDefault>
         <jdk>[14,)</jdk>
       </activation>
-      <properties>
-        <maven.compile.source>1.7</maven.compile.source>
-        <maven.compile.target>1.7</maven.compile.target>
-      </properties>
       <dependencyManagement>
         <dependencies>
           <dependency>
