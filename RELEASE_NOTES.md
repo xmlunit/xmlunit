@@ -9,6 +9,8 @@
 * bumped the bytebuddy dependency to 1.10.10 for the AssertJ module in
   the hope it would help with
   [#188](https://github.com/xmlunit/xmlunit/issues/188)
+  - and change its scope from provided to compile time, which should
+  finally fix the issue.
 
 * added a new `extractingText` method to `MultipleNodeAssert` to make
   it possible to write AssertJ assertions against the textual content
@@ -25,6 +27,7 @@
   the best matches as the order of ElementSelectors should select
   them.
   [#197](https://github.com/xmlunit/xmlunit/issues/197)
+
 
 ## XMLUnit for Java 2.7.0 - /Released 2020-05-12/
 

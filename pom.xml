@@ -161,7 +161,6 @@
         <groupId>net.bytebuddy</groupId>
         <artifactId>byte-buddy</artifactId>
         <version>1.10.10</version>
-        <scope>provided</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
