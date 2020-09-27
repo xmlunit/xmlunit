@@ -104,21 +104,20 @@ public class DefaultNodeMatcher implements NodeMatcher {
         }
 
         for (ElementSelector e : elementSelectors) {
-        Match lastMatch = new Match(null, -1);
-        for (int i = 0; i < controlSize; i++) {
+            Match lastMatch = new Match(null, -1);
+            for (int i = 0; i < controlSize; i++) {
                 if (!unmatchedControlIndexes.contains(Integer.valueOf(i))) {
                     continue;
                 }
-            Node control = controlList.get(i);
-            Match testMatch = findMatchingNode(control, testList,
-                                               lastMatch.index,
-                                               unmatchedTestIndexes, e);
-            if (testMatch != null) {
-                unmatchedControlIndexes.remove(Integer.valueOf(i));
-                unmatchedTestIndexes.remove(testMatch.index);
-                matches.put(control, testMatch.node);
+                Node control = controlList.get(i);
+                Match testMatch = findMatchingNode(control, testList,
+                    lastMatch.index, unmatchedTestIndexes, e);
+                if (testMatch != null) {
+                    unmatchedControlIndexes.remove(Integer.valueOf(i));
+                    unmatchedTestIndexes.remove(testMatch.index);
+                    matches.put(control, testMatch.node);
+                }
             }
-        }
         }
         return matches.entrySet();
     }
