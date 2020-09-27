@@ -98,16 +98,27 @@ public class DefaultNodeMatcher implements NodeMatcher {
             unmatchedTestIndexes.add(Integer.valueOf(i));
         }
         final int controlSize = controlList.size();
+        Set<Integer> unmatchedControlIndexes = new HashSet<Integer>();
+        for (int i = 0; i < controlSize; i++) {
+            unmatchedControlIndexes.add(Integer.valueOf(i));
+        }
+
+        for (ElementSelector e : elementSelectors) {
         Match lastMatch = new Match(null, -1);
         for (int i = 0; i < controlSize; i++) {
+                if (!unmatchedControlIndexes.contains(Integer.valueOf(i))) {
+                    continue;
+                }
             Node control = controlList.get(i);
             Match testMatch = findMatchingNode(control, testList,
                                                lastMatch.index,
-                                               unmatchedTestIndexes);
+                                               unmatchedTestIndexes, e);
             if (testMatch != null) {
+                unmatchedControlIndexes.remove(Integer.valueOf(i));
                 unmatchedTestIndexes.remove(testMatch.index);
                 matches.put(control, testMatch.node);
             }
+        }
         }
         return matches.entrySet();
     }
@@ -115,29 +126,16 @@ public class DefaultNodeMatcher implements NodeMatcher {
     private Match findMatchingNode(final Node searchFor,
                                    final List<Node> searchIn,
                                    final int indexOfLastMatch,
-                                   final Set<Integer> availableIndexes) {
+                                   final Set<Integer> availableIndexes,
+                                   final ElementSelector e) {
         final int searchSize = searchIn.size();
         Match m = searchIn(searchFor, searchIn,
                            availableIndexes,
-                           indexOfLastMatch + 1, searchSize);
+                           indexOfLastMatch + 1, searchSize, e);
         return m != null ? m : searchIn(searchFor, searchIn,
                                         availableIndexes,
-                                        0, indexOfLastMatch);
+                                        0, indexOfLastMatch, e);
     }
-
-    private Match searchIn(final Node searchFor,
-                           final List<Node> searchIn,
-                           final Set<Integer> availableIndexes,
-                           final int fromInclusive, final int toExclusive) {
-        for (ElementSelector e : elementSelectors) {
-            Match m = searchIn(searchFor, searchIn, availableIndexes, fromInclusive, toExclusive, e);
-            if (m != null) {
-                return m;
-            }
-        }
-        return null;
-    }
-
 
     private Match searchIn(final Node searchFor,
                            final List<Node> searchIn,

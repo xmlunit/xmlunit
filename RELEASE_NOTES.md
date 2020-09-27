@@ -21,6 +21,11 @@
   all modules (it has already been Java 7 for the AssertJ module
   before).
 
+* DefaultNodeMatcher with multiple ElementSelectors could fail to find
+  the best matches as the order of ElementSelectors should select
+  them.
+  [#197](https://github.com/xmlunit/xmlunit/issues/197)
+
 ## XMLUnit for Java 2.7.0 - /Released 2020-05-12/
 
 This version contains a backwards incompatible change to the

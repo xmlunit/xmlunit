@@ -95,4 +95,33 @@ public class DefaultNodeMatcherTest {
         assertSame(control2, result.get(1).getKey());
         assertSame(test1, result.get(1).getValue());
     }
+
+    @Test
+    public void elementSelectorsAreQueriedInSequenceWithControlNodesSwapped() {
+        Element control1 = doc.createElement("a");
+        control1.appendChild(doc.createTextNode("bar"));
+        Element control2 = doc.createElement("a");
+        control2.appendChild(doc.createTextNode("foo"));
+
+        Element test1 = doc.createElement("a");
+        test1.appendChild(doc.createTextNode("foo"));
+        Element test2 = doc.createElement("a");
+        test2.appendChild(doc.createTextNode("baz"));
+
+        DefaultNodeMatcher m =
+            new DefaultNodeMatcher(ElementSelectors.byNameAndText, ElementSelectors.byName);
+        List<Map.Entry<Node, Node>> result =
+            Linqy.asList(m.match(Arrays.<Node>asList(control1, control2),
+                Arrays.<Node>asList(test1, test2)));
+        assertEquals(2, result.size());
+
+        // byNameAndText
+        assertSame(control2, result.get(0).getKey());
+        assertSame(test1, result.get(0).getValue());
+
+        // byName
+        assertSame(control1, result.get(1).getKey());
+        assertSame(test2, result.get(1).getValue());
+    }
+
 }
