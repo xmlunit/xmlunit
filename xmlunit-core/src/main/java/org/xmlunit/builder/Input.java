@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Path;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
@@ -113,7 +114,7 @@ public class Input {
      * Return the matching Builder for the supported types: {@link Source}, {@link Builder}, {@link Document}, {@link Node},
      * byte[] (XML as byte[]), {@link String} (XML as String), {@link File} (contains XML),
      * {@link URL} (to an XML-Document), {@link URI} (to an XML-Document), {@link InputStream},
-     * {@link ReadableByteChannel},
+     * {@link ReadableByteChannel}, {@link Path},
      * Jaxb-{@link Object} (marshal-able with {@link javax.xml.bind.JAXB}.marshal(...))
      */
     public static Builder from(Object object) {
@@ -140,6 +141,8 @@ public class Input {
             xml = Input.fromStream((InputStream) object);
         } else if (object instanceof ReadableByteChannel) {
             xml = Input.fromChannel((ReadableByteChannel) object);
+        } else if (object instanceof Path) {
+            xml = Input.fromPath((Path) object);
         } else {
             // assume it is a JaxB-Object.
             xml = Input.fromJaxb(object);
@@ -257,6 +260,15 @@ public class Input {
             throw new IllegalArgumentException("uri " + uri + " is not an URI",
                                                ex);
         }
+    }
+
+    /**
+     * Build a Source from a Path.
+     * @param path a Path
+     * @since XMLUnit 2.8.0
+     */
+    public static Builder fromPath(final Path path) {
+        return fromURI(path.toUri());
     }
 
     /**

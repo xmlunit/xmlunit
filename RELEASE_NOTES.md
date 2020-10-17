@@ -28,6 +28,9 @@
   select them.
   [#197](https://github.com/xmlunit/xmlunit/issues/197)
 
+* `Input` builder now supports `java.nio.file.Path`
+  [#196](https://github.com/xmlunit/xmlunit/issues/196)
+
 ## XMLUnit for Java 2.7.0 - /Released 2020-05-12/
 
 This version contains a backwards incompatible change to the

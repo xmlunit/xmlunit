@@ -86,6 +86,12 @@ public class InputTest {
         }
     }
 
+    @Test public void shouldParseAnExistingFileFromPath() throws Exception {
+        Source s = Input.fromPath(new File(TestResources.ANIMAL_FILE).toPath()).build();
+        allIsWellFor(s);
+        assertEquals(toFileUri(TestResources.ANIMAL_FILE), s.getSystemId());
+    }
+
     @Test public void shouldParseString() throws Exception {
         allIsWellFor(Input.fromString(new String(readTestFile(), "UTF-8"))
                      .build());
@@ -158,6 +164,8 @@ public class InputTest {
              FileChannel fc = is.getChannel()) {
             allIsWellFor(Input.from(fc).build());
         }
+        // from Path
+        allIsWellFor(Input.from(new File(TestResources.ANIMAL_FILE).toPath()).build());
     }
 
     @Test(expected = IllegalArgumentException.class)
