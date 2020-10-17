@@ -31,6 +31,10 @@
 * `Input` builder now supports `java.nio.file.Path`
   [#196](https://github.com/xmlunit/xmlunit/issues/196)
 
+* It is now possible to specify a custom `TransformerFactory` for
+  `DefaultComparisonFormatter`.
+  [#195](https://github.com/xmlunit/xmlunit/issues/195)
+
 ## XMLUnit for Java 2.7.0 - /Released 2020-05-12/
 
 This version contains a backwards incompatible change to the

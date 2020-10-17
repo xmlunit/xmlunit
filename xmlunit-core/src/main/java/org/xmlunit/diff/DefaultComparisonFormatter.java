@@ -42,6 +42,8 @@ import java.io.StringWriter;
  */
 public class DefaultComparisonFormatter implements ComparisonFormatter {
 
+    private TransformerFactory factory;
+
     /**
      * Return a short String of the Comparison including the XPath and the shorten value of the effected control and
      * test Node.
@@ -79,6 +81,17 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
             description,
             getValue(controlDetails.getValue(), type), getValue(testDetails.getValue(), type),
             controlTarget, testTarget);
+    }
+
+    /**
+     * Set the TraX factory to use.
+     *
+     * @param f the factory to use - may be null in which case the
+     * default factory will be used.
+     * @since 2.8.0
+     */
+    public void setTransformerFactory(final TransformerFactory f) {
+        factory = f;
     }
 
     /**
@@ -453,16 +466,19 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * @since XMLUnit 2.4.0
      */
     protected Transformer createXmlTransformer(int numberOfBlanksToIndent) throws TransformerConfigurationException {
-        TransformerFactoryConfigurer.Builder b = TransformerFactoryConfigurer.builder()
-            .withExternalStylesheetLoadingDisabled()
-            .withDTDLoadingDisabled();
+        TransformerFactory fac = factory;
+        if (fac == null) {
+            TransformerFactoryConfigurer.Builder b = TransformerFactoryConfigurer.builder()
+                .withExternalStylesheetLoadingDisabled()
+                .withDTDLoadingDisabled();
 
-        if (numberOfBlanksToIndent >= 0) {
-            // not all TransformerFactories support this feature
-            b = b.withSafeAttribute("indent-number", numberOfBlanksToIndent);
+            if (numberOfBlanksToIndent >= 0) {
+                // not all TransformerFactories support this feature
+                b = b.withSafeAttribute("indent-number", numberOfBlanksToIndent);
+            }
+            fac = b.build().configure(TransformerFactory.newInstance());
         }
-        final TransformerFactory factory = b.build().configure(TransformerFactory.newInstance());
-        final Transformer transformer = factory.newTransformer();
+        final Transformer transformer = fac.newTransformer();
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         transformer.setOutputProperty(OutputKeys.METHOD, "xml");
         if (numberOfBlanksToIndent >= 0) {

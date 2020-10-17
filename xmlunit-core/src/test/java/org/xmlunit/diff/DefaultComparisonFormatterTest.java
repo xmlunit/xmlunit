@@ -17,6 +17,8 @@ package org.xmlunit.diff;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.Input;
@@ -24,15 +26,21 @@ import org.xmlunit.util.Convert;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
 
 public class DefaultComparisonFormatterTest {
 
     private DefaultComparisonFormatter compFormatter = new DefaultComparisonFormatter();
+
+    @Mock
+    private TransformerFactory fac;
 
     private static final boolean JAVA_9_PLUS, JAVA_14_PLUS;
     static {
@@ -40,16 +48,14 @@ public class DefaultComparisonFormatterTest {
         try {
             Class.forName("java.lang.module.ModuleDescriptor");
             j9 = true;
-        } catch (ClassNotFoundException e) {
-        } catch (Error e) {
+        } catch (ClassNotFoundException | Error e) {
         }
         JAVA_9_PLUS = j9;
         boolean j14 = false;
         try {
             Class.forName("java.lang.reflect.RecordComponent");
             j14 = true;
-        } catch (ClassNotFoundException e) {
-        } catch (Error e) {
+        } catch (ClassNotFoundException | Error e) {
         }
         JAVA_14_PLUS = j14;
     }
@@ -637,6 +643,20 @@ public class DefaultComparisonFormatterTest {
 
         assertEquals("<a><b/></a>", controlDetailsUnformatted);
         assertEquals("<a>\n  <b/>\n</a>", testDetailsUnformatted);
+    }
+
+    @Test
+    public void usesCustomTransformerFactory() throws TransformerConfigurationException {
+        Diff diff = DiffBuilder.compare("<a><b/></a>").withTest("<a>\n  <b/>\n</a>").build();
+        Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
+
+        MockitoAnnotations.initMocks(this);
+        when(fac.newTransformer())
+            .thenReturn(TransformerFactory.newInstance().newTransformer());
+
+        compFormatter.setTransformerFactory(fac);
+        getDetails(firstDiff.getControlDetails(), firstDiff.getType());
+        verify(fac).newTransformer();
     }
 
     private DocumentBuilderFactory getDocumentBuilderFactoryWithoutValidation() throws ParserConfigurationException {
