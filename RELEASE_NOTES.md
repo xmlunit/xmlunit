@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.8.0 - /not released, yet/
+## XMLUnit for Java 2.8.0 - /Released 2020-10-30/
 
 * changed optional JAXB dependency to use Jakarta XML Binding API
   PR [#186](https://github.com/xmlunit/xmlunit/pull/186)
