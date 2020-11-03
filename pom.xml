@@ -488,6 +488,9 @@
         <activeByDefault>false</activeByDefault>
         <jdk>[1.8,)</jdk>
       </activation>
+      <modules>
+        <module>xmlunit-assertj3</module>
+      </modules>
       <properties>
         <javadoc.additionalparam>-Xdoclint:html,syntax,accessibility,reference</javadoc.additionalparam>
       </properties>
