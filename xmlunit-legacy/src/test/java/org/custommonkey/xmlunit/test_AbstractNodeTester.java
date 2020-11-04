@@ -198,6 +198,7 @@ public class test_AbstractNodeTester extends TestCase {
         private boolean piCalled;
         private boolean textCalled;
         private boolean noMoreNodesCalled;
+        private boolean entityReferenceCalled;
 
         public void testCDATASection(CDATASection cdata) {
             Assert.assertFalse("testCDATASection called", cdataCalled);
@@ -234,15 +235,19 @@ public class test_AbstractNodeTester extends TestCase {
                 if (!textCalled) {
                     Assert.assertEquals("bar", fullText);
                 } else {
-                    Assert.assertEquals("helloxyzzy", fullText);
+                    if (!"helloxyzzy".equals(fullText)) {
+                        Assert.assertEquals("hello", fullText); // parser didn't expand entity reference
+                        Assert.assertTrue("testEntityReference called", entityReferenceCalled);
+                    }
                 }
             } // else - parser didn't expand entity reference
             textCalled = true;
         }
 
         public void testEntityReference(EntityReference reference) {
-            Assert.assertTrue("testEntityReference called", textCalled);
+            Assert.assertTrue("testEntityReference called after testText called", textCalled);
             Assert.assertEquals("my", reference.getNodeName());
+            entityReferenceCalled = true;
         }
 
         public void noMoreNodes(NodeTest t) {
