@@ -236,7 +236,7 @@ public class test_AbstractNodeTester extends TestCase {
                     Assert.assertEquals("bar", fullText);
                 } else {
                     if (!"helloxyzzy".equals(fullText)) {
-                        Assert.assertEquals("hello", fullText); // parser didn't expand entity reference
+                        Assert.assertEquals("xyzzy", fullText); // parser didn't expand entity reference
                         Assert.assertTrue("testEntityReference called", entityReferenceCalled);
                     }
                 }
