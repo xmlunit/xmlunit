@@ -38,8 +38,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import static org.xmlunit.assertj3.error.ShouldBeNotSimilar.shouldBeNotIdentical;
 import static org.xmlunit.assertj3.error.ShouldBeNotSimilar.shouldBeNotSimilar;
-import static org.xmlunit.assertj3.error.ShouldBeSimilar.shouldBeIdentical;
-import static org.xmlunit.assertj3.error.ShouldBeSimilar.shouldBeSimilar;
 import static org.xmlunit.assertj3.error.ShouldNotHaveThrown.shouldNotHaveThrown;
 import static org.xmlunit.diff.DifferenceEvaluators.Default;
 import static org.xmlunit.diff.DifferenceEvaluators.chain;
@@ -346,7 +344,6 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
         Diff diff;
 
         try {
-
             diff = diffBuilder.build();
         } catch (Exception e) {
             throwAssertionError(shouldNotHaveThrown(e));
@@ -359,12 +356,11 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
         if (diff.hasDifferences()) {
             Comparison firstDifferenceComparison = diff.getDifferences().iterator().next().getComparison();
             if (ComparisonContext.IDENTICAL == context) {
-                throwAssertionError(shouldBeIdentical(controlSystemId, testSystemId, firstDifferenceComparison, formatter, formatXml));
+                failComparison("identical", controlSystemId, testSystemId, firstDifferenceComparison, formatter, formatXml);
             } else if (ComparisonContext.SIMILAR == context) {
-                throwAssertionError(shouldBeSimilar(controlSystemId, testSystemId, firstDifferenceComparison, formatter, formatXml));
+                failComparison("similar", controlSystemId, testSystemId, firstDifferenceComparison, formatter, formatXml);
             }
         } else {
-
             if (ComparisonContext.NOT_IDENTICAL == context) {
                 throwAssertionError(shouldBeNotIdentical(controlSystemId, testSystemId));
             } else if (ComparisonContext.NOT_SIMILAR == context) {
@@ -372,4 +368,26 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
             }
         }
     }
+
+
+    private static final String COMPARISON_FAILURE_PATTERN = "%nExpecting:%n <%s> and <%s> to be %s%n%s%nexpected:<%s> but was:<%s>>";
+
+    private void failComparison(final String type, final String controlSystemId,
+                                final String testSystemId, final Comparison difference,
+                                final ComparisonFormatter formatter, final boolean formatXml) {
+        final String controlId = controlSystemId != null ? controlSystemId : "control instance";
+        final String testId = testSystemId != null ? testSystemId : "test instance";
+        final String description = formatter.getDescription(difference);
+
+        final String expected = formatter.getDetails(difference.getControlDetails(),
+            difference.getType(), formatXml);
+        final String actual = formatter.getDetails(difference.getTestDetails(),
+            difference.getType(), formatXml);
+
+        final String msg = String.format(COMPARISON_FAILURE_PATTERN, controlId, testId, type,
+            description, expected, actual);
+
+        failWithActualExpectedAndMessage(expected, actual, msg);
+    }
+
 }

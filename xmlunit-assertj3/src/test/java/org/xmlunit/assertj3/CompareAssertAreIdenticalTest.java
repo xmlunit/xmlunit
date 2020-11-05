@@ -123,7 +123,7 @@ public class CompareAssertAreIdenticalTest {
 
         thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be identical");
         thrown.expectAssertionError("Expected child nodelist length '1' but was '3'");
-        thrown.expectAssertionError("expected:<<a>[<b/>]</a>> but was:<<a>[%n <b/>%n]</a>>");
+        thrown.expectAssertionError("expected:<<a><b/></a>> but was:<<a>%n <b/>%n</a>>");
 
         String testXml = String.format("<a>%n <b/>%n</a>");
         String controlXml = "<a><b/></a>";
