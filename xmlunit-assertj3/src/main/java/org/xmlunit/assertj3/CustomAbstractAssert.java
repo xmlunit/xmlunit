@@ -14,19 +14,9 @@
 package org.xmlunit.assertj3;
 
 import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.error.AssertionErrorFactory;
-import org.assertj.core.internal.Failures;
-
-import java.util.List;
-
-import static org.assertj.core.util.Lists.newArrayList;
 
 /**
- * AbstractAssert allow only to throw errors extending ErrorMessageFactory.
- * CustomAbstractAssert allow to throw errors that based on AssertionErrorFactory.
- *
- * @see AbstractAssert#throwAssertionError(org.assertj.core.error.ErrorMessageFactory)
- * @see org.xmlunit.assertj3.error.ComparisonFailureErrorFactory
+ * Ensures XMLUnit's stack trace lines get removed from AssertionError's stack traces if those of AssertJ are removed.
  * @since XMLUnit 2.8.1
  */
 abstract class CustomAbstractAssert<SELF extends CustomAbstractAssert<SELF, ACTUAL>, ACTUAL> extends AbstractAssert<SELF, ACTUAL> {
@@ -37,39 +27,13 @@ abstract class CustomAbstractAssert<SELF extends CustomAbstractAssert<SELF, ACTU
         super(actual, selfType);
     }
 
-    void throwAssertionError(AssertionErrorFactory assertionErrorFactory) {
-        AssertionError assertionError = assertionErrorFactory.newAssertionError(info.description(), info.representation());
-        Failures.instance().removeAssertJRelatedElementsFromStackTraceIfNeeded(assertionError);
-        removeCustomAssertRelatedElementsFromStackTraceIfNeeded(assertionError);
-        throw assertionError;
-    }
-
-    private void removeCustomAssertRelatedElementsFromStackTraceIfNeeded(AssertionError assertionError) {
-
-        if (!Failures.instance().isRemoveAssertJRelatedElementsFromStackTrace()) return;
-
-        List<StackTraceElement> filtered = newArrayList(assertionError.getStackTrace());
-        for (StackTraceElement element : assertionError.getStackTrace()) {
-            if (isElementOfCustomAssert(element)) {
-                filtered.remove(element);
-            }
+    // @Override
+    protected boolean isElementOfCustomAssert(final StackTraceElement stackTraceElement) {
+        if (stackTraceElement.getClassName().contains(ORG_XMLUNIT_ASSERTJ_ERROR)) {
+            return true;
         }
-        StackTraceElement[] newStackTrace = filtered.toArray(new StackTraceElement[0]);
-        assertionError.setStackTrace(newStackTrace);
-    }
-
-    private boolean isElementOfCustomAssert(StackTraceElement stackTraceElement) {
-
-        Class<?> currentAssertClass = getClass();
-        while (currentAssertClass != AbstractAssert.class) {
-            if (stackTraceElement.getClassName().equals(currentAssertClass.getName())) {
-                return true;
-            }
-            if (stackTraceElement.getClassName().contains(ORG_XMLUNIT_ASSERTJ_ERROR)) {
-                return true;
-            }
-            currentAssertClass = currentAssertClass.getSuperclass();
-        }
+        // return super.isElementOfCustomAssert(stackTraceElement);
         return false;
     }
+
 }
