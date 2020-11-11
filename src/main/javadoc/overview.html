@@ -3,7 +3,7 @@
     <a href="https://www.xmlunit.org/">XMLUnit</a> helps testing code
     that creates XML.
 
-    <p>XMLUnit for Java is separated into three jars:</p>
+    <p>XMLUnit for Java is separated into several jars:</p>
     <ul>
       <li><code>xmlunit-core</code> contains all algorithms and
         classes needed to validate XML, perform XPath queries or
@@ -15,7 +15,12 @@
         supposed to work with Hamcrest 2.x as well.</li>
       <li><code>xmlunit-assertj</code>
         contains <a href="https://joel-costigliola.github.io/assertj/index.html">AssertJ</a>
-        assertions on top of <code>xmlunit-core</code>.</li>
+        assertions on top of <code>xmlunit-core</code> that work with
+        AssertJ 2.x and 3.x.</li>
+      <li><code>xmlunit-assertj3</code>
+        contains <a href="https://assertj.github.io/doc/">AssertJ
+        3.x</a> assertions on top of <code>xmlunit-core</code> that
+        work with AssertJ 3.18.1 and later.</li>
     </ul>
 
     <p>While XMLUnit is focussed on testing, parts of it may be useful
