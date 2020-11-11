@@ -385,7 +385,8 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
             difference.getType(), formatXml);
 
         final String msg = String.format(COMPARISON_FAILURE_PATTERN, controlId, testId, type,
-            description, expected, actual);
+            description, expected, actual)
+                .replace("%", "%%"); // any remaining '%' signs should be escaped because assertj tries to format this as well.
 
         failWithActualExpectedAndMessage(expected, actual, msg);
     }
