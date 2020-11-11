@@ -2,6 +2,26 @@
 
 ## XMLUnit for Java 2.8.1 - /not released, yet/
 
+* added a new xmlunit-assertj3 module that requires AssertJ 3.18.1 or
+  later.
+
+  This module no longer uses AssertJ internal classes that are not
+  exported to OSGi environments and thus fixes issue [#203](https://github.com/xmlunit/xmlunit/issues/203).
+
+  The module (like AssertJ 3.x itself) requires Java 8 at runtime and
+  is similar to xmlunit-assertj but is no drop-in replacement. It uses
+  a different Java package from xmlunit-assertj and `CompareAssert`
+  will no longer throw a JUnit 4.x `ComparisonException` but an
+  opentest4j `AssertionFailedError` instead.
+
+  The existing xmlunit-assertj module will still be supported in
+  future releases but expect AssertJ 3.x specific changes to only get
+  applied to xmlunit-assertj3.
+
+  Many thanks to [@](https://github.com/Zegveld),
+  [@scordio](https://github.com/scordio) and
+  [@joel-costigliola](https://github.com/joel-costigliola).
+
 ## XMLUnit for Java 2.8.0 - /Released 2020-10-30/
 
 * changed optional JAXB dependency to use Jakarta XML Binding API
