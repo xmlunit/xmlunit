@@ -27,13 +27,10 @@ abstract class CustomAbstractAssert<SELF extends CustomAbstractAssert<SELF, ACTU
         super(actual, selfType);
     }
 
-    // @Override
+    @Override
     protected boolean isElementOfCustomAssert(final StackTraceElement stackTraceElement) {
-        if (stackTraceElement.getClassName().contains(ORG_XMLUNIT_ASSERTJ_ERROR)) {
-            return true;
-        }
-        // return super.isElementOfCustomAssert(stackTraceElement);
-        return false;
+        return stackTraceElement.getClassName().contains(ORG_XMLUNIT_ASSERTJ_ERROR)
+            || super.isElementOfCustomAssert(stackTraceElement);
     }
 
 }
