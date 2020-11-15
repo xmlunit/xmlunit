@@ -107,11 +107,23 @@ import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
 assertThat(createTestDocument(), isIdenticalTo(Input.fromFile("test-data/good.xml")));
 ```
 
-or using AssertJ with `XmlAssert`
+or using AssertJ with `XmlAssert` of the `xmlunit-assertj` module
 
 ```java
 
 import static org.xmlunit.assertj.XmlAssert.assertThat;
+...
+
+assertThat(createTestDocument())
+            .and(Input.fromFile("test-data/good.xml"))
+            .areIdentical();
+```
+
+or using AssertJ with `XmlAssert` of the `xmlunit-assertj3` module
+
+```java
+
+import static org.xmlunit.assertj3.XmlAssert.assertThat;
 ...
 
 assertThat(createTestDocument())
@@ -138,11 +150,22 @@ assertThat("<foo>bar</foo>", EvaluateXPathMatcher.hasXPath("/foo/text()",
                                                            equalTo("bar")));
 ```
 
-or using AssertJ with `XmlAssert`
+or using AssertJ with `XmlAssert` of the `xmlunit-assertj` module
 
 ```java
 
 import static org.xmlunit.assertj.XmlAssert.assertThat;
+...
+
+assertThat("<foo>bar</foo>").hasXPath("/foo");
+assertThat("<foo>bar</foo>").valueByXPath("/foo/text()").isEqualTo("bar");
+```
+
+or using AssertJ with `XmlAssert` of the `xmlunit-assertj3` module
+
+```java
+
+import static org.xmlunit.assertj3.XmlAssert.assertThat;
 ...
 
 assertThat("<foo>bar</foo>").hasXPath("/foo");
@@ -169,10 +192,19 @@ import static org.xmlunit.matchers.ValidationMatcher.valid;
 assertThat(createDocument(), valid(Input.fromFile("local.xsd")));
 ```
 
-or using AssertJ with `XmlAssert`
+or using AssertJ with `XmlAssert` of the `xmlunit-assertj` module
 
 ```java
 import static org.xmlunit.assertj.XmlAssert.assertThat;
+...
+
+assertThat(createDocument()).isValidAgainst(Input.fromFile("local.xsd"));
+```
+
+or using AssertJ with `XmlAssert` of the `xmlunit-assertj3` module
+
+```java
+import static org.xmlunit.assertj3.XmlAssert.assertThat;
 ...
 
 assertThat(createDocument()).isValidAgainst(Input.fromFile("local.xsd"));
@@ -182,7 +214,8 @@ assertThat(createDocument()).isValidAgainst(Input.fromFile("local.xsd"));
 
 Starting with version 2.8.0 XMLUnit requires Java 7, which has always
 been the minimum requirement for the AssertJ module. All other modules
-in versions 2.0.0 to 2.7.0 required Java 6.
+in versions 2.0.0 to 2.7.0 required Java 6. The `xmlunit-assertj3`
+module requires Java 8 as does AssertJ 3.x itself.
 
 The `core` library provides all functionality needed to test XML
 output and hasn't got any dependencies.  It uses JUnit 4.x for its own
@@ -205,6 +238,25 @@ API of XMLUnit 1.x on top of the 2.x core library.
 
 While the Hamcrest matchers are built against Hamcrest 1.x they are
 supposed to work with Hamcrest 2.x as well.
+
+Starting with XMLUnit 2.8.1 there are two different AssertJ modules,
+`xmlunit-assertj` is the original implementation which is based on
+AssertJ 2.x and also works for AssertJ 3.x but uses reflection to deal
+with some changes in later versions of AssertJ. The `xmlunit-assertj3`
+module requires at least AssertJ 3.18.1.
+
+The `xmlunit-assertj` module depends on an internal package not
+exported by AssertJ's OSGi module and thus doesn't work in an OSGi
+context.
+
+Another difference between the two AssertJ modules is the exception
+thrown if a comparison fails. `xmlunit-assertj` will try to throw a
+JUnit 4.x `ComparisonFailure` if the class is available and thus is
+best suited for tests using JUnit 4.x. `xmlunit-assertj` will try to
+throw an [Open Test
+Alliance](https://github.com/ota4j-team/opentest4j)
+`AssertionFailedError` if the class is available and thus is better
+suited for tests using JUnit 5.x.
 
 ## Checking out XMLUnit for Java
 
