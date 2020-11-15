@@ -18,7 +18,7 @@
   future releases but expect AssertJ 3.x specific changes to only get
   applied to xmlunit-assertj3.
 
-  Many thanks to [@](https://github.com/Zegveld),
+  Many thanks to [@Zegveld](https://github.com/Zegveld),
   [@scordio](https://github.com/scordio) and
   [@joel-costigliola](https://github.com/joel-costigliola).
 
