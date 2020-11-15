@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.8.1 - /not released, yet/
+## XMLUnit for Java 2.8.1 - /Released 2020-11-15/
 
 * added a new xmlunit-assertj3 module that requires AssertJ 3.18.1 or
   later.
