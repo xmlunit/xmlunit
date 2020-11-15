@@ -252,7 +252,7 @@ context.
 Another difference between the two AssertJ modules is the exception
 thrown if a comparison fails. `xmlunit-assertj` will try to throw a
 JUnit 4.x `ComparisonFailure` if the class is available and thus is
-best suited for tests using JUnit 4.x. `xmlunit-assertj` will try to
+best suited for tests using JUnit 4.x. `xmlunit-assertj3` will try to
 throw an [Open Test
 Alliance](https://github.com/ota4j-team/opentest4j)
 `AssertionFailedError` if the class is available and thus is better
