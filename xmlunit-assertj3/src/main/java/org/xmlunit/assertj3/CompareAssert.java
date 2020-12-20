@@ -43,7 +43,7 @@ import static org.xmlunit.diff.DifferenceEvaluators.Default;
 import static org.xmlunit.diff.DifferenceEvaluators.chain;
 
 /**
- * Assertion methods for XMLs comparision.
+ * Assertion methods for XMLs comparison.
  *
  * <p><b>Simple Example</b></p>
  *
@@ -388,7 +388,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
             description, expected, actual)
                 .replace("%", "%%"); // any remaining '%' signs should be escaped because assertj tries to format this as well.
 
-        failWithActualExpectedAndMessage(expected, actual, msg);
+        failWithActualExpectedAndMessage(actual, expected, msg);
     }
 
 }
