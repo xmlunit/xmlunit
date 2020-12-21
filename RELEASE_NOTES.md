@@ -1,5 +1,7 @@
 # Release Notes
 
+## XMLUnit for Java 2.8.3 - /not released, yet/
+
 ## XMLUnit for Java 2.8.2 - /Released 2020-12-21/
 
 * `CompareAssert` inside the AssertJ3 module swapped the expected and
