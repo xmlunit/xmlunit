@@ -2,6 +2,11 @@
 
 ## XMLUnit for Java 2.8.2 - /not released, yet/
 
+* `CompareAssert` inside the AssertJ3 module swapped the expected and
+  actual parameters when creating the assertion error.
+  [#210](https://github.com/xmlunit/xmlunit/pull/210) by
+  [@f-lopes](https://github.com/f-lopes)
+
 ## XMLUnit for Java 2.8.1 - /Released 2020-11-15/
 
 * added a new xmlunit-assertj3 module that requires AssertJ 3.18.1 or
