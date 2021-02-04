@@ -24,6 +24,7 @@ import org.xmlunit.assertj.util.SetEnglishLocaleRule;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -263,7 +264,13 @@ public class ValueAssertTest {
     @Test
     public void testIsEqualTo_withAttributeValueExpression_shouldFailed() {
 
-        thrown.expectAssertionError("expected:<\"[something]\"> but was:<\"[abc]\">");
+        thrown.expectAssertionErrorPattern(".*("
+            // AssertJ since "forever"
+            + Pattern.quote("expected:<\"[something]\"> but was:<\"[abc]\">")
+            + "|"
+            // AssertJ 3.19.0+
+            + Pattern.quote("Expecting:\n <\"abc\">\nto be equal to:\n <\"something\">\nbut was not.")
+            + ")");
 
         String xml = "<a><b attr=\"abc\"></b></a>";
 
