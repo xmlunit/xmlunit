@@ -31,9 +31,9 @@ public class XmlAssertValueByXPathTest {
     public static SetEnglishLocaleRule locale = new SetEnglishLocaleRule();
 
     @Test
-    public void testValueByXPath_withNull_shouldFailed() {
+    public void testValueByXPath_withNull_shouldFail() {
 
-        thrown.expectAssertionError(format("%nExpecting not blank but was:<null>"));
+        thrown.expectAssertionErrorPattern(format("%nExpecting not blank but was:(<| )null>?"));
 
         assertThat("<a><b></b><c/></a>").valueByXPath(null);
     }
@@ -41,7 +41,7 @@ public class XmlAssertValueByXPathTest {
     @Test
     public void testValueByXPath_withWhitespacesOnly_shouldFailed() {
 
-        thrown.expectAssertionError(format("%nExpecting not blank but was:<\" \n \t\">"));
+        thrown.expectAssertionErrorPattern(format("%nExpecting not blank but was:(<| )\" \n \t\">?"));
 
         assertThat("<a><b></b><c/></a>").valueByXPath(" \n \t");
     }

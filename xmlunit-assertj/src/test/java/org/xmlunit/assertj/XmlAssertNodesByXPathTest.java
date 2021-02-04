@@ -43,17 +43,17 @@ public class XmlAssertNodesByXPathTest {
     }
 
     @Test
-    public void testNodesByXPath_withNull_shouldFailed() {
+    public void testNodesByXPath_withNull_shouldFail() {
 
-        thrown.expectAssertionError(format("%nExpecting not blank but was:<null>"));
+        thrown.expectAssertionErrorPattern(format("%nExpecting not blank but was:(<| )null>?"));
 
         assertThat("<a><b></b><c/></a>").nodesByXPath(null);
     }
 
     @Test
-    public void testNodesByXPath_withWhitespacesOnly_shouldFailed() {
+    public void testNodesByXPath_withWhitespacesOnly_shouldFail() {
 
-        thrown.expectAssertionError(format("%nExpecting not blank but was:<\" \n \t\">"));
+        thrown.expectAssertionErrorPattern(format("%nExpecting not blank but was:(<| )\" \n \t\">?"));
 
         assertThat("<a><b></b><c/></a>").nodesByXPath(" \n \t");
     }

@@ -2,6 +2,10 @@
 
 ## XMLUnit for Java 2.8.3 - /not released, yet/
 
+* adjusted unit tests so they pass when AssertJ 3.19.0 is used.
+  [#212](https://github.com/xmlunit/xmlunit/pull/212) by
+  [mmathesius](https://github.com/mmathesius)
+
 ## XMLUnit for Java 2.8.2 - /Released 2020-12-21/
 
 * `CompareAssert` inside the AssertJ3 module swapped the expected and
