@@ -55,7 +55,7 @@ public class ValueAssertTest {
     }
 
     @Test
-    public void testAsInt_shouldFailed() {
+    public void testAsInt_shouldFail() {
 
         thrown.expectAssertionError("Expecting:%n <apple>%nto be convertible to%n <int>");
 
@@ -67,6 +67,23 @@ public class ValueAssertTest {
                 "</fruits>";
 
         assertThat(xml).valueByXPath("//fruits/fruit/@name").asInt();
+    }
+
+    @Test
+    public void testAsInt_shouldUseCustomFailMessage() {
+
+        thrown.expectAssertionError("Alarm alarm!");
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<fruits>" +
+                "<fruit name=\"apple\"/>" +
+                "<fruit name=\"orange\"/>" +
+                "<fruit name=\"banana\"/>" +
+                "</fruits>";
+
+        assertThat(xml)
+            .withFailMessage("Alarm alarm!")
+            .valueByXPath("//fruits/fruit/@name").asInt();
     }
 
     @Test

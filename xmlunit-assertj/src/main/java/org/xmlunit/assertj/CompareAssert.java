@@ -45,7 +45,7 @@ import static org.xmlunit.diff.DifferenceEvaluators.Default;
 import static org.xmlunit.diff.DifferenceEvaluators.chain;
 
 /**
- * Assertion methods for XMLs comparision.
+ * Assertion methods for XMLs comparison.
  *
  * <p><b>Simple Example</b></p>
  *
@@ -76,12 +76,14 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     private boolean formatXml;
     private ComparisonFormatter formatter = new DefaultComparisonFormatter();
 
-    private CompareAssert(Object actual, DiffBuilder diffBuilder) {
+    private CompareAssert(Object actual, DiffBuilder diffBuilder, XmlAssert xmlAssert) {
         super(actual, CompareAssert.class);
         this.diffBuilder = diffBuilder;
+        xmlAssert.fillInState(this);
     }
 
-    static CompareAssert create(Object actual, Object control, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf) {
+    static CompareAssert create(Object actual, Object control, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf,
+                                XmlAssert xmlAssert) {
 
         AssertionsAdapter.assertThat(control)
                 .as(EXPECTING_NOT_NULL)
@@ -92,7 +94,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
                 .withNamespaceContext(prefix2Uri)
                 .withDocumentBuilderFactory(dbf);
 
-        return new CompareAssert(actual, diffBuilder);
+        return new CompareAssert(actual, diffBuilder, xmlAssert);
     }
 
     /**

@@ -30,6 +30,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.xpath.XPathFactory;
 
+import static org.xmlunit.assertj.error.ElementsShouldSatisfy.UnsatisfiedRequirement;
+import static org.xmlunit.assertj.error.ElementsShouldSatisfy.elementsShouldSatisfy;
 import static org.xmlunit.assertj.error.ShouldAnyNodeHaveXPath.shouldAnyNodeHaveXPath;
 
 /**
@@ -55,12 +57,13 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
 
     private static final AssertFactoryProvider ASSERT_FACTORY_PROVIDER = new AssertFactoryProvider();
 
-    private MultipleNodeAssert(Iterable<Node> nodes, JAXPXPathEngine engine) {
+    private MultipleNodeAssert(Iterable<Node> nodes, JAXPXPathEngine engine, XmlAssert xmlAssert) {
         super(nodes, MultipleNodeAssert.class, ASSERT_FACTORY_PROVIDER.create(engine));
+        xmlAssert.fillInState(this);
     }
 
     static MultipleNodeAssert create(Object xmlSource, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf,
-                                     XPathFactory xpf, String xPath) {
+                                     XPathFactory xpf, String xPath, XmlAssert xmlAssert) {
 
         AssertionsAdapter.assertThat(xPath).isNotBlank();
 
@@ -73,7 +76,7 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
         Iterable<Node> nodes = engine.selectNodes(xPath, root);
 
-        return new MultipleNodeAssert(nodes, engine)
+        return new MultipleNodeAssert(nodes, engine, xmlAssert)
                 .describedAs("XPath \"%s\" evaluated to node set", xPath);
     }
 
@@ -238,7 +241,7 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         String extractedDescription = String.format("Extracted attribute: %s", attribute);
         String description = Description.mostRelevantDescription(this.info.description(), extractedDescription);
 
-        return newListAssertInstance(values).as(description);
+        return asListAssert(values).as(description);
     }
 
     /**
@@ -264,16 +267,34 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         String extractedDescription = "Extracted text content";
         String description = Description.mostRelevantDescription(this.info.description(), extractedDescription);
 
-        return newListAssertInstance(values).as(description);
+        return asListAssert(values).as(description);
     }
 
 
     private void allSatisfy(SingleNodeAssertConsumer consumer) {
         int index = 0;
+        final List<UnsatisfiedRequirement> errors = new ArrayList<>();
         for (Node node : actual) {
             final SingleNodeAssert singleNodeAssert = toAssert(node, navigationDescription("check node at index " + index));
-            consumer.accept(singleNodeAssert);
+            try {
+                consumer.accept(singleNodeAssert);
+            } catch (AssertionError ae) {
+                errors.add(new UnsatisfiedRequirement(node, ae.getMessage()));
+            }
             index++;
         }
+        if (!errors.isEmpty()) {
+            throwAssertionError(elementsShouldSatisfy(actual, errors, info));
+        }
+    }
+
+    private AbstractListAssert<?, List<? extends String>, String, ObjectAssert<String>>
+        asListAssert(final List<String> values) {
+        AbstractListAssert<?, List<? extends String>, String, ObjectAssert<String>> a =
+            newListAssertInstance(values);
+        a.info.useRepresentation(info.representation());
+        a.info.description(info.description());
+        a.info.overridingErrorMessage(info.overridingErrorMessage());
+        return a;
     }
 }

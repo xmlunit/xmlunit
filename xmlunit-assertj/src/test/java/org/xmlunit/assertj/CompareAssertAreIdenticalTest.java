@@ -63,7 +63,7 @@ public class CompareAssertAreIdenticalTest {
     }
 
     @Test
-    public void testAreIdentical_shouldFailed() {
+    public void testAreIdentical_shouldFail() {
 
         thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be identical");
         thrown.expectAssertionError("Expected node type 'CDATA Section' but was 'Text'");
@@ -87,6 +87,34 @@ public class CompareAssertAreIdenticalTest {
                 "</a>";
 
         assertThat(testXml).and(controlXml).areIdentical();
+    }
+
+    @Test
+    public void testAreIdentical_shouldUseCustomFailMessage() {
+
+        thrown.expectAssertionError("Alarm alarm!");
+
+        String testXml = "<!DOCTYPE a>" +
+                "<a xmlns:xyz=\"https://www.xmlunit.com/xyz\">" +
+                "   <b>text</b>" +
+                "   <c>" +
+                "      <d/>" +
+                "      <xyz:e/>" +
+                "   </c>" +
+                "</a>";
+
+        String controlXml = "" +
+                "<a xmlns:vwy=\"https://www.xmlunit.com/xyz\">" +
+                "   <b><![CDATA[text]]></b>" +
+                "   <c>" +
+                "      <d/>" +
+                "      <vwy:e/>" +
+                "   </c>" +
+                "</a>";
+
+        assertThat(testXml)
+            .withFailMessage("Alarm alarm!")
+            .and(controlXml).areIdentical();
     }
 
     @Test

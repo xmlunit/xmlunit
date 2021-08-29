@@ -168,7 +168,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     public MultipleNodeAssert nodesByXPath(String xPath) {
         isNotNull();
         try {
-            return MultipleNodeAssert.create(actual, prefix2Uri, dbf, xpf, xPath);
+            return MultipleNodeAssert.create(actual, prefix2Uri, dbf, xpf, xPath, this);
         } catch (Exception e) {
             throwAssertionError(shouldNotHaveThrown(e));
         }
@@ -199,7 +199,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     public ValueAssert valueByXPath(String xPath) {
         isNotNull();
         try {
-            return ValueAssert.create(actual, prefix2Uri, dbf, xpf, xPath);
+            return ValueAssert.create(actual, prefix2Uri, dbf, xpf, xPath, this);
         } catch (Exception e) {
             throwAssertionError(shouldNotHaveThrown(e));
         }
@@ -215,7 +215,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
     public CompareAssert and(Object control) {
         isNotNull();
         try {
-            return CompareAssert.create(actual, control, prefix2Uri, dbf);
+            return CompareAssert.create(actual, control, prefix2Uri, dbf, this);
         } catch (Exception e) {
             throwAssertionError(shouldNotHaveThrown(e));
         }
@@ -230,7 +230,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      */
     public XmlAssert isValid() {
         isNotNull();
-        ValidationAssert.create(actual).isValid();
+        ValidationAssert.create(actual, this).isValid();
         return this;
     }
 
@@ -242,7 +242,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      */
     public XmlAssert isInvalid() {
         isNotNull();
-        ValidationAssert.create(actual).isInvalid();
+        ValidationAssert.create(actual, this).isInvalid();
         return this;
     }
 
@@ -254,7 +254,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      */
     public XmlAssert isValidAgainst(Schema schema) {
         isNotNull();
-        ValidationAssert.create(actual, schema).isValid();
+        ValidationAssert.create(actual, schema, this).isValid();
         return this;
     }
 
@@ -266,7 +266,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      */
     public XmlAssert isNotValidAgainst(Schema schema) {
         isNotNull();
-        ValidationAssert.create(actual, schema).isInvalid();
+        ValidationAssert.create(actual, schema, this).isInvalid();
         return this;
     }
 
@@ -278,7 +278,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      */
     public XmlAssert isValidAgainst(Object... schemaSources) {
         isNotNull();
-        ValidationAssert.create(actual, schemaSources).isValid();
+        ValidationAssert.create(actual, this, schemaSources).isValid();
         return this;
     }
 
@@ -290,7 +290,13 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      */
     public XmlAssert isNotValidAgainst(Object... schemaSources) {
         isNotNull();
-        ValidationAssert.create(actual, schemaSources).isInvalid();
+        ValidationAssert.create(actual, this, schemaSources).isInvalid();
         return this;
+    }
+
+    void fillInState(AbstractAssert<?, ?> a) {
+        a.info.useRepresentation(info.representation());
+        a.info.description(info.description());
+        a.info.overridingErrorMessage(info.overridingErrorMessage());
     }
 }

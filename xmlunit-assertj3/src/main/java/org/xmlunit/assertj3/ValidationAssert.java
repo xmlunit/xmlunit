@@ -45,13 +45,14 @@ public class ValidationAssert extends AbstractAssert<ValidationAssert, Source> {
     private final Source[] schemaSources;
     private final Schema schema;
 
-    private ValidationAssert(Source actual, Source[] schemaSources, Schema schema) {
+    private ValidationAssert(Source actual, Source[] schemaSources, Schema schema, XmlAssert xmlAssert) {
         super(actual, ValidationAssert.class);
         this.schemaSources = schemaSources;
         this.schema = schema;
+        xmlAssert.fillInState(this);
     }
 
-    static ValidationAssert create(Object xmlSource, Object... schemaSources) {
+    static ValidationAssert create(Object xmlSource, XmlAssert xmlAssert, Object... schemaSources) {
 
         AssertionsAdapter.assertThat(xmlSource).isNotNull();
 
@@ -67,24 +68,24 @@ public class ValidationAssert extends AbstractAssert<ValidationAssert, Source> {
             sources[i] = Input.from(schemaSources[i]).build();
         }
 
-        return new ValidationAssert(source, sources, null);
+        return new ValidationAssert(source, sources, null, xmlAssert);
     }
 
-    static ValidationAssert create(Object xmlSource, Schema schema) {
+    static ValidationAssert create(Object xmlSource, Schema schema, XmlAssert xmlAssert) {
 
         AssertionsAdapter.assertThat(xmlSource).isNotNull();
         AssertionsAdapter.assertThat(schema).isNotNull();
 
         Source source = Input.from(xmlSource).build();
 
-        return new ValidationAssert(source, null, schema);
+        return new ValidationAssert(source, null, schema, xmlAssert);
     }
 
-    static ValidationAssert create(Object xmlSource) {
+    static ValidationAssert create(Object xmlSource, XmlAssert xmlAssert) {
 
         Source source = Input.from(xmlSource).build();
 
-        return new ValidationAssert(source, null, null);
+        return new ValidationAssert(source, null, null, xmlAssert);
     }
 
     private ValidationResult validate() {

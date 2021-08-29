@@ -77,7 +77,7 @@ public class XmlAssertValidationTest {
     }
 
     @Test
-    public void testIsValidAgainst_withBrokenXml_shouldFailed() {
+    public void testIsValidAgainst_withBrokenXml_shouldFail() {
 
         thrown.expectAssertionErrorPattern("^\\nExpecting:\\n <.*" + Pattern.quote(TestResources.TEST_RESOURCE_DIR) + "invalidBook.xml>\\nto be valid but found following problems:\\n.*");
         thrown.expectAssertionError("1. line=9; column=8; type=ERROR;" +
@@ -91,6 +91,19 @@ public class XmlAssertValidationTest {
     }
 
     @Test
+    public void isValidAgainstUsesCustomFailMessage() {
+
+        thrown.expectAssertionError("Alarm alarm!");
+
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "invalidBook.xml"));
+        StreamSource xsd = new StreamSource(new File(TestResources.BOOK_XSD));
+
+        assertThat(xml)
+            .withFailMessage("Alarm alarm!")
+            .isValidAgainst(xsd);
+    }
+
+    @Test
     public void testIsValidAgainst_withEmptySourcesArray_shouldPass() {
 
         StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "BookXsdGenerated.xml"));
@@ -100,7 +113,7 @@ public class XmlAssertValidationTest {
     }
 
     @Test
-    public void testIsValidAgainst_withBrokenXmlAndEmptySourcesArray_shouldFailed() {
+    public void testIsValidAgainst_withBrokenXmlAndEmptySourcesArray_shouldFail() {
 
         thrown.expectAssertionError("1. line=9; column=8; type=ERROR;" +
                 " message=cvc-complex-type.2.4.b: The content of element 'Book' is not complete." +
@@ -109,6 +122,18 @@ public class XmlAssertValidationTest {
         StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "invalidBook.xml"));
 
         assertThat(xml).isValidAgainst();
+    }
+
+    @Test
+    public void testIsValidAgainst_withBrokenXmlAndEmptySourcesArray_shouldUseCustomFailMessage() {
+
+        thrown.expectAssertionError("Alarm alarm!");
+
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "invalidBook.xml"));
+
+        assertThat(xml)
+            .withFailMessage("Alarm alarm!")
+            .isValidAgainst();
     }
 
     @Test
@@ -140,7 +165,7 @@ public class XmlAssertValidationTest {
     }
 
     @Test
-    public void testIsInvalid_shouldField() {
+    public void testIsInvalid_shouldFail() {
 
         thrown.expectAssertionErrorPattern("^\\nExpecting:\\n <.*"
             + Pattern.quote(TestResources.TEST_RESOURCE_DIR) + "BookXsdGenerated.xml>\\nto be invalid");
@@ -151,7 +176,18 @@ public class XmlAssertValidationTest {
     }
 
     @Test
-    public void testIsValidAgainst_withNullSchemaSources_shouldFailed() {
+    public void testIsInvalidUsesCustomFailMessage() {
+
+        thrown.expectAssertionError("Alarm alarm!");
+        StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "BookXsdGenerated.xml"));
+
+        assertThat(xml)
+            .withFailMessage("Alarm alarm!")
+            .isInvalid();
+    }
+
+    @Test
+    public void testIsValidAgainst_withNullSchemaSources_shouldFail() {
 
         thrown.expectAssertionError("actual not to be null");
 
@@ -161,7 +197,7 @@ public class XmlAssertValidationTest {
     }
 
     @Test
-    public void testIsValidAgainst_withNullSchema_shouldFailed() {
+    public void testIsValidAgainst_withNullSchema_shouldFail() {
 
         thrown.expectAssertionError("actual not to be null");
 

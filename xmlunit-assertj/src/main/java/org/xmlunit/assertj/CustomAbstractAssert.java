@@ -38,7 +38,10 @@ abstract class CustomAbstractAssert<SELF extends CustomAbstractAssert<SELF, ACTU
     }
 
     void throwAssertionError(AssertionErrorFactory assertionErrorFactory) {
-        AssertionError assertionError = assertionErrorFactory.newAssertionError(info.description(), info.representation());
+        AssertionError assertionError = Failures.instance().failureIfErrorMessageIsOverridden(info);
+        if (assertionError == null) {
+            assertionError = assertionErrorFactory.newAssertionError(info.description(), info.representation());
+        }
         Failures.instance().removeAssertJRelatedElementsFromStackTraceIfNeeded(assertionError);
         removeCustomAssertRelatedElementsFromStackTraceIfNeeded(assertionError);
         throw assertionError;

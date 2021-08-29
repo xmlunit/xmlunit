@@ -2,8 +2,12 @@
 
 ## XMLUnit for Java 2.8.3 - /not released, yet/
 
+* made sure AssertJ's methods to override the assertion message like
+  `withFailMessage` are honored.
+  [#225](https://github.com/xmlunit/xmlunit/issues/225)
+
 * adjusted unit tests so they pass when AssertJ 3.19.0 is used.
-  [#212](https://github.com/xmlunit/xmlunit/pull/212) by
+  PR [#212](https://github.com/xmlunit/xmlunit/pull/212) by
   [mmathesius](https://github.com/mmathesius)
 
 ## XMLUnit for Java 2.8.2 - /Released 2020-12-21/

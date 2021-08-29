@@ -48,12 +48,13 @@ import static org.xmlunit.assertj3.error.ShouldBeConvertible.shouldBeConvertible
  */
 public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String> {
 
-    private ValueAssert(String value) {
+    private ValueAssert(String value, XmlAssert xmlAssert) {
         super(value, ValueAssert.class);
+        xmlAssert.fillInState(this);
     }
 
     static ValueAssert create(Object xmlSource, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf,
-                              XPathFactory xpf, String xPath) {
+                              XPathFactory xpf, String xPath, XmlAssert xmlAssert) {
         AssertionsAdapter.assertThat(xPath).isNotBlank();
 
         final JAXPXPathEngine engine = xpf == null ? new JAXPXPathEngine() : new JAXPXPathEngine(xpf);
@@ -65,7 +66,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
         Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
         String value = engine.evaluate(xPath, root);
 
-        return new ValueAssert(value)
+        return new ValueAssert(value, xmlAssert)
                 .describedAs("XPath \"%s\" evaluated to value", xPath);
     }
 

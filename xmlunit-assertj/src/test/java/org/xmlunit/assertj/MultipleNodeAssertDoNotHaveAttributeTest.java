@@ -108,7 +108,7 @@ public class MultipleNodeAssertDoNotHaveAttributeTest {
     }
 
     @Test
-    public void testDoNotHaveAttribute_withAnyValue_shouldFailed() {
+    public void testDoNotHaveAttribute_withAnyValue_shouldFail() {
 
         thrown.expectAssertionError("check node at index 1");
         thrown.expectAssertionError(format("Expecting:%n <entry>%nnot to have attribute:%n <attr>"));
@@ -130,7 +130,29 @@ public class MultipleNodeAssertDoNotHaveAttributeTest {
     }
 
     @Test
-    public void testDoNotHaveAttribute_withValue_shouldFailed() {
+    public void testDoNotHaveAttribute_withAnyValue_shouldUseCustomFailMessage() {
+
+        thrown.expectAssertionError("Alarm alarm!");
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry abc=\"value\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "   <entry attr=\"value2\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "</feed>";
+
+        assertThat(xml)
+                .withFailMessage("Alarm alarm!")
+                .hasXPath("/feed/entry")
+                .doNotHaveAttribute("attr");
+    }
+
+    @Test
+    public void testDoNotHaveAttribute_withValue_shouldFail() {
 
         thrown.expectAssertionError("check node at index 1");
         thrown.expectAssertionError(format("Expecting:%n <entry>%nnot to have attribute:%n <attr>%nwith value:%n <value>"));
@@ -152,7 +174,29 @@ public class MultipleNodeAssertDoNotHaveAttributeTest {
     }
 
     @Test
-    public void testDoNotHaveAttribute_withMultipleAttributes_shouldFailed() {
+    public void testDoNotHaveAttribute_withValue_shouldUseCustomFailMessage() {
+
+        thrown.expectAssertionError("Alarm alarm!");
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry attr=\"value2\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "   <entry attr=\"value\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "</feed>";
+
+        assertThat(xml)
+                .withFailMessage("Alarm alarm!")
+                .hasXPath("/feed/entry")
+                .doNotHaveAttribute("attr", "value");
+    }
+
+    @Test
+    public void testDoNotHaveAttribute_withMultipleAttributes_shouldFail() {
 
         thrown.expectAssertionError("check node at index 2");
         thrown.expectAssertionError(format("Expecting:%n <entry>%nnot to have attribute:%n <attr1>"));
@@ -179,7 +223,34 @@ public class MultipleNodeAssertDoNotHaveAttributeTest {
     }
 
     @Test
-    public void testDoNotHaveAttribute_withMultipleAttributeWithValues_shouldFailed() {
+    public void testDoNotHaveAttribute_withMultipleAttributes_shouldUseCustomFailMessage() {
+
+        thrown.expectAssertionError("Alarm alarm!");
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry abc=\"value1\" def=\"value2\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "   <title>title</title>" +
+                "   <entry>" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "   <entry attr1=\"value5\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "</feed>";
+
+        assertThat(xml)
+                .withFailMessage("Alarm alarm!")
+                .nodesByXPath("/feed/entry")
+                .doNotHaveAttribute("attr1")
+                .doNotHaveAttribute("attr2");
+    }
+
+    @Test
+    public void testDoNotHaveAttribute_withMultipleAttributeWithValues_shouldFail() {
 
         thrown.expectAssertionError("check node at index 2");
         thrown.expectAssertionError(format("Expecting:%n <entry>%nnot to have attribute:%n <attr2>%nwith value:%n <value2>"));
@@ -202,6 +273,35 @@ public class MultipleNodeAssertDoNotHaveAttributeTest {
                 "</feed>";
 
         assertThat(xml)
+                .nodesByXPath("/feed/entry")
+                .doNotHaveAttribute("attr1", "value1")
+                .doNotHaveAttribute("attr2", "value2");
+    }
+
+    @Test
+    public void testDoNotHaveAttribute_withMultipleAttributeWithValues_shouldUseCustomFailMessage() {
+
+        thrown.expectAssertionError("Alarm alarm!");
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<feed>" +
+                "   <title>title</title>" +
+                "   <entry attr1=\"value2\" attr2=\"value1\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "   <entry abc=\"value1\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "   <entry attr1=\"VALUE1\" attr2=\"value2\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "   <entry attr1=\"value2\" attr2=\"value1\">" +
+                "       <title>title1</title>" +
+                "   </entry>" +
+                "</feed>";
+
+        assertThat(xml)
+                .withFailMessage("Alarm alarm!")
                 .nodesByXPath("/feed/entry")
                 .doNotHaveAttribute("attr1", "value1")
                 .doNotHaveAttribute("attr2", "value2");
