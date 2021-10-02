@@ -15,6 +15,7 @@
 package org.xmlunit.diff;
 
 import javax.xml.transform.Source;
+import java.util.Iterator;
 
 /**
  * The Diff-Object is the result of two comparisons.
@@ -81,7 +82,15 @@ public class Diff {
         if (!hasDifferences()) {
             return "[identical]";
         }
-        return getDifferences().iterator().next().getComparison().toString(formatter);
+        Iterator<Difference> diffIterator = getDifferences().iterator();
+        StringBuilder result = new StringBuilder()
+            .append(diffIterator.next().getComparison().toString(formatter));
+        String lineSeparator = System.lineSeparator();
+        while (diffIterator.hasNext()) {
+            result.append(lineSeparator)
+                .append(diffIterator.next().getComparison().toString(formatter));
+        }
+        return result.toString();
     }
 
 }
