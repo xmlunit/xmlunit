@@ -25,7 +25,7 @@ Wiki](https://github.com/xmlunit/user-guide/wiki).
 
 Because XMLUnit is developed for Java and .NET, both Projects shares the same test-resources.
 The test-resources folder is integrated as git submodule.
-This means you need to run 'git submodule update --init' once inside your
+This means you need to run `git submodule update --init` once inside your
 working copies after merging github's main branches of xmlunit or
 xmlunit.net.
 

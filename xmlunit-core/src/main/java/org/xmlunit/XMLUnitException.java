@@ -20,7 +20,7 @@ public class XMLUnitException extends RuntimeException {
     private static final long serialVersionUID = 673558045568231955L;
 
     /**
-     * Inititializes the exception.
+     * Initializes the exception.
      *
      * @param message the detail message
      * @param cause the root cause of the exception
@@ -30,7 +30,7 @@ public class XMLUnitException extends RuntimeException {
     }
 
     /**
-     * Inititializes an exception without cause.
+     * Initializes an exception without cause.
      *
      * @param message the detail message
      */
@@ -39,7 +39,7 @@ public class XMLUnitException extends RuntimeException {
     }
 
     /**
-     * Inititializes an exception using the wrapped exception's message.
+     * Initializes an exception using the wrapped exception's message.
      *
      * @param cause the root cause of the exception
      */
