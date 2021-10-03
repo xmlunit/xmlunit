@@ -16,7 +16,6 @@ package org.xmlunit.matchers;
 
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.DifferenceEngineConfigurer;
-import org.xmlunit.builder.Input;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonController;
 import org.xmlunit.diff.ComparisonControllers;
@@ -26,7 +25,6 @@ import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.DefaultComparisonFormatter;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.DifferenceEvaluator;
-import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelector;
 import org.xmlunit.diff.NodeMatcher;
 import org.xmlunit.util.Predicate;

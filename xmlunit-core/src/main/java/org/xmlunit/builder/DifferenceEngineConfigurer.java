@@ -20,9 +20,7 @@ import org.w3c.dom.Node;
 import org.xmlunit.diff.ComparisonController;
 import org.xmlunit.diff.ComparisonFormatter;
 import org.xmlunit.diff.ComparisonListener;
-import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.DifferenceEvaluator;
-import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.NodeMatcher;
 import org.xmlunit.util.Predicate;
 

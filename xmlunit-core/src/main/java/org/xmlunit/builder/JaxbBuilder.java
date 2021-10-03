@@ -17,7 +17,6 @@ package org.xmlunit.builder;
 import org.xmlunit.builder.Input.Builder;
 
 import javax.xml.bind.DataBindingException;
-import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;

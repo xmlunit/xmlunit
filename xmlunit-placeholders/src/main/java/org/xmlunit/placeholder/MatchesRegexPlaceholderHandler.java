@@ -16,7 +16,6 @@ package org.xmlunit.placeholder;
 import org.xmlunit.XMLUnitException;
 import org.xmlunit.diff.ComparisonResult;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 

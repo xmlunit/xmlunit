@@ -17,8 +17,6 @@ import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.assertj.core.api.AbstractDoubleAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
-import org.assertj.core.description.Description;
-import org.assertj.core.util.CheckReturnValue;
 import org.w3c.dom.Node;
 import org.xmlunit.xpath.XPathEngine;
 

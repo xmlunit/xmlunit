@@ -15,7 +15,6 @@ package org.xmlunit.builder;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
-import org.xmlunit.transform.Transformation;
 import org.w3c.dom.Document;
 
 /**
