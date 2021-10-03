@@ -36,7 +36,9 @@
     <!-- overridden via profile for Java 8+ -->
     <javadoc.additionalparam></javadoc.additionalparam>
 
-    <maven.javadoc.source>1.7</maven.javadoc.source>
+    <!-- need to set this to be 8 so the lambdas of assertj3's javadocs are
+         accepted -->
+    <maven.javadoc.source>8</maven.javadoc.source>
 
     <maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 
