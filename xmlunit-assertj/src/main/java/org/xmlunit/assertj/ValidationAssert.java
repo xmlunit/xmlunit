@@ -22,6 +22,7 @@ import org.xmlunit.validation.ValidationResult;
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 
+import static org.xmlunit.assertj.AssertionsAdapter.withAssertInfo;
 import static org.xmlunit.assertj.error.ShouldBeInvalid.shouldBeInvalid;
 import static org.xmlunit.assertj.error.ShouldBeValid.shouldBeValid;
 
@@ -45,18 +46,17 @@ public class ValidationAssert extends AbstractAssert<ValidationAssert, Source> {
     private final Source[] schemaSources;
     private final Schema schema;
 
-    private ValidationAssert(Source actual, Source[] schemaSources, Schema schema, XmlAssert xmlAssert) {
+    private ValidationAssert(Source actual, Source[] schemaSources, Schema schema) {
         super(actual, ValidationAssert.class);
         this.schemaSources = schemaSources;
         this.schema = schema;
-        xmlAssert.fillInState(this);
     }
 
-    static ValidationAssert create(Object xmlSource, XmlAssert xmlAssert, Object... schemaSources) {
+    static ValidationAssert create(Object xmlSource, XmlAssertConfig config, Object... schemaSources) {
 
-        AssertionsAdapter.assertThat(xmlSource).isNotNull();
+        AssertionsAdapter.assertThat(xmlSource, config.info).isNotNull();
 
-        AssertionsAdapter.assertThat(schemaSources)
+        AssertionsAdapter.assertThat(schemaSources, config.info)
                 .isNotNull()
                 .doesNotContainNull();
 
@@ -68,24 +68,24 @@ public class ValidationAssert extends AbstractAssert<ValidationAssert, Source> {
             sources[i] = Input.from(schemaSources[i]).build();
         }
 
-        return new ValidationAssert(source, sources, null, xmlAssert);
+        return withAssertInfo(new ValidationAssert(source, sources, null), config.info);
     }
 
-    static ValidationAssert create(Object xmlSource, Schema schema, XmlAssert xmlAssert) {
+    static ValidationAssert create(Object xmlSource, Schema schema, XmlAssertConfig config) {
 
-        AssertionsAdapter.assertThat(xmlSource).isNotNull();
-        AssertionsAdapter.assertThat(schema).isNotNull();
+        AssertionsAdapter.assertThat(xmlSource, config.info).isNotNull();
+        AssertionsAdapter.assertThat(schema, config.info).isNotNull();
 
         Source source = Input.from(xmlSource).build();
 
-        return new ValidationAssert(source, null, schema, xmlAssert);
+        return withAssertInfo(new ValidationAssert(source, null, schema), config.info);
     }
 
-    static ValidationAssert create(Object xmlSource, XmlAssert xmlAssert) {
+    static ValidationAssert create(Object xmlSource, XmlAssertConfig config) {
 
         Source source = Input.from(xmlSource).build();
 
-        return new ValidationAssert(source, null, null, xmlAssert);
+        return withAssertInfo(new ValidationAssert(source, null, null), config.info);
     }
 
     private ValidationResult validate() {

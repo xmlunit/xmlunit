@@ -15,16 +15,16 @@ package org.xmlunit.assertj;
 
 import org.assertj.core.api.AssertFactory;
 import org.w3c.dom.Node;
-import org.xmlunit.xpath.JAXPXPathEngine;
+import org.xmlunit.xpath.XPathEngine;
 
 /**
  * @since XMLUnit 2.6.1
  */
 class NodeAssertFactory implements AssertFactory<Node, SingleNodeAssert> {
 
-    private JAXPXPathEngine engine;
+    private XPathEngine engine;
 
-    public NodeAssertFactory(JAXPXPathEngine engine) {
+    public NodeAssertFactory(XPathEngine engine) {
         this.engine = engine;
     }
 

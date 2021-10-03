@@ -11,25 +11,25 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-package org.xmlunit.assertj3;
+package org.xmlunit.assertj;
 
-import org.assertj.core.api.AssertFactory;
-import org.w3c.dom.Node;
+import org.xmlunit.xpath.JAXPXPathEngine;
 import org.xmlunit.xpath.XPathEngine;
 
 /**
- * @since XMLUnit 2.8.1
+ * @since XMLUnit 2.8.3
  */
-class NodeAssertFactory implements AssertFactory<Node, SingleNodeAssert> {
+class XPathEngineFactory {
 
-    private XPathEngine engine;
-
-    public NodeAssertFactory(XPathEngine engine) {
-        this.engine = engine;
+    private XPathEngineFactory() {
     }
 
-    @Override
-    public SingleNodeAssert createAssert(Node node) {
-        return new SingleNodeAssert(node, engine);
+    static XPathEngine create(XmlAssertConfig config) {
+        final JAXPXPathEngine engine = config.xpf == null ? new JAXPXPathEngine() : new JAXPXPathEngine(config.xpf);
+        if (config.prefix2Uri != null) {
+            engine.setNamespaceContext(config.prefix2Uri);
+        }
+
+        return engine;
     }
 }

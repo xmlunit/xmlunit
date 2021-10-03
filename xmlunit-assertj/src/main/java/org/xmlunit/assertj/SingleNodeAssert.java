@@ -15,7 +15,7 @@ package org.xmlunit.assertj;
 
 import org.assertj.core.api.AbstractAssert;
 import org.w3c.dom.Node;
-import org.xmlunit.xpath.JAXPXPathEngine;
+import org.xmlunit.xpath.XPathEngine;
 
 import static org.xmlunit.assertj.error.ShouldHaveAttribute.shouldHaveAttribute;
 import static org.xmlunit.assertj.error.ShouldHaveAttribute.shouldHaveAttributeWithValue;
@@ -40,9 +40,9 @@ import static org.xmlunit.assertj.error.ShouldNotHaveAttribute.shouldNotHaveAttr
  */
 public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
 
-    private final JAXPXPathEngine engine;
+    private final XPathEngine engine;
 
-    SingleNodeAssert(Node node, JAXPXPathEngine engine) {
+    SingleNodeAssert(Node node, XPathEngine engine) {
         super(node, SingleNodeAssert.class);
         this.engine = engine;
     }

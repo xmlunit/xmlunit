@@ -36,6 +36,7 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import static org.xmlunit.assertj.AssertionsAdapter.withAssertInfo;
 import static org.xmlunit.assertj.error.ShouldBeNotSimilar.shouldBeNotIdentical;
 import static org.xmlunit.assertj.error.ShouldBeNotSimilar.shouldBeNotSimilar;
 import static org.xmlunit.assertj.error.ShouldBeSimilar.shouldBeIdentical;
@@ -68,7 +69,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     }
 
     private static final String EXPECTING_NOT_NULL = "Expecting control not to be null";
-    private static DifferenceEvaluator IgnoreNodeListSequence =
+    private static final DifferenceEvaluator IgnoreNodeListSequence =
             DifferenceEvaluators.downgradeDifferencesToEqual(ComparisonType.CHILD_NODELIST_SEQUENCE);
 
     private final DiffBuilder diffBuilder;
@@ -76,25 +77,23 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     private boolean formatXml;
     private ComparisonFormatter formatter = new DefaultComparisonFormatter();
 
-    private CompareAssert(Object actual, DiffBuilder diffBuilder, XmlAssert xmlAssert) {
+    private CompareAssert(Object actual, DiffBuilder diffBuilder) {
         super(actual, CompareAssert.class);
         this.diffBuilder = diffBuilder;
-        xmlAssert.fillInState(this);
     }
 
-    static CompareAssert create(Object actual, Object control, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf,
-                                XmlAssert xmlAssert) {
+    static CompareAssert create(Object actual, Object control, XmlAssertConfig config) {
 
-        AssertionsAdapter.assertThat(control)
+        AssertionsAdapter.assertThat(control, config.info)
                 .as(EXPECTING_NOT_NULL)
                 .isNotNull();
 
         DiffBuilder diffBuilder = DiffBuilder.compare(control)
                 .withTest(actual)
-                .withNamespaceContext(prefix2Uri)
-                .withDocumentBuilderFactory(dbf);
+                .withNamespaceContext(config.prefix2Uri)
+                .withDocumentBuilderFactory(config.dbf);
 
-        return new CompareAssert(actual, diffBuilder, xmlAssert);
+        return withAssertInfo(new CompareAssert(actual, diffBuilder), config.info);
     }
 
     /**
@@ -348,7 +347,6 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
         Diff diff;
 
         try {
-
             diff = diffBuilder.build();
         } catch (Exception e) {
             throwAssertionError(shouldNotHaveThrown(e));
@@ -366,7 +364,6 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
                 throwAssertionError(shouldBeSimilar(controlSystemId, testSystemId, firstDifferenceComparison, formatter, formatXml));
             }
         } else {
-
             if (ComparisonContext.NOT_IDENTICAL == context) {
                 throwAssertionError(shouldBeNotIdentical(controlSystemId, testSystemId));
             } else if (ComparisonContext.NOT_SIMILAR == context) {

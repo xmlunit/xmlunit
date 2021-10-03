@@ -14,11 +14,14 @@
 package org.xmlunit.assertj;
 
 import org.w3c.dom.Node;
+import org.xmlunit.builder.Input;
+import org.xmlunit.util.Convert;
 import org.xmlunit.util.Nodes;
 
 import java.util.Map;
 
 import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
 
 class NodeUtils {
 
@@ -37,6 +40,11 @@ class NodeUtils {
         }
 
         return null;
+    }
+
+    static Node parseSource(Object xmlSource, XmlAssertConfig config) {
+        Source s = Input.from(xmlSource).build();
+        return config.dbf != null ? Convert.toNode(s, config.dbf) : Convert.toNode(s);
     }
 
     private static boolean matchQName(QName qName, String name) {

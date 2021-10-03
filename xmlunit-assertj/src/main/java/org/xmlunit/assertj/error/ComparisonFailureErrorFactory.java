@@ -21,6 +21,8 @@ import org.assertj.core.presentation.Representation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import static org.assertj.core.description.Description.emptyIfNull;
+
 /**
  * @since XMLUnit 2.6.1
  */
@@ -28,7 +30,7 @@ abstract class ComparisonFailureErrorFactory implements AssertionErrorFactory {
 
     private static Constructor<?> comparisonFailureConstructor;
 
-    private static final String EXPECTED_BUT_WAS_MESSAGE = "%nExpecting:%n <%s>%nto be equal to:%n <%s>%nbut was not.";
+    private static final String EXPECTED_BUT_WAS_MESSAGE = "%n%s%nExpected :<%s>%nActual   :<%s>%n";
 
     abstract String getMessage();
 
@@ -42,20 +44,24 @@ abstract class ComparisonFailureErrorFactory implements AssertionErrorFactory {
      */
     @Override
     public AssertionError newAssertionError(Description d, Representation representation) {
-        AssertionError assertionError = getComparisonFailureInstance();
+        String message = emptyIfNull(d).value() + getMessage();
+        String expected = getExpected();
+        String actual = getActual();
+
+        AssertionError assertionError = getComparisonFailureInstance(message, expected, actual);
         if (assertionError != null) {
             return assertionError;
         }
 
-        String message = String.format(EXPECTED_BUT_WAS_MESSAGE, getActual(), getExpected());
-        return Failures.instance().failure(message);
+        String msg = String.format(EXPECTED_BUT_WAS_MESSAGE, message, expected, actual);
+        return Failures.instance().failure(msg);
     }
 
-    private AssertionError getComparisonFailureInstance() {
+    private AssertionError getComparisonFailureInstance(String message, String expected, String actual) {
         Constructor<?> constructor = getComparisonFailureConstructor();
         if (constructor != null) {
             try {
-                Object o = constructor.newInstance(getMessage(), getExpected(), getActual());
+                Object o = constructor.newInstance(message, expected, actual);
                 if (o instanceof AssertionError) return (AssertionError) o;
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException ignored) {
             }

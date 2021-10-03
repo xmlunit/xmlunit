@@ -22,7 +22,7 @@ import net.bytebuddy.utility.RandomString;
 import org.assertj.core.api.Assert;
 import org.assertj.core.api.AssertFactory;
 import org.w3c.dom.Node;
-import org.xmlunit.xpath.JAXPXPathEngine;
+import org.xmlunit.xpath.XPathEngine;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -71,7 +71,7 @@ class AssertFactoryProvider {
     @SuppressWarnings("rawtypes")
     private static Class<? extends AssertFactory> assertFactoryClass;
 
-    AssertFactory<Node, SingleNodeAssert> create(JAXPXPathEngine engine) {
+    AssertFactory<Node, SingleNodeAssert> create(XPathEngine engine) {
 
         if (hasAssertFactoryUpperBoundOnAssertType()) {
             return createProxyInstance(engine);
@@ -98,7 +98,7 @@ class AssertFactoryProvider {
         return false;
     }
 
-    private AssertFactory<Node, SingleNodeAssert> createProxyInstance(JAXPXPathEngine engine) {
+    private AssertFactory<Node, SingleNodeAssert> createProxyInstance(XPathEngine engine) {
 
         try {
             synchronized (AssertFactoryProvider.class) {
@@ -125,7 +125,7 @@ class AssertFactoryProvider {
         return createDefaultInstance(engine);
     }
 
-    private NodeAssertFactory createDefaultInstance(JAXPXPathEngine engine) {
+    private NodeAssertFactory createDefaultInstance(XPathEngine engine) {
         return new NodeAssertFactory(engine);
     }
 

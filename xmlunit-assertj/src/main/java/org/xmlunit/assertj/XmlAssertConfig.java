@@ -11,25 +11,26 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-package org.xmlunit.assertj3;
+package org.xmlunit.assertj;
 
-import org.assertj.core.api.AssertFactory;
-import org.w3c.dom.Node;
-import org.xmlunit.xpath.XPathEngine;
+import org.assertj.core.api.WritableAssertionInfo;
+
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPathFactory;
 
 /**
- * @since XMLUnit 2.8.1
+ * @since XMLUnit 2.8.3
  */
-class NodeAssertFactory implements AssertFactory<Node, SingleNodeAssert> {
+class XmlAssertConfig {
 
-    private XPathEngine engine;
+    final WritableAssertionInfo info;
+    DocumentBuilderFactory dbf;
+    XPathFactory xpf;
+    Map<String, String> prefix2Uri;
 
-    public NodeAssertFactory(XPathEngine engine) {
-        this.engine = engine;
-    }
-
-    @Override
-    public SingleNodeAssert createAssert(Node node) {
-        return new SingleNodeAssert(node, engine);
+    XmlAssertConfig(WritableAssertionInfo info) {
+        this.info = info;
     }
 }

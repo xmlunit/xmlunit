@@ -17,18 +17,12 @@ import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.assertj.core.api.AbstractDoubleAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
+import org.assertj.core.description.Description;
 import org.assertj.core.util.CheckReturnValue;
 import org.w3c.dom.Node;
-import org.xmlunit.builder.Input;
-import org.xmlunit.util.Convert;
-import org.xmlunit.xpath.JAXPXPathEngine;
+import org.xmlunit.xpath.XPathEngine;
 
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Source;
-import javax.xml.xpath.XPathFactory;
-
+import static org.xmlunit.assertj3.AssertionsAdapter.withAssertInfo;
 import static org.xmlunit.assertj3.error.ShouldBeConvertible.shouldBeConvertible;
 
 /**
@@ -48,26 +42,23 @@ import static org.xmlunit.assertj3.error.ShouldBeConvertible.shouldBeConvertible
  */
 public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String> {
 
-    private ValueAssert(String value, XmlAssert xmlAssert) {
+    private ValueAssert(String value) {
         super(value, ValueAssert.class);
-        xmlAssert.fillInState(this);
     }
 
-    static ValueAssert create(Object xmlSource, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf,
-                              XPathFactory xpf, String xPath, XmlAssert xmlAssert) {
-        AssertionsAdapter.assertThat(xPath).isNotBlank();
+    static ValueAssert create(Object xmlSource, String xPath, XmlAssertConfig config) {
+        AssertionsAdapter.assertThat(xPath, config.info).isNotBlank();
 
-        final JAXPXPathEngine engine = xpf == null ? new JAXPXPathEngine() : new JAXPXPathEngine(xpf);
-        if (prefix2Uri != null) {
-            engine.setNamespaceContext(prefix2Uri);
-        }
-
-        Source s = Input.from(xmlSource).build();
-        Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
+        final XPathEngine engine = XPathEngineFactory.create(config);
+        Node root = NodeUtils.parseSource(xmlSource, config);
         String value = engine.evaluate(xPath, root);
 
-        return new ValueAssert(value, xmlAssert)
-                .describedAs("XPath \"%s\" evaluated to value", xPath);
+        ValueAssert valueAssert = withAssertInfo(new ValueAssert(value), config.info);
+        if (!valueAssert.info.hasDescription()) {
+            valueAssert.info.description("XPath \"%s\" evaluated to value", xPath);
+        }
+
+        return valueAssert;
     }
 
     /**
@@ -85,7 +76,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
             throwAssertionError(shouldBeConvertible(actual, "int"));
         }
 
-        return AssertionsAdapter.assertThat(value);
+        return AssertionsAdapter.assertThat(value, info);
     }
 
     /**
@@ -103,7 +94,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
             throwAssertionError(shouldBeConvertible(actual, "double"));
         }
 
-        return AssertionsAdapter.assertThat(value);
+        return AssertionsAdapter.assertThat(value, info);
     }
 
     /**
@@ -128,7 +119,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
                 throwAssertionError(shouldBeConvertible(actual, "boolean"));
         }
 
-        return AssertionsAdapter.assertThat(value);
+        return AssertionsAdapter.assertThat(value, info);
     }
 
     /**
@@ -170,7 +161,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
             xml = String.format("<%s>%s</%s>", wrapNodeName, actual, wrapNodeName);
         }
 
-        return XmlAssert.assertThat(xml);
+        return withAssertInfo(XmlAssert.assertThat(xml), info);
     }
 
     /**

@@ -18,18 +18,12 @@ import org.assertj.core.api.FactoryBasedNavigableIterableAssert;
 import org.assertj.core.api.ObjectAssert;
 import org.assertj.core.description.Description;
 import org.w3c.dom.Node;
-import org.xmlunit.builder.Input;
-import org.xmlunit.util.Convert;
-import org.xmlunit.xpath.JAXPXPathEngine;
+import org.xmlunit.xpath.XPathEngine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Source;
-import javax.xml.xpath.XPathFactory;
-
+import static org.xmlunit.assertj.AssertionsAdapter.withAssertInfo;
 import static org.xmlunit.assertj.error.ElementsShouldSatisfy.UnsatisfiedRequirement;
 import static org.xmlunit.assertj.error.ElementsShouldSatisfy.elementsShouldSatisfy;
 import static org.xmlunit.assertj.error.ShouldAnyNodeHaveXPath.shouldAnyNodeHaveXPath;
@@ -57,27 +51,25 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
 
     private static final AssertFactoryProvider ASSERT_FACTORY_PROVIDER = new AssertFactoryProvider();
 
-    private MultipleNodeAssert(Iterable<Node> nodes, JAXPXPathEngine engine, XmlAssert xmlAssert) {
+    private MultipleNodeAssert(Iterable<Node> nodes, XPathEngine engine) {
         super(nodes, MultipleNodeAssert.class, ASSERT_FACTORY_PROVIDER.create(engine));
-        xmlAssert.fillInState(this);
     }
 
-    static MultipleNodeAssert create(Object xmlSource, Map<String, String> prefix2Uri, DocumentBuilderFactory dbf,
-                                     XPathFactory xpf, String xPath, XmlAssert xmlAssert) {
+    static MultipleNodeAssert create(Object xmlSource, String xPath, XmlAssertConfig config) {
 
-        AssertionsAdapter.assertThat(xPath).isNotBlank();
+        AssertionsAdapter.assertThat(xPath, config.info).isNotBlank();
 
-        final JAXPXPathEngine engine = xpf == null ? new JAXPXPathEngine() : new JAXPXPathEngine(xpf);
-        if (prefix2Uri != null) {
-            engine.setNamespaceContext(prefix2Uri);
-        }
-
-        Source s = Input.from(xmlSource).build();
-        Node root = dbf != null ? Convert.toNode(s, dbf) : Convert.toNode(s);
+        final XPathEngine engine = XPathEngineFactory.create(config);
+        Node root = NodeUtils.parseSource(xmlSource, config);
         Iterable<Node> nodes = engine.selectNodes(xPath, root);
 
-        return new MultipleNodeAssert(nodes, engine, xmlAssert)
-                .describedAs("XPath \"%s\" evaluated to node set", xPath);
+        MultipleNodeAssert multipleNodeAssert =
+            withAssertInfo(new MultipleNodeAssert(nodes, engine), config.info);
+        if (!multipleNodeAssert.info.hasDescription()) {
+            multipleNodeAssert.info.description("XPath \"%s\" evaluated to node set", xPath);
+        }
+
+        return multipleNodeAssert;
     }
 
     /**
@@ -292,9 +284,6 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
         asListAssert(final List<String> values) {
         AbstractListAssert<?, List<? extends String>, String, ObjectAssert<String>> a =
             newListAssertInstance(values);
-        a.info.useRepresentation(info.representation());
-        a.info.description(info.description());
-        a.info.overridingErrorMessage(info.overridingErrorMessage());
-        return a;
+        return withAssertInfo(a, info);
     }
 }
