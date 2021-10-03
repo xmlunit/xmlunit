@@ -27,11 +27,13 @@ install: true
 script:
   - mvn install -B
   - (cd compat-tests && ./hamcrest-test.sh ${VERSION} 2.2)
-  - test "openjdk7" == "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./assertj-test.sh ${VERSION} 3.9.1)
-  - test "openjdk7" == "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./assertj-test.sh ${VERSION} 3.13.2)
-  - test "openjdk7" == "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./assertj-test.sh ${VERSION} 3.15.0)
-  - test "openjdk7" == "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./assertj-test.sh ${VERSION} 3.19.0 true)
-  - test "openjdk7" == "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./assertj-test.sh ${VERSION} 3.20.2 true)
+  - test "openjdk7" == "${TRAVIS_JDK_VERSION}" || test "openjdk17" == "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./assertj-test.sh ${VERSION} 3.9.1 only-assertj)
+  - test "openjdk7" == "${TRAVIS_JDK_VERSION}" || test "openjdk17" == "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./assertj-test.sh ${VERSION} 3.13.2 only-assertj)
+  - test "openjdk7" == "${TRAVIS_JDK_VERSION}" || test "openjdk17" == "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./assertj-test.sh ${VERSION} 3.15.0 only-assertj)
+  - test "openjdk7" == "${TRAVIS_JDK_VERSION}" || test "openjdk17" == "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./assertj-test.sh ${VERSION} 3.19.0 both)
+  - test "openjdk7" == "${TRAVIS_JDK_VERSION}" || test "openjdk17" == "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./assertj-test.sh ${VERSION} 3.20.2 both)
+  - test "openjdk17" != "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./assertj-test.sh ${VERSION} 3.19.0 only-assertj3)
+  - test "openjdk17" != "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./assertj-test.sh ${VERSION} 3.20.2 only-assertj3)
 notifications:
   email:
     - xmlunit-commits@lists.sourceforge.net

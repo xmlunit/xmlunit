@@ -1,23 +1,25 @@
 #!/bin/sh
 set -e
 
-if [ "$#" -lt 2 -o "$#" -gt 3 ]; then
-    echo "Usage: assertj-test.sh XMLUNIT_VERSION ASSERTJ_VERSION"
+if [ "$#" -lt 3 ]; then
+    echo "Usage: assertj-test.sh XMLUNIT_VERSION ASSERTJ_VERSION (only-assertj|only-assertj3|both)"
     exit 1
 fi
 
 XMLUNIT_VERSION=$1
 ASSERTJ_VERSION=$2
-if [ "$#" -eq 3 ]; then
-    RUN_ASSERTJ3_MODULE=t
+if [ "$3" != "only-assertj" -a "$3" != "only-assertj3" -a "$3" != "both" ]; then
+    echo "Usage: assertj-test.sh XMLUNIT_VERSION ASSERTJ_VERSION (only-assertj|only-assertj3|both)"
+    exit 1
 fi
+RUN_MODULES=$3
 
+if [ "$RUN_MODULES" != "only-assertj3" ]; then
+    SCRATCH_DIR=scratch/assertj-${ASSERTJ_VERSION}
 
-SCRATCH_DIR=scratch/assertj-${ASSERTJ_VERSION}
+    rm -rf scratch && mkdir -p ${SCRATCH_DIR}/src/test/java/org/xmlunit/
 
-rm -rf scratch && mkdir -p ${SCRATCH_DIR}/src/test/java/org/xmlunit/
-
-cat > ${SCRATCH_DIR}/pom.xml <<EOF
+    cat > ${SCRATCH_DIR}/pom.xml <<EOF
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -79,13 +81,14 @@ cat > ${SCRATCH_DIR}/pom.xml <<EOF
 </project>
 EOF
 
-cp TestResources.java ${SCRATCH_DIR}/src/test/java/org/xmlunit/
+    cp TestResources.java ${SCRATCH_DIR}/src/test/java/org/xmlunit/
 
-cp -r ../xmlunit-assertj/src/test/java/org/xmlunit/assertj ${SCRATCH_DIR}/src/test/java/org/xmlunit
+    cp -r ../xmlunit-assertj/src/test/java/org/xmlunit/assertj ${SCRATCH_DIR}/src/test/java/org/xmlunit
 
-mvn -f ${SCRATCH_DIR}/pom.xml test
+    mvn -f ${SCRATCH_DIR}/pom.xml test
+fi
 
-if [ -n "${RUN_ASSERTJ3_MODULE}" ]; then
+if [ "$RUN_MODULES" != "only-assertj" ]; then
     SCRATCH_DIR=scratch/assertj3-${ASSERTJ_VERSION}
 
     rm -rf scratch && mkdir -p ${SCRATCH_DIR}/src/test/java/org/xmlunit/
