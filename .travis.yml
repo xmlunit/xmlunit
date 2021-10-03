@@ -18,6 +18,8 @@ matrix:
       jdk: oraclejdk11
     - dist: bionic
       jdk: openjdk14
+    - dist: bionic
+      jdk: openjdk17
 addons:
   apt:
     update: true
