@@ -15,6 +15,7 @@
 package org.xmlunit.diff;
 
 import javax.xml.transform.Source;
+import java.util.Iterator;
 
 /**
  * The Diff-Object is the result of two comparisons.
@@ -49,6 +50,38 @@ public class Diff {
     }
 
     /**
+     * Returns a string representation of this diff
+     * using internal {@link ComparisonFormatter} or
+     * {@link DefaultComparisonFormatter} if formatter wasn't set.
+     * Each comparison result separated by the end of the line.
+     * @return a string representation of this diff
+     */
+    public String fullDescription() {
+        return fullDescription(formatter);
+    }
+
+    /**
+     * Returns a string representation of this diff
+     * using the given {@link ComparisonFormatter}
+     * @param formatter the {@link ComparisonFormatter} to use
+     * @return a string representation of this diff
+     */
+    public String fullDescription(ComparisonFormatter formatter) {
+        if (!hasDifferences()) {
+            return "[identical]";
+        }
+        Iterator<Difference> diffIterator = getDifferences().iterator();
+        StringBuilder result = new StringBuilder()
+            .append(diffIterator.next().getComparison().toString(formatter));
+        String lineSeparator = System.lineSeparator();
+        while (diffIterator.hasNext()) {
+            result.append(lineSeparator)
+                .append(diffIterator.next().getComparison().toString(formatter));
+        }
+        return result.toString();
+    }
+
+    /**
      * @return true if there was at least one difference.
      */
     public boolean hasDifferences() {
@@ -72,11 +105,25 @@ public class Diff {
         return testSource;
     }
 
+    /**
+     * Returns a string representation of first found difference in this diff
+     * using internal {@link ComparisonFormatter} or
+     * {@link DefaultComparisonFormatter} if formatter wasn't set
+     * @return a string representation of first found difference in this diff
+     * @see #fullDescription()
+     */
     @Override
     public String toString() {
         return toString(formatter);
     }
 
+    /**
+     * Returns a string representation of first found difference in this diff
+     * using the given {@link ComparisonFormatter}
+     * @param formatter the {@link ComparisonFormatter} to use
+     * @return a string representation of first found difference in this diff
+     * @see #fullDescription(ComparisonFormatter)
+     */
     public String toString(ComparisonFormatter formatter) {
         if (!hasDifferences()) {
             return "[identical]";
