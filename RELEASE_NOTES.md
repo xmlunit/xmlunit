@@ -2,6 +2,13 @@
 
 ## XMLUnit for Java 2.8.3 - /not released, yet/
 
+* added a new `fullDescription` method to `Diff` that provides a
+  string-representation of all differences - not just the first one
+  like `toString` does.
+  PR [#235](https://github.com/xmlunit/xmlunit/issues/235) fixing
+  [#232](https://github.com/xmlunit/xmlunit/issues/232) by
+  [@Boiarshinov](https://github.com/Boiarshinov)
+
 * made sure AssertJ's methods to override the assertion message like
   `withFailMessage` are honored.
   [#225](https://github.com/xmlunit/xmlunit/issues/225)

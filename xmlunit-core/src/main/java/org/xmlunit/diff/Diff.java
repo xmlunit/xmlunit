@@ -53,8 +53,11 @@ public class Diff {
      * Returns a string representation of this diff
      * using internal {@link ComparisonFormatter} or
      * {@link DefaultComparisonFormatter} if formatter wasn't set.
-     * Each comparison result separated by the end of the line.
+     *
+     * <p>Each comparison result separated by the end of the line.</p>
+     *
      * @return a string representation of this diff
+     * @since 2.8.3
      */
     public String fullDescription() {
         return fullDescription(formatter);
@@ -63,8 +66,12 @@ public class Diff {
     /**
      * Returns a string representation of this diff
      * using the given {@link ComparisonFormatter}
+     *
+     * <p>Each comparison result separated by the end of the line.</p>
+     *
      * @param formatter the {@link ComparisonFormatter} to use
      * @return a string representation of this diff
+     * @since 2.8.3
      */
     public String fullDescription(ComparisonFormatter formatter) {
         if (!hasDifferences()) {
