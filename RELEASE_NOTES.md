@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.8.3 - /not released, yet/
+## XMLUnit for Java 2.8.3 - /Released 2020-10-17/
 
 * added a new `fullDescription` method to `Diff` that provides a
   string-representation of all differences - not just the first one
