@@ -2,7 +2,7 @@
 
 ## XMLUnit for Java 2.8.4 - /unreleased, yet/
 
-## XMLUnit for Java 2.8.3 - /Released 2020-10-17/
+## XMLUnit for Java 2.8.3 - /Released 2021-10-17/
 
 * added a new `fullDescription` method to `Diff` that provides a
   string-representation of all differences - not just the first one
