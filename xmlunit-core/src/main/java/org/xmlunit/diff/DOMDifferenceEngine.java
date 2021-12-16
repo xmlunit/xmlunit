@@ -14,6 +14,8 @@
 
 package org.xmlunit.diff;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -583,16 +585,26 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         List<Node> testListForXpath = Linqy.asList(allTestChildren);
         List<Node> controlList = Linqy.asList(controlSeq);
         List<Node> testList = Linqy.asList(testSeq);
+
+        final Map<Node, Integer> controlListForXpathIndex = index(controlListForXpath);
+        final Map<Node, Integer> testListForXpathIndex = index(testListForXpath);
+        final Map<Node, Integer> controlListIndex = index(controlList);
+        final Map<Node, Integer> testListIndex = index(testList);
+
         Set<Node> seen = new HashSet<Node>();
         for (Map.Entry<Node, Node> pair : matches) {
             final Node control = pair.getKey();
             seen.add(control);
             final Node test = pair.getValue();
             seen.add(test);
-            int controlIndexForXpath = controlListForXpath.indexOf(control);
-            int testIndexForXpath = testListForXpath.indexOf(test);
-            int controlIndex = controlList.indexOf(control);
-            int testIndex = testList.indexOf(test);
+            Integer controlIndexForXpath = controlListForXpathIndex.get(control);
+            Integer testIndexForXpath = testListForXpathIndex.get(test);
+            Integer controlIndex = controlListIndex.get(control);
+            Integer testIndex = testListIndex.get(test);
+            if (controlIndexForXpath == null || testIndexForXpath == null
+                || controlIndex == null || testIndex == null) {
+                throw new NullPointerException("failed to look up index for pair " + pair);
+            }
 
             controlContext.navigateToChild(controlIndexForXpath);
             testContext.navigateToChild(testIndexForXpath);
@@ -616,22 +628,27 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             }
         }
 
-        return chain.andThen(new UnmatchedControlNodes(controlListForXpath, controlList, controlContext, seen,
-                testContext))
-            .andThen(new UnmatchedTestNodes(testListForXpath, testList, testContext, seen,
-                controlContext));
+        return chain.andThen(new UnmatchedControlNodes(controlListForXpath, controlListForXpathIndex,
+                controlList, controlContext, seen, testContext))
+            .andThen(new UnmatchedTestNodes(testListForXpath, testListForXpathIndex, testList,
+                testContext, seen, controlContext));
     }
 
     private class UnmatchedControlNodes implements DeferredComparison {
         private final List<Node> controlListForXpath;
+        private final Map<Node, Integer> controlListForXpathIndex;
         private final List<Node> controlList;
         private final XPathContext controlContext;
         private final Set<Node> seen;
         private final XPathContext testContext;
 
-        private UnmatchedControlNodes(List<Node> controlListForXpath, List<Node> controlList, XPathContext controlContext,
+        private UnmatchedControlNodes(List<Node> controlListForXpath,
+                                      Map<Node, Integer> controlListForXpathIndex,
+                                      List<Node> controlList,
+                                      XPathContext controlContext,
                                       Set<Node> seen, XPathContext testContext) {
             this.controlListForXpath = controlListForXpath;
+            this.controlListForXpathIndex = controlListForXpathIndex;
             this.controlList = controlList;
             this.controlContext = controlContext;
             this.seen = seen;
@@ -644,7 +661,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             final int controlSize = controlList.size();
             for (int i = 0; i < controlSize; i++) {
                 if (!seen.contains(controlList.get(i))) {
-                    controlContext.navigateToChild(controlListForXpath.indexOf(controlList.get(i)));
+                    controlContext.navigateToChild(controlListForXpathIndex.get(controlList.get(i)));
                     try {
                         chain =
                             chain.andThen(new Comparison(ComparisonType.CHILD_LOOKUP,
@@ -663,14 +680,18 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
 
     private class UnmatchedTestNodes implements DeferredComparison {
         private final List<Node> testListForXpath;
+        private final Map<Node, Integer> testListForXpathIndex;
         private final List<Node> testList;
         private final XPathContext testContext;
         private final Set<Node> seen;
         private final XPathContext controlContext;
 
-        private UnmatchedTestNodes(List<Node> testListForXpath, List<Node> testList, XPathContext testContext,
+        private UnmatchedTestNodes(List<Node> testListForXpath,
+                                   Map<Node, Integer> testListForXpathIndex,
+                                   List<Node> testList, XPathContext testContext,
                                    Set<Node> seen, XPathContext controlContext) {
             this.testListForXpath = testListForXpath;
+            this.testListForXpathIndex = testListForXpathIndex;
             this.testList = testList;
             this.testContext = testContext;
             this.seen = seen;
@@ -683,7 +704,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             final int testSize = testList.size();
             for (int i = 0; i < testSize; i++) {
                 if (!seen.contains(testList.get(i))) {
-                    testContext.navigateToChild(testListForXpath.indexOf(testList.get(i)));
+                    testContext.navigateToChild(testListForXpathIndex.get(testList.get(i)));
                     try {
                         chain =
                             chain.andThen(new Comparison(ComparisonType.CHILD_LOOKUP,
@@ -875,4 +896,12 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         return null;
     }
 
+    private static Map<Node, Integer> index(final List<Node> nodes) {
+        Map<Node, Integer> indices = new HashMap<Node, Integer>();
+        int idx = 0;
+        for (Node n : nodes) {
+            indices.put(n, idx++);
+        }
+        return Collections.unmodifiableMap(indices);
+    }
 }
