@@ -2,6 +2,10 @@
 
 ## XMLUnit for Java 2.8.4 - /unreleased, yet/
 
+* improved comparison performance for documents with many siblings
+  based on a suggestion by [@gerpres](https://github.com/gerpres) made
+  in [#236](https://github.com/xmlunit/xmlunit/issues/236)
+
 ## XMLUnit for Java 2.8.3 - /Released 2021-10-17/
 
 * added a new `fullDescription` method to `Diff` that provides a
