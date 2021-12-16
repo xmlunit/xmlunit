@@ -581,13 +581,11 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
 
         Iterable<Map.Entry<Node, Node>> matches =
             getNodeMatcher().match(controlSeq, testSeq);
-        List<Node> controlListForXpath = Linqy.asList(allControlChildren);
-        List<Node> testListForXpath = Linqy.asList(allTestChildren);
         List<Node> controlList = Linqy.asList(controlSeq);
         List<Node> testList = Linqy.asList(testSeq);
 
-        final Map<Node, Integer> controlListForXpathIndex = index(controlListForXpath);
-        final Map<Node, Integer> testListForXpathIndex = index(testListForXpath);
+        final Map<Node, Integer> controlListForXpathIndex = index(allControlChildren);
+        final Map<Node, Integer> testListForXpathIndex = index(allTestChildren);
         final Map<Node, Integer> controlListIndex = index(controlList);
         final Map<Node, Integer> testListIndex = index(testList);
 
@@ -628,26 +626,23 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             }
         }
 
-        return chain.andThen(new UnmatchedControlNodes(controlListForXpath, controlListForXpathIndex,
-                controlList, controlContext, seen, testContext))
-            .andThen(new UnmatchedTestNodes(testListForXpath, testListForXpathIndex, testList,
+        return chain.andThen(new UnmatchedControlNodes(controlListForXpathIndex, controlList,
+                controlContext, seen, testContext))
+            .andThen(new UnmatchedTestNodes(testListForXpathIndex, testList,
                 testContext, seen, controlContext));
     }
 
     private class UnmatchedControlNodes implements DeferredComparison {
-        private final List<Node> controlListForXpath;
         private final Map<Node, Integer> controlListForXpathIndex;
         private final List<Node> controlList;
         private final XPathContext controlContext;
         private final Set<Node> seen;
         private final XPathContext testContext;
 
-        private UnmatchedControlNodes(List<Node> controlListForXpath,
-                                      Map<Node, Integer> controlListForXpathIndex,
+        private UnmatchedControlNodes(Map<Node, Integer> controlListForXpathIndex,
                                       List<Node> controlList,
                                       XPathContext controlContext,
                                       Set<Node> seen, XPathContext testContext) {
-            this.controlListForXpath = controlListForXpath;
             this.controlListForXpathIndex = controlListForXpathIndex;
             this.controlList = controlList;
             this.controlContext = controlContext;
@@ -679,18 +674,15 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     }
 
     private class UnmatchedTestNodes implements DeferredComparison {
-        private final List<Node> testListForXpath;
         private final Map<Node, Integer> testListForXpathIndex;
         private final List<Node> testList;
         private final XPathContext testContext;
         private final Set<Node> seen;
         private final XPathContext controlContext;
 
-        private UnmatchedTestNodes(List<Node> testListForXpath,
-                                   Map<Node, Integer> testListForXpathIndex,
+        private UnmatchedTestNodes(Map<Node, Integer> testListForXpathIndex,
                                    List<Node> testList, XPathContext testContext,
                                    Set<Node> seen, XPathContext controlContext) {
-            this.testListForXpath = testListForXpath;
             this.testListForXpathIndex = testListForXpathIndex;
             this.testList = testList;
             this.testContext = testContext;
@@ -896,7 +888,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         return null;
     }
 
-    private static Map<Node, Integer> index(final List<Node> nodes) {
+    private static Map<Node, Integer> index(final Iterable<Node> nodes) {
         Map<Node, Integer> indices = new HashMap<Node, Integer>();
         int idx = 0;
         for (Node n : nodes) {
