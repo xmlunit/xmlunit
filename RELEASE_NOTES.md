@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.8.4 - /unreleased, yet/
+## XMLUnit for Java 2.8.4 - /Released 2021-12-16/
 
 * improved comparison performance for documents with many siblings
   based on a suggestion by [@gerpres](https://github.com/gerpres) made
