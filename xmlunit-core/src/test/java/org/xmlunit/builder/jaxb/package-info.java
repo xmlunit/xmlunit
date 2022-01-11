@@ -5,7 +5,7 @@
 // Generated on: 2014.12.29 at 04:09:58 PM CET 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "https://www.xmlunit.org/test/complexXml", xmlns = {
-    @javax.xml.bind.annotation.XmlNs(namespaceURI = "https://www.xmlunit.org/test/complexXml", prefix = "test")
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "https://www.xmlunit.org/test/complexXml", xmlns = {
+    @jakarta.xml.bind.annotation.XmlNs(namespaceURI = "https://www.xmlunit.org/test/complexXml", prefix = "test")
 })
 package org.xmlunit.builder.jaxb;

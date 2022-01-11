@@ -18,14 +18,14 @@
   <groupId>org.xmlunit</groupId>
   <artifactId>xmlunit-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.8.5-SNAPSHOT</version>
+  <version>3.0.1-SNAPSHOT</version>
   <name>org.xmlunit:xmlunit-parent</name>
   <description>Parent POM for all artifacts of XMLUnit</description>
   <url>https://www.xmlunit.org/</url>
 
   <properties>
-    <maven.compile.source>1.7</maven.compile.source>
-    <maven.compile.target>1.7</maven.compile.target>
+    <maven.compile.source>11</maven.compile.source>
+    <maven.compile.target>11</maven.compile.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -38,12 +38,12 @@
 
     <!-- need to set this to be 8 so the lambdas of assertj3's javadocs are
          accepted -->
-    <maven.javadoc.source>8</maven.javadoc.source>
+    <maven.javadoc.source>11</maven.javadoc.source>
 
     <maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 
     <!-- Jakarta XML Binding version -->
-    <jakarta.xml.bind.version>2.3.3</jakarta.xml.bind.version>
+    <jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
   </properties>
 
   <inceptionYear>2001</inceptionYear>
