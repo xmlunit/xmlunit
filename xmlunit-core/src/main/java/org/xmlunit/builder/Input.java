@@ -154,7 +154,7 @@ public class Input {
      * Build a Source from a Jaxb-Object.
      */
     public static JaxbBuilder fromJaxb(Object jaxbObject) {
-        return new JaxbBuilder(jaxbObject);
+        return JaxbBuilderFactoryLocator.getFactory().create(jaxbObject);
     }
 
     /**
