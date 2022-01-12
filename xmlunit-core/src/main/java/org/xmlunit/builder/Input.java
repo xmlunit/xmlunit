@@ -115,7 +115,7 @@ public class Input {
      * byte[] (XML as byte[]), {@link String} (XML as String), {@link File} (contains XML),
      * {@link URL} (to an XML-Document), {@link URI} (to an XML-Document), {@link InputStream},
      * {@link ReadableByteChannel}, {@link Path},
-     * Jaxb-{@link Object} (marshal-able with {@link javax.xml.bind.JAXB}.marshal(...))
+     * Jaxb-{@link Object} (marshal-able with {@code JAXB}.marshal(...))
      */
     public static Builder from(Object object) {
         Builder xml;

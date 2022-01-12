@@ -507,6 +507,16 @@
       </properties>
     </profile>
     <profile>
+      <id>java11+</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <jdk>[11,)</jdk>
+      </activation>
+      <modules>
+        <module>xmlunit-jakarta-jaxb-impl</module>
+      </modules>
+    </profile>
+    <profile>
       <id>java14+</id>
       <activation>
         <activeByDefault>false</activeByDefault>
