@@ -14,6 +14,7 @@
 
 package org.xmlunit.jaxb;
 
+import org.xmlunit.XMLUnitException;
 import org.xmlunit.builder.JaxbBuilder;
 
 import javax.xml.bind.DataBindingException;
@@ -40,8 +41,6 @@ import java.lang.reflect.Method;
  */
 public class JavaxJaxbBuilder extends JaxbBuilder {
 
-    private Marshaller marshaller;
-
     /**
      * Creates a builder based on the given object.
      */
@@ -49,19 +48,20 @@ public class JavaxJaxbBuilder extends JaxbBuilder {
         super(object);
     }
 
-    /**
-     * Sets a non-default {@link Marshaller} to use when creating the {@link Source}.
-     */
-    public JavaxJaxbBuilder withMarshaller(final Marshaller marshaller) {
-        this.marshaller = marshaller;
-        return this;
-    }
-
     @Override
     public Source build() {
         try {
-            if (marshaller == null) {
-                createDefaultMarshaller();
+            final Object baseMarshaller = getMarshaller();
+            Marshaller marshaller;
+
+            if (baseMarshaller != null) {
+                if (baseMarshaller instanceof Marshaller) {
+                    marshaller = (Marshaller) baseMarshaller;
+                } else {
+                    throw new XMLUnitException("provided Marshaller must be a " + Marshaller.class.getName());
+                }
+            } else {
+                marshaller = createDefaultMarshaller();
             }
 
             final Object jaxbObject = getPreparedJaxbObject();
@@ -96,7 +96,7 @@ public class JavaxJaxbBuilder extends JaxbBuilder {
         return jaxbObject;
     }
 
-    private void createDefaultMarshaller() throws JAXBException, PropertyException {
+    private Marshaller createDefaultMarshaller() throws JAXBException, PropertyException {
         final Object object = getObject();
         JAXBContext context;
         if (object instanceof JAXBElement) {
@@ -105,8 +105,9 @@ public class JavaxJaxbBuilder extends JaxbBuilder {
             final Class<?> clazz = object.getClass();
             context = JAXBContext.newInstance(clazz);
         }
-        marshaller = context.createMarshaller();
+        Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        return marshaller;
     }
 
     @SuppressWarnings("unchecked")

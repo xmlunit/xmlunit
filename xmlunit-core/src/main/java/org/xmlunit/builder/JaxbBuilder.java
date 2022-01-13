@@ -22,6 +22,7 @@ import org.xmlunit.builder.Input.Builder;
 public abstract class JaxbBuilder implements Builder {
 
     private final Object object;
+    private Object marshaller;
     private boolean useObjectFactory;
 
     /**
@@ -32,12 +33,11 @@ public abstract class JaxbBuilder implements Builder {
     }
 
     /**
-     * Provides the configured object.
-     * @return the configured object
-     * @since 2.9.0
+     * Sets a non-default {@code Marshaller} to use when creating the {@link Source}.
      */
-    protected final Object getObject() {
-        return object;
+    public JaxbBuilder withMarshaller(final Object marshaller) {
+        this.marshaller = marshaller;
+        return this;
     }
 
     /**
@@ -56,6 +56,24 @@ public abstract class JaxbBuilder implements Builder {
     public JaxbBuilder useObjectFactory() {
         this.useObjectFactory = true;
         return this;
+    }
+
+    /**
+     * Provides the configured object.
+     * @return the configured object
+     * @since 2.9.0
+     */
+    protected final Object getObject() {
+        return object;
+    }
+
+    /**
+     * Provides the custom Marshaller.
+     * @return the configured Marshaller
+     * @since 2.9.0
+     */
+    protected final Object getMarshaller() {
+        return marshaller;
     }
 
     /**
