@@ -12,7 +12,7 @@
   limitations under the License.
  */
 
-package org.xmlunit.jaxb;
+package org.xmlunit.builder.javax_jaxb;
 
 import org.xmlunit.builder.JaxbBuilder;
 import org.xmlunit.builder.JaxbBuilderFactory;

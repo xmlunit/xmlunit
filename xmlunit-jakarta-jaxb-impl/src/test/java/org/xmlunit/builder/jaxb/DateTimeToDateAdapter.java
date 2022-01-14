@@ -11,7 +11,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  */
-package org.xmlunit.jakarta_jaxb;
+package org.xmlunit.builder.jaxb;
 
 import java.util.Calendar;
 import java.util.Date;

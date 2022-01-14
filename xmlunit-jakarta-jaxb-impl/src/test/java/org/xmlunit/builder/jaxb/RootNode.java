@@ -11,7 +11,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  */
-package org.xmlunit.jakarta_jaxb;
+package org.xmlunit.builder.jaxb;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -29,9 +29,9 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * <p>Java class for RootNode complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="RootNode">
  *   &lt;complexContent>
@@ -48,8 +48,8 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RootNode", propOrder = {
@@ -83,25 +83,25 @@ public class RootNode
 
     /**
      * Gets the value of the ids property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the ids property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getIds().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getIds() {
         if (ids == null) {
@@ -112,25 +112,25 @@ public class RootNode
 
     /**
      * Gets the value of the dates property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the dates property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getDates().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<Date> getDates() {
         if (dates == null) {
@@ -141,25 +141,25 @@ public class RootNode
 
     /**
      * Gets the value of the numbers property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the numbers property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getNumbers().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link Integer }
-     * 
-     * 
+     *
+     *
      */
     public List<Integer> getNumbers() {
         if (numbers == null) {
@@ -170,25 +170,25 @@ public class RootNode
 
     /**
      * Gets the value of the doubles property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the doubles property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getDoubles().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link Double }
-     * 
-     * 
+     *
+     *
      */
     public List<Double> getDoubles() {
         if (doubles == null) {
@@ -199,25 +199,25 @@ public class RootNode
 
     /**
      * Gets the value of the decimals property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the decimals property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getDecimals().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link BigDecimal }
-     * 
-     * 
+     *
+     *
      */
     public List<BigDecimal> getDecimals() {
         if (decimals == null) {
@@ -228,25 +228,25 @@ public class RootNode
 
     /**
      * Gets the value of the complexNodes property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the complexNodes property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getComplexNodes().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link ComplexNode }
-     * 
-     * 
+     *
+     *
      */
     public List<ComplexNode> getComplexNodes() {
         if (complexNodes == null) {

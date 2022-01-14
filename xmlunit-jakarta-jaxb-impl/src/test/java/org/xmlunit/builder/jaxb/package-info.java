@@ -14,4 +14,4 @@
 @jakarta.xml.bind.annotation.XmlSchema(namespace = "https://www.xmlunit.org/test/complexXml", xmlns = {
     @jakarta.xml.bind.annotation.XmlNs(namespaceURI = "https://www.xmlunit.org/test/complexXml", prefix = "test")
 })
-package org.xmlunit.jakarta_jaxb;
+package org.xmlunit.builder.jaxb;

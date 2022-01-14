@@ -26,7 +26,7 @@
     <artifactId>xmlunit-jakarta-jaxb-impl</artifactId>
 
     <properties>
-      <automatic.module.name>${project.groupId}.jakarta_jaxb</automatic.module.name>
+      <automatic.module.name>${project.groupId}.builder.jakarta_jaxb</automatic.module.name>
       <maven.compile.source>11</maven.compile.source>
       <maven.compile.target>11</maven.compile.target>
       <jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>

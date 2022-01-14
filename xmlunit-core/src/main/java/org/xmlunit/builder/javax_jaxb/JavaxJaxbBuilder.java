@@ -12,19 +12,19 @@
   limitations under the License.
  */
 
-package org.xmlunit.jakarta_jaxb;
+package org.xmlunit.builder.javax_jaxb;
 
 import org.xmlunit.XMLUnitException;
 import org.xmlunit.builder.JaxbBuilder;
 
-import jakarta.xml.bind.DataBindingException;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.PropertyException;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.util.JAXBSource;
+import javax.xml.bind.DataBindingException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.util.JAXBSource;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
@@ -39,14 +39,12 @@ import java.lang.reflect.Method;
  *
  * @since 2.9.0
  */
-public class JakartaJaxbBuilder extends JaxbBuilder {
-
-    private Marshaller marshaller;
+public class JavaxJaxbBuilder extends JaxbBuilder {
 
     /**
      * Creates a builder based on the given object.
      */
-    protected JakartaJaxbBuilder(final Object object) {
+    protected JavaxJaxbBuilder(final Object object) {
         super(object);
     }
 

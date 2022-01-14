@@ -17,7 +17,7 @@ package org.xmlunit.builder;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
-import org.xmlunit.jaxb.DefaultJaxbBuilderFactory;
+import org.xmlunit.builder.javax_jaxb.DefaultJaxbBuilderFactory;
 
 /**
  * Helps finding the proper JAXB implementation.

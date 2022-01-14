@@ -11,7 +11,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  */
-package org.xmlunit.jakarta_jaxb;
+package org.xmlunit.builder.jaxb;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -28,9 +28,9 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * <p>Java class for ComplexNode complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="ComplexNode">
  *   &lt;complexContent>
@@ -48,8 +48,8 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ComplexNode", propOrder = {
@@ -85,11 +85,11 @@ public class ComplexNode
 
     /**
      * Gets the value of the singleNestedComplexNode property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link ComplexNode }
-     *     
+     *
      */
     public ComplexNode getSingleNestedComplexNode() {
         return singleNestedComplexNode;
@@ -97,11 +97,11 @@ public class ComplexNode
 
     /**
      * Sets the value of the singleNestedComplexNode property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link ComplexNode }
-     *     
+     *
      */
     public void setSingleNestedComplexNode(ComplexNode value) {
         this.singleNestedComplexNode = value;
@@ -109,11 +109,11 @@ public class ComplexNode
 
     /**
      * Gets the value of the id property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getId() {
         return id;
@@ -121,11 +121,11 @@ public class ComplexNode
 
     /**
      * Sets the value of the id property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setId(String value) {
         this.id = value;
@@ -133,11 +133,11 @@ public class ComplexNode
 
     /**
      * Gets the value of the date property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public Date getDate() {
         return date;
@@ -145,11 +145,11 @@ public class ComplexNode
 
     /**
      * Sets the value of the date property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setDate(Date value) {
         this.date = value;
@@ -157,11 +157,11 @@ public class ComplexNode
 
     /**
      * Gets the value of the number property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link Integer }
-     *     
+     *
      */
     public Integer getNumber() {
         return number;
@@ -169,11 +169,11 @@ public class ComplexNode
 
     /**
      * Sets the value of the number property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link Integer }
-     *     
+     *
      */
     public void setNumber(Integer value) {
         this.number = value;
@@ -181,11 +181,11 @@ public class ComplexNode
 
     /**
      * Gets the value of the double property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link Double }
-     *     
+     *
      */
     public Double getDouble() {
         return _double;
@@ -193,11 +193,11 @@ public class ComplexNode
 
     /**
      * Sets the value of the double property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link Double }
-     *     
+     *
      */
     public void setDouble(Double value) {
         this._double = value;
@@ -205,11 +205,11 @@ public class ComplexNode
 
     /**
      * Gets the value of the decimal property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link BigDecimal }
-     *     
+     *
      */
     public BigDecimal getDecimal() {
         return decimal;
@@ -217,11 +217,11 @@ public class ComplexNode
 
     /**
      * Sets the value of the decimal property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link BigDecimal }
-     *     
+     *
      */
     public void setDecimal(BigDecimal value) {
         this.decimal = value;
@@ -229,25 +229,25 @@ public class ComplexNode
 
     /**
      * Gets the value of the nestedComplexNodes property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the nestedComplexNodes property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getNestedComplexNodes().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link ComplexNode }
-     * 
-     * 
+     *
+     *
      */
     public List<ComplexNode> getNestedComplexNodes() {
         if (nestedComplexNodes == null) {

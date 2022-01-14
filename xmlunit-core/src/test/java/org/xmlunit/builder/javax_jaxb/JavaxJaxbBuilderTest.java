@@ -12,23 +12,22 @@
   limitations under the License.
  */
 
-package org.xmlunit.jakarta_jaxb;
+package org.xmlunit.builder.javax_jaxb;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.startsWith;
 
-import org.xmlunit.builder.Input;
-import org.xmlunit.builder.JaxbBuilder;
+import org.xmlunit.builder.jaxb.ComplexNode;
+import org.xmlunit.builder.jaxb.RootNode;
 import org.xmlunit.util.Convert;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.Marshaller;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -40,37 +39,15 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 
 
-public class JakartaJaxbBuilderTest {
+public class JavaxJaxbBuilderTest {
 
     @Test
     public void testMarchal_withJaxbRootObject_shouldReturnSource() throws Exception {
         // prepare test data
         final Object testObject = createRootNode("123");
-        
-        // run test
-        final Source saxSource = new JakartaJaxbBuilder(testObject).build();
-
-        // validate result
-        final String xmlString = toString(saxSource);
-        if (isJdk6()) {
-            // JDK 6 uses a generated prefix like "ns2"
-            assertThat(xmlString, containsString(":RootNode"));
-        } else {
-            assertThat(xmlString, startsWith("<test:RootNode"));
-        }
-        assertThat(xmlString, containsString("<Id>123</Id>"));
-    }
-
-    @Test
-    public void inputBuilderShouldFindJakartaJaxb() throws Exception {
-        // prepare test data
-        final Object testObject = createRootNode("123");
-        
-        JaxbBuilder builder = Input.fromJaxb(testObject);
-        assertThat(builder, instanceOf(JakartaJaxbBuilder.class));
 
         // run test
-        final Source saxSource = builder.build();
+        final Source saxSource = new JavaxJaxbBuilder(testObject).build();
 
         // validate result
         final String xmlString = toString(saxSource);
@@ -90,7 +67,7 @@ public class JakartaJaxbBuilderTest {
         Marshaller marshaller = JAXBContext.newInstance(testObject.getClass()).createMarshaller();
 
         // run test
-        final Source saxSource = new JakartaJaxbBuilder(testObject).withMarshaller(marshaller ).build();
+        final Source saxSource = new JavaxJaxbBuilder(testObject).withMarshaller(marshaller ).build();
 
         // validate result
         final String xmlString = toString(saxSource);
@@ -102,14 +79,14 @@ public class JakartaJaxbBuilderTest {
         }
         assertThat(xmlString, containsString("<Id>123</Id>"));
     }
-    
+
     @Test
     public void testMarchal_withJaxbObject_shouldReturnSourceInferNameWithoutNamespacePrefix() throws Exception {
         // prepare test data
         final Object testObject = createComplexNode("123");
-        
+
         // run test
-        final Source saxSource = new JakartaJaxbBuilder(testObject).build();
+        final Source saxSource = new JavaxJaxbBuilder(testObject).build();
 
         // validate result
         final String xmlString = toString(saxSource);
@@ -124,7 +101,7 @@ public class JakartaJaxbBuilderTest {
         final Object testObject = createComplexNode("123");
 
         // run test
-        final Source saxSource = new JakartaJaxbBuilder(testObject).useObjectFactory().build();
+        final Source saxSource = new JavaxJaxbBuilder(testObject).useObjectFactory().build();
 
         // validate result
         final String xmlString = toString(saxSource);
@@ -144,7 +121,7 @@ public class JakartaJaxbBuilderTest {
         final Object testJAXBElement = new JAXBElement<ComplexNode>(name, ComplexNode.class, createComplexNode("123"));
 
         // run test
-        final Source saxSource = new JakartaJaxbBuilder(testJAXBElement).build();
+        final Source saxSource = new JavaxJaxbBuilder(testJAXBElement).build();
 
         // validate result
         final String xmlString = toString(saxSource);
