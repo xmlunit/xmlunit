@@ -1,6 +1,17 @@
 # Release Notes
 
-## XMLUnit for Java 2.8.5 - /no released, yet/
+## XMLUnit for Java 2.9.0 - /no released, yet/
+
+* added a new module `xmlunit-jakarta-jaxb-impl` that makes
+  `Input.fromJaxb` use `jakarta.xml.bind` rather than
+  `javax.xml.bind`. For more details see the [User's
+  Guide](https://github.com/xmlunit/user-guide/wiki/JAXB).
+
+  This change is not fully backwards compatible. The `JaxbBuilder`
+  class has become abstract and the `withMarshaller` method has
+  changed its signature. For most cases the change will not be noticed
+  and for almost all other cases it should be enough to re-compile
+  your code against XMLUnit 2.9.x.
 
 ## XMLUnit for Java 2.8.4 - /Released 2021-12-16/
 

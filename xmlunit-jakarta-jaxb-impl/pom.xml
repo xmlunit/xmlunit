@@ -22,17 +22,30 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>org.xmlunit:xmlunit-placeholders</name>
-    <artifactId>xmlunit-placeholders</artifactId>
+    <name>org.xmlunit:xmlunit-jakarta-jaxb-impl</name>
+    <artifactId>xmlunit-jakarta-jaxb-impl</artifactId>
 
     <properties>
-      <automatic.module.name>${project.groupId}.placeholder</automatic.module.name>
+      <automatic.module.name>${project.groupId}.builder.jakarta_jaxb</automatic.module.name>
+      <maven.compile.source>8</maven.compile.source>
+      <maven.compile.target>8</maven.compile.target>
+      <jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.xmlunit</groupId>
             <artifactId>xmlunit-core</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>jakarta.xml.bind</groupId>
+          <artifactId>jakarta.xml.bind-api</artifactId>
+          <version>${jakarta.xml.bind.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.glassfish.jaxb</groupId>
+          <artifactId>jaxb-runtime</artifactId>
+          <version>${jakarta.xml.bind.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

@@ -12,7 +12,7 @@
   limitations under the License.
  */
 
-package org.xmlunit.builder;
+package org.xmlunit.builder.javax_jaxb;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -39,15 +39,15 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 
 
-public class JaxbBuilderTest {
+public class JavaxJaxbBuilderTest {
 
     @Test
     public void testMarchal_withJaxbRootObject_shouldReturnSource() throws Exception {
         // prepare test data
         final Object testObject = createRootNode("123");
-        
+
         // run test
-        final Source saxSource = new JaxbBuilder(testObject).build();
+        final Source saxSource = new JavaxJaxbBuilder(testObject).build();
 
         // validate result
         final String xmlString = toString(saxSource);
@@ -67,7 +67,7 @@ public class JaxbBuilderTest {
         Marshaller marshaller = JAXBContext.newInstance(testObject.getClass()).createMarshaller();
 
         // run test
-        final Source saxSource = new JaxbBuilder(testObject).withMarshaller(marshaller ).build();
+        final Source saxSource = new JavaxJaxbBuilder(testObject).withMarshaller(marshaller ).build();
 
         // validate result
         final String xmlString = toString(saxSource);
@@ -79,14 +79,14 @@ public class JaxbBuilderTest {
         }
         assertThat(xmlString, containsString("<Id>123</Id>"));
     }
-    
+
     @Test
     public void testMarchal_withJaxbObject_shouldReturnSourceInferNameWithoutNamespacePrefix() throws Exception {
         // prepare test data
         final Object testObject = createComplexNode("123");
-        
+
         // run test
-        final Source saxSource = new JaxbBuilder(testObject).build();
+        final Source saxSource = new JavaxJaxbBuilder(testObject).build();
 
         // validate result
         final String xmlString = toString(saxSource);
@@ -101,7 +101,7 @@ public class JaxbBuilderTest {
         final Object testObject = createComplexNode("123");
 
         // run test
-        final Source saxSource = new JaxbBuilder(testObject).useObjectFactory().build();
+        final Source saxSource = new JavaxJaxbBuilder(testObject).useObjectFactory().build();
 
         // validate result
         final String xmlString = toString(saxSource);
@@ -121,7 +121,7 @@ public class JaxbBuilderTest {
         final Object testJAXBElement = new JAXBElement<ComplexNode>(name, ComplexNode.class, createComplexNode("123"));
 
         // run test
-        final Source saxSource = new JaxbBuilder(testJAXBElement).build();
+        final Source saxSource = new JavaxJaxbBuilder(testJAXBElement).build();
 
         // validate result
         final String xmlString = toString(saxSource);

@@ -221,16 +221,9 @@ The `core` library provides all functionality needed to test XML
 output and hasn't got any dependencies.  It uses JUnit 4.x for its own
 tests.
 
-If you are using Java 9 or later the core also depends on the JAXB
-API. This used to be part of the standard class library but has been
-split out of it with Java 9.
-
-If you want to use `Input.fromJaxb` - i.e. you want to serialize plain
-Java objects to XML as input - then you also need to add a dependency
-on the JAXB implementation.  Starting with XMLUnit 2.6.4, xmlunit-core
-optionally depends on the JAXB reference implementation and its
-transitive dependencies. Starting with XMLUnit 2.8.0 the JAXB
-dependency requires the JakartaEE version of JAXB.
+If you want to use `Input.fromJaxb` - i.e. you want to serialize plain Java objects to XML as input - then you may also
+need to add a dependency on the JAXB implementation. For more details see the [User's
+Guide](https://github.com/xmlunit/user-guide/wiki/JAXB).
 
 The core library is complemented by Hamcrest 1.x matchers and AssertJ
 assertions.  There also exists a `legacy` project that provides the
