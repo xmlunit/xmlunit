@@ -282,6 +282,10 @@
                 <title>XMLUnit Placeholders ${project.version}</title>
                 <packages>org.xmlunit.placeholder*</packages>
               </group>
+              <group>
+                <title>XMLUnit Jakarta XML Binding Support ${project.version}</title>
+                <packages>org.xmlunit.builder.jakarta_jaxb*</packages>
+              </group>
             </groups>
             <quiet>true</quiet>
             <source>${maven.javadoc.source}</source>
