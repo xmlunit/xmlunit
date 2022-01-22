@@ -13,6 +13,10 @@
   and for almost all other cases it should be enough to re-compile
   your code against XMLUnit 2.9.x.
 
+* added `NodeFilters#satisfiesAll` and `satifiesAny` methods to make
+  it easier to combine multiple node filters.
+  added to simplify the use case of [#249](https://github.com/xmlunit/xmlunit/issues/249)
+
 ## XMLUnit for Java 2.8.4 - /Released 2021-12-16/
 
 * improved comparison performance for documents with many siblings

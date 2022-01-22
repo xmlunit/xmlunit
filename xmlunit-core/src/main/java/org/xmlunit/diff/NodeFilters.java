@@ -46,5 +46,49 @@ public final class NodeFilters {
             }
         };
 
+    /**
+     * Accepts nodes that are accepted by all given filters.
+     *
+     * <p>This short-circuits the given list of predicates and returns {@code false} as soon as the first predicate
+     * does.</p>
+     *
+     * @since XMLUnit 2.9.0
+     */
+    public static Predicate<Node> satifiesAll(final Predicate<Node>... predicates) {
+        return new Predicate<Node>() {
+            @Override
+            public boolean test(Node n) {
+                for (Predicate<Node> p : predicates) {
+                    if (!p.test(n)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        };
+    }
+
+    /**
+     * Accepts nodes that are accepted by at least on of the given filters.
+     *
+     * <p>This short-circuits the given list of predicates and returns {@code true} as soon as the first predicate
+     * does.</p>
+     *
+     * @since XMLUnit 2.9.0
+     */
+    public static Predicate<Node> satifiesAny(final Predicate<Node>... predicates) {
+        return new Predicate<Node>() {
+            @Override
+            public boolean test(Node n) {
+                for (Predicate<Node> p : predicates) {
+                    if (p.test(n)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+    }
+
     private NodeFilters() { }
 }
