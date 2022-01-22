@@ -210,6 +210,8 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * <pre>
      * .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
      * </pre>
+     *
+     * <p>This overwrites any {@link NodeMatcher} set via earlier invocations of {@code withNodeMatcher}.</p>
      * 
      * @see org.xmlunit.diff.DifferenceEngine#setNodeMatcher(NodeMatcher)
      */
@@ -234,6 +236,9 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      *         ....
      *         .build();
      * </pre>
+     *
+     * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
+     * withDifferenceEvaluator}.</p>
      */
     @Override
     public DiffBuilder withDifferenceEvaluator(final DifferenceEvaluator differenceEvaluator) {
@@ -250,6 +255,8 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      *      .withComparisonController(ComparisonControllers.StopWhenDifferent)
      *      .build();
      * </pre>
+     *
+     * <p>This overwrites any {@link ComparisonController} set via earlier invocations of {@code withComparisonController}.</p>
      */
     @Override
     public DiffBuilder withComparisonController(final ComparisonController comparisonController) {
@@ -259,6 +266,8 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
 
     /**
      * Registers listeners that are notified of each comparison.
+     *
+     * <p>This overwrites any {@link ComparisonListener}s set via earlier invocations of {@code withComparisonListeners}.</p>
      * 
      * @see org.xmlunit.diff.DifferenceEngine#addComparisonListener(ComparisonListener)
      */
@@ -271,6 +280,8 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
     /**
      * Registers listeners that are notified of each comparison with
      * outcome other than {@link ComparisonResult#EQUAL}.
+     *
+     * <p>This overwrites any {@link ComparisonListener}s set via earlier invocations of {@code withDifferenceListeners}.</p>
      * 
      * @see org.xmlunit.diff.DifferenceEngine#addDifferenceListener(ComparisonListener)
      */
@@ -314,6 +325,8 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * XPath expressions will only use local names for elements and
      * attributes.</p>
      *
+     * <p>This overwrites any {@link Map} set via earlier invocations of {@code withNamespaceContext}.</p>
+     *
      * @param prefix2Uri mapping between prefix and namespace URI
      */
     @Override
@@ -333,6 +346,8 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * schema-instance-type attributes can not be ignored this way.
      * If you want to suppress comparison of them you'll need to
      * implement {@link DifferenceEvaluator}.</p>
+     *
+     * <p>This overwrites any {@link Predicate} set via earlier invocations of {@code withAttributeFilter}.</p>
      */
     @Override
     public DiffBuilder withAttributeFilter(Predicate<Attr> attributeFilter) {
@@ -346,6 +361,8 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * <p>Only nodes for which the predicate returns true are part of
      * the comparison.  By default nodes that are not document types
      * are considered.</p>
+     *
+     * <p>This overwrites any {@link Predicate} set via earlier invocations of {@code withNodeFilter}.</p>
      */
     @Override
     public DiffBuilder withNodeFilter(Predicate<Node> nodeFilter) {
@@ -355,6 +372,9 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
 
     /**
      * Sets a non-default formatter for the differences found.
+     *
+     * <p>This overwrites any {@link ComparisonFormatter} set via earlier invocations of {@code
+     * withComparisonFormatter}.</p>
      */
     @Override
     public DiffBuilder withComparisonFormatter(ComparisonFormatter formatter) {

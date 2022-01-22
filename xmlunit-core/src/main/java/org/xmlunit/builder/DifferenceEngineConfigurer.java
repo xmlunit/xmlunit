@@ -38,6 +38,8 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      * .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
      * </pre>
      *
+     * <p>This overwrites any {@link NodeMatcher} set via earlier invocations of {@code withNodeMatcher}.</p>
+     *
      * @see org.xmlunit.diff.DifferenceEngine#setNodeMatcher(NodeMatcher)
      */
     D withNodeMatcher(NodeMatcher nodeMatcher);
@@ -60,6 +62,9 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      *                 new MyCustomDifferenceEvaluator()))
      *         ....
      * </pre>
+     *
+     * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
+     * withDifferenceEvaluator}.</p>
      */
     D withDifferenceEvaluator(DifferenceEvaluator differenceEvaluator);
 
@@ -70,6 +75,8 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      * <pre>
      *      .withComparisonController(ComparisonControllers.StopWhenDifferent)
      * </pre>
+     *
+     * <p>This overwrites any {@link ComparisonController} set via earlier invocations of {@code withComparisonController}.</p>
      */
     D withComparisonController(ComparisonController comparisonController);
 
@@ -77,12 +84,16 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      * Registers listeners that are notified of each comparison.
      *
      * @see org.xmlunit.diff.DifferenceEngine#addComparisonListener(ComparisonListener)
+     *
+     * <p>This overwrites any {@link ComparisonListener}s set via earlier invocations of {@code withComparisonListeners}.</p>
      */
     D withComparisonListeners(ComparisonListener... comparisonListeners);
 
     /**
      * Registers listeners that are notified of each comparison with
      * outcome other than {@link ComparisonResult#EQUAL}.
+     *
+     * <p>This overwrites any {@link ComparisonListener}s set via earlier invocations of {@code withDifferenceListeners}.</p>
      *
      * @see org.xmlunit.diff.DifferenceEngine#addDifferenceListener(ComparisonListener)
      */
@@ -95,6 +106,8 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      * <p>Without a namespace context (or with an empty context) the
      * XPath expressions will only use local names for elements and
      * attributes.</p>
+     *
+     * <p>This overwrites any {@link Map} set via earlier invocations of {@code withNamespaceContext}.</p>
      *
      * @param prefix2Uri mapping between prefix and namespace URI
      */
@@ -111,6 +124,8 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      * schema-instance-type attributes can not be ignored this way.
      * If you want to suppress comparison of them you'll need to
      * implement {@link DifferenceEvaluator}.</p>
+     *
+     * <p>This overwrites any {@link Predicate} set via earlier invocations of {@code withAttributeFilter}.</p>
      */
     D withAttributeFilter(Predicate<Attr> attributeFilter);
 
@@ -120,11 +135,16 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      * <p>Only nodes for which the predicate returns true are part of
      * the comparison.  By default nodes that are not document types
      * are considered.</p>
+     *
+     * <p>This overwrites any {@link Predicate} set via earlier invocations of {@code withNodeFilter}.</p>
      */
     D withNodeFilter(Predicate<Node> nodeFilter);
 
     /**
      * Sets a non-default formatter for the differences found.
+     *
+     * <p>This overwrites any {@link ComparisonFormatter} set via earlier invocations of {@code
+     * withComparisonFormatter}.</p>
      */
     D withComparisonFormatter(ComparisonFormatter formatter);
 }

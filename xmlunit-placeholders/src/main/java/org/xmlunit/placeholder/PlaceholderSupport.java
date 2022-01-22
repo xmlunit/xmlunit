@@ -33,6 +33,10 @@ public class PlaceholderSupport {
 
     /**
      * Adds placeholder support to a {@link DifferenceEngineConfigurer}.
+     *
+     * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
+     * withDifferenceEvaluator}.</p>
+     *
      * @param configurer the configurer to add support to
      * @return the configurer with placeholder support added in
      */
@@ -43,6 +47,10 @@ public class PlaceholderSupport {
 
     /**
      * Adds placeholder support to a {@link DifferenceEngineConfigurer}.
+     *
+     * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
+     * withDifferenceEvaluator}.</p>
+     *
      * @param configurer the configurer to add support to
      * @param placeholderOpeningDelimiterRegex regular expression for
      * the opening delimiter of placeholder, defaults to {@link
@@ -63,6 +71,10 @@ public class PlaceholderSupport {
 
     /**
      * Adds placeholder support to a {@link DifferenceEngineConfigurer}.
+     *
+     * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
+     * withDifferenceEvaluator}.</p>
+     *
      * @param configurer the configurer to add support to
      * @param placeholderOpeningDelimiterRegex regular expression for
      * the opening delimiter of placeholder, defaults to {@link
@@ -103,6 +115,9 @@ public class PlaceholderSupport {
     /**
      * Adds placeholder support to a {@link DifferenceEngineConfigurer} considering an additional {@link DifferenceEvaluator}.
      *
+     * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
+     * withDifferenceEvaluator}.</p>
+     *
      * @param configurer the configurer to add support to
      * @param evaluator the additional evaluator - placeholder support is
      * {@link DifferenceEvaluators#chain chain}ed after the given
@@ -115,6 +130,9 @@ public class PlaceholderSupport {
 
     /**
      * Adds placeholder support to a {@link DifferenceEngineConfigurer} considering an additional {@link DifferenceEvaluator}.
+     *
+     * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
+     * withDifferenceEvaluator}.</p>
      *
      * @param configurer the configurer to add support to
      * @param placeholderOpeningDelimiterRegex regular expression for
@@ -138,6 +156,9 @@ public class PlaceholderSupport {
 
     /**
      * Adds placeholder support to a {@link DifferenceEngineConfigurer} considering an additional {@link DifferenceEvaluator}.
+     *
+     * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
+     * withDifferenceEvaluator}.</p>
      *
      * @param configurer the configurer to add support to
      * @param placeholderOpeningDelimiterRegex regular expression for
