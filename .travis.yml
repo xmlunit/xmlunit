@@ -36,6 +36,7 @@ script:
   - test "openjdk17" != "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./assertj-test.sh ${VERSION} 3.20.2 only-assertj3)
   - (cd compat-tests && ./jaxb-test.sh ${VERSION} jaxb)
   - test "openjdk7" == "${TRAVIS_JDK_VERSION}" || (cd compat-tests && ./jaxb-test.sh ${VERSION} jakarta)
+
 notifications:
   email:
     - xmlunit-commits@lists.sourceforge.net
