@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.9.0 - /no released, yet/
+## XMLUnit for Java 2.9.0 - /Released 2022-01-25/
 
 * added a new module `xmlunit-jakarta-jaxb-impl` that makes
   `Input.fromJaxb` use `jakarta.xml.bind` rather than
