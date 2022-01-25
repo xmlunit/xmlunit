@@ -68,7 +68,7 @@ if [ "$PACKAGE_ROOT" = "javax" ]; then
 
   <profiles>
     <profile>
-      <id>java11+</id>
+      <id>java9+</id>
       <activation>
         <jdk>[9,)</jdk>
       </activation>
