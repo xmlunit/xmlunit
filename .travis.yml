@@ -1,5 +1,5 @@
 language: java
-env: VERSION=2.9.0
+env: VERSION=2.9.1-SNAPSHOT
 matrix:
   include:
     - dist: trusty

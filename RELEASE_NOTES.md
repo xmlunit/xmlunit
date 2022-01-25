@@ -1,5 +1,7 @@
 # Release Notes
 
+## XMLUnit for Java 2.9.1 - /not released, yet/
+
 ## XMLUnit for Java 2.9.0 - /Released 2022-01-25/
 
 * added a new module `xmlunit-jakarta-jaxb-impl` that makes
@@ -12,6 +14,9 @@
   changed its signature. For most cases the change will not be noticed
   and for almost all other cases it should be enough to re-compile
   your code against XMLUnit 2.9.x.
+
+  Issue [#227](https://github.com/xmlunit/xmlunit/issues/227) and PR
+  [#247](https://github.com/xmlunit/xmlunit/issues/247)
 
 * added `NodeFilters#satisfiesAll` and `satifiesAny` methods to make
   it easier to combine multiple node filters.
