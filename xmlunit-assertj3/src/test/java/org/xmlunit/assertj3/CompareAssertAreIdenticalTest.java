@@ -185,7 +185,7 @@ public class CompareAssertAreIdenticalTest {
     public void testAreIdentical_withIgnoreElementContentWhitespace_shouldFailed() {
 
         thrown.expectAssertionError("Expecting:%n <control instance> and <test instance> to be identical");
-        thrown.expectAssertionError("Expected text value 'x' but was '%nx '");
+        thrown.expectAssertionError("Expected text value 'x' but was '\nx '");
 
         String testXml = String.format("<a>%nx <b/>%n</a>");
         String controlXml = "<a>x<b/></a>";

@@ -79,7 +79,7 @@ public class XmlAssertValidationTest {
     @Test
     public void testIsValidAgainst_withBrokenXml_shouldFail() {
 
-        thrown.expectAssertionErrorPattern("^\\nExpecting:\\n <.*" + Pattern.quote(TestResources.TEST_RESOURCE_DIR) + "invalidBook.xml>\\nto be valid but found following problems:\\n.*");
+        thrown.expectAssertionErrorPattern("^(\\r\\n?|\\n)Expecting:(\\r\\n?|\\n) <.*" + Pattern.quote(TestResources.TEST_RESOURCE_DIR) + "invalidBook.xml>(\\r\\n?|\\n)to be valid but found following problems:(\\r\\n?|\\n).*");
         thrown.expectAssertionError("1. line=9; column=8; type=ERROR;" +
                 " message=cvc-complex-type.2.4.b: The content of element 'Book' is not complete." +
                 " One of '{\"https://www.xmlunit.org/publishing\":Publisher}' is expected.");
@@ -167,8 +167,8 @@ public class XmlAssertValidationTest {
     @Test
     public void testIsInvalid_shouldFail() {
 
-        thrown.expectAssertionErrorPattern("^\\nExpecting:\\n <.*"
-            + Pattern.quote(TestResources.TEST_RESOURCE_DIR) + "BookXsdGenerated.xml>\\nto be invalid");
+        thrown.expectAssertionErrorPattern("^(\\r\\n?|\\n)Expecting:(\\r\\n?|\\n) <.*"
+            + Pattern.quote(TestResources.TEST_RESOURCE_DIR) + "BookXsdGenerated.xml>(\\r\\n?|\\n)to be invalid");
 
         StreamSource xml = new StreamSource(new File(TestResources.TEST_RESOURCE_DIR + "BookXsdGenerated.xml"));
 
