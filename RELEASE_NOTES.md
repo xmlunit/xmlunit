@@ -2,6 +2,11 @@
 
 ## XMLUnit for Java 2.9.1 - /not released, yet/
 
+* fixed some AssertJ tests that didn't work on Windows.
+  Issue [#252](https://github.com/xmlunit/xmlunit/issues/252) and PR
+  [#253](https://github.com/xmlunit/xmlunit/issues/253) by
+  [@Boiarshinov](https://github.com/Boiarshinov)
+
 ## XMLUnit for Java 2.9.0 - /Released 2022-01-25/
 
 * added a new module `xmlunit-jakarta-jaxb-impl` that makes
