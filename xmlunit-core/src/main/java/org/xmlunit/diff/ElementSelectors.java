@@ -379,7 +379,28 @@ public final class ElementSelectors {
      * @param childSelector ElementSelector to apply to the selected children.
      */
     public static ElementSelector byXPath(String xpath, ElementSelector childSelector) {
-        return byXPath(xpath, null, childSelector);
+        return byXPath(xpath, null, null, childSelector);
+    }
+
+    /**
+     * Selects two elements as matching if the child elements selected
+     * via XPath match using the given childSelector.
+     *
+     * <p>The xpath expression should yield elements.  Two elements
+     * match if a DefaultNodeMatcher applied to the selected children
+     * finds matching pairs for all children.</p>
+     *
+     * @param xpath XPath expression applied in the context of the
+     * elements to chose from that selects the children to compare.
+     * @param engine XPathEngine to use. If {@code null} a {@link
+     * JAXPXPathEngine} with default configuration will be used.
+     * @param childSelector ElementSelector to apply to the selected children.
+     *
+     * @since XMLUnit 2.9.2
+     */
+    public static ElementSelector byXPath(String xpath, XPathEngine engine,
+                                          ElementSelector childSelector) {
+        return byXPath(xpath, engine, null, childSelector);
     }
 
     /**
@@ -398,7 +419,32 @@ public final class ElementSelectors {
     public static ElementSelector byXPath(final String xpath,
                                           Map<String, String> prefix2Uri,
                                           ElementSelector childSelector) {
-        final XPathEngine engine = new JAXPXPathEngine();
+        return byXPath(xpath, null, prefix2Uri, childSelector);
+    }
+
+    /**
+     * Selects two elements as matching if the child elements selected
+     * via XPath match using the given childSelector.
+     *
+     * <p>The xpath expression should yield elements.  Two elements
+     * match if a DefaultNodeMatcher applied to the selected children
+     * finds matching pairs for all children.</p>
+     *
+     * @param xpath XPath expression applied in the context of the
+     * elements to chose from that selects the children to compare.
+     * @param xpathEngine XPathEngine to use. If {@code null} a {@link
+     * JAXPXPathEngine} with default configuration will be used.
+     * @param prefix2Uri maps from prefix to namespace URI.
+     * @param childSelector ElementSelector to apply to the selected children.
+     *
+     * @since XMLUnit 2.9.2
+     */
+    public static ElementSelector byXPath(final String xpath,
+                                          XPathEngine xpathEngine,
+                                          Map<String, String> prefix2Uri,
+                                          ElementSelector childSelector) {
+        final XPathEngine engine =
+            xpathEngine != null ? xpathEngine : new JAXPXPathEngine();
         if (prefix2Uri != null) {
             engine.setNamespaceContext(prefix2Uri);
         }

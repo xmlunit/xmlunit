@@ -7,6 +7,10 @@
   [#253](https://github.com/xmlunit/xmlunit/issues/253) by
   [@Boiarshinov](https://github.com/Boiarshinov)
 
+* added overloads to `ElementSelectors.byXPath` that accept a `XPathEngine`
+  argument.
+  Issue [#255](https://github.com/xmlunit/xmlunit/issues/255)
+
 ## XMLUnit for Java 2.9.0 - /Released 2022-01-25/
 
 * added a new module `xmlunit-jakarta-jaxb-impl` that makes

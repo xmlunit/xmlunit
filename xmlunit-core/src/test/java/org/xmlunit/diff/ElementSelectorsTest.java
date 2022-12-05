@@ -22,10 +22,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xmlunit.util.IsNullPredicate;
 import org.xmlunit.util.Predicate;
+import org.xmlunit.xpath.JAXPXPathEngine;
+import org.xmlunit.xpath.XPathEngine;
 
 public class ElementSelectorsTest {
     static final String FOO = "foo";
@@ -402,6 +408,25 @@ public class ElementSelectorsTest {
                    .canBeCompared(control, test));
         assertFalse(ElementSelectors.byXPath(".//BAZ", ElementSelectors.byNameAndText)
                     .canBeCompared(control, test2));
+    }
+
+    @Test
+    public void xpathUsesXpathEngine() throws Exception {
+        final JAXPXPathEngine real = new JAXPXPathEngine();
+        XPathEngine mock = Mockito.mock(XPathEngine.class);
+        Mockito.when(mock.selectNodes(Mockito.anyString(), Mockito.any(Node.class)))
+            .thenAnswer(new Answer<Iterable<Node>>() {
+                public Iterable<Node> answer(InvocationOnMock invocation) {
+                    return real.selectNodes((String) invocation.getArgument(0),
+                                            (Node) invocation.getArgument(1));
+                }
+            });
+        Element control = doc.createElement("foo");
+        Element test = doc.createElement("bar");
+        ElementSelectors.byXPath(".//BAZ", mock, ElementSelectors.byNameAndText)
+            .canBeCompared(control, test);
+        Mockito.verify(mock, Mockito.atLeastOnce())
+            .selectNodes(Mockito.anyString(), Mockito.any(Node.class));
     }
 
     @Test
