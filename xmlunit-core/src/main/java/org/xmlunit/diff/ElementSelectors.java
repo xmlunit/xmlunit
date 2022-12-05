@@ -396,7 +396,7 @@ public final class ElementSelectors {
      * JAXPXPathEngine} with default configuration will be used.
      * @param childSelector ElementSelector to apply to the selected children.
      *
-     * @since XMLUnit 2.9.2
+     * @since XMLUnit 2.9.1
      */
     public static ElementSelector byXPath(String xpath, XPathEngine engine,
                                           ElementSelector childSelector) {
@@ -437,7 +437,7 @@ public final class ElementSelectors {
      * @param prefix2Uri maps from prefix to namespace URI.
      * @param childSelector ElementSelector to apply to the selected children.
      *
-     * @since XMLUnit 2.9.2
+     * @since XMLUnit 2.9.1
      */
     public static ElementSelector byXPath(final String xpath,
                                           XPathEngine xpathEngine,
