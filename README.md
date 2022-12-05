@@ -3,7 +3,7 @@ XMLUnit for Java 2.x
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.xmlunit/xmlunit-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.xmlunit/xmlunit-core)
 
-[![Build Status XMLUnit 2.x for Java](https://travis-ci.com/xmlunit/xmlunit.svg?branch=main)](https://travis-ci.com/xmlunit/xmlunit) [![Coverage Status](https://coveralls.io/repos/xmlunit/xmlunit/badge.svg)](https://coveralls.io/r/xmlunit/xmlunit)
+[![Build Status XMLUnit 2.x for Java](https://app.travis-ci.com/xmlunit/xmlunit.svg?branch=main)](https://app.travis-ci.com/github/xmlunit/xmlunit) [![Coverage Status](https://coveralls.io/repos/xmlunit/xmlunit/badge.svg)](https://coveralls.io/r/xmlunit/xmlunit)
 
 XMLUnit is a library that supports testing XML output in several ways.
 
