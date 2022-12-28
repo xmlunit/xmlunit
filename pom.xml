@@ -35,7 +35,6 @@
 
     <!-- overridden via profile for Java 8+ -->
     <javadoc.additionalparam></javadoc.additionalparam>
-    <cyclonedx.skip>true</cyclonedx.skip>
 
     <!-- need to set this to be 8 so the lambdas of assertj3's javadocs are
          accepted -->
@@ -387,24 +386,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.cyclonedx</groupId>
-        <artifactId>cyclonedx-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>build-cyclonedx</id>
-            <phase>package</phase>
-            <goals>
-              <goal>makeBom</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <outputFormat>all</outputFormat>
-          <outputName>${project.artifactId}-${project.version}-sbom</outputName>
-          <skip>${cyclonedx.skip}</skip>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <profiles>
@@ -540,6 +521,27 @@
         <javadoc.additionalparam>-Xdoclint:html,syntax,accessibility,reference</javadoc.additionalparam>
         <cyclonedx.skip>false</cyclonedx.skip>
       </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.cyclonedx</groupId>
+            <artifactId>cyclonedx-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>build-cyclonedx</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>makeBom</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <outputFormat>all</outputFormat>
+              <outputName>${project.artifactId}-${project.version}-cyclonedx</outputName>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>java14+</id>
