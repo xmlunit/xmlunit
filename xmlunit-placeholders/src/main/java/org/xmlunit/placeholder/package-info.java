@@ -26,8 +26,8 @@
  * handling based on the keyword.</p>
  *
  * <p>The "special handling" is controlled by an instance of {@link
- * PlaceholderHandler} per keyword. The class {@link
- * PlaceholderDifferenceEvaluator} loads all implementations via
+ * org.xmlunit.placeholder.PlaceholderHandler} per keyword. The class {@link
+ * org.xmlunit.placeholder.PlaceholderDifferenceEvaluator} loads all implementations via
  * {@code java.util.ServiceLoader} so it is possible to extend the set
  * of handlers via your own modules.</p>
  *
@@ -45,24 +45,24 @@
  *
  * <li>{@code ${xmlunit.ignore}} which makes XMLUnit ignore the nested
  * text or attribute completely. This is handled by {@link
- * IgnorePlaceholderHandler}.</li>
+ * org.xmlunit.placeholder.IgnorePlaceholderHandler}.</li>
  *
  * <li>{@code ${xmlunit.isNumber}} makes the comparison pass if the
  * textual content of the element or attributes looks like a
- * number. This is handled by {@link IsNumberPlaceholderHandler}.</li>
+ * number. This is handled by {@link org.xmlunit.placeholder.IsNumberPlaceholderHandler}.</li>
  *
  * <li>{@code ${xmlunit.matchesRegex}} makes the comparison pass if
  * the textual content of the element or attribute matches the regular
  * expression specified as the first (and only) argument.  If there is
  * no argument at all, the comparison will fail. This is handled by
- * {@link MatchesRegexPlaceholderHandler}.</li>
+ * {@link org.xmlunit.placeholder.MatchesRegexPlaceholderHandler}.</li>
  *
  * <li>{@code ${xmlunit.isDateTime}} makes the comparison pass if the
  * textual content of the element or attributes looks like a date or
  * datetime in the current locale or parsed by ISO rules. An optional
  * argument can be used to specify a {@link
  * java.text.SimpleDateFormat} pattern to use when trying to parse the
- * test. This is handled by {@link IsDateTimePlaceholderHandler}.</li>
+ * test. This is handled by {@link org.xmlunit.placeholder.IsDateTimePlaceholderHandler}.</li>
  *
  * </ul>
  *
@@ -70,11 +70,11 @@
  * be overwritten using custom regular expressions.</p>
  *
  * <p>The easiest way to activate the placeholder feature is to use
- * one of the methods in {@link PlaceholderSupport} to add it to a
+ * one of the methods in {@link org.xmlunit.placeholder.PlaceholderSupport} to add it to a
  * {@link org.xmlunit.builder.DiffBuilder} or {@code
  * org.xmlunit.matchers.CompareMatcher} instance. The alternative
  * approach is to create an instance of {@link
- * PlaceholderDifferenceEvaluator} as a {@link
+ * org.xmlunit.placeholder.PlaceholderDifferenceEvaluator} as a {@link
  * org.xmlunit.diff.DifferenceEvaluator} and add it to the builder
  * yourself.</p>
  *

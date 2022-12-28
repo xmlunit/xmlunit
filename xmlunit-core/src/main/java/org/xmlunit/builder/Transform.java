@@ -16,6 +16,7 @@ package org.xmlunit.builder;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import org.w3c.dom.Document;
+import org.xmlunit.transform.Transformation;
 
 /**
  * Fluent API access to {@link Transformation}.

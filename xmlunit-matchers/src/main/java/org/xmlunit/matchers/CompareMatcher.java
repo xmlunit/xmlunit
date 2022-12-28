@@ -16,6 +16,7 @@ package org.xmlunit.matchers;
 
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.DifferenceEngineConfigurer;
+import org.xmlunit.builder.Input;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonController;
 import org.xmlunit.diff.ComparisonControllers;
@@ -25,6 +26,7 @@ import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.DefaultComparisonFormatter;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.DifferenceEvaluator;
+import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelector;
 import org.xmlunit.diff.NodeMatcher;
 import org.xmlunit.util.Predicate;
@@ -48,20 +50,20 @@ import org.w3c.dom.Node;
  * <p>
  * <b>Simple Example</b><br>
  * This example will throw an AssertionError: "Expected attribute value 'abc' but was 'xyz'".
- * 
+ *
  * <pre>
  * final String control = &quot;&lt;a&gt;&lt;b attr=\&quot;abc\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
  * final String test = &quot;&lt;a&gt;&lt;b attr=\&quot;xyz\&quot;&gt;&lt;/b&gt;&lt;/a&gt;&quot;;
- * 
+ *
  * assertThat(test, CompareMatcher.isIdenticalTo(control));
  * </pre>
  * <p>
  * <b>Complex Example</b><br>
  * In some cases you may have a static factory method for your project which wraps all project-specific configurations
  * like customized {@link ElementSelector} or {@link DifferenceEvaluator}.
- * 
+ *
  * <pre>
- * 
+ *
  * public static CompareMatcher isMyProjSimilarTo(final File file) {
  *     return CompareMatcher.isSimilarTo(file)
  *         .throwComparisonFailure()
@@ -72,9 +74,9 @@ import org.w3c.dom.Node;
  *             DifferenceEvaluators.Default, new MyDifferenceEvaluator()));
  * }
  * </pre>
- * 
+ *
  * And then somewhere in your Tests:
- * 
+ *
  * <pre>
  * assertThat(test, isMyProjSimilarTo(controlFile));
  * </pre>
@@ -87,7 +89,7 @@ public final class CompareMatcher extends BaseMatcher<Object>
     private final DiffBuilder diffBuilder;
 
     private boolean throwComparisonFailure;
-    
+
     private ComparisonResult checkFor;
 
     private Diff diffResult;
@@ -253,17 +255,17 @@ public final class CompareMatcher extends BaseMatcher<Object>
     }
 
     /**
-     * Instead of Matcher returning <code>false</code> a {@link org.junit.ComparisonFailure} will be thrown.
+     * Instead of Matcher returning <code>false</code> a {@code org.junit.ComparisonFailure} will be thrown.
      * <p>
      * The advantage over the standard Matcher behavior is, that the ComparisonFailure can provide the effected
      * Control-Node and Test-Node in separate Properties.<br>
      * Eclipse, NetBeans and IntelliJ can provide a nice DIFF-View for the two values.<br>
-     * ComparisonFailure is also used in {@link org.junit.Assert#assertEquals(Object, Object)} if both values are
+     * ComparisonFailure is also used in {@code org.junit.Assert#assertEquals(Object, Object)} if both values are
      * {@link String}s.
      * <p>
      * The only disadvantage is, that you can't combine the {@link CompareMatcher} with other Matchers
      * (like {@link org.hamcrest.CoreMatchers#not(Object)}) anymore. The following code will NOT WORK properly:
-     * <code>assertThat(test, not(isSimilarTo(control).throwComparisonFailure()))</code> 
+     * <code>assertThat(test, not(isSimilarTo(control).throwComparisonFailure()))</code>
      */
     public CompareMatcher throwComparisonFailure() {
         throwComparisonFailure = true;

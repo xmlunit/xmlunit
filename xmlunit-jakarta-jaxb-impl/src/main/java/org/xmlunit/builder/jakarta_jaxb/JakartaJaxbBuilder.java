@@ -32,10 +32,10 @@ import java.beans.Introspector;
 import java.lang.reflect.Method;
 
 /**
- * {@link Builder} for Jaxb-Object and creating a {@link JAXBSource}.
+ * {@link JaxbBuilder} for Jaxb-Object and creating a {@link JAXBSource}.
  *
  * <p> If no custom {@link Marshaller} is set by {@link JaxbBuilder#withMarshaller}, then the same logic as in {@link
- * JAXB} is used the create a default {@link Marshaller}.</p>
+ * jakarta.xml.bind.JAXB} is used the create a default {@link Marshaller}.</p>
  *
  * @since 2.9.0
  */

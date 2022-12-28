@@ -35,6 +35,7 @@ import org.xmlunit.util.Predicate;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Source;
 
 import static org.xmlunit.assertj3.AssertionsAdapter.withAssertInfo;
 import static org.xmlunit.assertj3.error.ShouldBeNotSimilar.shouldBeNotIdentical;
@@ -195,7 +196,8 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     }
 
     /**
-     * {@inheritDoc}
+     * Sets the {@link DocumentBuilderFactory} to use when creating a {@link org.w3c.dom.Document} from the {@link
+     * Source}s to compare.
      *
      * @see DiffBuilder#withDocumentBuilderFactory(DocumentBuilderFactory)
      */
@@ -205,7 +207,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     }
 
     /**
-     * {@inheritDoc}
+     * Ignore whitespace by removing all empty text nodes and trimming the non-empty ones.
      *
      * @see DiffBuilder#ignoreWhitespace()
      */
@@ -216,7 +218,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     }
 
     /**
-     * {@inheritDoc}
+     * Normalize Text-Elements by removing all empty text nodes and normalizing the non-empty ones.
      *
      * @see DiffBuilder#normalizeWhitespace()
      */
@@ -227,7 +229,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     }
 
     /**
-     * {@inheritDoc}
+     * Ignore element content whitespace by removing all text nodes solely consisting of whitespace.
      *
      * @see DiffBuilder#ignoreElementContentWhitespace()
      */
@@ -237,7 +239,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     }
 
     /**
-     * {@inheritDoc}
+     * Will remove all comment-Tags "&lt;!-- Comment --&gt;" from test- and control-XML before comparing.
      *
      * @see DiffBuilder#ignoreComments()
      */
@@ -247,7 +249,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
     }
 
     /**
-     * {@inheritDoc}
+     * Will remove all comment-Tags "&lt;!-- Comment --&gt;" from test- and control-XML before comparing.
      *
      * @see DiffBuilder#ignoreCommentsUsingXSLTVersion(String)
      */

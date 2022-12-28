@@ -194,7 +194,7 @@ public final class DifferenceEvaluators {
      * </pre>
      *
      * <p>In general different doctype declarations will be ignored
-     * because of {@link NodeFilters.Default}, so if you want to
+     * because of {@link NodeFilters#Default}, so if you want to
      * detect these differences you need to pick a different {@code
      * NodeFilter}.</p>
      *

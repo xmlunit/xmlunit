@@ -15,9 +15,10 @@
 /**
  * This package contains the JAXB builder using the {@code javax.xml.bind} package.
  *
- * <p>This package is used by default when {@link Input#fromJaxb} is used and the {@code xmlunit-jakarta-jaxb-impl}
- * module is not present. If you are running on Java7 to 10 JAXB is part of the Java class library, with later versions
- * you need the JAXB specification and implementation of <a href="https://javaee.github.io/jaxb-v2/">JavaEE</a> or <a
+ * <p>This package is used by default when {@link org.xmlunit.builder.Input#fromJaxb} is used and the {@code
+ * xmlunit-jakarta-jaxb-impl} module is not present. If you are running on Java7 to 10 JAXB is part of the Java class
+ * library, with later versions you need the JAXB specification and implementation of <a
+ * href="https://javaee.github.io/jaxb-v2/">JavaEE</a> or <a
  * href="https://jakarta.ee/specifications/xml-binding/">JakartaEE</a>. This package is only compatible with the 2.x
  * version of Jakarta XML Binding, for version 3.x and later you must use the {@code xmlunit-jakarta-jaxb-impl} module
  * and the {@code org.xmlunit.builder.jakarta_jaxb} package.</p>
@@ -25,5 +26,3 @@
  * @since 2.9.0
  */
 package org.xmlunit.builder.javax_jaxb;
-
-import org.xmlunit.builder.Input;

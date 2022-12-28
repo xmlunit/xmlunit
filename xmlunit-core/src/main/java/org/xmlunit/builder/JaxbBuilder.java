@@ -14,6 +14,8 @@
 
 package org.xmlunit.builder;
 
+import javax.xml.transform.Source;
+
 import org.xmlunit.builder.Input.Builder;
 
 /**
