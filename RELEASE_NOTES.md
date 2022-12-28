@@ -11,6 +11,8 @@
   argument.
   Issue [#255](https://github.com/xmlunit/xmlunit/issues/255)
 
+* added Cyclone DX SBOMs to release artifacts
+
 ## XMLUnit for Java 2.9.0 - /Released 2022-01-25/
 
 * added a new module `xmlunit-jakarta-jaxb-impl` that makes

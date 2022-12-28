@@ -313,6 +313,11 @@
           <artifactId>maven-enforcer-plugin</artifactId>
           <version>1.4.1</version>
         </plugin>
+        <plugin>
+          <groupId>org.cyclonedx</groupId>
+          <artifactId>cyclonedx-maven-plugin</artifactId>
+          <version>2.7.3</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -380,6 +385,23 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>build-cyclonedx</id>
+            <phase>package</phase>
+            <goals>
+              <goal>makeBom</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <outputFormat>all</outputFormat>
+          <outputName>${project.artifactId}-${project.version}-sbom</outputName>
+        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -16,7 +16,7 @@
 
 set -e
 
-if [ $# -lt 1 ]; then 
+if [ $# -lt 1 ]; then
     echo "usage $0 Release-Version"
     exit 1
 fi
@@ -25,6 +25,8 @@ mkdir -p target/bindist-tmp/xmlunit-$1
 cp README.md LICENSE RELEASE_NOTES.md target/bindist-tmp/xmlunit-$1
 cp */target/*.jar target/bindist-tmp/xmlunit-$1
 cp -r target/site/apidocs target/bindist-tmp/xmlunit-$1
+cp xmlunit-*/target/*-sbom.json target/bindist-tmp/xmlunit-$1
+cp xmlunit-*/target/*-sbom.* target
 cd target/bindist-tmp
 zip -r xmlunit-$1-bin.zip xmlunit-$1
 tar cf xmlunit-$1-bin.tar xmlunit-$1
@@ -33,7 +35,7 @@ bzip2 xmlunit-$1-bin.tar
 mv xmlunit-$1-bin.* ..
 
 cd ..
-for i in *.zip *.tar.gz *.tar.bz2; do
+for i in *.zip *.tar.gz *.tar.bz2 *-sbom.*; do
     sha256sum $i > $i.sha256
     gpg --use-agent --detach-sign --armor $i
 done
