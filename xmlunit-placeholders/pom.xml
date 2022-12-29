@@ -22,8 +22,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>org.xmlunit</groupId>
     <name>org.xmlunit:xmlunit-placeholders</name>
     <artifactId>xmlunit-placeholders</artifactId>
+    <packaging>jar</packaging>
+    <description>XMLUnit for Java Placeholder DSL for Comparisons</description>
 
     <properties>
       <automatic.module.name>${project.groupId}.placeholder</automatic.module.name>

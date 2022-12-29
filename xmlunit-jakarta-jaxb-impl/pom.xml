@@ -22,8 +22,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>org.xmlunit</groupId>
     <name>org.xmlunit:xmlunit-jakarta-jaxb-impl</name>
     <artifactId>xmlunit-jakarta-jaxb-impl</artifactId>
+    <description>XMLUnit for Java JAXB support using Jakarta EE packages</description>
+    <packaging>jar</packaging>
 
     <properties>
       <automatic.module.name>${project.groupId}.builder.jakarta_jaxb</automatic.module.name>
