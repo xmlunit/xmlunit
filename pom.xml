@@ -298,7 +298,7 @@
             <docencoding>${project.build.sourceEncoding}</docencoding>
             <notimestamp>true</notimestamp>
             <links>
-              <link>http://docs.oracle.com/javase/6/docs/api/</link>
+              <link>https://docs.oracle.com/javase/8/docs/api/</link>
             </links>
             <additionalparam>${javadoc.additionalparam}</additionalparam>
           </configuration>
@@ -538,6 +538,29 @@
             <configuration>
               <outputFormat>all</outputFormat>
               <outputName>${project.artifactId}-${project.version}-cyclonedx</outputName>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>java9+</id>
+      <activation>
+        <jdk>[9,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <additionalDependencies>
+                <dependency>
+                  <groupId>jakarta.xml.bind</groupId>
+                  <artifactId>jakarta.xml.bind-api</artifactId>
+                  <version>${jakarta.xml.bind.version}</version>
+                </dependency>
+              </additionalDependencies>
             </configuration>
           </plugin>
         </plugins>

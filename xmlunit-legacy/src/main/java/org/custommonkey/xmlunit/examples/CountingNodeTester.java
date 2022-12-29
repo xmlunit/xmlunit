@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -68,8 +68,7 @@ public class CountingNodeTester implements NodeTester {
      * if all the nodes that were expected were found.
      * Note that this method also invokes {@link #resetCounter resetCounter}
      * so that the instance can be reused.
-     * @exception true if expected num nodes == actual num nodes,
-     * false otherwise
+     * @throws NodeTestException if expected num nodes == actual num nodes
      */
     public void noMoreNodes(NodeTest forTest) throws NodeTestException {
         int testedNodes = actualNumNodes;
