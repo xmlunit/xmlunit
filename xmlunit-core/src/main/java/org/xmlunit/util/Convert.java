@@ -50,6 +50,7 @@ public final class Convert {
      * convert it directly.</p>
      *
      * @param s the source to convert
+     * @return the created InputSource
      */
     public static InputSource toInputSource(Source s) {
         return toInputSource(s, null);
@@ -62,8 +63,9 @@ public final class Convert {
      * convert it directly.</p>
      *
      * @param s the source to convert
-     * @param fac the TransformerFactory to use, will use the defaul
+     * @param fac the TransformerFactory to use, will use the default
      * factory if the value is null.
+     * @return the created InputSource
      */
     public static InputSource toInputSource(Source s, TransformerFactory fac) {
         try {
@@ -97,10 +99,13 @@ public final class Convert {
      * by the default DocumentBuilderFactory) will be used to read the
      * source.  This may involve an XSLT identity transform in
      * toInputSource.</p>
+     *
+     * @param s the source to convert
+     * @return the created Document
      */
     public static Document toDocument(Source s) {
         Document d = tryExtractDocFromDOMSource(s);
-        return d != null ? d 
+        return d != null ? d
             : toDocument(s, DocumentBuilderFactoryConfigurer.Default.configure(DocumentBuilderFactory.newInstance()));
     }
 
@@ -113,6 +118,10 @@ public final class Convert {
      * by given DocumentBuilderFactory) will be used to read the
      * source.  This may involve an XSLT identity transform in
      * toInputSource.</p>
+     *
+     * @param s the source to convert
+     * @param factory factory to use
+     * @return the created Document
      */
     public static Document toDocument(Source s,
                                       DocumentBuilderFactory factory) {
@@ -161,10 +170,13 @@ public final class Convert {
      *
      * <p>If the source is a {@link DOMSource} its Node will be
      * returned, otherwise this delegates to {@link #toDocument}.</p>
+     *
+     * @param s the source to convert
+     * @return the created Node
      */
     public static Node toNode(Source s) {
         Node n = tryExtractNodeFromDOMSource(s);
-        return n != null ? n 
+        return n != null ? n
             : toDocument(s, DocumentBuilderFactoryConfigurer.Default.configure(DocumentBuilderFactory.newInstance()));
     }
 
@@ -173,6 +185,10 @@ public final class Convert {
      *
      * <p>If the source is a {@link DOMSource} its Node will be
      * returned, otherwise this delegates to {@link #toDocument}.</p>
+     *
+     * @param s the source to convert
+     * @param factory factory to use
+     * @return the created Node
      */
     public static Node toNode(Source s,
                               DocumentBuilderFactory factory) {
@@ -190,12 +206,15 @@ public final class Convert {
 
     /**
      * Creates a JAXP NamespaceContext from a Map prefix =&gt; Namespace URI.
+     * @param prefix2URI maps from prefix to namespace URI.
+     * @return the created NamespaceContext
      */
     public static NamespaceContext
         toNamespaceContext(Map<String, String> prefix2URI) {
         final Map<String, String> copy =
             new LinkedHashMap<String, String>(prefix2URI);
         return new NamespaceContext() {
+            @Override
             public String getNamespaceURI(String prefix) {
                 if (prefix == null) {
                     throw new IllegalArgumentException("prefix must not be null");
@@ -210,11 +229,13 @@ public final class Convert {
                 return uri != null ? uri : XMLConstants.NULL_NS_URI;
             }
 
+            @Override
             public String getPrefix(String uri) {
                 Iterator i = getPrefixes(uri);
                 return i.hasNext() ? (String) i.next() : null;
             }
 
+            @Override
             public Iterator getPrefixes(String uri) {
                 if (uri == null) {
                     throw new IllegalArgumentException("uri must not be null");

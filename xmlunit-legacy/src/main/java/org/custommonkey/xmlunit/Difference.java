@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -49,34 +49,37 @@ public class Difference {
     private final String description;
     /** TRUE if the difference represents a similarity, FALSE otherwise */
     private boolean recoverable;
-    
+
     private NodeDetail controlNodeDetail = null;
     private NodeDetail testNodeDetail = null;
 
     /**
      * Constructor for non-similar Difference instances
-     * @param id
-     * @param description
+     * @param id type of difference
+     * @param description description of the difference
      */
     protected Difference(int id, String description) {
         this(id, description, false);
     }
 
     /**
-     * Constructor for similar Difference instances
-     * @param id
-     * @param description
+     * Constructor for similar or non-similar Difference instances
+     * @param id type of difference
+     * @param description description of the difference
+     * @param recoverable whether the difference represents a similarity
      */
     protected Difference(int id, String description, boolean recoverable) {
         this.id = id;
         this.description = description;
         this.recoverable = recoverable;
     }
-    
 
     /**
      * Copy constructor using prototype Difference and
      * encountered NodeDetails
+     * @param prototype the difference to copy from
+     * @param controlNodeDetail details of the control node
+     * @param testNodeDetail details of the test node
      */
     protected Difference(Difference prototype, NodeDetail controlNodeDetail,
                          NodeDetail testNodeDetail) {
@@ -84,7 +87,7 @@ public class Difference {
         this.controlNodeDetail = controlNodeDetail;
         this.testNodeDetail = testNodeDetail;
     }
-    
+
     /**
      * @return the id
      */
@@ -105,18 +108,19 @@ public class Difference {
     public boolean isRecoverable() {
         return recoverable;
     }
-    
+
     /**
      * Allow the recoverable field value to be overridden.
      * Used when an override DifferenceListener is used in conjunction with
      * a DetailedDiff.
+     * @param overrideValue whether the difference represents a similarity
      */
     protected void setRecoverable(boolean overrideValue) {
         recoverable = overrideValue;
     }
-    
+
     /**
-     * @return the NodeDetail from the piece of XML used as the control 
+     * @return the NodeDetail from the piece of XML used as the control
      * at the Node where this difference was encountered
      */
     public NodeDetail getControlNodeDetail() {
@@ -130,11 +134,12 @@ public class Difference {
     public NodeDetail getTestNodeDetail() {
         return testNodeDetail;
     }
-    
+
     /**
      * Now that Differences can be constructed from prototypes
      * we need to be able to compare them to those in DifferenceConstants
      */
+    @Override
     public boolean equals(Object other) {
         if (other == null) {
             return false;
@@ -149,15 +154,17 @@ public class Difference {
     /**
      * hashcode implementation to go with equals.
      */
+    @Override
     public int hashCode() {
         return id;
     }
 
     /**
      * @return a basic representation of the object state and identity
-     * and if <code>NodeDetail</code> instances are populated append 
+     * and if <code>NodeDetail</code> instances are populated append
      * their details also
      */
+    @Override
     public String toString() {
         StringBuffer buf = new StringBuffer();
         if (controlNodeDetail == null || testNodeDetail == null) {
@@ -167,12 +174,12 @@ public class Difference {
         }
         return buf.toString();
     }
-    
+
     private void appendBasicRepresentation(StringBuffer buf) {
         buf.append("Difference (#").append(id).
             append(") ").append(description);
     }
-    
+
     private void appendDetailedRepresentation(StringBuffer buf) {
         buf.append("Expected ").append(getDescription())
             .append(" '").append(controlNodeDetail.getValue())

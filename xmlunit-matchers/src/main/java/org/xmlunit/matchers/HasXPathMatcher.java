@@ -84,6 +84,8 @@ public class HasXPathMatcher extends BaseMatcher<Object> {
      * Sets the {@link DocumentBuilderFactory} to use when creating a
      * {@link org.w3c.dom.Document} from the XML input.
      *
+     * @param f the DocumentBuilderFactory to use
+     * @return this
      * @since XMLUnit 2.6.0
      */
     public HasXPathMatcher withDocumentBuilderFactory(DocumentBuilderFactory f) {
@@ -94,6 +96,8 @@ public class HasXPathMatcher extends BaseMatcher<Object> {
     /**
      * Sets the {@link XPathFactory} to use.
      *
+     * @param f the XPathFactory to use
+     * @return this
      * @since XMLUnit 2.6.1
      */
     public HasXPathMatcher withXPathFactory(XPathFactory f) {
@@ -128,7 +132,7 @@ public class HasXPathMatcher extends BaseMatcher<Object> {
     /**
      * Creates a matcher that matches when the examined XML input has at least one node
      * corresponding to the specified <code>xPath</code>.
-     * 
+     *
      * <p>For example:</p>
      * <pre>assertThat(xml, hasXPath("/root/cars[0]/audi"))</pre>
      *
@@ -145,6 +149,7 @@ public class HasXPathMatcher extends BaseMatcher<Object> {
      *
      * @param prefix2Uri prefix2Uri maps from prefix to namespace URI. It is used to resolve
      *                   XML namespace prefixes in the XPath expression
+     * @return this
      */
     public HasXPathMatcher withNamespaceContext(Map<String, String> prefix2Uri) {
         this.prefix2Uri = prefix2Uri;

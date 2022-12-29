@@ -20,6 +20,8 @@ public interface ComparisonListener {
     /**
      * Receives information about a comparison that has been performed
      * and its outcome.
+     * @param comparison the comparison
+     * @param outcome the result of the comparison
      */
     void comparisonPerformed(Comparison comparison, ComparisonResult outcome);
 }

@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2008,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2008,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -45,10 +45,15 @@ import org.custommonkey.xmlunit.DifferenceListener;
 public class CaseInsensitiveDifferenceListener
     extends TextDifferenceListenerBase {
 
+    /**
+     * Creates a new instance
+     * @param delegateTo the DifferenceListener to delegate to.
+     */
     public CaseInsensitiveDifferenceListener(DifferenceListener delegateTo) {
         super(delegateTo);
     }
 
+    @Override
     protected int textualDifference(Difference d) {
         String control = d.getControlNodeDetail().getValue();
         if (control != null) {

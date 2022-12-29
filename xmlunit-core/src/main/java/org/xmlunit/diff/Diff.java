@@ -34,10 +34,25 @@ public class Diff {
 
     private final ComparisonFormatter formatter;
 
+    /**
+     * Encapsulates the compared sources and the differences found.
+     *
+     * @param controlSource the control XML source
+     * @param testSource the test XML source
+     * @param differences the differences found
+     */
     public Diff(Source controlSource, Source testSource, Iterable<Difference> differences) {
         this(controlSource, testSource, DEFAULT_FORMATTER, differences);
     }
 
+    /**
+     * Encapsulates the compared sources and the differences found.
+     *
+     * @param controlSource the control XML source
+     * @param testSource the test XML source
+     * @param differences the differences found
+     * @param formatter formatter to use when displaying the differences
+     */
     public Diff(Source controlSource, Source testSource,
                 ComparisonFormatter formatter, Iterable<Difference> differences) {
         this.controlSource = controlSource;
@@ -102,12 +117,16 @@ public class Diff {
         return differences;
     }
 
-
+    /**
+     * @return the control XML source
+     */
     public Source getControlSource() {
         return controlSource;
     }
 
-
+    /**
+     * @return the test XML source
+     */
     public Source getTestSource() {
         return testSource;
     }

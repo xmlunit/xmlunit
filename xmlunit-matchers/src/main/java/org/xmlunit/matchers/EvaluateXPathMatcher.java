@@ -102,6 +102,8 @@ public class EvaluateXPathMatcher extends BaseMatcher<Object> {
      * Sets the {@link DocumentBuilderFactory} to use when creating a
      * {@link org.w3c.dom.Document} from the XML input.
      *
+     * @param f the DocumentBuilderFactory to use
+     * @return this
      * @since XMLUnit 2.6.0
      */
     public EvaluateXPathMatcher withDocumentBuilderFactory(DocumentBuilderFactory f) {
@@ -112,6 +114,8 @@ public class EvaluateXPathMatcher extends BaseMatcher<Object> {
     /**
      * Sets the {@link XPathFactory} to use.
      *
+     * @param f the XPathFactory to use
+     * @return this
      * @since XMLUnit 2.6.1
      */
     public EvaluateXPathMatcher withXPathFactory(XPathFactory f) {
@@ -146,6 +150,7 @@ public class EvaluateXPathMatcher extends BaseMatcher<Object> {
      *
      * @param prefix2Uri prefix2Uri maps from prefix to namespace URI. It is used to resolve
      *                   XML namespace prefixes in the XPath expression
+     * @return this
      */
     public EvaluateXPathMatcher withNamespaceContext(Map<String, String> prefix2Uri) {
         this.prefix2Uri = prefix2Uri;

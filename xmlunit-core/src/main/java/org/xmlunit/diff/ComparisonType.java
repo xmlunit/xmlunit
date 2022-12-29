@@ -151,6 +151,10 @@ public enum ComparisonType {
         this.doctypeComparison = doctypeComparison;
     }
 
+    /**
+     * Provides a description for the comparison type.
+     * @return description of the comparison type.
+     */
     public String getDescription() {
         if (description == null) {
             return name().toLowerCase(Locale.ENGLISH).replace('_', ' ');

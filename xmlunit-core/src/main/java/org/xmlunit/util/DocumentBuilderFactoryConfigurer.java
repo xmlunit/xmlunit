@@ -48,6 +48,8 @@ public class DocumentBuilderFactoryConfigurer {
     /**
      * Applies the current configuration.
      *
+     * @param factory the factory to configure
+     * @return the configured factory
      * @throws ConfigurationException if any of the attributes or
      * features set is not supported.
      */
@@ -87,6 +89,7 @@ public class DocumentBuilderFactoryConfigurer {
 
     /**
      * Creates a builder for DocumentBuilderFactoryConfigurers.
+     * @return a new builder
      */
     public static Builder builder() {
         return new Builder();
@@ -117,6 +120,7 @@ public class DocumentBuilderFactoryConfigurer {
 
         /**
          * Builds a DocumentBuilderFactoryConfigurer.
+         * @return the built configurer
          */
         public DocumentBuilderFactoryConfigurer build() {
             return new DocumentBuilderFactoryConfigurer(Collections.unmodifiableMap(attributes),
@@ -128,6 +132,9 @@ public class DocumentBuilderFactoryConfigurer {
          * Configures the factory with the given attribute, causes an
          * exception in {@link #configure} if the attribute is not
          * supported.
+         * @param key key of the attribute
+         * @param value value for the attribute
+         * @return this
          */
         public Builder withAttribute(String key, Object value) {
             attributes.put(key, value);
@@ -137,6 +144,9 @@ public class DocumentBuilderFactoryConfigurer {
         /**
          * Configures the factory with the given attribute if it is
          * supported.
+         * @param key key of the attribute
+         * @param value value for the attribute
+         * @return this
          */
         public Builder withSafeAttribute(String key, Object value) {
             safeAttributes.put(key, value);
@@ -147,6 +157,9 @@ public class DocumentBuilderFactoryConfigurer {
          * Configures the factory with the given feature, causes an
          * exception in {@link #configure} if the feature is not
          * supported.
+         * @param key key of the feature
+         * @param value value for the feature
+         * @return this
          */
         public Builder withFeature(String key, boolean value) {
             features.put(key, value);
@@ -156,6 +169,9 @@ public class DocumentBuilderFactoryConfigurer {
         /**
          * Configures the factory with the given feature if it is
          * supported.
+         * @param key key of the feature
+         * @param value value for the feature
+         * @return this
          */
         public Builder withSafeFeature(String key, boolean value) {
             safeFeatures.put(key, value);
@@ -175,6 +191,7 @@ public class DocumentBuilderFactoryConfigurer {
 
         /**
          * Configures the factory to not load any external DTDs.
+         * @return this
          */
         public Builder withDTDLoadingDisabled() {
             for (String feature : DTD_LOAD_DISABLERS) {
@@ -190,6 +207,7 @@ public class DocumentBuilderFactoryConfigurer {
 
         /**
          * Configures the factory to not parse any DTDs.
+         * @return this
          */
         public Builder withDTDParsingDisabled() {
             for (String feature : DTD_PARSE_DISABLERS) {
@@ -200,6 +218,8 @@ public class DocumentBuilderFactoryConfigurer {
 
         /**
          * Configure the factory's XInclude awareness.
+         * @param b whether the factory should be XInclude aware
+         * @return this
          */
         public Builder withXIncludeAware(boolean b) {
             xIncludeAware = b;
@@ -208,6 +228,8 @@ public class DocumentBuilderFactoryConfigurer {
 
         /**
          * Configure whether the factory's expands entity references.
+         * @param b whether the factory should expand entity references
+         * @return this
          */
         public Builder withExpandEntityReferences(boolean b) {
             expandEntityRefs = b;

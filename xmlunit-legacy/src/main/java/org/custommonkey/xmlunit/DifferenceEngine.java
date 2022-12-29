@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2010,2013,2015-2016 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2010,2013,2015-2016,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ public class DifferenceEngine
     private MatchTracker matchTracker;
     private final XpathNodeTracker controlTracker;
     private final XpathNodeTracker testTracker;
-    
+
     /**
      * Simple constructor that uses no MatchTracker at all.
      * @param controller the instance used to determine whether a Difference
@@ -89,7 +89,7 @@ public class DifferenceEngine
     public DifferenceEngine(ComparisonController controller) {
         this(controller, null);
     }
-        
+
     /**
      * Simple constructor
      * @param controller the instance used to determine whether a Difference
@@ -114,7 +114,7 @@ public class DifferenceEngine
     public void setMatchTracker(MatchTracker matchTracker) {
         this.matchTracker = matchTracker;
     }
-        
+
     /**
      * Entry point for Node comparison testing.
      * @param control Control XML to compare
@@ -123,9 +123,9 @@ public class DifferenceEngine
      * during node comparison testing
      * @param elementQualifier Used to determine which elements qualify for
      * comparison e.g. when a node has repeated child elements that may occur
-     * in any sequence and that sequence is not considered important. 
+     * in any sequence and that sequence is not considered important.
      */
-    public void compare(Node control, Node test, DifferenceListener listener, 
+    public void compare(Node control, Node test, DifferenceListener listener,
                         ElementQualifier elementQualifier) {
         controlTracker.reset();
         testTracker.reset();
@@ -138,9 +138,9 @@ public class DifferenceEngine
         } catch (DifferenceFoundException e) {
             // thrown by the protected compare() method to terminate the
             // comparison and unwind the call stack back to here
-        }       
+        }
     }
-        
+
     private static String getNullOrNotNull(Node aNode) {
         return aNode==null ? NULL_NODE : NOT_NULL_NODE;
     }
@@ -148,14 +148,14 @@ public class DifferenceEngine
     /**
      * First point of call: if nodes are comparable it compares node values then
      *  recurses to compare node children.
-     * @param control
-     * @param test
-     * @param listener
-     * @param elementQualifier
-     * @throws DifferenceFoundException
+     * @param control control node
+     * @param test test node
+     * @param listener difference listener
+     * @param elementQualifier element qualifier
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compareNode(Node control, Node test,
-                               DifferenceListener listener, ElementQualifier elementQualifier) 
+                               DifferenceListener listener, ElementQualifier elementQualifier)
         throws DifferenceFoundException {
         boolean comparable = compareNodeBasics(control, test, listener);
         boolean isDocumentNode = false;
@@ -183,13 +183,13 @@ public class DifferenceEngine
                 break;
             case Node.DOCUMENT_NODE:
                 isDocumentNode = true;
-                compareDocument((Document)control, (Document) test, 
+                compareDocument((Document)control, (Document) test,
                                 listener, elementQualifier);
                 break;
             default:
                 listener.skippedComparison(control, test);
             }
-        } 
+        }
 
         compareHasChildNodes(control, test, listener);
         if (isDocumentNode) {
@@ -206,23 +206,23 @@ public class DifferenceEngine
             testTracker.outdent();
         }
     }
-    
+
     /**
      * Compare two Documents for doctype and then element differences
-     * @param control
-     * @param test
-     * @param listener
-     * @param elementQualifier
-     * @throws DifferenceFoundException
+     * @param control control document
+     * @param test test document
+     * @param listener difference listener
+     * @param elementQualifier element qualifier
+     * @throws DifferenceFoundException if a difference has been found
      */
-    protected void compareDocument(Document control, Document test, 
-                                   DifferenceListener listener, ElementQualifier elementQualifier) 
+    protected void compareDocument(Document control, Document test,
+                                   DifferenceListener listener, ElementQualifier elementQualifier)
         throws DifferenceFoundException {
         DocumentType controlDoctype = control.getDoctype();
         DocumentType testDoctype = test.getDoctype();
-        compare(getNullOrNotNull(controlDoctype), 
-                getNullOrNotNull(testDoctype), 
-                controlDoctype, testDoctype, listener, 
+        compare(getNullOrNotNull(controlDoctype),
+                getNullOrNotNull(testDoctype),
+                controlDoctype, testDoctype, listener,
                 HAS_DOCTYPE_DECLARATION);
         if (controlDoctype!=null && testDoctype!=null) {
             compareNode(controlDoctype, testDoctype, listener, elementQualifier);
@@ -232,11 +232,11 @@ public class DifferenceEngine
     /**
      * Compares node type and node namespace characteristics: basically
      * determines if nodes are comparable further
-     * @param control
-     * @param test
-     * @param listener
+     * @param control control node
+     * @param test test node
+     * @param listener difference listener
      * @return true if the nodes are comparable further, false otherwise
-     * @throws DifferenceFoundException
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected boolean compareNodeBasics(Node control, Node test,
                                         DifferenceListener listener) throws DifferenceFoundException {
@@ -256,7 +256,7 @@ public class DifferenceEngine
                 control, test, listener, NAMESPACE_URI);
         compare(control.getPrefix(), test.getPrefix(),
                 control, test, listener, NAMESPACE_PREFIX);
-            
+
         return textAndCDATA || controlType.equals(testType);
     }
 
@@ -272,10 +272,10 @@ public class DifferenceEngine
     /**
      * Compare the number of children, and if the same, compare the actual
      *  children via their NodeLists.
-     * @param control
-     * @param test
-     * @param listener
-     * @throws DifferenceFoundException
+     * @param control control node
+     * @param test test node
+     * @param listener difference listener
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compareHasChildNodes(Node control, Node test,
                                         DifferenceListener listener) throws DifferenceFoundException {
@@ -317,14 +317,14 @@ public class DifferenceEngine
     /**
      * Compare the number of children, and if the same, compare the actual
      *  children via their NodeLists.
-     * @param control
-     * @param test
-     * @param listener
-     * @param elementQualifier
-     * @throws DifferenceFoundException
+     * @param control control node
+     * @param test test node
+     * @param listener difference listener
+     * @param elementQualifier element qualifier
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compareNodeChildren(Node control, Node test,
-                                       DifferenceListener listener, ElementQualifier elementQualifier) 
+                                       DifferenceListener listener, ElementQualifier elementQualifier)
         throws DifferenceFoundException {
 
         List<Node> controlChildren = nodeList2List(control.getChildNodes());
@@ -355,21 +355,21 @@ public class DifferenceEngine
      * Compare the contents of two node list one by one, assuming that order
      * of children is NOT important: matching begins at same position in test
      * list as control list.
-     * @param controlChildren
-     * @param testChildren
+     * @param controlChildren children of the control node
+     * @param testChildren children of the test node
      * @param numNodes convenience parameter because the calling method should
      *  know the value already
-     * @param listener
+     * @param listener difference listener
      * @param elementQualifier used to determine which of the child elements in
      * the test NodeList should be compared to the current child element in the
      * control NodeList.
-     * @throws DifferenceFoundException
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compareNodeList(final List<Node> controlChildren,
                                    final List<Node> testChildren,
                                    final int numNodes,
                                    final DifferenceListener listener,
-                                   final ElementQualifier elementQualifier) 
+                                   final ElementQualifier elementQualifier)
         throws DifferenceFoundException {
 
         int j;
@@ -388,7 +388,7 @@ public class DifferenceEngine
             short findNodeType = nextControl.getNodeType();
             int startAt = i > lastTestNode ? lastTestNode : i;
             j = startAt;
-            
+
             boolean matchFound = false;
 
             /*
@@ -514,14 +514,14 @@ public class DifferenceEngine
 
     /**
      * Compare 2 elements and their attributes
-     * @param control
-     * @param test
-     * @param listener
-     * @throws DifferenceFoundException
+     * @param control element
+     * @param test test element
+     * @param listener difference listener
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compareElement(Element control, Element test,
                                   DifferenceListener listener) throws DifferenceFoundException {
-        compare(getUnNamespacedNodeName(control), getUnNamespacedNodeName(test), 
+        compare(getUnNamespacedNodeName(control), getUnNamespacedNodeName(test),
                 control, test, listener, ELEMENT_TAG_NAME);
 
         NamedNodeMap controlAttr = control.getAttributes();
@@ -564,7 +564,7 @@ public class DifferenceEngine
                 unmatchedTestAttrs.add(nextAttr);
             }
         }
-        
+
         for (int i=0; i < controlAttr.getLength(); ++i) {
             Attr nextAttr = (Attr) controlAttr.item(i);
             // xml namespacing is handled in compareNodeBasics
@@ -572,7 +572,7 @@ public class DifferenceEngine
                 boolean isNamespacedAttr = isNamespaced(nextAttr);
                 String attrName = getUnNamespacedNodeName(nextAttr, isNamespacedAttr);
                 Attr compareTo;
-                
+
                 if (isNamespacedAttr) {
                     compareTo = (Attr) testAttr.getNamedItemNS(
                                                                nextAttr.getNamespaceURI(), attrName);
@@ -630,11 +630,11 @@ public class DifferenceEngine
         controlTracker.clearTrackedAttribute();
         testTracker.clearTrackedAttribute();
     }
-    
+
     private String getUnNamespacedNodeName(Node aNode) {
         return getUnNamespacedNodeName(aNode, isNamespaced(aNode));
     }
-    
+
     private static String getUnNamespacedNodeName(Node aNode, boolean isNamespacedNode) {
         if (isNamespacedNode) {
             return aNode.getLocalName();
@@ -680,17 +680,17 @@ public class DifferenceEngine
 
     /**
      * Compare two attributes
-     * @param control
-     * @param test
-     * @param listener
-     * @throws DifferenceFoundException
+     * @param control control attribute
+     * @param test test attribute
+     * @param listener difference listener
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compareRecognizedXMLSchemaInstanceAttribute(Attr control,
                                                                Attr test,
                                                                DifferenceListener listener)
         throws DifferenceFoundException {
         Attr nonNullNode = control != null ? control : test;
-        Difference d = 
+        Difference d =
             XMLConstants.W3C_XML_SCHEMA_INSTANCE_SCHEMA_LOCATION_ATTR
             .equals(nonNullNode.getLocalName())
             ? SCHEMA_LOCATION : NO_NAMESPACE_SCHEMA_LOCATION;
@@ -701,7 +701,7 @@ public class DifferenceEngine
         if (test != null) {
             testTracker.visited(test);
         }
-        
+
         compare(control != null ? control.getValue() : ATTRIBUTE_ABSENT,
                 test != null ? test.getValue() : ATTRIBUTE_ABSENT,
                 control, test, listener, d);
@@ -709,19 +709,19 @@ public class DifferenceEngine
 
     /**
      * Compare two attributes
-     * @param control
-     * @param test
-     * @param listener
-     * @throws DifferenceFoundException
+     * @param control control attribute
+     * @param test test attribute
+     * @param listener difference listener
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compareAttribute(Attr control, Attr test,
                                     DifferenceListener listener) throws DifferenceFoundException {
         controlTracker.visited(control);
         testTracker.visited(test);
-        
-        compare(control.getPrefix(), test.getPrefix(), control, test, 
+
+        compare(control.getPrefix(), test.getPrefix(), control, test,
                 listener, NAMESPACE_PREFIX);
-                
+
         compare(control.getValue(), test.getValue(), control, test,
                 listener, ATTR_VALUE);
 
@@ -732,10 +732,10 @@ public class DifferenceEngine
 
     /**
      * Compare two CDATA sections - unused, kept for backwards compatibility
-     * @param control
-     * @param test
-     * @param listener
-     * @throws DifferenceFoundException
+     * @param control control cdata
+     * @param test test cdata
+     * @param listener difference listener
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compareCDataSection(CDATASection control, CDATASection test,
                                        DifferenceListener listener) throws DifferenceFoundException {
@@ -744,10 +744,10 @@ public class DifferenceEngine
 
     /**
      * Compare two comments
-     * @param control
-     * @param test
-     * @param listener
-     * @throws DifferenceFoundException
+     * @param control control comment
+     * @param test test comment
+     * @param listener difference listener
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compareComment(Comment control, Comment test,
                                   DifferenceListener listener) throws DifferenceFoundException {
@@ -758,10 +758,10 @@ public class DifferenceEngine
 
     /**
      * Compare two DocumentType nodes
-     * @param control
-     * @param test
-     * @param listener
-     * @throws DifferenceFoundException
+     * @param control control document type
+     * @param test test document type
+     * @param listener difference listener
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compareDocumentType(DocumentType control, DocumentType test,
                                        DifferenceListener listener) throws DifferenceFoundException {
@@ -776,10 +776,10 @@ public class DifferenceEngine
 
     /**
      * Compare two processing instructions
-     * @param control
-     * @param test
-     * @param listener
-     * @throws DifferenceFoundException
+     * @param control control processing instruction
+     * @param test test processing instruction
+     * @param listener difference listener
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compareProcessingInstruction(ProcessingInstruction control,
                                                 ProcessingInstruction test, DifferenceListener listener)
@@ -792,10 +792,10 @@ public class DifferenceEngine
 
     /**
      * Compare text - unused, kept for backwards compatibility
-     * @param control
-     * @param test
-     * @param listener
-     * @throws DifferenceFoundException
+     * @param control control text
+     * @param test test text
+     * @param listener difference listener
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compareText(Text control, Text test,
                                DifferenceListener listener)
@@ -805,10 +805,10 @@ public class DifferenceEngine
 
     /**
      * Compare text
-     * @param control
-     * @param test
-     * @param listener
-     * @throws DifferenceFoundException
+     * @param control control text
+     * @param test test text
+     * @param listener difference listener
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compareText(CharacterData control, CharacterData test,
                                DifferenceListener listener)
@@ -819,11 +819,11 @@ public class DifferenceEngine
 
     /**
      * Character comparison method used by comments, text and CDATA sections
-     * @param control
-     * @param test
-     * @param listener
-     * @param difference
-     * @throws DifferenceFoundException
+     * @param control control text
+     * @param test test text
+     * @param listener difference listener
+     * @param difference the difference type
+     * @throws DifferenceFoundException if a difference has been found
      */
     private void compareCharacterData(CharacterData control, CharacterData test,
                                       DifferenceListener listener, Difference difference)
@@ -835,13 +835,13 @@ public class DifferenceEngine
     /**
      * If the expected and actual values are unequal then inform the listener of
      *  a difference and throw a DifferenceFoundException.
-     * @param expected
-     * @param actual
-     * @param control
-     * @param test
-     * @param listener
-     * @param difference
-     * @throws DifferenceFoundException
+     * @param expected expected value
+     * @param actual value
+     * @param control control node
+     * @param test test node
+     * @param listener difference listener
+     * @param difference difference type
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compare(Object expected, Object actual,
                            Node control, Node test, DifferenceListener listener, Difference difference)
@@ -853,15 +853,15 @@ public class DifferenceEngine
     /**
      * If the expected and actual values are unequal then inform the listener of
      *  a difference and throw a DifferenceFoundException.
-     * @param expected
-     * @param actual
-     * @param control
-     * @param test
-     * @param listener
-     * @param difference
-     * @param controlLoc
-     * @param testLoc
-     * @throws DifferenceFoundException
+     * @param expected expected value
+     * @param actual value
+     * @param control control node
+     * @param controlLoc XPath location of control node
+     * @param test test node
+     * @param testLoc XPath location of test node
+     * @param listener difference listener
+     * @param difference difference type
+     * @throws DifferenceFoundException if a difference has been found
      */
     protected void compare(Object expected, Object actual,
                            Node control, Node test, DifferenceListener listener,
@@ -876,7 +876,7 @@ public class DifferenceEngine
                                                test,
                                                testLoc == null ? null
                                                : testLoc.toXpathString());
-        Difference differenceInstance = new Difference(difference, 
+        Difference differenceInstance = new Difference(difference,
                                                        controlDetail, testDetail);
         if (unequal(expected, actual)) {
             listener.differenceFound(differenceInstance);

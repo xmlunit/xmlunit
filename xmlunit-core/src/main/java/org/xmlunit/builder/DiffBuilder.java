@@ -50,7 +50,7 @@ import java.util.Map;
  * Valid inputs for control and test are all Objects supported by {@link Input#from(Object)}.
  * <p>
  * <b>Example Usage:</b>
- * 
+ *
  * <pre>
  * String controlXml = &quot;&lt;a&gt;&lt;b&gt;Test Value&lt;/b&gt;&lt;/a&gt;&quot;;
  * String testXml = &quot;&lt;a&gt;\n &lt;b&gt;\n  Test Value\n &lt;/b&gt;\n&lt;/a&gt;&quot;;
@@ -106,8 +106,7 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
 
     /**
      * Create a DiffBuilder instance.
-     * 
-     * @see DiffBuilder
+     *
      * @param controlSource the expected reference Result.
      */
     private DiffBuilder(final Source controlSource) {
@@ -116,9 +115,9 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
 
     /**
      * Create a DiffBuilder from all kind of types supported by {@link Input#from(Object)}.
-     * 
-     * @see DiffBuilder
+     *
      * @param control the expected reference document.
+     * @return a new builder
      */
     public static DiffBuilder compare(final Object control) {
         final Source controlSource = getSource(control);
@@ -127,8 +126,9 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
 
     /**
      * Set the Test-Source from all kind of types supported by {@link Input#from(Object)}.
-     * 
+     *
      * @param test the test document which must be compared with the control document.
+     * @return this
      */
     public DiffBuilder withTest(Object test) {
         testSource = getSource(test);
@@ -146,6 +146,7 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * whitespace (AKA element content whitespace) but leave all other
      * text nodes alone you should use {@link
      * #ignoreElementContentWhitespace} instead.</p>
+     * @return this
      */
     public DiffBuilder ignoreWhitespace() {
         ignoreWhitespace = true;
@@ -158,6 +159,7 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * "normalized" in this context means all whitespace characters are replaced by space characters and consecutive
      * whitespace characters are collapsed.
      * </p>
+     * @return this
      */
     public DiffBuilder normalizeWhitespace() {
         normalizeWhitespace = true;
@@ -166,6 +168,7 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
 
     /**
      * Ignore element content whitespace by removing all text nodes solely consisting of whitespace.
+     * @return this
      * @since XMLUnit 2.6.0
      */
     public DiffBuilder ignoreElementContentWhitespace() {
@@ -181,6 +184,7 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * #withDocumentBuilderFactory}. If you need more control over the
      * transformation build the {@code Source} using a transformation
      * yourself, using {@link CommentLessSource#STYLE}.</p>
+     * @return this
      */
     public DiffBuilder ignoreComments() {
         return ignoreCommentsUsingXSLTVersion(null);
@@ -195,6 +199,7 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * CommentLessSource} constructor with two arguments using {@code
      * xsltVersion} as second argument.</p>
      * @param xsltVersion use this version for the stylesheet
+     * @return this
      * @since XMLUnit 2.5.0
      */
     public DiffBuilder ignoreCommentsUsingXSLTVersion(String xsltVersion) {
@@ -212,7 +217,7 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * </pre>
      *
      * <p>This overwrites any {@link NodeMatcher} set via earlier invocations of {@code withNodeMatcher}.</p>
-     * 
+     *
      * @see org.xmlunit.diff.DifferenceEngine#setNodeMatcher(NodeMatcher)
      */
     @Override
@@ -268,7 +273,7 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * Registers listeners that are notified of each comparison.
      *
      * <p>This overwrites any {@link ComparisonListener}s set via earlier invocations of {@code withComparisonListeners}.</p>
-     * 
+     *
      * @see org.xmlunit.diff.DifferenceEngine#addComparisonListener(ComparisonListener)
      */
     @Override
@@ -282,7 +287,7 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * outcome other than {@link ComparisonResult#EQUAL}.
      *
      * <p>This overwrites any {@link ComparisonListener}s set via earlier invocations of {@code withDifferenceListeners}.</p>
-     * 
+     *
      * @see org.xmlunit.diff.DifferenceEngine#addDifferenceListener(ComparisonListener)
      */
     @Override
@@ -301,6 +306,7 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * See {@link #withDifferenceEvaluator(DifferenceEvaluator)}
      * <p>
      * Default is {@link #checkForIdentical()}.
+     * @return this
      */
     public DiffBuilder checkForSimilar() {
         comparisonResultsToCheck = CHECK_FOR_SIMILAR;
@@ -311,6 +317,7 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * check test source with the control source for identically.
      * <p>
      * This is the Default.
+     * @return this
      */
     public DiffBuilder checkForIdentical() {
         comparisonResultsToCheck = CHECK_FOR_IDENTICAL;
@@ -390,6 +397,8 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
      * and test not already are {@link
      * javax.xml.transform.dom.DOMSource}s.</p>
      *
+     * @param f the DocumentBuilderFactory to use
+     * @return this
      * @since XMLUnit 2.2.0
      */
     public DiffBuilder withDocumentBuilderFactory(DocumentBuilderFactory f) {
@@ -400,6 +409,7 @@ public class DiffBuilder implements DifferenceEngineConfigurer<DiffBuilder> {
     /**
      * Compare the Test-XML {@link #withTest(Object)} with the Control-XML {@link #compare(Object)} and return the
      * collected differences in a {@link Diff} object.
+     * @return the collected differences
      */
     public Diff build() {
 

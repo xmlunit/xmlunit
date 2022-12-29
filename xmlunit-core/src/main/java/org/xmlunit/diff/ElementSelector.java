@@ -23,6 +23,9 @@ public interface ElementSelector {
     /**
      * Determine whether the two elements from the control and test
      * XML can be compared.
+     * @param controlElement element of the control XML
+     * @param testElement element of the test XML
+     * @return true if the two elements can be compared
      */
     boolean canBeCompared(Element controlElement, Element testElement);
 }

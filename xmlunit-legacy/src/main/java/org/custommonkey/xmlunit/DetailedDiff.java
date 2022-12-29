@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -63,9 +63,9 @@ public class DetailedDiff extends Diff {
     /**
      * DifferenceListener implementation.
      * Add the difference to the list of all differences
-     * @param difference
      * @return the value supplied by the superclass implementation
      */
+    @Override
     public int differenceFound(Difference difference) {
         final int returnValue = super.differenceFound(difference);
         switch (returnValue) {
@@ -91,9 +91,9 @@ public class DetailedDiff extends Diff {
 
     /**
      * ComparisonController implementation.
-     * @param afterDifference
      * @return false always as this class wants to see all differences
      */
+    @Override
     public boolean haltComparison(Difference afterDifference) {
         return false;
     }

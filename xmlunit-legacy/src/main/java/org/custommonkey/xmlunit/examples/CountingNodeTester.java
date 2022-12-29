@@ -50,15 +50,18 @@ public class CountingNodeTester implements NodeTester {
     private final int expectedNumNodes;
     private int actualNumNodes;
 
+    /**
+     * Creates a new NodeTester
+     * @param expectedNumNodes expected number of nodes
+     */
     public CountingNodeTester(int expectedNumNodes) {
         this.expectedNumNodes = expectedNumNodes;
     }
 
     /**
      * A single Node is always valid
-     * @param aNode
-     * @param forTest
      */
+    @Override
     public void testNode(Node aNode, NodeTest forTest) {
         actualNumNodes++;
     }
@@ -70,6 +73,7 @@ public class CountingNodeTester implements NodeTester {
      * so that the instance can be reused.
      * @throws NodeTestException if expected num nodes == actual num nodes
      */
+    @Override
     public void noMoreNodes(NodeTest forTest) throws NodeTestException {
         int testedNodes = actualNumNodes;
         resetCounter();

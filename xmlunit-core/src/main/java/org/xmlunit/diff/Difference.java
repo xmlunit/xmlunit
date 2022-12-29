@@ -27,6 +27,8 @@ public class Difference {
 
     /**
      * Combines comparison and result.
+     * @param comparison the comparison
+     * @param result the result of the comparison
      */
     public Difference(Comparison comparison, ComparisonResult result) {
         this.result = result;
@@ -35,6 +37,7 @@ public class Difference {
 
     /**
      * The result of the difference.
+     * @return result of the difference
      */
     public ComparisonResult getResult() {
         return result;
@@ -42,6 +45,7 @@ public class Difference {
 
     /**
      * The details of the comparison.
+     * @return details of the comparison
      */
     public Comparison getComparison() {
         return comparison;
@@ -49,6 +53,7 @@ public class Difference {
 
     /**
      * Sets the default formatter to use with {@link #toString}.
+     * @param formatter the ComparisonFormatter to use
      * @since XMLUnit 2.1.0
      */
     public void setComparisonFormatter(ComparisonFormatter formatter) {

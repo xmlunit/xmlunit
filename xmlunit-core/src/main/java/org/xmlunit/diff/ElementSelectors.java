@@ -128,6 +128,9 @@ public final class ElementSelectors {
      * compared.
      *
      * <p>Attributes are only searched for in the null namespace.</p>
+     *
+     * @param attribs the names of all attributes who's values must be the same
+     * @return the ElementSelector
      */
     public static ElementSelector byNameAndAttributes(String... attribs) {
         if (attribs == null) {
@@ -151,6 +154,9 @@ public final class ElementSelectors {
      * <p>Namespace URIs of attributes are those of the attributes on
      * the control element or the null namespace if they don't
      * exist.</p>
+     *
+     * @param attribs the names of all attributes who's values must be the same
+     * @return the ElementSelector
      */
     public static ElementSelector
         byNameAndAttributesControlNS(final String... attribs) {
@@ -196,6 +202,9 @@ public final class ElementSelectors {
      * Elements with the same local name (and namespace URI - if any)
      * and attribute values for the given attribute names can be
      * compared.
+     *
+     * @param attribs the qualified names of all attributes who's values must be the same
+     * @return the ElementSelector
      */
     public static ElementSelector byNameAndAttributes(final QName... attribs) {
         if (attribs == null) {
@@ -221,6 +230,9 @@ public final class ElementSelectors {
 
     /**
      * Negates another ElementSelector.
+     *
+     * @param es the ElementSelector to negate
+     * @return the ElementSelector
      */
     public static ElementSelector not(final ElementSelector es) {
         if (es == null) {
@@ -260,6 +272,9 @@ public final class ElementSelectors {
      * invoke {@code e2} if there are any nodes not matched by {@code
      * e1} at all.  In this case the result will be the same as
      * running {@code e1} alone.</p>
+     *
+     * @param selectors the ElementSelectors to combine
+     * @return the ElementSelector
      */
     public static ElementSelector or(final ElementSelector... selectors) {
         if (selectors == null) {
@@ -280,6 +295,9 @@ public final class ElementSelectors {
 
     /**
      * Accepts two elements if all of the given ElementSelectors do.
+     *
+     * @param selectors the ElementSelectors to combine
+     * @return the ElementSelector
      */
     public static ElementSelector and(final ElementSelector... selectors) {
         if (selectors == null) {
@@ -301,6 +319,10 @@ public final class ElementSelectors {
 
     /**
      * Accepts two elements if exactly on of the given ElementSelectors does.
+     *
+     * @param es1 the first ElementSelector to combine
+     * @param es2 the second ElementSelector to combine
+     * @return the ElementSelector
      */
     public static ElementSelector xor(final ElementSelector es1,
                                       final ElementSelector es2) {
@@ -320,6 +342,9 @@ public final class ElementSelectors {
     /**
      * Applies the wrapped ElementSelector's logic if and only if the
      * control element matches the given predicate.
+     * @param predicate the predicate applied to the control element
+     * @param es the ElementSelector to consult
+     * @return the ElementSelector
      */
     public static ElementSelector conditionalSelector(final Predicate<? super Element> predicate,
                                                       final ElementSelector es) {
@@ -343,6 +368,9 @@ public final class ElementSelectors {
     /**
      * Applies the wrapped ElementSelector's logic if and only if the
      * control element has the given (local) name.
+     * @param expectedName expected name of the control element
+     * @param es the ElementSelector to consult
+     * @return the ElementSelector
      */
     public static ElementSelector selectorForElementNamed(final String expectedName,
                                                           final ElementSelector es) {
@@ -356,6 +384,9 @@ public final class ElementSelectors {
     /**
      * Applies the wrapped ElementSelector's logic if and only if the
      * control element has the given name.
+     * @param expectedName expected name of the control element
+     * @param es the ElementSelector to consult
+     * @return the ElementSelector
      */
     public static ElementSelector selectorForElementNamed(final QName expectedName,
                                                           final ElementSelector es) {
@@ -377,6 +408,7 @@ public final class ElementSelectors {
      * @param xpath XPath expression applied in the context of the
      * elements to chose from that selects the children to compare.
      * @param childSelector ElementSelector to apply to the selected children.
+     * @return the ElementSelector
      */
     public static ElementSelector byXPath(String xpath, ElementSelector childSelector) {
         return byXPath(xpath, null, null, childSelector);
@@ -395,6 +427,7 @@ public final class ElementSelectors {
      * @param engine XPathEngine to use. If {@code null} a {@link
      * JAXPXPathEngine} with default configuration will be used.
      * @param childSelector ElementSelector to apply to the selected children.
+     * @return the ElementSelector
      *
      * @since XMLUnit 2.9.1
      */
@@ -415,6 +448,7 @@ public final class ElementSelectors {
      * elements to chose from that selects the children to compare.
      * @param prefix2Uri maps from prefix to namespace URI.
      * @param childSelector ElementSelector to apply to the selected children.
+     * @return the ElementSelector
      */
     public static ElementSelector byXPath(final String xpath,
                                           Map<String, String> prefix2Uri,
@@ -436,6 +470,7 @@ public final class ElementSelectors {
      * JAXPXPathEngine} with default configuration will be used.
      * @param prefix2Uri maps from prefix to namespace URI.
      * @param childSelector ElementSelector to apply to the selected children.
+     * @return the ElementSelector
      *
      * @since XMLUnit 2.9.1
      */
@@ -470,6 +505,8 @@ public final class ElementSelectors {
     public interface ConditionalSelectorBuilderThen {
         /**
          * Specifies the ElementSelector to use when the condition holds true.
+         * @param es the ElementSelector to use
+         * @return the original builder
          */
         ConditionalSelectorBuilder thenUse(ElementSelector es);
     }
@@ -485,23 +522,32 @@ public final class ElementSelectors {
     public interface ConditionalSelectorBuilder {
         /**
          * Sets up a conditional ElementSelector.
+         * @param predicate the condition that must hold true
+         * @return a then-part setting up the ElementSelector to use
          */
         ConditionalSelectorBuilderThen when(Predicate<? super Element> predicate);
         /**
          * Sets up a conditional ElementSelector.
+         * @param expectedName expected name of the control element
+         * @return a then-part setting up the ElementSelector to use
          */
         ConditionalSelectorBuilderThen whenElementIsNamed(String expectedName);
         /**
          * Sets up a conditional ElementSelector.
+         * @param expectedName expected name of the control element
+         * @return a then-part setting up the ElementSelector to use
          */
         ConditionalSelectorBuilderThen whenElementIsNamed(QName expectedName);
         /**
          * Assigns a default ElementSelector that is used if all
          * {@code when}s have returned false.
+         * @param es the default ElementSelector to fall back to
+         * @return the builder
          */
         ConditionalSelectorBuilder elseUse(ElementSelector es);
         /**
          * Builds a conditional ElementSelector.
+         * @return an ElementSelector adhering to the ocnfigured conditions.
          */
         ElementSelector build();
     }
@@ -512,6 +558,8 @@ public final class ElementSelectors {
      * <p>All pairs created by the {@code when*}/{@code thenUse} pairs
      * are evaluated in order until one returns true, finally the
      * {@code default}, if any, is consulted.</p>
+     *
+     * @return a builder for conditional ElementSelectors
      */
     public static ConditionalSelectorBuilder conditionalBuilder() {
         return new DefaultConditionalSelectorBuilder();

@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -48,8 +48,8 @@ import org.w3c.dom.Node;
 public interface NodeTester {
     /**
      * Validate a single Node
-     * @param aNode
-     * @param forTest
+     * @param aNode the node to test
+     * @param forTest the test to perform
      * @exception NodeTestException if the node fails the test
      */
     void testNode(Node aNode, NodeTest forTest) throws NodeTestException ;
@@ -57,7 +57,7 @@ public interface NodeTester {
     /**
      * Validate that the Nodes passed one-by-one to the <code>testNode</code>
      * method were all the Nodes expected.
-     * @param forTest
+     * @param forTest the test to perform
      * @exception NodeTestException if this instance was expecting more nodes
      */
     void noMoreNodes(NodeTest forTest) throws NodeTestException ;

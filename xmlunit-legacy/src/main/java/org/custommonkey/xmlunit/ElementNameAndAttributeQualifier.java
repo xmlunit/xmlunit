@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@ import org.w3c.dom.NamedNodeMap;
 
 /**
  * More complex interface implementation that tests two elements for tag name
- * and attribute name comparability. 
+ * and attribute name comparability.
  * @see DifferenceEngine#compareNodeList(java.util.List, java.util.List, int, DifferenceListener, ElementQualifier)
  * @see Diff#overrideElementQualifier(ElementQualifier)
  */
@@ -88,13 +88,12 @@ public class ElementNameAndAttributeQualifier extends ElementNameQualifier {
 
     /**
      * Determine whether two elements qualify for further Difference comparison.
-     * @param control
-     * @param test
      * @return true if the two elements qualify for further comparison based on
      * both the superclass qualification (namespace URI and non- namespaced tag
      * name), and the presence of qualifying attributes with the same values;
      * false otherwise
      */
+    @Override
     public boolean qualifyForComparison(Element control, Element test) {
         return selector.canBeCompared(control, test);
     }
@@ -102,8 +101,8 @@ public class ElementNameAndAttributeQualifier extends ElementNameQualifier {
     /**
      * Determine whether the qualifying attributes are present in both elements
      * and if so whether their values are the same
-     * @param control
-     * @param test
+     * @param control control element
+     * @param test test element
      * @return true if all qualifying attributes are present with the same
      * values, false otherwise
      * @deprecated this method is no longer used by this class and is
@@ -124,13 +123,13 @@ public class ElementNameAndAttributeQualifier extends ElementNameQualifier {
             qualifyingAttributes = new Attr[qualifyingAttrNames.length];
             for (int n=0; n < qualifyingAttrNames.length; ++n) {
                 qualifyingAttributes[n] = (Attr) namedNodeMap.getNamedItem(qualifyingAttrNames[n]);
-            } 
+            }
         }
 
         String nsURI, name;
         for (int i=0; i < qualifyingAttributes.length; ++i) {
             if (qualifyingAttributes[i] != null) {
-                nsURI = qualifyingAttributes[i].getNamespaceURI(); 
+                nsURI = qualifyingAttributes[i].getNamespaceURI();
                 controlValue = qualifyingAttributes[i].getNodeValue();
                 name = qualifyingAttributes[i].getName();
             } else {

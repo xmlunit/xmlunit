@@ -30,6 +30,7 @@ public class ComparisonListenerSupport {
 
     /**
      * Registers a listener that is notified of each comparison.
+     * @param l the listener to add
      */
     public void addComparisonListener(ComparisonListener l) {
         compListeners.add(l);
@@ -38,6 +39,7 @@ public class ComparisonListenerSupport {
     /**
      * Registers a listener that is notified of each comparison with
      * outcome {@link ComparisonResult#EQUAL}.
+     * @param l the listener to add
      */
     public void addMatchListener(ComparisonListener l) {
         matchListeners.add(l);
@@ -46,6 +48,7 @@ public class ComparisonListenerSupport {
     /**
      * Registers a listener that is notified of each comparison with
      * outcome other than {@link ComparisonResult#EQUAL}.
+     * @param l the listener to add
      */
     public void addDifferenceListener(ComparisonListener l) {
         diffListeners.add(l);
@@ -54,6 +57,8 @@ public class ComparisonListenerSupport {
     /**
      * Propagates the result of a comparision to all registered
      * listeners.
+     * @param comparison the comparison
+     * @param outcome the result of the comparison
      */
     public void fireComparisonPerformed(Comparison comparison,
                                         ComparisonResult outcome) {

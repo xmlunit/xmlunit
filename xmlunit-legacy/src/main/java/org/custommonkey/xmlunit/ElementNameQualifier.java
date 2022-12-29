@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -50,20 +50,19 @@ import org.w3c.dom.Node;
 public class ElementNameQualifier implements ElementQualifier {
     /**
      * Determine whether two elements qualify for further Difference comparison.
-     * @param control
-     * @param test
-     * @return true if the two elements qualify for further comparison based on 
-     *  their  similar namespace URI and non-namespaced tag name, 
+     * @return true if the two elements qualify for further comparison based on
+     *  their  similar namespace URI and non-namespaced tag name,
      *  false otherwise
      */
+    @Override
     public boolean qualifyForComparison(Element control, Element test) {
         return ElementSelectors.byName.canBeCompared(control, test);
     }
 
     /**
-     * Determine whether two nodes are defined by the same namespace URI 
-     * @param control
-     * @param test
+     * Determine whether two nodes are defined by the same namespace URI
+     * @param control control node
+     * @param test test node
      * @return true if the two nodes are both defined by the same namespace URI
      *  (including the default - empty - namespace), false otherwise
      */
@@ -78,7 +77,7 @@ public class ElementNameQualifier implements ElementQualifier {
 
     /**
      * Strip any namespace information off a node name
-     * @param node
+     * @param node node
      * @return the localName if the node is namespaced, or the name otherwise
      */
     protected String getNonNamespacedNodeName(Node node) {
@@ -87,6 +86,6 @@ public class ElementNameQualifier implements ElementQualifier {
             return node.getNodeName();
         }
         return name;
-    } 
+    }
 
 }

@@ -67,6 +67,7 @@ public class DefaultNodeMatcher implements NodeMatcher {
     /**
      * Creates a matcher using the given {@link ElementSelector}s and
      * {@link DefaultNodeTypeMatcher}.
+     * @param es the ElementSelectors to use
      */
     public DefaultNodeMatcher(ElementSelector... es) {
         this(new DefaultNodeTypeMatcher(), es);
@@ -80,6 +81,8 @@ public class DefaultNodeMatcher implements NodeMatcher {
      * the second {@link ElementSelector} only gets to match the nodes
      * that the first one couldn't match to any test nodes ate all and
      * so on.</p>
+     * @param ntm the NodeTypeMatcher to use
+     * @param es the ElementSelectors to use
      */
     public DefaultNodeMatcher(NodeTypeMatcher ntm, ElementSelector... es) {
         nodeTypeMatcher = ntm;
@@ -178,6 +181,9 @@ public class DefaultNodeMatcher implements NodeMatcher {
         /**
          * Determines whether two Nodes are eligible for comparison
          * based on their node type.
+         * @param controlType the node type of the control node
+         * @param testType the node type of the test node
+         * @return whether two nodes of the given types are eligible for comparison
          */
         boolean canBeCompared(short controlType, short testType);
     }

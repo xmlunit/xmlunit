@@ -202,6 +202,8 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * Source}s to compare.
      *
      * @see DiffBuilder#withDocumentBuilderFactory(DocumentBuilderFactory)
+     * @param f the DocumentBuilderFactory to use
+     * @return this
      */
     public CompareAssert withDocumentBuilderFactory(DocumentBuilderFactory f) {
         diffBuilder.withDocumentBuilderFactory(f);
@@ -212,6 +214,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * Ignore whitespace by removing all empty text nodes and trimming the non-empty ones.
      *
      * @see DiffBuilder#ignoreWhitespace()
+     * @return this
      */
     public CompareAssert ignoreWhitespace() {
         formatXml = true;
@@ -223,6 +226,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * Normalize Text-Elements by removing all empty text nodes and normalizing the non-empty ones.
      *
      * @see DiffBuilder#normalizeWhitespace()
+     * @return this
      */
     public CompareAssert normalizeWhitespace() {
         formatXml = true;
@@ -234,6 +238,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * Ignore element content whitespace by removing all text nodes solely consisting of whitespace.
      *
      * @see DiffBuilder#ignoreElementContentWhitespace()
+     * @return this
      */
     public CompareAssert ignoreElementContentWhitespace() {
         diffBuilder.ignoreElementContentWhitespace();
@@ -244,6 +249,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * Will remove all comment-Tags "&lt;!-- Comment --&gt;" from test- and control-XML before comparing.
      *
      * @see DiffBuilder#ignoreComments()
+     * @return this
      */
     public CompareAssert ignoreComments() {
         diffBuilder.ignoreComments();
@@ -254,6 +260,8 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * Will remove all comment-Tags "&lt;!-- Comment --&gt;" from test- and control-XML before comparing.
      *
      * @see DiffBuilder#ignoreCommentsUsingXSLTVersion(String)
+     * @param xsltVersion use this version for the stylesheet
+     * @return this
      */
     public CompareAssert ignoreCommentsUsingXSLTVersion(String xsltVersion) {
         diffBuilder.ignoreCommentsUsingXSLTVersion(xsltVersion);
@@ -271,6 +279,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * </pre>
      *
      * @see DiffBuilder#withNodeMatcher(NodeMatcher)
+     * @return this
      */
     public CompareAssert ignoreChildNodesOrder() {
         diffBuilder.withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText));
@@ -285,6 +294,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * @throws AssertionError if the test value is invalid
      * @throws AssertionError if the control value is invalid
      * @see DiffBuilder#checkForIdentical()
+     * @return this
      */
     public CompareAssert areIdentical() {
         diffBuilder.checkForIdentical();
@@ -299,6 +309,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * @throws AssertionError if the test value is invalid
      * @throws AssertionError if the control value is invalid
      * @see DiffBuilder#checkForSimilar()
+     * @return this
      */
     public CompareAssert areNotIdentical() {
         diffBuilder.checkForIdentical();
@@ -313,6 +324,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * @throws AssertionError if the test value is invalid
      * @throws AssertionError if the control value is invalid
      * @see DiffBuilder#checkForSimilar()
+     * @return this
      */
     public CompareAssert areSimilar() {
         diffBuilder.checkForSimilar();
@@ -327,6 +339,7 @@ public class CompareAssert extends CustomAbstractAssert<CompareAssert, Object> i
      * @throws AssertionError if the test value is invalid
      * @throws AssertionError if the control value is invalid
      * @see DiffBuilder#checkForSimilar()
+     * @return this
      */
     public CompareAssert areNotSimilar() {
         diffBuilder.checkForSimilar();

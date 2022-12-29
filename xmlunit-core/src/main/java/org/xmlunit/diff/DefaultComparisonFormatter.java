@@ -182,6 +182,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
      * non-default values.
      *
      * @param sb the builder to append to
+     * @param doc document to obtain the XML declaration from
      * @return true if the XML declaration has been appended
      *
      * @since XMLUnit 2.4.0
@@ -459,9 +460,10 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
 
     /**
      * Create a default Transformer to format a XML-Node to a String.
-     * 
+     *
      * @param numberOfBlanksToIndent the number of spaces which is used for indent the XML-structure
      * @return the transformer
+     * @throws TransformerConfigurationException if JAXP wants to
      *
      * @since XMLUnit 2.4.0
      */
@@ -515,7 +517,7 @@ public class DefaultComparisonFormatter implements ComparisonFormatter {
         case Node.CDATA_SECTION_NODE:          return "CDATA Section";
         case Node.ATTRIBUTE_NODE:              return "Attribute";
         case Node.PROCESSING_INSTRUCTION_NODE: return "Processing Instruction";
-        default: break; 
+        default: break;
         }
         return Short.toString(type);
     }

@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008,2010,2014-2016,2020 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2010,2014-2016,2020,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ import org.xml.sax.SAXException;
  * an instance of  {@link DetailedDiff the DetailedDiff class} can be used
  * instead.
  */
-public class Diff 
+public class Diff
     implements DifferenceListener, ComparisonController {
     private final Document controlDoc;
     private final Document testDoc;
@@ -85,6 +85,10 @@ public class Diff
 
     /**
      * Construct a Diff that compares the XML in two Strings
+     * @param control the control XML
+     * @param test the test XML
+     * @throws SAXException if the parser feels like it
+     * @throws IOException on i/o errors
      */
     public Diff(String control, String test)
         throws SAXException, IOException {
@@ -93,6 +97,10 @@ public class Diff
 
     /**
      * Construct a Diff that compares the XML read from two Readers
+     * @param control the control XML
+     * @param test the test XML
+     * @throws SAXException if the parser feels like it
+     * @throws IOException on i/o errors
      */
     public Diff(Reader control, Reader test)
         throws SAXException, IOException {
@@ -102,6 +110,8 @@ public class Diff
 
     /**
      * Construct a Diff that compares the XML in two Documents
+     * @param controlDoc the control XML
+     * @param testDoc the test XML
      */
     public Diff(Document controlDoc, Document testDoc) {
         this(controlDoc, testDoc, (DifferenceEngineContract) null);
@@ -110,6 +120,11 @@ public class Diff
     /**
      * Construct a Diff that compares the XML in a control Document against the
      * result of a transformation
+     * @param control the control XML
+     * @param testTransform the test XML
+     * @throws SAXException if the parser feels like it
+     * @throws TransformerException if the transformer feels like it
+     * @throws IOException on i/o errors
      */
     public Diff(String control, Transform testTransform)
         throws IOException, TransformerException, SAXException {
@@ -119,6 +134,10 @@ public class Diff
 
     /**
      * Construct a Diff that compares the XML read from two JAXP InputSources
+     * @param control the control XML
+     * @param test the test XML
+     * @throws SAXException if the parser feels like it
+     * @throws IOException on i/o errors
      */
     public Diff(InputSource control, InputSource test)
         throws SAXException, IOException {
@@ -128,6 +147,8 @@ public class Diff
 
     /**
      * Construct a Diff that compares the XML in two JAXP DOMSources
+     * @param control the control XML
+     * @param test the test XML
      */
     public Diff(DOMSource control, DOMSource test) {
         this(toDocument(control), toDocument(test));
@@ -136,6 +157,9 @@ public class Diff
     /**
      * Construct a Diff that compares the XML in two Documents using a specific
      * DifferenceEngine
+     * @param controlDoc the control XML
+     * @param testDoc the test XML
+     * @param comparator the difference engine
      */
     public Diff(Document controlDoc, Document testDoc,
                 DifferenceEngineContract comparator) {
@@ -145,9 +169,14 @@ public class Diff
     /**
      * Construct a Diff that compares the XML in two Documents using a specific
      * DifferenceEngine and ElementQualifier
+     * DifferenceEngine
+     * @param controlDoc the control XML
+     * @param testDoc the test XML
+     * @param comparator the difference engine
+     * @param elementQualifier the element qualifier
      */
     public Diff(Document controlDoc, Document testDoc,
-                DifferenceEngineContract comparator, 
+                DifferenceEngineContract comparator,
                 ElementQualifier elementQualifier) {
         this.controlDoc = getManipulatedDocument(controlDoc);
         this.testDoc = getManipulatedDocument(testDoc);
@@ -162,7 +191,7 @@ public class Diff
      * @param prototype a prototypical instance
      */
     protected Diff(Diff prototype) {
-        this(prototype.controlDoc, prototype.testDoc, prototype.differenceEngine, 
+        this(prototype.controlDoc, prototype.testDoc, prototype.differenceEngine,
              prototype.elementQualifierDelegate);
         this.differenceListenerDelegate = prototype.differenceListenerDelegate;
     }
@@ -192,7 +221,7 @@ public class Diff
      *   <li>{@link XMLUnit#setIgnoreComments stripping comments}</li>
      *   <li>{@link XMLUnit#setNormalize normalizing Text nodes}</li>
      * </ul>
-     *     
+     *
      * @param orig a document making up one half of this difference
      * @return manipulated doc
      */
@@ -203,7 +232,7 @@ public class Diff
     /**
      * Removes all comment nodes if {@link XMLUnit#getIgnoreComments
      * comments are ignored}.
-     *     
+     *
      * @param orig a document making up one half of this difference
      * @return manipulated doc
      */
@@ -244,6 +273,7 @@ public class Diff
      * Return the result of a comparison. Two documents are considered
      * to be "similar" if they contain the same elements and attributes
      * regardless of order.
+     * @return whether the two pieces of XML are similar
      */
     public boolean similar(){
         compare();
@@ -254,6 +284,7 @@ public class Diff
      * Return the result of a comparison. Two documents are considered
      * to be "identical" if they contain the same elements and attributes
      * in the same order.
+     * @return whether the two pieces of XML are identical
      */
     public boolean identical(){
         compare();
@@ -271,16 +302,16 @@ public class Diff
 
     /**
      * DifferenceListener implementation.
-     * If the {@link Diff#overrideDifferenceListener overrideDifferenceListener} 
+     * If the {@link Diff#overrideDifferenceListener overrideDifferenceListener}
      * method has been called then the interpretation of the difference
      * will be delegated.
-     * @param difference
      * @return a DifferenceListener.RETURN_... constant indicating how the
-     *    difference was interpreted. 
+     *    difference was interpreted.
      * Always RETURN_ACCEPT_DIFFERENCE if the call is not delegated.
      */
+    @Override
     public int differenceFound(Difference difference) {
-        int returnValue = evaluate(difference);    
+        int returnValue = evaluate(difference);
 
         switch (returnValue) {
         case RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL:
@@ -315,8 +346,15 @@ public class Diff
         return returnValue;
     }
 
+    /**
+     * Evaluate the difference.
+     *
+     * @param difference the difference
+     * @return a DifferenceListener.RETURN_... constant indicating how the
+     *    difference was interpreted.
+     */
     public int evaluate(Difference difference) {
-        int returnValue = RETURN_ACCEPT_DIFFERENCE;    
+        int returnValue = RETURN_ACCEPT_DIFFERENCE;
         if (differenceListenerDelegate != null) {
             returnValue = differenceListenerDelegate.differenceFound(difference);
         }
@@ -325,12 +363,11 @@ public class Diff
 
     /**
      * DifferenceListener implementation.
-     * If the {@link Diff#overrideDifferenceListener  overrideDifferenceListener} 
-     * method has been called then the call will be delegated 
+     * If the {@link Diff#overrideDifferenceListener  overrideDifferenceListener}
+     * method has been called then the call will be delegated
      * otherwise a message is printed to <code>System.err</code>.
-     * @param control
-     * @param test
      */
+    @Override
     public void skippedComparison(Node control, Node test) {
         if (differenceListenerDelegate != null) {
             differenceListenerDelegate.skippedComparison(control, test);
@@ -343,11 +380,11 @@ public class Diff
 
     /**
      * ComparisonController implementation.
-     * @param afterDifference
-     * @return true if the difference is not recoverable and 
-     * the comparison should be halted, or false if the difference 
+     * @return true if the difference is not recoverable and
+     * the comparison should be halted, or false if the difference
      * is recoverable and the comparison can continue
      */
+    @Override
     public boolean haltComparison(Difference afterDifference) {
         return haltComparison;
     }
@@ -355,7 +392,7 @@ public class Diff
     /**
      * Append the message from the result of this Diff instance to a specified
      *  StringBuffer
-     * @param toAppendTo
+     * @param toAppendTo buffer to append messages to
      * @return specified StringBuffer with message appended
      */
     public StringBuffer appendMessage(StringBuffer toAppendTo) {
@@ -377,6 +414,7 @@ public class Diff
      *
      * @return result of this Diff
      */
+    @Override
     public String toString(){
         StringBuffer buf = new StringBuffer(getClass().getName());
         appendMessage(buf);
@@ -384,17 +422,17 @@ public class Diff
     }
 
     /**
-     * Override the <code>DifferenceListener</code> used to determine how 
+     * Override the <code>DifferenceListener</code> used to determine how
      * to handle differences that are found.
      * @param delegate the DifferenceListener instance to delegate handling to.
      */
     public void overrideDifferenceListener(DifferenceListener delegate) {
         this.differenceListenerDelegate = delegate;
-    }    
+    }
 
     /**
      * Override the <code>ElementQualifier</code> used to determine which
-     * control and test nodes are comparable for this difference comparison. 
+     * control and test nodes are comparable for this difference comparison.
      * @param delegate the ElementQualifier instance to delegate to.
      */
     public void overrideElementQualifier(ElementQualifier delegate) {

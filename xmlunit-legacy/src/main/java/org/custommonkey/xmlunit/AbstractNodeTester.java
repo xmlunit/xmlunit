@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -68,6 +68,7 @@ public abstract class AbstractNodeTester implements NodeTester {
      * @see #testProcessingInstruction(ProcessingInstruction)
      * @see #testText(Text)
      */
+    @Override
     public void testNode(Node aNode, NodeTest forTest) throws NodeTestException {
         switch (aNode.getNodeType()) {
         case Node.ATTRIBUTE_NODE:
@@ -110,7 +111,7 @@ public abstract class AbstractNodeTester implements NodeTester {
 
     /**
      * Template delegator for testNode() method. OVERRIDE to add custom logic
-     * @param attribute
+     * @param attribute the attribute to test
      * @exception NodeTestException always: override if required in subclass
      */
     public void testAttribute(Attr attribute) throws NodeTestException {
@@ -118,7 +119,7 @@ public abstract class AbstractNodeTester implements NodeTester {
     }
     /**
      * Template delegator for testNode() method. OVERRIDE to add custom logic
-     * @param cdata
+     * @param cdata the CDATA section to test
      * @exception NodeTestException always: override if required in subclass
      */
     public void testCDATASection(CDATASection cdata) throws NodeTestException {
@@ -126,7 +127,7 @@ public abstract class AbstractNodeTester implements NodeTester {
     }
     /**
      * Template delegator for testNode() method. OVERRIDE to add custom logic
-     * @param comment
+     * @param comment the comment to test
      * @exception NodeTestException always: override if required in subclass
      */
     public void testComment(Comment comment) throws NodeTestException {
@@ -134,7 +135,7 @@ public abstract class AbstractNodeTester implements NodeTester {
     }
     /**
      * Template delegator for testNode() method. OVERRIDE to add custom logic
-     * @param doctype
+     * @param doctype the cofument type to test
      * @exception NodeTestException always: override if required in subclass
      */
     public void testDocumentType(DocumentType doctype) throws NodeTestException {
@@ -142,7 +143,7 @@ public abstract class AbstractNodeTester implements NodeTester {
     }
     /**
      * Template delegator for testNode() method. OVERRIDE to add custom logic
-     * @param element
+     * @param element the element to test
      * @exception NodeTestException always: override if required in subclass
      */
     public void testElement(Element element) throws NodeTestException {
@@ -150,7 +151,7 @@ public abstract class AbstractNodeTester implements NodeTester {
     }
     /**
      * Template delegator for testNode() method. OVERRIDE to add custom logic
-     * @param entity
+     * @param entity the entity to test
      * @exception NodeTestException always: override if required in subclass
      */
     public void testEntity(Entity entity) throws NodeTestException {
@@ -158,7 +159,7 @@ public abstract class AbstractNodeTester implements NodeTester {
     }
     /**
      * Template delegator for testNode() method. OVERRIDE to add custom logic
-     * @param reference
+     * @param reference the reference to test
      * @exception NodeTestException always: override if required in subclass
      */
     public void testEntityReference(EntityReference reference) throws NodeTestException {
@@ -166,7 +167,7 @@ public abstract class AbstractNodeTester implements NodeTester {
     }
     /**
      * Template delegator for testNode() method. OVERRIDE to add custom logic
-     * @param notation
+     * @param notation the notation to test
      * @exception NodeTestException always: override if required in subclass
      */
     public void testNotation(Notation notation) throws NodeTestException {
@@ -174,7 +175,7 @@ public abstract class AbstractNodeTester implements NodeTester {
     }
     /**
      * Template delegator for testNode() method. OVERRIDE to add custom logic
-     * @param instr
+     * @param instr the processing instruction to test
      * @exception NodeTestException always: override if required in subclass
      */
     public void testProcessingInstruction(ProcessingInstruction instr) throws NodeTestException  {
@@ -182,25 +183,25 @@ public abstract class AbstractNodeTester implements NodeTester {
     }
     /**
      * Template delegator for testNode() method. OVERRIDE to add custom logic
-     * @param text
+     * @param text the text to test
      * @exception NodeTestException always: override if required in subclass
      */
     public void testText(Text text) throws NodeTestException {
         unhandled(text);
     }
-    
+
     private void unhandled(Node aNode) throws NodeTestException {
         throw new NodeTestException("Test fails by default in AbstractNodeTester" + aNode, aNode);
     }
 
     /**
      * Validate that the Nodes validated one-by-one in the <code>isValid</code>
-     * method were all the Nodes expected. By default do nothing: 
+     * method were all the Nodes expected. By default do nothing:
      * can override to add custom logic
      * @exception NodeTestException if mode Nodes were expected
      */
+    @Override
     public void noMoreNodes(NodeTest forTest) throws NodeTestException {
         //by default do nothing
     }
 }
-

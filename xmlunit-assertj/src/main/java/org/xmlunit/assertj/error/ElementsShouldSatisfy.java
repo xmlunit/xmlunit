@@ -26,6 +26,13 @@ import static java.lang.String.format;
  */
 public class ElementsShouldSatisfy extends BasicErrorMessageFactory {
 
+    /**
+     * Creates ErrorMessageFactory.
+     * @param actual the actual value
+     * @param elementsNotSatisfyingRestrictions elements that don't satisfy assertion
+     * @param info assertion information
+     * @return ErrorMessageFactory
+     */
     public static ErrorMessageFactory elementsShouldSatisfy(Object actual,
         List<UnsatisfiedRequirement> elementsNotSatisfyingRestrictions, AssertionInfo info) {
         return new ElementsShouldSatisfy(actual, elementsNotSatisfyingRestrictions, info);
@@ -58,15 +65,26 @@ public class ElementsShouldSatisfy extends BasicErrorMessageFactory {
         return s.replace("%", "%%");
     }
 
+    /**
+     * Holds the element not satisfing a requirement and the error message.
+     */
     public static class UnsatisfiedRequirement {
         private final Object elementNotSatisfyingRequirements;
         private final String errorMessage;
 
+        /**
+         * @param elementNotSatisfyingRequirements the element not satsfying the requirement
+         * @param errorMessage the error message
+         */
         public UnsatisfiedRequirement(Object elementNotSatisfyingRequirements, String errorMessage) {
             this.elementNotSatisfyingRequirements = elementNotSatisfyingRequirements;
             this.errorMessage = errorMessage;
         }
 
+        /**
+         * @param info assertion info
+         * @return the formatted description
+         */
         public String describe(AssertionInfo info) {
             return format("%s%nerror: %s", info.representation().toStringOf(elementNotSatisfyingRequirements), errorMessage);
         }

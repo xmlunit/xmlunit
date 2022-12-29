@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2008,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2008,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -52,6 +52,10 @@ public abstract class TextDifferenceListenerBase
 
     private final DifferenceListener delegateTo;
 
+    /**
+     * Creates a new instance
+     * @param delegateTo the DifferenceListener to delegate to.
+     */
     protected TextDifferenceListenerBase(DifferenceListener delegateTo) {
         this.delegateTo = delegateTo;
     }
@@ -68,6 +72,7 @@ public abstract class TextDifferenceListenerBase
      * commentDifference} or {@link #textDifference textDifference}
      * are invoked respectively.
      */
+    @Override
     public int differenceFound(Difference difference) {
         switch (difference.getId()) {
         case DifferenceConstants.ATTR_VALUE_ID:
@@ -84,6 +89,9 @@ public abstract class TextDifferenceListenerBase
 
     /**
      * Delegates to {@link #textualDifference textualDifference}.
+     * @param d the difference
+     * @return int one of the RETURN_... constants describing how this
+     * difference was interpreted
      */
     protected int attributeDifference(Difference d) {
         return textualDifference(d);
@@ -91,6 +99,9 @@ public abstract class TextDifferenceListenerBase
 
     /**
      * Delegates to {@link #textualDifference textualDifference}.
+     * @param d the difference
+     * @return int one of the RETURN_... constants describing how this
+     * difference was interpreted
      */
     protected int cdataDifference(Difference d) {
         return textualDifference(d);
@@ -98,6 +109,9 @@ public abstract class TextDifferenceListenerBase
 
     /**
      * Delegates to {@link #textualDifference textualDifference}.
+     * @param d the difference
+     * @return int one of the RETURN_... constants describing how this
+     * difference was interpreted
      */
     protected int commentDifference(Difference d) {
         return textualDifference(d);
@@ -105,6 +119,9 @@ public abstract class TextDifferenceListenerBase
 
     /**
      * Delegates to {@link #textualDifference textualDifference}.
+     * @param d the difference
+     * @return int one of the RETURN_... constants describing how this
+     * difference was interpreted
      */
     protected int textDifference(Difference d) {
         return textualDifference(d);
@@ -112,11 +129,15 @@ public abstract class TextDifferenceListenerBase
 
     /**
      * Delegates to the nested DifferenceListener.
+     * @param d the difference
+     * @return int one of the RETURN_... constants describing how this
+     * difference was interpreted
      */
     protected int textualDifference(Difference d) {
         return delegateTo.differenceFound(d);
     }
 
+    @Override
     public void skippedComparison(Node control, Node test) {
         delegateTo.skippedComparison(control, test);
     }

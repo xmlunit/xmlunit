@@ -28,6 +28,10 @@ public interface NodeMatcher {
      * <p>Nodes passed in as attributes but not returned as member of
      * any pair will cause {@link ComparisonType#CHILD_LOOKUP}
      * differences}.</p>
+     *
+     * @param controlNodes the control nodes
+     * @param testNodes the test nodes
+     * @return a Map.Entry containing the pair for each matched pair of nodes
      */
     Iterable<Map.Entry<Node, Node>> match(Iterable<Node> controlNodes,
                                           Iterable<Node> testNodes);

@@ -47,6 +47,7 @@ public class Input {
     public interface Builder {
         /**
          * build the actual {@link Source} instance.
+         * @return the Source
          */
         Source build();
     }
@@ -65,6 +66,8 @@ public class Input {
 
     /**
      * Build a Source from a DOM Document.
+     * @param d the document to use as source
+     * @return a new builder
      */
     public static Builder fromDocument(Document d) {
         return new SourceHoldingBuilder(new DOMSource(d));
@@ -72,6 +75,8 @@ public class Input {
 
     /**
      * Build a Source from a DOM Node.
+     * @param n the node to use as source
+     * @return a new builder
      */
     public static Builder fromNode(Node n) {
         return new SourceHoldingBuilder(new DOMSource(n));
@@ -116,6 +121,8 @@ public class Input {
      * {@link URL} (to an XML-Document), {@link URI} (to an XML-Document), {@link InputStream},
      * {@link ReadableByteChannel}, {@link Path},
      * Jaxb-{@link Object} (marshal-able with {@code JAXB}.marshal(...))
+     * @param object the object to use as source
+     * @return a new builder
      */
     public static Builder from(Object object) {
         Builder xml;
@@ -149,9 +156,11 @@ public class Input {
         }
         return xml;
     }
-    
+
     /**
      * Build a Source from a Jaxb-Object.
+     * @param jaxbObject the object to use as source
+     * @return a new builder
      */
     public static JaxbBuilder fromJaxb(Object jaxbObject) {
         return JaxbBuilderFactoryLocator.getFactory().create(jaxbObject);
@@ -159,6 +168,8 @@ public class Input {
 
     /**
      * Build a Source from a file.
+     * @param f the file to use as source
+     * @return a new builder
      */
     public static Builder fromFile(File f) {
         return new StreamBuilder(f);
@@ -166,6 +177,8 @@ public class Input {
 
     /**
      * Build a Source from a named file.
+     * @param name name of the file to use as source
+     * @return a new builder
      */
     public static Builder fromFile(String name) {
         return new StreamBuilder(new File(name));
@@ -173,6 +186,8 @@ public class Input {
 
     /**
      * Build a Source from a stream.
+     * @param s the stream to use as source
+     * @return a new builder
      */
     public static Builder fromStream(InputStream s) {
         return new StreamBuilder(s);
@@ -180,6 +195,8 @@ public class Input {
 
     /**
      * Build a Source from a reader.
+     * @param r the reader to use as source
+     * @return a new builder
      */
     public static Builder fromReader(Reader r) {
         return new StreamBuilder(r);
@@ -187,6 +204,8 @@ public class Input {
 
     /**
      * Build a Source from a string.
+     * @param s the string to use as source
+     * @return a new builder
      */
     public static Builder fromString(String s) {
         return new StreamBuilder(s);
@@ -194,6 +213,8 @@ public class Input {
 
     /**
      * Build a Source from an array of bytes.
+     * @param b the bytes to use as source
+     * @return a new builder
      */
     public static Builder fromByteArray(byte[] b) {
         return new StreamBuilder(b);
@@ -201,6 +222,8 @@ public class Input {
 
     /**
      * Build a Source from a channel.
+     * @param c the channel to use as source
+     * @return a new builder
      */
     public static Builder fromChannel(ReadableByteChannel c) {
         return fromStream(Channels.newInputStream(c));
@@ -208,6 +231,8 @@ public class Input {
 
     /**
      * Build a Source from an URL.
+     * @param url the url to use as source
+     * @return a new builder
      */
     public static Builder fromURL(URL url) {
         try {
@@ -239,6 +264,7 @@ public class Input {
     /**
      * Build a Source from an URI.
      * @param uri must represent a valid URL
+     * @return a new builder
      */
     public static Builder fromURI(URI uri) {
         try {
@@ -252,6 +278,7 @@ public class Input {
     /**
      * Build a Source from an URI.
      * @param uri must represent a valid URL
+     * @return a new builder
      */
     public static Builder fromURI(String uri) {
         try {
@@ -265,6 +292,7 @@ public class Input {
     /**
      * Build a Source from a Path.
      * @param path a Path
+     * @return a new builder
      * @since XMLUnit 2.8.0
      */
     public static Builder fromPath(final Path path) {
@@ -278,6 +306,8 @@ public class Input {
         extends TransformationBuilderBase<TransformationBuilder>, Builder {
         /**
          * Sets the stylesheet to use.
+         * @param b builder holding the styleSheet
+         * @return a new builder
          */
         TransformationBuilder withStylesheet(Builder b);
     }
@@ -301,6 +331,8 @@ public class Input {
 
     /**
      * Build a Source by XSLT transforming a different Source.
+     * @param s the source to transform
+     * @return a new builder
      */
     public static TransformationBuilder byTransforming(Source s) {
         return new Transformation(s);
@@ -308,6 +340,8 @@ public class Input {
 
     /**
      * Build a Source by XSLT transforming a different Source.
+     * @param b builder providing the source to transform
+     * @return a new builder
      */
     public static TransformationBuilder byTransforming(Builder b) {
         return byTransforming(b.build());

@@ -39,19 +39,23 @@ public class Comparison {
 
         /**
          * The actual target.
+         * @return the actual target
          */
         public Node getTarget() { return target; }
         /**
          * XPath leading to the target.
+         * @return XPath leading to the target
          */
         public String getXPath() { return xpath; }
         /**
          * The value for comparison found at the current target.
+         * @return the value for comparison found at the current target
          */
         public Object getValue() { return value; }
 
         /**
          * XPath leading to the target's parent.
+         * @return XPath leading to the target's parent
          */
         public String getParentXPath() {
             return parentXPath;
@@ -61,6 +65,19 @@ public class Comparison {
     private final Detail control, test;
     private final ComparisonType type;
 
+    /**
+     * Creates a new comparison.
+     *
+     * @param t the type of comparison
+     * @param controlTarget the control node the comparison applies to
+     * @param controlXPath xpath of the control node the comparison applies to
+     * @param controlValue value from the control node used during comparison
+     * @param controlParentXPath xpath of the control node' parent
+     * @param testTarget the test node the comparison applies to
+     * @param testXPath xpath of the test node the comparison applies to
+     * @param testValue value from the test node used during comparison
+     * @param testParentXPath xpath of the test node' parent
+     */
     public Comparison(ComparisonType t,
                       Node controlTarget, String controlXPath, Object controlValue, String controlParentXPath,
                       Node testTarget, String testXPath, Object testValue, String testParentXPath) {
@@ -71,6 +88,7 @@ public class Comparison {
 
     /**
      * The kind of comparison performed.
+     * @return the type of comparison
      */
     public ComparisonType getType() {
         return type;
@@ -78,6 +96,7 @@ public class Comparison {
 
     /**
      * Details of the control target.
+     * @return details of the control target
      */
     public Detail getControlDetails() {
         return control;
@@ -85,6 +104,7 @@ public class Comparison {
 
     /**
      * Details of the test target.
+     * @return details of the test target
      */
     public Detail getTestDetails() {
         return test;

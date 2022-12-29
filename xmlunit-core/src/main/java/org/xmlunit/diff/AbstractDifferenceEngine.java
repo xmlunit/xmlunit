@@ -40,6 +40,9 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         };
     private Predicate<Node> nodeFilter = NodeFilters.Default;
 
+    /**
+     * Protected default constructor.
+     */
     protected AbstractDifferenceEngine() { }
 
     @Override
@@ -77,6 +80,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
 
     /**
      * Provides access to the configured NodeMatcher.
+     * @return the configured NodeMatcher
      */
     protected NodeMatcher getNodeMatcher() {
         return nodeMatcher;
@@ -93,6 +97,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
 
     /**
      * Provides access to the configured DifferenceEvaluator.
+     * @return the configured DifferenceEvaluator
      */
     protected DifferenceEvaluator getDifferenceEvaluator() {
         return diffEvaluator;
@@ -109,6 +114,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
 
     /**
      * Provides access to the configured ComparisonController.
+     * @return the configured ComparisonController
      */
     protected ComparisonController getComparisonController() {
         return comparisonController;
@@ -121,6 +127,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
 
     /**
      * Provides access to the configured namespace context.
+     * @return the configured namespace context
      */
     protected Map<String, String> getNamespaceContext() {
         return prefix2uri;
@@ -136,7 +143,8 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     }
 
     /**
-     * Provides access to the configured ComparisonController.
+     * Provides access to the configured attribute filter.
+     * @return the configured attribute filter
      */
     protected Predicate<Attr> getAttributeFilter() {
         return attributeFilter;
@@ -151,7 +159,8 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     }
 
     /**
-     * Provides access to the configured ComparisonController.
+     * Provides access to the configured nod filter.
+     * @return the configured node filter
      */
     protected Predicate<Node> getNodeFilter() {
         return nodeFilter;
@@ -161,6 +170,8 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
      * Compares the detail values for object equality, lets the
      * difference evaluator and comparison controller evaluate the
      * result, notifies all listeners and returns the outcome.
+     *
+     * @param comp the comparison to perform
      *
      * @return the outcome as pair of result and a flag that says
      * "stop the whole comparison process" when true.
@@ -183,6 +194,8 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
 
     /**
      * Returns a string representation of the given XPathContext.
+     * @param ctx the XPathContext
+     * @return a string representation of the given XPathContext
      */
     protected static String getXPath(XPathContext ctx) {
         return ctx == null ? null : ctx.getXPath();
@@ -190,6 +203,8 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
 
     /**
      * Returns a string representation of the given XPathContext's parent context.
+     * @param ctx the XPathContext
+     * @return a string representation of the given XPathContext's parent context.
      */
     protected static String getParentXPath(XPathContext ctx) {
         return ctx == null ? null : ctx.getParentXPath();
@@ -201,6 +216,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     protected interface DeferredComparison {
         /**
          * Perform the comparison.
+         * @return the comparison outcome
          */
         ComparisonState apply();
     }
@@ -213,18 +229,40 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         private final boolean finished;
         private final ComparisonResult result;
 
+        /**
+         * Creates a new ComparisonState.
+         * @param finished whether comparison should be stopped
+         * @param result the current result
+         */
         protected ComparisonState(boolean finished, ComparisonResult result) {
             this.finished = finished;
             this.result = result;
         }
 
+        /**
+         * Combines the current state with a different comparison.
+         * @param newStateProducer may be invoked to produce the next ConditionState
+         * @return this if the comparison should be stopped and the result of invoking newStateProducer otherwise.
+         */
         protected ComparisonState andThen(DeferredComparison newStateProducer) {
             return finished ? this : newStateProducer.apply();
         }
+        /**
+         * Maybe combines the current state with a different comparison.
+         * @param predicate whether to combine the comparisons
+         * @param newStateProducer may be invoked to produce the next ConditionState
+         * @return this if the comparison should be stopped or predicate is false and the result of invoking
+         * newStateProducer otherwise.
+         */
         protected ComparisonState andIfTrueThen(boolean predicate,
                                                 DeferredComparison newStateProducer) {
             return predicate ? andThen(newStateProducer) : this;
         }
+        /**
+         * Combines the current state with a different comparison.
+         * @param comp may be evaluated to produce the next ConditionState
+         * @return this if the comparison should be stopped and the result of evaluating comp otherwise.
+         */
         protected ComparisonState andThen(final Comparison comp) {
             return andThen(new DeferredComparison() {
                     @Override
@@ -233,6 +271,13 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
                     }
                 });
         }
+        /**
+         * Maybe combines the current state with a different comparison.
+         * @param predicate whether to combine the comparisons
+         * @param comp may be evaluated to produce the next ConditionState
+         * @return this if the comparison should be stopped or predicate is false and the result of evaluating comp
+         * otherwise.
+         */
         protected ComparisonState andIfTrueThen(boolean predicate,
                                                 final Comparison comp) {
             return andIfTrueThen(predicate, new DeferredComparison() {
@@ -260,16 +305,33 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
         }
     }
 
+    /**
+     * A comparison state that indicates the comparison should be stopped.
+     */
     protected final class FinishedComparisonState extends ComparisonState {
+        /**
+         * Creates a FinishedComparisonState.
+         * @param result the comparison's outcome.
+         */
         protected FinishedComparisonState(ComparisonResult result) {
             super(true, result);
         }
     }
 
+    /**
+     * A comparison state that indicates the comparison should perform further steps.
+     */
     protected final class OngoingComparisonState extends ComparisonState {
+        /**
+         * Creates an OngoingComparisonState.
+         * @param result the comparison's outcome.
+         */
         protected OngoingComparisonState(ComparisonResult result) {
             super(false, result);
         }
+        /**
+         * Creates an OngoingComparisonState with outcome {@link ComparisonResult#EQUAL}.
+         */
         protected OngoingComparisonState() {
             this(ComparisonResult.EQUAL);
         }

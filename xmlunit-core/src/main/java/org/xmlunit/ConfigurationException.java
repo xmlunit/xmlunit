@@ -20,11 +20,18 @@ package org.xmlunit;
 public class ConfigurationException extends XMLUnitException {
     private static final long serialVersionUID = 3976394040594872937L;
 
+    /**
+     * Creates a new exception from a cause.
+     * @param cause the root cause
+     */
     public ConfigurationException(Throwable cause) {
         super(cause);
     }
 
     /**
+     * Creates a new exception from a cause and a custom message.
+     * @param message a custom message
+     * @param cause the root cause
      * @since XMLUnit 2.6.0
      */
     public ConfigurationException(String message, Throwable cause) {

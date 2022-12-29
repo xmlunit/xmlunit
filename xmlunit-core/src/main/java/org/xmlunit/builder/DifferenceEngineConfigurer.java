@@ -45,6 +45,8 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      * <p>This overwrites any {@link NodeMatcher} set via earlier invocations of {@code withNodeMatcher}.</p>
      *
      * @see org.xmlunit.diff.DifferenceEngine#setNodeMatcher(NodeMatcher)
+     * @param nodeMatcher the NodeMatcher to use
+     * @return this
      */
     D withNodeMatcher(NodeMatcher nodeMatcher);
 
@@ -69,6 +71,9 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      *
      * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
      * withDifferenceEvaluator}.</p>
+     *
+     * @param differenceEvaluator the DifferenceEvaluator to use
+     * @return this
      */
     D withDifferenceEvaluator(DifferenceEvaluator differenceEvaluator);
 
@@ -81,6 +86,9 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      * </pre>
      *
      * <p>This overwrites any {@link ComparisonController} set via earlier invocations of {@code withComparisonController}.</p>
+     *
+     * @param comparisonController ComparisonController to use
+     * @return this
      */
     D withComparisonController(ComparisonController comparisonController);
 
@@ -90,6 +98,9 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      * @see org.xmlunit.diff.DifferenceEngine#addComparisonListener(ComparisonListener)
      *
      * <p>This overwrites any {@link ComparisonListener}s set via earlier invocations of {@code withComparisonListeners}.</p>
+     *
+     * @param comparisonListeners ComparisonListeners to use
+     * @return this
      */
     D withComparisonListeners(ComparisonListener... comparisonListeners);
 
@@ -100,6 +111,9 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      * <p>This overwrites any {@link ComparisonListener}s set via earlier invocations of {@code withDifferenceListeners}.</p>
      *
      * @see org.xmlunit.diff.DifferenceEngine#addDifferenceListener(ComparisonListener)
+     *
+     * @param comparisonListeners ComparisonListeners to use
+     * @return this
      */
     D withDifferenceListeners(ComparisonListener... comparisonListeners);
 
@@ -114,6 +128,7 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      * <p>This overwrites any {@link Map} set via earlier invocations of {@code withNamespaceContext}.</p>
      *
      * @param prefix2Uri mapping between prefix and namespace URI
+     * @return this
      */
     D withNamespaceContext(Map<String, String> prefix2Uri);
 
@@ -130,6 +145,9 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      * implement {@link DifferenceEvaluator}.</p>
      *
      * <p>This overwrites any {@link Predicate} set via earlier invocations of {@code withAttributeFilter}.</p>
+     *
+     * @param attributeFilter attribute filter to use
+     * @return this
      */
     D withAttributeFilter(Predicate<Attr> attributeFilter);
 
@@ -141,6 +159,9 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      * are considered.</p>
      *
      * <p>This overwrites any {@link Predicate} set via earlier invocations of {@code withNodeFilter}.</p>
+     *
+     * @param nodeFilter node filter to use
+     * @return this
      */
     D withNodeFilter(Predicate<Node> nodeFilter);
 
@@ -149,6 +170,9 @@ public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer
      *
      * <p>This overwrites any {@link ComparisonFormatter} set via earlier invocations of {@code
      * withComparisonFormatter}.</p>
+     *
+     * @param formatter formatter to use
+     * @return this
      */
     D withComparisonFormatter(ComparisonFormatter formatter);
 }

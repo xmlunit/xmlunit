@@ -111,6 +111,8 @@ public final class CompareMatcher extends BaseMatcher<Object>
      * Create a {@link CompareMatcher} which compares the test-Object with the given control Object for identity.
      * <p>
      * As input all types are supported which are supported by {@link Input#from(Object)}.
+     * @param control the control XML source
+     * @return a CompareMatcher
      */
     @Factory
     public static CompareMatcher isIdenticalTo(final Object control) {
@@ -127,6 +129,8 @@ public final class CompareMatcher extends BaseMatcher<Object>
      * See {@link DiffBuilder#withDifferenceEvaluator(DifferenceEvaluator)}
      * <p>
      * As input all types are supported which are supported by {@link Input#from(Object)}.
+     * @param control the control XML source
+     * @return a CompareMatcher
      */
     @Factory
     public static CompareMatcher isSimilarTo(final Object control) {
@@ -147,6 +151,7 @@ public final class CompareMatcher extends BaseMatcher<Object>
 
     /**
      * @see DiffBuilder#ignoreWhitespace()
+     * @return this
      */
     public CompareMatcher ignoreWhitespace() {
         formatXml = true;
@@ -156,6 +161,7 @@ public final class CompareMatcher extends BaseMatcher<Object>
 
     /**
      * @see DiffBuilder#normalizeWhitespace()
+     * @return this
      */
     public CompareMatcher normalizeWhitespace() {
         formatXml = true;
@@ -165,6 +171,7 @@ public final class CompareMatcher extends BaseMatcher<Object>
 
     /**
      * @see DiffBuilder#ignoreComments()
+     * @return this
      */
     public CompareMatcher ignoreComments() {
         diffBuilder.ignoreComments();
@@ -173,6 +180,7 @@ public final class CompareMatcher extends BaseMatcher<Object>
 
     /**
      * @see DiffBuilder#ignoreElementContentWhitespace()
+     * @return this
      * @since XMLUnit 2.6.0
      */
     public CompareMatcher ignoreElementContentWhitespace() {
@@ -182,6 +190,8 @@ public final class CompareMatcher extends BaseMatcher<Object>
 
     /**
      * @see DiffBuilder#ignoreCommentsUsingXSLTVersion(String)
+     * @param xsltVersion use this version for the stylesheet
+     * @return this
      * @since XMLUnit 2.5.0
      */
     public CompareMatcher ignoreCommentsUsingXSLTVersion(String xsltVersion) {
@@ -266,6 +276,7 @@ public final class CompareMatcher extends BaseMatcher<Object>
      * The only disadvantage is, that you can't combine the {@link CompareMatcher} with other Matchers
      * (like {@link org.hamcrest.CoreMatchers#not(Object)}) anymore. The following code will NOT WORK properly:
      * <code>assertThat(test, not(isSimilarTo(control).throwComparisonFailure()))</code>
+     * @return this
      */
     public CompareMatcher throwComparisonFailure() {
         throwComparisonFailure = true;
@@ -282,6 +293,8 @@ public final class CompareMatcher extends BaseMatcher<Object>
     }
 
     /**
+     * @param f the DocumentBuilderFactory to use
+     * @return this
      * @see DiffBuilder#withDocumentBuilderFactory
      * @since XMLUnit 2.2.0
      */

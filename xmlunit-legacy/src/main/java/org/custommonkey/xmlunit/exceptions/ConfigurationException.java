@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2006-2007, Jeff Martin, Tim Bacon
+Copyright (c) 2006-2007,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -41,12 +41,25 @@ package org.custommonkey.xmlunit.exceptions;
  * throws a configuration exception.
  */
 public class ConfigurationException extends XMLUnitRuntimeException {
+    /**
+     * Creates a new exception from a cause.
+     * @param t the root cause
+     */
     public ConfigurationException(Throwable t) {
         super(t != null ? t.getMessage() : null, t);
     }
+    /**
+     * Creates a new exception from a custom message.
+     * @param s a custom message
+     */
     public ConfigurationException(String s) {
         super(s, null);
     }
+    /**
+     * Creates a new exception from a cause and a custom message.
+     * @param s a custom message
+     * @param t the root cause
+     */
     public ConfigurationException(String s, Throwable t) {
         super(s, t);
     }

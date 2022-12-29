@@ -25,23 +25,27 @@ import org.xmlunit.util.Predicate;
 public interface DifferenceEngine {
     /**
      * Registers a listener that is notified of each comparison.
+     * @param l the listener to add
      */
     void addComparisonListener(ComparisonListener l);
 
     /**
      * Registers a listener that is notified of each comparison with
      * outcome {@link ComparisonResult#EQUAL}.
+     * @param l the listener to add
      */
     void addMatchListener(ComparisonListener l);
 
     /**
      * Registers a listener that is notified of each comparison with
      * outcome other than {@link ComparisonResult#EQUAL}.
+     * @param l the listener to add
      */
     void addDifferenceListener(ComparisonListener l);
 
     /**
      * Sets the strategy for selecting nodes to compare.
+     * @param n the strategy to use
      */
     void setNodeMatcher(NodeMatcher n);
 
@@ -57,6 +61,8 @@ public interface DifferenceEngine {
      * schema-instance-type attributes can not be ignored this way.
      * If you want to suppress comparison of them you'll need to
      * implement {@link DifferenceEvaluator}.</p>
+     *
+     * @param attributeFilter the strategy to use
      */
     void setAttributeFilter(Predicate<Attr> attributeFilter);
 
@@ -67,17 +73,21 @@ public interface DifferenceEngine {
      * <p>Only nodes for which the predicate returns true are part of
      * the comparison.  By default nodes that are not document types
      * are considered.</p>
+     *
+     * @param nodeFilter the strategy to use
      */
     void setNodeFilter(Predicate<Node> nodeFilter);
 
     /**
      * Evaluates the severity of a difference.
+     * @param e the evaluator to use
      */
     void setDifferenceEvaluator(DifferenceEvaluator e);
 
     /**
      * Determines whether the comparison should stop after given
      * difference has been found.
+     * @param c the controller to use
      */
     void setComparisonController(ComparisonController c);
 
@@ -95,6 +105,8 @@ public interface DifferenceEngine {
 
     /**
      * Compares two pieces of XML and invokes the registered listeners.
+     * @param control the reference source of "good" XML
+     * @param test the source under test to compare against {@code control}
      */
     void compare(Source control, Source test);
 }

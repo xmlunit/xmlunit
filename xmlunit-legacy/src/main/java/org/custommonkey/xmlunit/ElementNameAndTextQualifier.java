@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -44,28 +44,27 @@ import org.w3c.dom.Text;
 
 /**
  * More complex interface implementation that tests two elements for tag name
- * and text content comparability. 
+ * and text content comparability.
  * @see DifferenceEngine#compareNodeList(java.util.List, java.util.List, int, DifferenceListener, ElementQualifier)
  * @see Diff#overrideElementQualifier(ElementQualifier)
  */
 public class ElementNameAndTextQualifier extends ElementNameQualifier {
     /**
      * Determine whether two elements qualify for further Difference comparison.
-     * @param control
-     * @param test
      * @return true if the two elements qualify for further comparison based on
      * both the superclass qualification (namespace URI and non- namespaced tag
      * name), and the qualification of the text nodes contained within the
      * elements; false otherwise
      */
+    @Override
     public boolean qualifyForComparison(Element control, Element test) {
         return ElementSelectors.byNameAndText.canBeCompared(control, test);
     }
 
     /**
      * Determine whether the text nodes contain similar values
-     * @param control
-     * @param test
+     * @param control control text
+     * @param test test text
      * @return true if text nodes are similar, false otherwise
      */
     protected boolean similar(Text control, Text test) {
@@ -79,12 +78,12 @@ public class ElementNameAndTextQualifier extends ElementNameQualifier {
 
     /**
      * Extract the normalized text from within an element
-     * @param fromElement
+     * @param fromElement element to extract text from
      * @return extracted Text node (could be null)
-     */ 
+     */
     protected Text extractText(Element fromElement) {
         fromElement.normalize();
-        NodeList fromNodeList = fromElement.getChildNodes(); 
+        NodeList fromNodeList = fromElement.getChildNodes();
         Node currentNode;
         for (int i=0; i < fromNodeList.getLength(); ++i) {
             currentNode = fromNodeList.item(i);

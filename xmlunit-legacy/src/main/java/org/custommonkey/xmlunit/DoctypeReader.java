@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015-2016 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015-2016,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -59,9 +59,9 @@ public class DoctypeReader extends Reader {
      * Create a Reader whose XML content is provided by the originalSource with
      * the exception of the DOCTYPE which is provided by the doctypeName
      * and systemID.
-     * @param originalSource
-     * @param doctypeName
-     * @param systemID
+     * @param originalSource the original input
+     * @param doctypeName name of the new doctype
+     * @param systemID system id of the new doctype
      */
     public DoctypeReader(Reader originalSource, String doctypeName,
                          String systemID) {
@@ -87,7 +87,7 @@ public class DoctypeReader extends Reader {
     }
 
     /**
-     * @param originalSource
+     * @param originalSource the original input
      * @return the contents of the originalSource within a StringBuffer
      * @throws IOException if thrown while reading from the original source
      */
@@ -114,13 +114,8 @@ public class DoctypeReader extends Reader {
 
     /**
      * Read DOCTYPE-replaced content from the wrapped Reader
-     * @param cbuf
-     * @param off
-     * @param len
-     * @return The number of characters read, or -1 if the end of the
-     *  stream has been reached
-     * @throws IOException
      */
+    @Override
     public int read(char[] cbuf, int off, int len) throws IOException {
         int startPos = off;
         int currentlyRead;
@@ -133,10 +128,12 @@ public class DoctypeReader extends Reader {
     /**
      * Read DOCTYPE-replaced content from the wrapped Reader
      */
+    @Override
     public int read() throws IOException {
         return support.read();
     }
 
+    @Override
     public void close() throws IOException {
         originalReader.close();
     }

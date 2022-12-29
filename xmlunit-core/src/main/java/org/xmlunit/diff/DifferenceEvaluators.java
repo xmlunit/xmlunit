@@ -87,6 +87,8 @@ public final class DifferenceEvaluators {
     /**
      * Combines multiple DifferenceEvaluators so that the first one
      * that changes the outcome wins.
+     * @param evaluators the evaluators to combine
+     * @return the DifferenceEvaluator
      */
     public static DifferenceEvaluator
         first(final DifferenceEvaluator... evaluators) {
@@ -108,6 +110,8 @@ public final class DifferenceEvaluators {
     /**
      * Combines multiple DifferenceEvaluators so that the result of the
      * first Evaluator will be passed to the next Evaluator.
+     * @param evaluators the evaluators to combine
+     * @return the DifferenceEvaluator
      */
     public static DifferenceEvaluator
         chain(final DifferenceEvaluator... evaluators) {
@@ -128,6 +132,8 @@ public final class DifferenceEvaluators {
      * Creates a DifferenceEvaluator that returns a EQUAL result for
      * differences found in one of the given ComparisonTypes.
      *
+     * @param types the ComparisonTypes the change applies to
+     * @return the DifferenceEvaluator
      * @since XMLUnit 2.1.0
      */
     public static DifferenceEvaluator downgradeDifferencesToEqual(ComparisonType... types) {
@@ -139,6 +145,8 @@ public final class DifferenceEvaluators {
      * differences (Comparisons that are not EQUAL) found in one of
      * the given ComparisonTypes.
      *
+     * @param types the ComparisonTypes the change applies to
+     * @return the DifferenceEvaluator
      * @since XMLUnit 2.1.0
      */
     public static DifferenceEvaluator downgradeDifferencesToSimilar(ComparisonType... types) {
@@ -150,6 +158,8 @@ public final class DifferenceEvaluators {
      * for differences (Comparisons that are not EQUAL) found in one
      * of the given ComparisonTypes.
      *
+     * @param types the ComparisonTypes the change applies to
+     * @return the DifferenceEvaluator
      * @since XMLUnit 2.1.0
      */
     public static DifferenceEvaluator upgradeDifferencesToDifferent(ComparisonType... types) {
@@ -163,6 +173,7 @@ public final class DifferenceEvaluators {
      *
      * <p>Here "ignore" means return {@code ComparisonResult.EQUAL}.</p>
      *
+     * @return the DifferenceEvaluator
      * @since XMLUnit 2.1.0
      */
     public static DifferenceEvaluator ignorePrologDifferences() {
@@ -198,6 +209,7 @@ public final class DifferenceEvaluators {
      * detect these differences you need to pick a different {@code
      * NodeFilter}.</p>
      *
+     * @return the DifferenceEvaluator
      * @since XMLUnit 2.1.0
      */
     public static DifferenceEvaluator ignorePrologDifferencesExceptDoctype() {

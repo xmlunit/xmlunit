@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001,2015-2016 Jeff Martin, Tim Bacon
+Copyright (c) 2001,2015-2016,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -59,9 +59,10 @@ public class DoctypeInputStream extends InputStream {
      * Create an InputStream whose XML content is provided by the
      * originalSource with the exception of the DOCTYPE which is
      * provided by the doctypeName and systemID.
-     * @param originalSource
-     * @param doctypeName
-     * @param systemID
+     * @param originalSource the original input
+     * @param doctypeName name of the new doctype
+     * @param systemID system id of the new doctype
+     * @param encoding optional encoding of the input (defaults to platform encoding)
      */
     public DoctypeInputStream(InputStream originalSource, String encoding,
                               String doctypeName, String systemID) {
@@ -78,6 +79,7 @@ public class DoctypeInputStream extends InputStream {
     }
 
     /**
+     * @param encoding optional encoding of the input (defaults to platform encoding)
      * @return the content of the original source, without amendments or
      *  substitutions. Safe to call multiple times.
      * @throws IOException if thrown while reading from the original source
@@ -96,10 +98,12 @@ public class DoctypeInputStream extends InputStream {
     /**
      * Read DOCTYPE-replaced content from the wrapped InputStream
      */
+    @Override
     public int read() throws IOException {
         return support.read();
     }
 
+    @Override
     public void close() throws IOException {
         wrappedStream.close();
     }

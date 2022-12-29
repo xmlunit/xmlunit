@@ -20,6 +20,8 @@ public interface DifferenceEvaluator {
     /**
      * May alter the outcome of a comparison.
      *
+     * @param comparison the comparison
+     * @param outcome the current outcome of the comparison
      * @return the new result of the comparison.
      */
     ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome);
