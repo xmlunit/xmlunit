@@ -52,6 +52,8 @@ public final class NodeFilters {
      * <p>This short-circuits the given list of predicates and returns {@code false} as soon as the first predicate
      * does.</p>
      *
+     * @param predicates predicates to test
+     * @return combined predicates
      * @since XMLUnit 2.9.0
      */
     public static Predicate<Node> satifiesAll(final Predicate<Node>... predicates) {
@@ -74,6 +76,8 @@ public final class NodeFilters {
      * <p>This short-circuits the given list of predicates and returns {@code true} as soon as the first predicate
      * does.</p>
      *
+     * @param predicates predicates to test
+     * @return combined predicates
      * @since XMLUnit 2.9.0
      */
     public static Predicate<Node> satifiesAny(final Predicate<Node>... predicates) {

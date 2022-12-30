@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2006-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2006-2007,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -50,25 +50,28 @@ public interface XpathEngine {
      * Execute the specified xpath syntax <code>select</code> expression
      * on the specified document and return the list of nodes (could have
      * length zero) that match
-     * @param select
-     * @param document
-     * @return list of matching nodes
+     * @param select the XPath expression
+     * @param document the XML source to apply the expression to
+     * @return matching nodes
+     * @throws XpathException if the underlying implementation does
      */
     NodeList getMatchingNodes(String select, Document document)
         throws XpathException;
-    
+
     /**
      * Evaluate the result of executing the specified xpath syntax
      * <code>select</code> expression on the specified document
-     * @param select
-     * @param document
+     * @param select the XPath expression
+     * @param document the XML source to apply the expression to
      * @return evaluated result
+     * @throws XpathException if the underlying implementation does
      */
     String evaluate(String select, Document document)
         throws XpathException;
 
     /**
      * Establish a namespace context.
+     * @param ctx the NamespaceContext
      */
     void setNamespaceContext(NamespaceContext ctx);
 }

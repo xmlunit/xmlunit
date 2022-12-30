@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -67,10 +67,12 @@ public class SimpleNamespaceContext implements NamespaceContext {
         this.prefixMap = new HashMap<String, String>(prefixMap);
     }
 
+    @Override
     public String getNamespaceURI(String prefix) {
         return prefixMap.get(prefix);
     }
 
+    @Override
     public Iterator<String> getPrefixes() {
         return prefixMap.keySet().iterator();
     }

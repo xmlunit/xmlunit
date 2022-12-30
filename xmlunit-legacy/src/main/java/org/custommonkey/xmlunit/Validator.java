@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015-2016 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015-2016,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -92,10 +92,10 @@ public class Validator extends DefaultHandler {
 
     /**
      * Baseline constructor: called by all others
-     * 
-     * @param inputSource
-     * @param systemId
-     * @param usingDoctypeReader
+     *
+     * @param inputSource document to validate
+     * @param systemId system id of the DTD to use during validation
+     * @param usingDoctypeReader whether to use {@link DoctypeReader}
      */
     protected Validator(InputSource inputSource,
                         String systemId,
@@ -114,10 +114,10 @@ public class Validator extends DefaultHandler {
      * not allow creation of Doctype nodes.
      * The supplied systemId and doctype name will replace any Doctype
      * settings in the Document.
-     * 
-     * @param document
-     * @param systemID
-     * @param doctype
+     *
+     * @param document document to validate
+     * @param systemID system id of the DTD to use during validation
+     * @param doctype overrides the document's doctype
      */
     public Validator(Document document, String systemID, String doctype) {
         this(new InputStreamReader(new NodeInputStream(document)),
@@ -129,7 +129,7 @@ public class Validator extends DefaultHandler {
      * Validates the contents of the Reader using the DTD or schema referenced
      *  by those contents.
      *
-     * @param readerForValidation
+     * @param readerForValidation document to validate
      */
     public Validator(Reader readerForValidation) {
         this(readerForValidation, null);
@@ -140,7 +140,7 @@ public class Validator extends DefaultHandler {
      * Validates the contents of the String using the DTD or schema referenced
      *  by those contents.
      *
-     * @param stringForValidation
+     * @param stringForValidation document to validate
      */
     public Validator(String stringForValidation) {
         this(new StringReader(stringForValidation));
@@ -151,7 +151,7 @@ public class Validator extends DefaultHandler {
      * Validates the contents of the InputSource using the DTD or
      * schema referenced by those contents.
      *
-     * @param sourceForValidation
+     * @param sourceForValidation document to validate
      */
     public Validator(InputSource sourceForValidation) {
         this(sourceForValidation, null);
@@ -164,8 +164,8 @@ public class Validator extends DefaultHandler {
      *  references the DTD or else the markup will be considered invalid: if
      *  there is no DOCTYPE in the markup use the 3-argument constructor
      *
-     * @param readerForValidation
-     * @param systemID
+     * @param readerForValidation document to validate
+     * @param systemID system id of the DTD to use during validation
      */
     public Validator(Reader readerForValidation, String systemID) {
         this(new InputSource(readerForValidation), systemID,
@@ -179,8 +179,8 @@ public class Validator extends DefaultHandler {
      *  references the DTD or else the markup will be considered invalid: if
      *  there is no DOCTYPE in the markup use the 3-argument constructor
      *
-     * @param stringForValidation
-     * @param systemID
+     * @param stringForValidation document to validate
+     * @param systemID system id of the DTD to use during validation
      */
     public Validator(String stringForValidation, String systemID) {
         this(new StringReader(stringForValidation), systemID);
@@ -194,8 +194,8 @@ public class Validator extends DefaultHandler {
      * be considered invalid: if there is no DOCTYPE in the markup use
      * the 3-argument constructor
      *
-     * @param sourceForValidation
-     * @param systemID
+     * @param sourceForValidation document to validate
+     * @param systemID system id of the DTD to use during validation
      */
     public Validator(InputSource sourceForValidation, String systemID) {
         this(sourceForValidation, systemID, false);
@@ -206,9 +206,9 @@ public class Validator extends DefaultHandler {
      * Validates the contents of the InputSource using the DTD
      * specified with the systemID and named with the doctype name.
      *
-     * @param sourceForValidation
-     * @param systemID
-     * @param doctype
+     * @param sourceForValidation document to validate
+     * @param systemID system id of the DTD to use during validation
+     * @param doctype overrides the document's doctype
      */
     public Validator(InputSource sourceForValidation, String systemID,
                      String doctype) {
@@ -229,9 +229,9 @@ public class Validator extends DefaultHandler {
      * Validates the contents of the Reader using the DTD specified with the
      *  systemID and named with the doctype name.
      *
-     * @param readerForValidation
-     * @param systemID
-     * @param doctype
+     * @param readerForValidation document to validate
+     * @param systemID system id of the DTD to use during validation
+     * @param doctype overrides the document's doctype
      */
     public Validator(Reader readerForValidation, String systemID,
                      String doctype) {
@@ -265,7 +265,7 @@ public class Validator extends DefaultHandler {
 
     /**
      * Perform the validation of the source against DTD / Schema.
-     * 
+     *
      * @return true if the input supplied to the constructor passes validation,
      *  false otherwise
      */
@@ -277,15 +277,15 @@ public class Validator extends DefaultHandler {
     /**
      * Assert that a document is valid.
      */
-    public void assertIsValid(){
-        if(!isValid()){
+    public void assertIsValid() {
+        if (!isValid()){
             junit.framework.Assert.fail(messages.toString());
         }
     }
 
     /**
      * Append any validation message(s) to the specified StringBuffer.
-     * 
+     *
      * @param toAppendTo
      * @return specified StringBuffer with message(s) appended
      */
@@ -299,6 +299,7 @@ public class Validator extends DefaultHandler {
     /**
      * @return class name appended with validation messages
      */
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(super.toString()).append(':');
         return appendMessage(builder).toString();
@@ -348,7 +349,7 @@ public class Validator extends DefaultHandler {
     private void validationProblem(ValidationProblem p) {
         String msg = "At line " + p.getLine() + ", column: "
             + p.getColumn() + " ==> " + p.getMessage();
-        if (!msg.endsWith("\n")) { 
+        if (!msg.endsWith("\n")) {
             msg += "\n";
         }
         invalidate(msg);
@@ -357,7 +358,7 @@ public class Validator extends DefaultHandler {
     /**
      * Set the validation status flag to false and capture the message for use
      * later.
-     * 
+     *
      * @param message
      */
     private void invalidate(String message) {
@@ -367,9 +368,9 @@ public class Validator extends DefaultHandler {
 
     /**
      * As per JAXP 1.2 changes, which introduced a standard way for parsers to
-     * support schema validation. Since only W3C Schema support was included in 
+     * support schema validation. Since only W3C Schema support was included in
      * JAXP 1.2, this is the only mechanism currently supported by this method.
-     * 
+     *
      * @param schemaSource
      *            This can be one of the following:
      * <ul>

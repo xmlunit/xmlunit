@@ -29,6 +29,7 @@ public abstract class JaxbBuilder implements Builder {
 
     /**
      * Creates a builder based on the given object.
+     * @param object the object to build a source of
      */
     protected JaxbBuilder(final Object object) {
         this.object = object;
@@ -36,6 +37,8 @@ public abstract class JaxbBuilder implements Builder {
 
     /**
      * Sets a non-default {@code Marshaller} to use when creating the {@link Source}.
+     * @param marshaller the Marshaller to use
+     * @return this
      */
     public JaxbBuilder withMarshaller(final Object marshaller) {
         this.marshaller = marshaller;
@@ -54,6 +57,7 @@ public abstract class JaxbBuilder implements Builder {
      * <p>
      * If you don't use the {@code xjc:simple} flag to generate your JAXB-Objects, the use of the OjectFactory is most likely
      * required to generate Schema-Valid XML.
+     * @return this
      */
     public JaxbBuilder useObjectFactory() {
         this.useObjectFactory = true;

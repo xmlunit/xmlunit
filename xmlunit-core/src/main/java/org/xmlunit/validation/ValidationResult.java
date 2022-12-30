@@ -23,6 +23,8 @@ public class ValidationResult {
     /**
      * Creates a result based on a valid flag and an Iterable of
      * iteration problems.
+     * @param valid whether validation has been successful
+     * @param problems the problems detected
      */
     public ValidationResult(boolean valid, Iterable<ValidationProblem> problems) {
         this.valid = valid;
@@ -34,6 +36,7 @@ public class ValidationResult {
      *
      * <p>A successful validation results in no validation problems of
      * type ERROR.</p>
+     * @return whether validation has been successful
      */
     public boolean isValid() {
         return valid;
@@ -41,6 +44,7 @@ public class ValidationResult {
 
     /**
      * Retrieves the problems that have been found.
+     * @return problems detected
      */
     public Iterable<ValidationProblem> getProblems() {
         return problems;

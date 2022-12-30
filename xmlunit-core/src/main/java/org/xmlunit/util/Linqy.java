@@ -28,6 +28,9 @@ public final class Linqy {
 
     /**
      * Turns the iterable into a list.
+     * @param i the iterable
+     * @param <E> element type
+     * @return a list containing all elements of the Iterable passed in
      */
     public static <E> List<E> asList(Iterable<E> i) {
         if (i instanceof Collection) {
@@ -42,6 +45,9 @@ public final class Linqy {
 
     /**
      * Turns an iterable into its type-safe cousin.
+     * @param i the iterable
+     * @param <E> target element type
+     * @return a type-safe iterable containing all elements of the Iterable passed in
      */
     public static <E> Iterable<E> cast(final Iterable i) {
         return map(i, new Mapper<Object, E>() {
@@ -53,6 +59,9 @@ public final class Linqy {
 
     /**
      * An iterable containing a single element.
+     * @param single the element of the iterable to return
+     * @param <E> element type
+     * @return an Iterable returning {@code single} once and only once
      */
     public static <E> Iterable<E> singleton(final E single) {
         return new Iterable<E>() {
@@ -66,6 +75,12 @@ public final class Linqy {
     /**
      * Create a new iterable by applying a mapper function to each
      * element of a given sequence.
+     * @param from the iterable to transform
+     * @param mapper the function to apply to each element of {@code from}
+     * @param <F> source element type
+     * @param <T> target element type
+     * @return an iterable where each element is the result of applying the function to an element of the original
+     * iterable
      */
     public static <F, T> Iterable<T> map(final Iterable<F> from,
                                          final Mapper<? super F, T> mapper) {
@@ -80,6 +95,10 @@ public final class Linqy {
     /**
      * Exclude all elements from an iterable that don't match a given
      * predicate.
+     * @param sequence the iterable to filter
+     * @param filter the predicate to apply
+     * @param <T> element type
+     * @return an iterable containing all elements of the original sequence that match the predicate
      */
     public static <T> Iterable<T> filter(final Iterable<T> sequence,
                                          final Predicate<? super T> filter) {
@@ -93,6 +112,8 @@ public final class Linqy {
 
     /**
      * Count the number of elements in a sequence.
+     * @param seq the sequence to count
+     * @return the number of elements in the sequence
      */
     public static int count(Iterable seq) {
         if (seq instanceof Collection) {
@@ -112,6 +133,11 @@ public final class Linqy {
      * one element.
      *
      * <p>Returns false for an empty sequence.</p>
+     *
+     * @param sequence the sequence to examine
+     * @param predicate the predicate to test
+     * @param <T> element type
+     * @return true if any element of the sequence matches the predicate
      */
     public static <T> boolean any(final Iterable<T> sequence,
                                   final Predicate<? super T> predicate) {
@@ -128,6 +154,11 @@ public final class Linqy {
      * elements.
      *
      * <p>Returns true for an empty sequence.</p>
+     *
+     * @param sequence the sequence to examine
+     * @param predicate the predicate to test
+     * @param <T> element type
+     * @return true if all elements of the sequence match the predicate
      */
     public static <T> boolean all(final Iterable<T> sequence,
                                   final Predicate<? super T> predicate) {

@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2006-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2006-2007,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -62,6 +62,10 @@ public class Jaxp13XpathEngine implements XpathEngine {
 
     private final JAXPXPathEngine engine;
 
+    /**
+     * Creates a Jaxp13XpathEngine.
+     * @throws ConfigurationException if the underlying implementation does
+     */
     public Jaxp13XpathEngine() throws ConfigurationException {
         try {
             JAXPXPathEngine e = null;
@@ -84,10 +88,8 @@ public class Jaxp13XpathEngine implements XpathEngine {
      * Execute the specified xpath syntax <code>select</code> expression
      * on the specified document and return the list of nodes (could have
      * length zero) that match
-     * @param select
-     * @param document
-     * @return list of matching nodes
      */
+    @Override
     public NodeList getMatchingNodes(String select, Document document)
         throws XpathException {
         try {
@@ -99,15 +101,12 @@ public class Jaxp13XpathEngine implements XpathEngine {
             throw new XpathException(ex.getCause());
         }
     }
-    
+
     /**
      * Evaluate the result of executing the specified xpath syntax
      * <code>select</code> expression on the specified document
-     * @param select
-     * @param document
-     * @return evaluated result
-     * @throws XpathException
      */
+    @Override
     public String evaluate(String select, Document document)
         throws XpathException {
         try {
@@ -117,6 +116,7 @@ public class Jaxp13XpathEngine implements XpathEngine {
         }
     }
 
+    @Override
     public void setNamespaceContext(NamespaceContext ctx) {
         engine.setNamespaceContext(XMLUnitNamespaceContext2Jaxp13
                                    .turnIntoMap(ctx));

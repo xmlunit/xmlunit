@@ -45,6 +45,7 @@ public class JakartaJaxbBuilder extends JaxbBuilder {
 
     /**
      * Creates a builder based on the given object.
+     * @param object the object to build a source of
      */
     protected JakartaJaxbBuilder(final Object object) {
         super(object);

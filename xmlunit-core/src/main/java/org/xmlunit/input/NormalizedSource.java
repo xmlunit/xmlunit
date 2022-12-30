@@ -37,6 +37,9 @@ import org.xmlunit.util.Convert;
  */
 public class NormalizedSource extends DOMSource {
 
+    /**
+     * An empty source.
+     */
     public NormalizedSource() {
     }
 

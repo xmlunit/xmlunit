@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -47,8 +47,8 @@ public class NodeTestException extends Exception {
 
     /**
      * Constructor for specific node and message
-     * @param message
-     * @param node
+     * @param message exception message
+     * @param node node the failure applies to
      */
     public NodeTestException(String message, Node node) {
         super(message);
@@ -57,7 +57,7 @@ public class NodeTestException extends Exception {
 
     /**
      * Constructor for message only
-     * @param message
+     * @param message exception message
      */
     public NodeTestException(String message) {
         this(message, null);
@@ -80,6 +80,7 @@ public class NodeTestException extends Exception {
     /**
      * @return the exception message and node information if available
      */
+    @Override
     public String getMessage() {
         StringBuilder stringBuilder = new StringBuilder(super.getMessage());
         if (hasNode()) {

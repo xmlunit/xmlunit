@@ -39,6 +39,10 @@ public class ParsingValidator extends Validator {
     private final String language;
     private String schemaURI;
 
+    /**
+     * Creates a validator for the given schema language.
+     * @param language the schema language
+     */
     public ParsingValidator(String language) {
         if (!Languages.W3C_XML_SCHEMA_NS_URI.equals(language)
             && !Languages.XML_DTD_NS_URI.equals(language)) {
@@ -52,6 +56,7 @@ public class ParsingValidator extends Validator {
     /**
      * The URI (or for example the System ID in case of a DTD) that
      * identifies the schema to validate or use during validation.
+     * @param uri the schema URI
      */
     public void setSchemaURI(String uri) {
         this.schemaURI = uri;
@@ -60,6 +65,7 @@ public class ParsingValidator extends Validator {
     /**
      * The URI (or for example the System ID in case of a DTD) that
      * identifies the schema validated or used during validation.
+     * @return the schema URI
      */
     protected String getSchemaURI() {
         return schemaURI;
@@ -87,6 +93,7 @@ public class ParsingValidator extends Validator {
      *
      * @param s the instance document
      * @param factory the factory to use, must not be null
+     * @return result of the validation
      *
      * @since XMLUnit 2.6.0
      */

@@ -22,7 +22,12 @@ public class ValidationProblem {
     /**
      * The type of validation problem encountered.
      */
-    public static enum ProblemType {ERROR, WARNING};
+    public static enum ProblemType {
+        /** The problem is a validation error. */
+        ERROR,
+        /** The problem is a a warning only. */
+        WARNING
+    };
 
     /**
      * Constant used for unknown location information.
@@ -36,6 +41,10 @@ public class ValidationProblem {
     /**
      * Creates a ValidationProblem for the given message and location
      * of the given type.
+     * @param message the problem message
+     * @param line line where the problem occurs
+     * @param column column where the problem occurs
+     * @param type type of problem
      */
     public ValidationProblem(String message, int line, int column,
                              ProblemType type) {
@@ -47,6 +56,7 @@ public class ValidationProblem {
 
     /**
      * The line where the problem occured or {@link #UNKNOWN UNKNOWN}.
+     * @return line where the problem occured
      */
     public int getLine() {
         return line;
@@ -54,6 +64,7 @@ public class ValidationProblem {
 
     /**
      * The column where the problem occured or {@link #UNKNOWN UNKNOWN}.
+     * @return column where the problem occured
      */
     public int getColumn() {
         return column;
@@ -61,6 +72,7 @@ public class ValidationProblem {
 
     /**
      * Whether this is an error or a warning.
+     * @return type of problem
      */
     public ProblemType getType() {
         return type;
@@ -68,6 +80,7 @@ public class ValidationProblem {
 
     /**
      * The problem's message.
+     * @return the problem's message
      */
     public String getMessage() {
         return message;

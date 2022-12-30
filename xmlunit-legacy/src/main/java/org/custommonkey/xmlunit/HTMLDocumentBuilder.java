@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015-2016 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015-2016,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,13 @@ import org.xml.sax.helpers.AttributesImpl;
  * @see TolerantSaxDocumentBuilder
  */
 public class HTMLDocumentBuilder {
+    /**
+     * The document builder.
+     */
     protected final TolerantSaxDocumentBuilder tolerantSaxDocumentBuilder;
+    /**
+     * The adapter between Swing and SAX.
+     */
     protected final SwingEvent2SaxAdapter swingEvent2SaxAdapter;
     private final StringBuilder traceBuilder;
 
@@ -70,17 +76,20 @@ public class HTMLDocumentBuilder {
      * @param tolerantSaxDocumentBuilder the instance that will receive SAX
      *  calls generated as the HTML is parsed and build up a DOM Document
      */
-    public HTMLDocumentBuilder(
-                               TolerantSaxDocumentBuilder tolerantSaxDocumentBuilder) {
+    public HTMLDocumentBuilder(TolerantSaxDocumentBuilder tolerantSaxDocumentBuilder) {
         this.tolerantSaxDocumentBuilder = tolerantSaxDocumentBuilder;
         this.swingEvent2SaxAdapter = new SwingEvent2SaxAdapter();
         this.traceBuilder = new StringBuilder();
     }
 
     /**
+     * Parses the document.
+     * <p>Not thread-safe!</p>
+     * @param reader reader to read the document from
      * @return a DOM document parsed from the Reader via an SwingEvent2SaxAdapter
      * and TolerantSaxBuilder.
-     * Not thread-safe!
+     * @throws SAXException if the parser feels like it
+     * @throws IOException on I/O errors
      * @see TolerantSaxDocumentBuilder
      */
     public Document parse(Reader reader) throws SAXException, IOException {
@@ -91,9 +100,13 @@ public class HTMLDocumentBuilder {
     }
 
     /**
+     * Parses the document.
+     * <p>Not thread-safe!</p>
+     * @param htmlString string to read the document from
+     * @throws SAXException if the parser feels like it
+     * @throws IOException on I/O errors
      * @return a DOM document parsed from the String via an SwingEvent2SaxAdapter
      * and TolerantSaxBuilder.
-     * Not thread-safe!
      * @see TolerantSaxDocumentBuilder
      */
     public Document parse(String htmlString) throws SAXException, IOException {
@@ -137,6 +150,10 @@ public class HTMLDocumentBuilder {
 
         /**
          * Perform Swing-HTML-parse-event-to-Sax-event conversion
+         * @param reader reader to read the document from
+         * @param saxContentHandler content handler receiving SAX events while parsing the document
+         * @throws SAXException if the parser feels like it
+         * @throws IOException on I/O errors
          */
         public void parse(Reader reader, ContentHandler saxContentHandler)
             throws SAXException, IOException {
@@ -174,6 +191,7 @@ public class HTMLDocumentBuilder {
         /**
          * Swing-HTML-parser template method, no ContentHandler equivalent
          */
+        @Override
         public void flush() throws BadLocationException {
             throw new UnsupportedOperationException();
         }
@@ -181,6 +199,7 @@ public class HTMLDocumentBuilder {
         /**
          * Equivalent to Sax <code>characters</code>
          */
+        @Override
         public void handleText(char[] data, int pos) {
             try {
                 int startPos;
@@ -217,6 +236,7 @@ public class HTMLDocumentBuilder {
          * If the supplied ContentHandler is also an LexicalHandler then the
          * cast will be made and the sax event passed on.
          */
+        @Override
         public void handleComment(char[] data, int pos) {
             if (saxContentHandler instanceof LexicalHandler) {
                 try {
@@ -233,6 +253,7 @@ public class HTMLDocumentBuilder {
         /**
          * Equivalent to Sax <code>startElement</code>
          */
+        @Override
         public void handleStartTag(javax.swing.text.html.HTML.Tag tag,
                                    MutableAttributeSet attributeSet, int pos) {
             try {
@@ -247,6 +268,7 @@ public class HTMLDocumentBuilder {
         /**
          * Equivalent to Sax <code>endElement</code>
          */
+        @Override
         public void handleEndTag(javax.swing.text.html.HTML.Tag tag, int pos) {
             try {
                 saxContentHandler.endElement("", "", tag.toString());
@@ -259,6 +281,7 @@ public class HTMLDocumentBuilder {
          * Equivalent to Sax <code>startElement</code> plus
          * <code>endElement</code>
          */
+        @Override
         public void handleSimpleTag(javax.swing.text.html.HTML.Tag tag,
                                     MutableAttributeSet attributeSet, int pos) {
             handleStartTag(tag, attributeSet, pos);
@@ -270,6 +293,7 @@ public class HTMLDocumentBuilder {
          * Swing-HTML-parser template method, no ContentHandler equivalent.
          * These errors are generally recoverable, so they are logged.
          */
+        @Override
         public void handleError(String errorMsg, int pos){
             trace("HTML ERROR: " + errorMsg);
         }
@@ -307,4 +331,3 @@ public class HTMLDocumentBuilder {
     }
 
 }
-

@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2008,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2008,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -166,10 +166,11 @@ public class SimpleXpathEngine implements XpathEngine, XSLTConstants {
     /**
      * Testable method to execute the copy-of transform and return the root
      * node of the resulting Document.
-     * @param select
-     * @param document
-     * @throws ConfigurationException
-     * @throws TransformerException
+     * @param select the XPath expression
+     * @param document the XML source to apply the expression to
+     * @throws ConfigurationException if the underlying implementation does
+     * @throws TransformerException if the underlying implementation does
+     * @throws XpathException if the underlying implementation does
      * @return the root node of the Document created by the copy-of transform.
      */
     protected Node getXPathResultNode(String select, Document document)
@@ -180,10 +181,11 @@ public class SimpleXpathEngine implements XpathEngine, XSLTConstants {
     /**
      * Execute the copy-of transform and return the resulting Document.
      * Used for XMLTestCase comparison
-     * @param select
-     * @param document
-     * @throws ConfigurationException
-     * @throws TransformerException
+     * @param select the XPath expression
+     * @param document the XML source to apply the expression to
+     * @throws ConfigurationException if the underlying implementation does
+     * @throws TransformerException if the underlying implementation does
+     * @throws XpathException if the underlying implementation does
      * @return the Document created by the copy-of transform.
      */
     protected Document getXPathResultAsDocument(String select,
@@ -198,10 +200,8 @@ public class SimpleXpathEngine implements XpathEngine, XSLTConstants {
      * Execute the specified xpath syntax <code>select</code> expression
      * on the specified document and return the list of nodes (could have
      * length zero) that match
-     * @param select
-     * @param document
-     * @return list of matching nodes
      */
+    @Override
     public NodeList getMatchingNodes(String select, Document document)
         throws ConfigurationException, XpathException {
         try {
@@ -214,10 +214,8 @@ public class SimpleXpathEngine implements XpathEngine, XSLTConstants {
     /**
      * Evaluate the result of executing the specified xpath syntax
      * <code>select</code> expression on the specified document
-     * @param select
-     * @param document
-     * @return evaluated result
      */
+    @Override
     public String evaluate(String select, Document document)
         throws ConfigurationException, XpathException {
         try {
@@ -230,6 +228,7 @@ public class SimpleXpathEngine implements XpathEngine, XSLTConstants {
         }
     }
 
+    @Override
     public void setNamespaceContext(NamespaceContext ctx) {
         this.ctx = ctx;
     }

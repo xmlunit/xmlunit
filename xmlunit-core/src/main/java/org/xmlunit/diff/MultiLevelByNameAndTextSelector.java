@@ -44,6 +44,7 @@ public class MultiLevelByNameAndTextSelector implements ElementSelector {
      * elements deeper into the element to compare elements.
      *
      * <p>Does not ignore empty text nodes.
+     * @param levels level of nesting to use when looking up the text
      */
     public MultiLevelByNameAndTextSelector(int levels) {
         this(levels, false);
@@ -53,6 +54,7 @@ public class MultiLevelByNameAndTextSelector implements ElementSelector {
      * Uses element names and the text nested {@code levels} child
      * elements deeper into the element to compare elements.
      *
+     * @param levels level of nesting to use when looking up the text
      * @param ignoreEmptyTexts whether whitespace-only textnodes
      * should be ignored.
      */

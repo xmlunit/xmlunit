@@ -42,6 +42,8 @@ public class TransformerFactoryConfigurer {
     /**
      * Applies the current configuration.
      *
+     * @param factory the factory to configure
+     * @return the configured factory
      * @throws ConfigurationException if any of the attributes or
      * features set is not supported.
      */
@@ -79,6 +81,7 @@ public class TransformerFactoryConfigurer {
 
     /**
      * Creates a builder for TransformerFactoryConfigurers.
+     * @return a fresh builder
      */
     public static Builder builder() {
         return new Builder();
@@ -114,6 +117,7 @@ public class TransformerFactoryConfigurer {
 
         /**
          * Builds a TransformerFactoryConfigurer.
+         * @return the configurer
          */
         public TransformerFactoryConfigurer build() {
             return new TransformerFactoryConfigurer(Collections.unmodifiableMap(attributes),
@@ -125,6 +129,9 @@ public class TransformerFactoryConfigurer {
          * Configures the factory with the given attribute, causes an
          * exception in {@link #configure} if the attribute is not
          * supported.
+         * @param key key of the attribute to be set
+         * @param value value for the attribute to set
+         * @return this
          */
         public Builder withAttribute(String key, Object value) {
             attributes.put(key, value);
@@ -134,6 +141,9 @@ public class TransformerFactoryConfigurer {
         /**
          * Configures the factory with the given attribute if it is
          * supported.
+         * @param key key of the attribute to be set
+         * @param value value for the attribute to set
+         * @return this
          */
         public Builder withSafeAttribute(String key, Object value) {
             safeAttributes.put(key, value);
@@ -144,6 +154,9 @@ public class TransformerFactoryConfigurer {
          * Configures the factory with the given feature, causes an
          * exception in {@link #configure} if the feature is not
          * supported.
+         * @param key key of the feature to be set
+         * @param value value for the feature to set
+         * @return this
          */
         public Builder withFeature(String key, boolean value) {
             features.put(key, value);
@@ -153,6 +166,9 @@ public class TransformerFactoryConfigurer {
         /**
          * Configures the factory with the given feature if it is
          * supported.
+         * @param key key of the feature to be set
+         * @param value value for the feature to set
+         * @return this
          */
         public Builder withSafeFeature(String key, boolean value) {
             safeFeatures.put(key, value);
@@ -161,6 +177,7 @@ public class TransformerFactoryConfigurer {
 
         /**
          * Configures the factory to not load any external DTDs.
+         * @return this
          */
         public Builder withDTDLoadingDisabled() {
             // XMLConstants.ACCESS_EXTERNAL_DTD is not available in Java 6
@@ -169,6 +186,7 @@ public class TransformerFactoryConfigurer {
 
         /**
          * Configures the factory to not parse any DTDs.
+         * @return this
          */
         public Builder withExternalStylesheetLoadingDisabled() {
             // XMLConstants.ACCESS_EXTERNAL_STYLESHEET is not available in Java 6

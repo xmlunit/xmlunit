@@ -35,10 +35,19 @@ public class JAXPValidator extends Validator {
     private final SchemaFactory factory;
     private Schema schema;
 
+    /**
+     * Creates a validator for the given schema language using the default SchemaFactory.
+     * @param language the schema language
+     */
     public JAXPValidator(String language) {
         this(language, null);
     }
 
+    /**
+     * Creates a validator for the given schema language using a custom SchemaFactory.
+     * @param language the schema language
+     * @param factory the factory to use
+     */
     public JAXPValidator(String language, SchemaFactory factory) {
         this.language = language;
         this.factory = factory;
@@ -48,6 +57,7 @@ public class JAXPValidator extends Validator {
      * Sets the schema to use in instance validation directly rather
      * than via {@link #setSchemaSource}.
      * @since XMLUnit 2.3.0
+     * @param s the schema as Source
      */
     public final void setSchema(Schema s) {
         schema = s;

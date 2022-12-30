@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2006-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2006-2007,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -67,6 +67,7 @@ public class MultiLevelElementNameAndTextQualifier
      * child elements deeper into the element to compare elements.
      *
      * <p>Does not ignore empty text nodes.
+     * @param levels level of nesting to use when looking up the text
      */
     public MultiLevelElementNameAndTextQualifier(int levels) {
         this(levels, false);
@@ -76,6 +77,7 @@ public class MultiLevelElementNameAndTextQualifier
      * Uses element names and the text nested <code>levels</code>
      * child elements deeper into the element to compare elements.
      *
+     * @param levels level of nesting to use when looking up the text
      * @param ignoreEmptyTexts whether whitespace-only textnodes
      * should be ignored.
      */

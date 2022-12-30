@@ -28,11 +28,16 @@ public final class IterableNodeList implements Iterable<Node> {
     private final NodeList nl;
     private final int length;
 
+    /**
+     * Wraps the NodeList.
+     * @param nl list to wrap
+     */
     public IterableNodeList(NodeList nl) {
         this.nl = nl;
         length = nl.getLength();
     }
 
+    @Override
     public Iterator<Node> iterator() {
         return new NodeListIterator();
     }
@@ -45,7 +50,7 @@ public final class IterableNodeList implements Iterable<Node> {
         public Node next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
-            } 
+            }
             return nl.item(current++);
         }
         public boolean hasNext() {
@@ -55,6 +60,8 @@ public final class IterableNodeList implements Iterable<Node> {
 
     /**
      * Turns the NodeList into a list.
+     * @param l the NodeList to convert
+     * @return a list of Nodes
      */
     public static List<Node> asList(NodeList l) {
         return Linqy.asList(new IterableNodeList(l));

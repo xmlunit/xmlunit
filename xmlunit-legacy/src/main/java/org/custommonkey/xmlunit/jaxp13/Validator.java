@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2008,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2008,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -85,6 +85,8 @@ public class Validator {
 
     /**
      * validates using the specified schema factory.
+     * @param factory the concrete factory to use.  If this is
+     * non-null, the first argument will be ignored.
      */
     public Validator(SchemaFactory factory) {
         this(null, factory);
@@ -104,6 +106,7 @@ public class Validator {
 
     /**
      * Adds a source for the schema defintion.
+     * @param s the source to add
      */
     public void addSchemaSource(Source s) {
         sources.add(s);
@@ -112,6 +115,7 @@ public class Validator {
 
     /**
      * Is the given schema definition valid?
+     * @return whether the given schema definition is valid
      */
     public boolean isSchemaValid() {
         return validator.validateSchema().isValid();
@@ -122,6 +126,7 @@ public class Validator {
      *
      * <p>The list contains {@link org.xml.sax.SAXParseException
      * SAXParseException}s.</p>
+     * @return a list of all errors in the schema definition
      */
     public List<SAXParseException> getSchemaErrors() {
         return problemToExceptionList(validator.validateSchema().getProblems());
@@ -136,6 +141,8 @@ public class Validator {
      * XMLReader throws an IOException (see {@link
      * javax.xml.validation.Validator#validate validate in
      * Validator}).
+     * @param instance the instance to check
+     * @return whether the instance is valid
      */
     public boolean isInstanceValid(Source instance) {
         try {
@@ -156,6 +163,8 @@ public class Validator {
      * XMLReader throws an IOException (see {@link
      * javax.xml.validation.Validator#validate validate in
      * Validator}).
+     * @param instance the instance to check
+     * @return a list of all errors in the given instance
      */
     public List<SAXParseException> getInstanceErrors(Source instance) {
         try {

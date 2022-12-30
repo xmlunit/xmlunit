@@ -17,5 +17,10 @@ package org.xmlunit.util;
  * A function that tests an object for a property.
  */
 public interface Predicate<T> {
+    /**
+     * Performs the test.
+     * @param toTest the object to test
+     * @return true if the test is successful
+     */
     boolean test(T toTest);
 }

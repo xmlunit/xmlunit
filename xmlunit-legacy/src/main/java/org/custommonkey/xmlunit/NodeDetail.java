@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -39,25 +39,28 @@ import org.w3c.dom.Node;
 
 /**
  * Parameter class for holding information about a <code>Node</code> within
- * a Difference instance  
+ * a Difference instance
  * @see Difference#getControlNodeDetail
  * @see Difference#getTestNodeDetail
  */
 public class NodeDetail {
     private final String value;
-    private final Node node; 
+    private final Node node;
     private final String xpathLocation;
-        
+
     /**
      * Constructor for NodeDetail.
+     * @param value value used for comparison
+     * @param node the node itself
+     * @param xpathLocation XPath leading to the node
      */
     public NodeDetail(String value, Node node, String xpathLocation) {
         this.value = value;
         this.node = node;
         this.xpathLocation = xpathLocation;
     }
-        
-        
+
+
     /**
      * Returns the node.
      * @return Node
@@ -68,7 +71,7 @@ public class NodeDetail {
 
     /**
      * Returns the value.
-     * @return String
+     * @return the value
      */
     public String getValue() {
         return value;
@@ -76,7 +79,7 @@ public class NodeDetail {
 
     /**
      * Returns the xpathLocation.
-     * @return String
+     * @return the XPath location
      */
     public String getXpathLocation() {
         return xpathLocation;

@@ -60,6 +60,9 @@ public class NodeTest {
 
     /**
      * Construct a NodeTest for the DOM built using the String and JAXP
+     * @param xmlString the XML to test
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public NodeTest(String xmlString)
         throws SAXException, IOException {
@@ -68,6 +71,9 @@ public class NodeTest {
 
     /**
      * Construct a NodeTest for the DOM built using the Reader and JAXP
+     * @param reader the XML to test
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public NodeTest(Reader reader) throws SAXException,
                                           IOException {
@@ -76,6 +82,9 @@ public class NodeTest {
 
     /**
      * Construct a NodeTest for the DOM built using the InputSource.
+     * @param src the XML to test
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public NodeTest(InputSource src) throws SAXException,
                                             IOException {
@@ -87,6 +96,7 @@ public class NodeTest {
      * @exception IllegalArgumentException if the Document does not support the DOM
      * DocumentTraversal interface (most DOM implementations should provide this
      * support)
+     * @param document the XML to test
      */
     public NodeTest(Document document) {
         this(getDocumentTraversal(document),
@@ -95,7 +105,6 @@ public class NodeTest {
 
     /**
      * Try to cast a Document into a DocumentTraversal
-     * @param document
      * @return DocumentTraversal interface if the DOM implementation supports it
      */
     private static DocumentTraversal getDocumentTraversal(Document document) {
@@ -111,6 +120,8 @@ public class NodeTest {
     /**
      * Construct a NodeTest using the specified DocumentTraversal, starting at
      * the specified root node
+     * @param documentTraversal traversal
+     * @param rootNode starting node for test
      */
     public NodeTest(DocumentTraversal documentTraversal, Node rootNode) {
         this.documentTraversal = documentTraversal;
@@ -119,7 +130,7 @@ public class NodeTest {
 
     /**
      * Does this NodeTest pass using the specified NodeTester instance?
-     * @param tester
+     * @param tester actually performs the tests
      * @param singleNodeType note <code>Node.ATTRIBUTE_NODE</code> is not
      *  exposed by the DocumentTraversal node iterator unless the root node
      *  is itself an attribute - so a NodeTester that needs to test attributes
@@ -134,7 +145,7 @@ public class NodeTest {
 
     /**
      * Does this NodeTest pass using the specified NodeTester instance?
-     * @param tester
+     * @param tester actually performs the tests
      * @param nodeTypes note <code>Node.ATTRIBUTE_NODE</code> is not
      *  exposed by the DocumentTraversal node iterator unless the root node
      *  is itself an attribute - so a NodeTester that needs to test attributes

@@ -23,11 +23,15 @@ import javax.xml.transform.Source;
 public abstract class Validator {
     private Source[] sourceLocations;
 
+    /**
+     * Creates a validator.
+     */
     protected Validator() {
     }
 
     /**
      * Where to find the schema.
+     * @param s locations of the schema definition
      */
     public void setSchemaSources(Source... s) {
         if (s != null) {
@@ -39,6 +43,7 @@ public abstract class Validator {
 
     /**
      * Where to find the schema.
+     * @param s location of the schema definition
      */
     public final void setSchemaSource(Source s) {
         setSchemaSources(s == null ? null : new Source[] {s});
@@ -46,6 +51,7 @@ public abstract class Validator {
 
     /**
      * Where to find the schema.
+     * @return locations of the schema definition
      */
     protected Source[] getSchemaSources() {
         return sourceLocations == null ? new Source[0] : sourceLocations;
@@ -56,11 +62,14 @@ public abstract class Validator {
      *
      * @throws UnsupportedOperationException if the language's
      * implementation doesn't support schema validation
+     * @return result of the validation
      */
     public abstract ValidationResult validateSchema();
 
     /**
      * Validates an instance against the schema.
+     * @param instance the instance to validate
+     * @return result of the validation
      */
     public abstract ValidationResult validateInstance(Source instance);
 
@@ -69,6 +78,8 @@ public abstract class Validator {
      * Factory that obtains a Validator instance based on the schema language.
      *
      * @see Languages
+     * @param language the schema language
+     * @return a validator instance
      */
     public static Validator forLanguage(String language) {
         if (!Languages.XML_DTD_NS_URI.equals(language)) {

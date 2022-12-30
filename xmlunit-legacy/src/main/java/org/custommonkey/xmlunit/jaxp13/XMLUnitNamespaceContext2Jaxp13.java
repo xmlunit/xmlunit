@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2006-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2006-2007,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -55,10 +55,15 @@ public class XMLUnitNamespaceContext2Jaxp13
 
     private final Map<String, String> nsMap;
 
+    /**
+     * Creates an adapter.
+     * @param ctx the context to adapt
+     */
     public XMLUnitNamespaceContext2Jaxp13(NamespaceContext ctx) {
         nsMap = turnIntoMap(ctx);
     }
- 
+
+    @Override
     public String getNamespaceURI(String prefix) {
         if (prefix == null) {
             throw new IllegalArgumentException("prefix must not be null");
@@ -70,6 +75,7 @@ public class XMLUnitNamespaceContext2Jaxp13
         return uri;
     }
 
+    @Override
     public Iterator getPrefixes(String uri) {
         if (uri == null) {
             throw new IllegalArgumentException("uri must not be null");
@@ -86,6 +92,7 @@ public class XMLUnitNamespaceContext2Jaxp13
         return ts.iterator();
     }
 
+    @Override
     public String getPrefix(String uri) {
         Iterator i = getPrefixes(uri);
         return i.hasNext() ? (String) i.next() : null;

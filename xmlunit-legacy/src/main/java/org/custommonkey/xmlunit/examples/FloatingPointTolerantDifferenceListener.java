@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2008,2013,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2008,2013,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -51,12 +51,18 @@ public class FloatingPointTolerantDifferenceListener
 
     private final double tolerance;
 
+    /**
+     * Creates a new instance
+     * @param delegateTo the DifferenceListener to delegate to.
+     * @param tolerance absolute tolerance value for numerical differences
+     */
     public FloatingPointTolerantDifferenceListener(DifferenceListener delegateTo,
                                                    double tolerance) {
         super(delegateTo);
         this.tolerance = tolerance;
     }
 
+    @Override
     protected int textualDifference(Difference d) {
         String control = d.getControlNodeDetail().getValue();
         String test = d.getTestNodeDetail().getValue();

@@ -74,6 +74,7 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
 
     /**
      * Equivalent for {@link #isNotEmpty()}.
+     * @return this
      */
     public MultipleNodeAssert exist() {
         return isNotEmpty();
@@ -93,6 +94,8 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
      *
      * @throws AssertionError if the actual nodes iterable is {@code null}.
      * @throws AssertionError if one or more nodes don't have attribute with given name.
+     * @param attributeName name of the expected attribute
+     * @return this
      */
     public MultipleNodeAssert haveAttribute(final String attributeName) {
         isNotNull();
@@ -114,6 +117,9 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
      *
      * @throws AssertionError if the actual nodes iterable is {@code null}.
      * @throws AssertionError if one or more nodes don't have attribute with given name and value.
+     * @param attributeName name of the expected attribute
+     * @param attributeValue expected attribute value
+     * @return this
      */
     public MultipleNodeAssert haveAttribute(final String attributeName, final String attributeValue) {
         isNotNull();
@@ -135,6 +141,8 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
      *
      * @throws AssertionError if the actual nodes iterable is {@code null}.
      * @throws AssertionError if any node has attribute with given name.
+     * @param attributeName name of the expected attribute
+     * @return this
      */
     public MultipleNodeAssert doNotHaveAttribute(final String attributeName) {
         isNotNull();
@@ -156,6 +164,9 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
      *
      * @throws AssertionError if the actual nodes iterable is {@code null}.
      * @throws AssertionError if any node has attribute with given name and value.
+     * @param attributeName name of the expected attribute
+     * @param attributeValue expected attribute value
+     * @return this
      */
     public MultipleNodeAssert doNotHaveAttribute(final String attributeName, final String attributeValue) {
         isNotNull();
@@ -176,6 +187,8 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
      * @throws AssertionError if the actual nodes iterable is {@code null}.
      * @throws AssertionError if all nodes don't have xpath.
      * @since XMLUnit 2.6.4
+     * @return this
+     * @param xPath XPath expression to test
      */
     public MultipleNodeAssert containsAnyNodeHavingXPath(String xPath) {
 
@@ -200,6 +213,8 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
      * @throws AssertionError if the actual nodes iterable is {@code null}.
      * @throws AssertionError if some node doesn't have xpath.
      * @since XMLUnit 2.6.4
+     * @return this
+     * @param xPath XPath expression to test
      */
     public MultipleNodeAssert containsAllNodesHavingXPath(final String xPath) {
         isNotNull();
@@ -220,6 +235,8 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
      *
      * @throws AssertionError if the actual nodes iterable is {@code null}.
      * @since XMLUnit 2.6.4
+     * @param attribute name of the attribute
+     * @return list assert of attribute values
      */
     public AbstractListAssert<?, List<? extends String>, String, ObjectAssert<String>> extractingAttribute(String attribute) {
         isNotNull();
@@ -242,6 +259,7 @@ public class MultipleNodeAssert extends FactoryBasedNavigableIterableAssert<Mult
      *
      * @throws AssertionError if the actual nodes iterable is {@code null}.
      * @since XMLUnit 2.8.0
+     * @return list assert of text content
      */
     public AbstractListAssert<?, List<? extends String>, String, ObjectAssert<String>> extractingText() {
         isNotNull();

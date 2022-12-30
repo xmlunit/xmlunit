@@ -1,6 +1,6 @@
 /*
 *****************************************************************
-Copyright (c) 2014-2015 Jeff Martin, Tim Bacon
+Copyright (c) 2014-2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -44,10 +44,19 @@ public final class QualifiedName {
     private final String namespaceUri;
     private final String localName;
 
+    /**
+     * QualifiedName without namespace URI.
+     * @param localName local name
+     */
     public QualifiedName(String localName) {
         this(XMLConstants.NULL_NS_URI, localName);
     }
 
+    /**
+     * QualifiedName with potential namespace URI.
+     * @param localName local name
+     * @param namespaceUri optional namespace URI
+     */
     public QualifiedName(String namespaceUri, String localName) {
         if (localName == null) {
             throw new IllegalArgumentException("localName must not be null");
@@ -57,18 +66,26 @@ public final class QualifiedName {
         this.localName = localName;
     }
 
+    /**
+     * @return namespace URI
+     */
     public String getNamespaceURI() {
         return namespaceUri;
     }
 
+    /**
+     * @return local name
+     */
     public String getLocalName() {
         return localName;
     }
 
+    @Override
     public int hashCode() {
         return 7 * namespaceUri.hashCode() + localName.hashCode();
     }
 
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof QualifiedName)) {
             return false;
@@ -85,6 +102,8 @@ public final class QualifiedName {
      * inside the current NamespaceContext.</p>
      *
      * @see XMLUnit#setXpathNamespaceContext
+     * @param value string to parse
+     * @return parsed QualifiedName
      */
     public static QualifiedName valueOf(String value) {
         return valueOf(value, XMLUnit.getXpathNamespaceContext());
@@ -95,6 +114,7 @@ public final class QualifiedName {
      *
      * <p>If the NS-URI is equal to NULL_NS_URI only the local name is returned.</p>
      */
+    @Override
     public String toString() {
         return XMLConstants.NULL_NS_URI.equals(namespaceUri) ?
             localName : "{" + namespaceUri + "}" + localName;
@@ -105,6 +125,10 @@ public final class QualifiedName {
      *
      * <p>When using the prefix-version the prefix must be defined
      * inside the NamespaceContext given as argument.</p>
+     *
+     * @param value string to parse
+     * @param ctx namespace context which must not be null when the prefix form is used
+     * @return parsed QualifiedName
      */
     public static QualifiedName valueOf(String value, NamespaceContext ctx) {
         if (value == null) {

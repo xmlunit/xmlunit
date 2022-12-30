@@ -1,6 +1,6 @@
 /*
  ******************************************************************
- Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
+ Copyright (c) 2001-2007,2015,2022 Jeff Martin, Tim Bacon
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -46,17 +46,20 @@ public final class JAXPConstants {
     /**
      * Utility constant class for JAXP Properties, typically used with
      * {@link XMLReader#setProperty(String, Object)}.
-     * 
+     *
      */
 
     private JAXPConstants() { }
 
+    /**
+     * Contains names for common properties.
+     */
     public static final class Properties {
 
         /**
          * Property name for the Schema Language being used. As of JAXP 1.2,
          * only W3C Schema are supported.
-         * 
+         *
          * @see XMLConstants#W3C_XML_SCHEMA_NS_URI
          * @see "http://java.sun.com/webservices/jaxp/change-requests-11.html"
          */
@@ -64,7 +67,7 @@ public final class JAXPConstants {
 
         /**
          * Property name for the Schema Location being used.
-         * 
+         *
          * @see "http://java.sun.com/webservices/jaxp/change-requests-11.html"
          */
         public static final String SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";

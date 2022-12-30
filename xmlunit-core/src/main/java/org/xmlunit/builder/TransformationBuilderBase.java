@@ -26,23 +26,35 @@ public interface
     TransformationBuilderBase<B extends TransformationBuilderBase<B>> {
     /**
      * sets the TraX factory to use.
+     * @param f the factory to use
+     * @return this
      */
     B usingFactory(TransformerFactory f);
     /**
      * Adds an output property.
+     * @param name name of the property
+     * @param value value of the property
+     * @return this
      */
     B withOutputProperty(String name, String value);
     /**
      * Adds a parameter.
+     * @param name name of the parameter
+     * @param value value of the parameter
+     * @return this
      */
     B withParameter(String name, Object value);
     /**
      * Sets the stylesheet to use.
+     * @param s styleSheet to use
+     * @return this
      */
     B withStylesheet(Source s);
     /**
      * Sets the resolver to use for the document() function and
      * xsi:import/include.
+     * @param r the resolver to use
+     * @return this
      */
     B withURIResolver(URIResolver r);
 }

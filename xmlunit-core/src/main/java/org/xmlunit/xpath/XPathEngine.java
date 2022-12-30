@@ -24,19 +24,31 @@ public interface XPathEngine {
     /**
      * Returns a potentially empty collection of Nodes matching an
      * XPath expression.
+     * @param xPath the XPath expression
+     * @param s the XML source to apply the expression to
+     * @return matching nodes
      */
     Iterable<Node> selectNodes(String xPath, Source s);
     /**
      * Evaluates an XPath expression and stringifies the result.
+     * @param xPath the XPath expression
+     * @param s the XML source to apply the expression to
+     * @return stringified result
      */
     String evaluate(String xPath, Source s);
     /**
      * Returns a potentially empty collection of Nodes matching an
      * XPath expression.
+     * @param xPath the XPath expression
+     * @param n the XML source to apply the expression to
+     * @return matching nodes
      */
     Iterable<Node> selectNodes(String xPath, Node n);
     /**
      * Evaluates an XPath expression and stringifies the result.
+     * @param xPath the XPath expression
+     * @param n the XML source to apply the expression to
+     * @return stringified result
      */
     String evaluate(String xPath, Node n);
     /**

@@ -37,6 +37,7 @@ public class PlaceholderSupport {
      * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
      * withDifferenceEvaluator}.</p>
      *
+     * @param <D> type of configurer
      * @param configurer the configurer to add support to
      * @return the configurer with placeholder support added in
      */
@@ -51,6 +52,7 @@ public class PlaceholderSupport {
      * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
      * withDifferenceEvaluator}.</p>
      *
+     * @param <D> type of configurer
      * @param configurer the configurer to add support to
      * @param placeholderOpeningDelimiterRegex regular expression for
      * the opening delimiter of placeholder, defaults to {@link
@@ -75,6 +77,7 @@ public class PlaceholderSupport {
      * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
      * withDifferenceEvaluator}.</p>
      *
+     * @param <D> type of configurer
      * @param configurer the configurer to add support to
      * @param placeholderOpeningDelimiterRegex regular expression for
      * the opening delimiter of placeholder, defaults to {@link
@@ -118,10 +121,12 @@ public class PlaceholderSupport {
      * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
      * withDifferenceEvaluator}.</p>
      *
+     * @param <D> type of configurer
      * @param configurer the configurer to add support to
      * @param evaluator the additional evaluator - placeholder support is
      * {@link DifferenceEvaluators#chain chain}ed after the given
      * evaluator
+     * @return the configurer with placeholder support added in
      */
     public static <D extends DifferenceEngineConfigurer<D>>
         D withPlaceholderSupportChainedAfter(D configurer, DifferenceEvaluator evaluator) {
@@ -134,6 +139,7 @@ public class PlaceholderSupport {
      * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
      * withDifferenceEvaluator}.</p>
      *
+     * @param <D> type of configurer
      * @param configurer the configurer to add support to
      * @param placeholderOpeningDelimiterRegex regular expression for
      * the opening delimiter of placeholder, defaults to {@link
@@ -146,6 +152,7 @@ public class PlaceholderSupport {
      * @param evaluator the additional evaluator - placeholder support is
      * {@link DifferenceEvaluators#chain chain}ed after the given
      * evaluator
+     * @return the configurer with placeholder support added in
      */
     public static <D extends DifferenceEngineConfigurer<D>>
         D withPlaceholderSupportUsingDelimitersChainedAfter(D configurer, String placeholderOpeningDelimiterRegex,
@@ -160,6 +167,7 @@ public class PlaceholderSupport {
      * <p>This overwrites any {@link DifferenceEvaluator} set via earlier invocations of {@code
      * withDifferenceEvaluator}.</p>
      *
+     * @param <D> type of configurer
      * @param configurer the configurer to add support to
      * @param placeholderOpeningDelimiterRegex regular expression for
      * the opening delimiter of placeholder, defaults to {@link
@@ -185,6 +193,7 @@ public class PlaceholderSupport {
      * argument list, defaults to {@link
      * PlaceholderDifferenceEvaluator#PLACEHOLDER_DEFAULT_ARGS_SEPARATOR_REGEX}
      * if the parameter is null or blank
+     * @return the configurer with placeholder support added in
      */
     public static <D extends DifferenceEngineConfigurer<D>>
         D withPlaceholderSupportUsingDelimitersChainedAfter(D configurer,

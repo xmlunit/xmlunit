@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -64,6 +64,7 @@ public class NodeInputStream extends InputStream {
     /**
      * Simple constructor
      * @param rootNode the node to be presented as an input stream
+     * @param outputProperties properties to use during transformation
      */
     public NodeInputStream(Node rootNode, Properties outputProperties) {
         this.rootNode = rootNode;
@@ -95,8 +96,8 @@ public class NodeInputStream extends InputStream {
     /**
      * InputStream method
      * @return byte as read
-     * @throws IOException
      */
+    @Override
     public int read() throws IOException {
         ensureContentAvailable();
         if (reallyAvailable()==0) {
@@ -110,8 +111,8 @@ public class NodeInputStream extends InputStream {
     /**
      * InputStream method
      * Note that calling close allows a repeated read of the content
-     * @throws IOException
      */
+    @Override
     public void close() throws IOException {
         atPos = 0;
     }
@@ -120,6 +121,7 @@ public class NodeInputStream extends InputStream {
      * InputStream method
      * @return number of bytes available
      */
+    @Override
     public int available() throws IOException {
         ensureContentAvailable();
         return reallyAvailable();

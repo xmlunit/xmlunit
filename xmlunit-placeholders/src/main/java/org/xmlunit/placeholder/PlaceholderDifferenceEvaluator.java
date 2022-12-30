@@ -56,17 +56,26 @@ import org.xmlunit.util.Nodes;
  * @since 2.6.0
  */
 public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
+    /**
+     * Pattern used to find the start of a placeholder.
+     */
     public static final String PLACEHOLDER_DEFAULT_OPENING_DELIMITER_REGEX = Pattern.quote("${");
+    /**
+     * Pattern used to find the end of a placeholder.
+     */
     public static final String PLACEHOLDER_DEFAULT_CLOSING_DELIMITER_REGEX = Pattern.quote("}");
     /**
+     * Pattern used to find the start of an argument list.
      * @since 2.7.0
      */
     public static final String PLACEHOLDER_DEFAULT_ARGS_OPENING_DELIMITER_REGEX = Pattern.quote("(");
     /**
+     * Pattern used to find then end of an argument list.
      * @since 2.7.0
      */
     public static final String PLACEHOLDER_DEFAULT_ARGS_CLOSING_DELIMITER_REGEX = Pattern.quote(")");
     /**
+     * Pattern used to find an argument separator.
      * @since 2.7.0
      */
     public static final String PLACEHOLDER_DEFAULT_ARGS_SEPARATOR_REGEX = Pattern.quote(",");

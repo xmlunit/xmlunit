@@ -64,6 +64,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
      *
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value does not contain a parsable integer
+     * @return an {@code Assert} object for integer assertions
      */
     public AbstractIntegerAssert<?> asInt() {
         isNotNull();
@@ -82,6 +83,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
      *
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value does not contain a parsable double
+     * @return an {@code Assert} object for double assertions
      */
     public AbstractDoubleAssert<?> asDouble() {
         isNotNull();
@@ -102,6 +104,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
      *
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value does not contain a parsable boolean
+     * @return an {@code Assert} object for boolean assertions
      */
     public AbstractBooleanAssert<?> asBoolean() {
         isNotNull();
@@ -124,6 +127,7 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
      * Returns an {@code XmlAssert} object that allows performing assertions on XML value of the {@link String} under test.
      *
      * @throws AssertionError if the actual value is {@code null}.
+     * @return an {@code Assert} object for XML assertions
      */
     public XmlAssert asXml() {
         isNotNull();
@@ -148,6 +152,8 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
      * </pre>
      *
      * @throws AssertionError if the actual value is {@code null}.
+     * @return an {@code Assert} object for XML assertions
+     * @param wrapNodeName name of the element to wrap around the string under test
      * @since XMLUnit 2.6.4
      */
     public XmlAssert asXml(String wrapNodeName) {
@@ -164,6 +170,8 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
 
     /**
      * Try convert the {@link String} under test to int using {@link #asInt()} and compare with given value.
+     * @param expected expected value
+     * @return this
      */
     public ValueAssert isEqualTo(int expected) {
         asInt().isEqualTo(expected);
@@ -173,6 +181,8 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
 
     /**
      * Try convert the {@link String} under test to double using {@link #asDouble()} and compare with given value.
+     * @param expected expected value
+     * @return this
      */
     public ValueAssert isEqualTo(double expected) {
         asDouble().isEqualTo(expected);
@@ -182,6 +192,8 @@ public class ValueAssert extends AbstractCharSequenceAssert<ValueAssert, String>
 
     /**
      * Try convert the {@link String} under test to boolean using {@link #asBoolean()} and compare with given value.
+     * @param expected expected value
+     * @return this
      */
     public ValueAssert isEqualTo(boolean expected) {
         asBoolean().isEqualTo(expected);

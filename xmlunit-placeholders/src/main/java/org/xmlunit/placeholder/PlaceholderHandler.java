@@ -30,6 +30,7 @@ import org.xmlunit.diff.ComparisonResult;
 public interface PlaceholderHandler {
     /**
      * The placeholder keyword this handler is responsible for.
+     * @return placeholder keyword this handler is responsible for
      */
     String getKeyword();
 
@@ -41,6 +42,7 @@ public interface PlaceholderHandler {
      * this placeholder has been added to.
      * @param placeholderParameters any arguments provided to the
      * placeholder.
+     * @return the comparison outcome
      */
     ComparisonResult evaluate(String testText, String... placeholderParameters);
 }

@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001, Jeff Martin, Tim Bacon
+Copyright (c) 2001,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -60,6 +60,7 @@ public class IntegerBuffer {
 
     /**
      * Creates a new buffer with the given initial capacity.
+     * @param capacity intitial capacity
      */
     public IntegerBuffer(int capacity) {
         buffer = new int[capacity];
@@ -67,6 +68,7 @@ public class IntegerBuffer {
 
     /**
      * Returns the current size.
+     * @return current size
      */
     public int size() {
         return currentSize;
@@ -75,6 +77,7 @@ public class IntegerBuffer {
     /**
      * Returns the current capacity (the size the buffer can use
      * before it needs to grow).
+     * @return current capacity
      */
     public int capacity() {
         return buffer.length;
@@ -82,6 +85,7 @@ public class IntegerBuffer {
 
     /**
      * Appends a single int.
+     * @param i the int to append
      */
     public void append(int i) {
         // could simply delegate to the other append methods, but this
@@ -94,6 +98,7 @@ public class IntegerBuffer {
 
     /**
      * Appends an array of ints.
+     * @param i the ints to append
      */
     public void append(int[] i) {
         // could simply delegate to the other append methods, but this
@@ -106,7 +111,8 @@ public class IntegerBuffer {
     }
 
     /**
-     * Returns an arry view of this buffer's content.
+     * Returns an array view of this buffer's content.
+     * @return array view of this buffer's content
      */
     public int[] toIntArray() {
         int[] i = new int[currentSize];
@@ -117,6 +123,7 @@ public class IntegerBuffer {
     /**
      * finds sequence in current buffer.
      *
+     * @param sequence the sequence to find
      * @return index of sequence or -1 if not found
      */
     public int indexOf(int[] sequence) {

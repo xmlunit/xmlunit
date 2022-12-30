@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2011,2014-2016 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2011,2014-2016,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -71,9 +71,9 @@ import org.xml.sax.SAXException;
  * <li><strong><code>assertXMLIdentical</code></strong><br>
  *  assert that two pieces of XML markup are <i>identical</i>. In most cases
  *  this assertion is too strong and <code>assertXMLEqual</code> is sufficient</li>
- * <li><strong><code>assertXpathExists</code></strong><br> 
+ * <li><strong><code>assertXpathExists</code></strong><br>
  * assert that an XPath expression matches at least one node</li>
- * <li><strong><code>assertXpathNotExists</code></strong><br> 
+ * <li><strong><code>assertXpathNotExists</code></strong><br>
  * assert that an XPath expression does not match any nodes</li>
  * <li><strong><code>assertXpathsEqual</code></strong><br>
  *  assert that the nodes obtained by executing two Xpaths
@@ -96,14 +96,14 @@ import org.xml.sax.SAXException;
  * <li><strong><code>assertNodeTestPasses</code></strong><br>
  *  assert that a piece of XML markup passes a {@link NodeTest NodeTest}</li>
  * </ul>
- * All underlying similarity and difference testing is done using 
+ * All underlying similarity and difference testing is done using
  * {@link Diff Diff} instances which can be instantiated and evaluated
  * independently of this class.
  * @see Diff#similar()
  * @see Diff#identical()
  */
 public class XMLAssert extends Assert implements XSLTConstants {
-    
+
     protected XMLAssert(){
         super();
     }
@@ -116,7 +116,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
     public static void assertXMLEqual(Diff diff, boolean assertion) {
         assertXMLEqual(null, diff, assertion);
     }
-    
+
     /**
      * Assert that the result of an XML comparison is or is not similar.
      * @param msg additional message to display if assertion fails
@@ -124,7 +124,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * @param assertion true if asserting that result is similar
      */
     public static void assertXMLEqual(String msg, Diff diff,
-                                      boolean assertion) {       
+                                      boolean assertion) {
         if (assertion != diff.similar()) {
             fail(getFailMessage(msg, diff));
         }
@@ -163,8 +163,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * Assert that two XML documents are similar
      * @param control XML to be compared against
      * @param test XML to be tested
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXMLEqual(InputSource control, InputSource test)
         throws SAXException, IOException {
@@ -175,8 +175,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * Assert that two XML documents are similar
      * @param control XML to be compared against
      * @param test XML to be tested
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXMLEqual(String control, String test)
         throws SAXException, IOException {
@@ -196,8 +196,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * Assert that two XML documents are similar
      * @param control XML to be compared against
      * @param test XML to be tested
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXMLEqual(Reader control, Reader test)
         throws SAXException, IOException {
@@ -209,8 +209,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * @param err Message to be displayed on assertion failure
      * @param control XML to be compared against
      * @param test XML to be tested
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXMLEqual(String err, InputSource control,
                                       InputSource test)
@@ -224,8 +224,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * @param err Message to be displayed on assertion failure
      * @param control XML to be compared against
      * @param test XML to be tested
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXMLEqual(String err, String control, String test)
         throws SAXException, IOException {
@@ -250,8 +250,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * @param err Message to be displayed on assertion failure
      * @param control XML to be compared against
      * @param test XML to be tested
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXMLEqual(String err, Reader control, Reader test)
         throws SAXException, IOException {
@@ -263,8 +263,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * Assert that two XML documents are NOT similar
      * @param control XML to be compared against
      * @param test XML to be tested
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXMLNotEqual(InputSource control, InputSource test)
         throws SAXException, IOException {
@@ -275,8 +275,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * Assert that two XML documents are NOT similar
      * @param control XML to be compared against
      * @param test XML to be tested
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXMLNotEqual(String control, String test)
         throws SAXException, IOException {
@@ -296,8 +296,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * Assert that two XML documents are NOT similar
      * @param control XML to be compared against
      * @param test XML to be tested
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXMLNotEqual(Reader control, Reader test)
         throws SAXException, IOException {
@@ -309,8 +309,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * @param err Message to be displayed on assertion failure
      * @param control XML to be compared against
      * @param test XML to be tested
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXMLNotEqual(String err, InputSource control,
                                          InputSource test)
@@ -324,8 +324,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * @param err Message to be displayed on assertion failure
      * @param control XML to be compared against
      * @param test XML to be tested
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXMLNotEqual(String err, String control, String test)
         throws SAXException, IOException {
@@ -350,8 +350,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * @param err Message to be displayed on assertion failure
      * @param control XML to be compared against
      * @param test XML to be tested
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXMLNotEqual(String err, Reader control, Reader test)
         throws SAXException, IOException {
@@ -361,10 +361,11 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in the same document are equal
-     * @param controlXpath
-     * @param testXpath
-     * @param document
+     * @param controlXpath XPath for expected value
+     * @param testXpath XPath for actual value
+     * @param document document to apply XPaths to
      * @see XpathEngine
+     * @throws XpathException if XPath construction fails
      */
     public static void assertXpathsEqual(String controlXpath, String testXpath,
                                          Document document)
@@ -374,10 +375,13 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in the same document are equal
-     * @param controlXpath
-     * @param testXpath
-     * @param document
+     * @param controlXpath XPath for expected value
+     * @param testXpath XPath for actual value
+     * @param document document to apply XPaths to
      * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathsEqual(String controlXpath, String testXpath,
                                          InputSource document)
@@ -389,11 +393,13 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the node lists of two Xpaths in the same XML string are
      * equal
-     * @param controlXpath
-     * @param testXpath
-     * @param inXMLString
-     * @throws SAXException
-     * @throws IOException
+     * @param controlXpath XPath for expected value
+     * @param testXpath XPath for actual value
+     * @param inXMLString document to apply XPaths to
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathsEqual(String controlXpath, String testXpath,
                                          String inXMLString)
@@ -404,11 +410,14 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two documents are equal
-     * @param controlXpath
-     * @param testXpath
-     * @param controlDocument
-     * @param testDocument
+     * @param controlXpath XPath for expected value
+     * @param controlDocument document for expected value
+     * @param testXpath XPath for actual value
+     * @param testDocument document for actual value
      * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathsEqual(String controlXpath,
                                          InputSource controlDocument,
@@ -423,12 +432,14 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two XML strings are equal
-     * @param controlXpath
-     * @param inControlXMLString
-     * @param testXpath
-     * @param inTestXMLString
-     * @throws SAXException
-     * @throws IOException
+     * @param controlXpath XPath for expected value
+     * @param inControlXMLString document for expected value
+     * @param testXpath XPath for actual value
+     * @param inTestXMLString document for actual value
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathsEqual(String controlXpath,
                                          String inControlXMLString,
@@ -443,11 +454,12 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two documents are equal
-     * @param controlXpath
-     * @param testXpath
-     * @param controlDocument
-     * @param testDocument
+     * @param controlXpath XPath for expected value
+     * @param controlDocument document for expected value
+     * @param testXpath XPath for actual value
+     * @param testDocument document for actual value
      * @see XpathEngine
+     * @throws XpathException if XPath construction fails
      */
     public static void assertXpathsEqual(String controlXpath,
                                          Document controlDocument,
@@ -460,10 +472,11 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in the same document are NOT equal
-     * @param controlXpath
-     * @param testXpath
-     * @param document
+     * @param controlXpath XPath for not-expected value
+     * @param testXpath XPath for actual value
+     * @param document document to apply XPaths to
      * @see XpathEngine
+     * @throws XpathException if XPath construction fails
      */
     public static void assertXpathsNotEqual(String controlXpath,
                                             String testXpath,
@@ -474,10 +487,13 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in the same document are NOT equal
-     * @param controlXpath
-     * @param testXpath
-     * @param document
+     * @param controlXpath XPath for not-expected value
+     * @param testXpath XPath for actual value
+     * @param document document to apply XPaths to
      * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathsNotEqual(String controlXpath,
                                             String testXpath,
@@ -490,11 +506,13 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the node lists of two Xpaths in the same XML string are NOT
      * equal
-     * @param controlXpath
-     * @param testXpath
-     * @param inXMLString
-     * @throws SAXException
-     * @throws IOException
+     * @param controlXpath XPath for not-expected value
+     * @param testXpath XPath for actual value
+     * @param inXMLString document to apply XPaths to
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathsNotEqual(String controlXpath,
                                             String testXpath,
@@ -506,12 +524,14 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two XML strings are NOT equal
-     * @param controlXpath
-     * @param inControlXMLString
-     * @param testXpath
-     * @param inTestXMLString
-     * @throws SAXException
-     * @throws IOException
+     * @param controlXpath XPath for not-expected value
+     * @param inControlXMLString document for not-expected value
+     * @param testXpath XPath for actual value
+     * @param inTestXMLString document for actual value
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathsNotEqual(String controlXpath,
                                             String inControlXMLString,
@@ -527,12 +547,14 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the node lists of two Xpaths in two XML strings are
      * NOT equal
-     * @param controlXpath
-     * @param controlDocument
-     * @param testXpath
-     * @param testDocument
-     * @throws SAXException
-     * @throws IOException
+     * @param controlXpath XPath for not-expected value
+     * @param controlDocument document for not-expected value
+     * @param testXpath XPath for actual value
+     * @param testDocument document for actual value
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathsNotEqual(String controlXpath,
                                             InputSource controlDocument,
@@ -547,11 +569,12 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the node lists of two Xpaths in two documents are NOT equal
-     * @param controlXpath
-     * @param testXpath
-     * @param controlDocument
-     * @param testDocument
+     * @param controlXpath XPath for not-expected value
+     * @param controlDocument document for not-expected value
+     * @param testXpath XPath for actual value
+     * @param testDocument document for actual value
      * @see XpathEngine
+     * @throws XpathException if XPath construction fails
      */
     public static void assertXpathsNotEqual(String controlXpath,
                                             Document controlDocument,
@@ -565,12 +588,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the node lists of two Xpaths in two documents are
      * equal or not.
-     * @param controlXpath
-     * @param testXpath
-     * @param controlDocument
-     * @param testDocument
      * @param equal whether the values should be equal.
-     * @see XpathEngine
      */
     private static void assertXpathEquality(String controlXpath,
                                             Document controlDocument,
@@ -590,10 +608,11 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the evaluation of two Xpaths in the same document are equal
-     * @param controlXpath
-     * @param testXpath
-     * @param document
+     * @param controlXpath XPath for expected value
+     * @param testXpath XPath for actual value
+     * @param document document to apply XPaths to
      * @see XpathEngine
+     * @throws XpathException if XPath construction fails
      */
     public static void assertXpathValuesEqual(String controlXpath,
                                               String testXpath,
@@ -605,11 +624,13 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same XML string are
      *  equal
-     * @param controlXpath
-     * @param testXpath
-     * @param document
-     * @throws SAXException
-     * @throws IOException
+     * @param controlXpath XPath for expected value
+     * @param testXpath XPath for actual value
+     * @param document document to apply XPaths to
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathValuesEqual(String controlXpath,
                                               String testXpath,
@@ -622,11 +643,13 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same XML string are
      *  equal
-     * @param controlXpath
-     * @param testXpath
-     * @param inXMLString
-     * @throws SAXException
-     * @throws IOException
+     * @param controlXpath XPath for expected value
+     * @param testXpath XPath for actual value
+     * @param inXMLString document to apply XPaths to
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathValuesEqual(String controlXpath,
                                               String testXpath,
@@ -639,12 +662,14 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the evaluation of two Xpaths in two XML strings are equal
-     * @param controlXpath
-     * @param control
-     * @param testXpath
-     * @param test
-     * @throws SAXException
-     * @throws IOException
+     * @param controlXpath XPath for expected value
+     * @param control document for expected value
+     * @param testXpath XPath for actual value
+     * @param test document for actual value
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathValuesEqual(String controlXpath,
                                               InputSource control,
@@ -659,12 +684,14 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the evaluation of two Xpaths in two XML strings are equal
-     * @param controlXpath
-     * @param inControlXMLString
-     * @param testXpath
-     * @param inTestXMLString
-     * @throws SAXException
-     * @throws IOException
+     * @param controlXpath XPath for expected value
+     * @param inControlXMLString document for expected value
+     * @param testXpath XPath for actual value
+     * @param inTestXMLString document for actual value
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathValuesEqual(String controlXpath,
                                               String inControlXMLString,
@@ -680,11 +707,12 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that the evaluation of two Xpaths in two documents are equal
-     * @param controlXpath
-     * @param testXpath
-     * @param controlDocument
-     * @param testDocument
+     * @param controlXpath XPath for expected value
+     * @param controlDocument document for expected value
+     * @param testXpath XPath for actual value
+     * @param testDocument document for actual value
      * @see XpathEngine
+     * @throws XpathException if XPath construction fails
      */
     public static void assertXpathValuesEqual(String controlXpath,
                                               Document controlDocument,
@@ -699,11 +727,13 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same XML string are
      * NOT equal
-     * @param controlXpath
-     * @param testXpath
-     * @param control
-     * @throws SAXException
-     * @throws IOException
+     * @param controlXpath XPath for not-expected value
+     * @param control document to apply XPaths to
+     * @param testXpath XPath for actual value
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathValuesNotEqual(String controlXpath,
                                                  String testXpath,
@@ -716,11 +746,13 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same XML string are
      * NOT equal
-     * @param controlXpath
-     * @param testXpath
-     * @param inXMLString
-     * @throws SAXException
-     * @throws IOException
+     * @param controlXpath XPath for not-expected value
+     * @param inXMLString document to apply XPaths to
+     * @param testXpath XPath for actual value
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathValuesNotEqual(String controlXpath,
                                                  String testXpath,
@@ -734,9 +766,11 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in the same document are
      * NOT equal
-     * @param controlXpath
-     * @param testXpath
-     * @param document
+     * @param controlXpath XPath for not-expected value
+     * @param document document to apply XPaths to
+     * @param testXpath XPath for actual value
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
      */
     public static void assertXpathValuesNotEqual(String controlXpath,
                                                  String testXpath,
@@ -748,12 +782,14 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in two XML strings are
      * NOT equal
-     * @param controlXpath
-     * @param control
-     * @param testXpath
-     * @param test
-     * @throws SAXException
-     * @throws IOException
+     * @param controlXpath XPath for not-expected value
+     * @param control document for not-expected value
+     * @param testXpath XPath for actual value
+     * @param test document for actual value
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathValuesNotEqual(String controlXpath,
                                                  InputSource control,
@@ -769,12 +805,14 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in two XML strings are
      * NOT equal
-     * @param controlXpath
-     * @param inControlXMLString
-     * @param testXpath
-     * @param inTestXMLString
-     * @throws SAXException
-     * @throws IOException
+     * @param controlXpath XPath for not-expected value
+     * @param inControlXMLString document for not-expected value
+     * @param testXpath XPath for actual value
+     * @param inTestXMLString document for actual value
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      */
     public static void assertXpathValuesNotEqual(String controlXpath,
                                                  String inControlXMLString,
@@ -791,10 +829,12 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that the evaluation of two Xpaths in two documents are
      * NOT equal
-     * @param controlXpath
-     * @param testXpath
-     * @param controlDocument
-     * @param testDocument
+     * @param controlXpath XPath for not-expected value
+     * @param controlDocument document for not-expected value
+     * @param testXpath XPath for actual value
+     * @param testDocument document for actual value
+     * @see XpathEngine
+     * @throws XpathException if XPath construction fails
      */
     public static void assertXpathValuesNotEqual(String controlXpath,
                                                  Document controlDocument,
@@ -816,11 +856,12 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert the value of an Xpath expression in an XML document.
-     * @param expectedValue
-     * @param xpathExpression
-     * @param control
-     * @throws SAXException
-     * @throws IOException
+     * @param expectedValue the expected value
+     * @param xpathExpression XPath for actual value
+     * @param control document to apply XPaths to
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
     public static void assertXpathEvaluatesTo(String expectedValue,
@@ -834,11 +875,12 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert the value of an Xpath expression in an XML String
-     * @param expectedValue
-     * @param xpathExpression
-     * @param inXMLString
-     * @throws SAXException
-     * @throws IOException
+     * @param expectedValue the expected value
+     * @param xpathExpression XPath for actual value
+     * @param inXMLString document to apply XPaths to
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
     public static void assertXpathEvaluatesTo(String expectedValue,
@@ -852,9 +894,10 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert the value of an Xpath expression in an DOM Document
-     * @param expectedValue
-     * @param xpathExpression
-     * @param inDocument
+     * @param expectedValue the expected value
+     * @param xpathExpression XPath for actual value
+     * @param inDocument document to apply XPaths to
+     * @throws XpathException if XPath construction fails
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
     public static void assertXpathEvaluatesTo(String expectedValue,
@@ -868,11 +911,12 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert the value of an Xpath expression in an XML document.
-     * @param expectedValue
-     * @param xpathExpression
-     * @param control
-     * @throws SAXException
-     * @throws IOException
+     * @param expectedValue the expected value
+     * @param xpathExpression XPath for actual value
+     * @param control document to apply XPaths to
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
     public static void assertXpathEvaluatesTo(QualifiedName expectedValue,
@@ -886,11 +930,12 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert the value of an Xpath expression in an XML String
-     * @param expectedValue
-     * @param xpathExpression
-     * @param inXMLString
-     * @throws SAXException
-     * @throws IOException
+     * @param expectedValue the expected value
+     * @param xpathExpression XPath for actual value
+     * @param inXMLString document to apply XPaths to
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
     public static void assertXpathEvaluatesTo(QualifiedName expectedValue,
@@ -904,9 +949,10 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert the value of an Xpath expression in an DOM Document
-     * @param expectedValue
-     * @param xpathExpression
-     * @param inDocument
+     * @param expectedValue the expected value
+     * @param xpathExpression XPath for actual value
+     * @param inDocument document to apply XPaths to
+     * @throws XpathException if XPath construction fails
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
     public static void assertXpathEvaluatesTo(QualifiedName expectedValue,
@@ -929,95 +975,109 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that a specific XPath exists in some given XML
-     * @param xPathExpression
-     * @param control
+     * @param xPathExpression XPath for actual value
+     * @param control document to apply XPaths to
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
-    public static void assertXpathExists(String xPathExpression, 
+    public static void assertXpathExists(String xPathExpression,
                                          InputSource control)
         throws IOException, SAXException, XpathException {
         Document inDocument = XMLUnit.buildControlDocument(control);
         assertXpathExists(xPathExpression, inDocument);
     }
-    
+
     /**
      * Assert that a specific XPath exists in some given XML
-     * @param xPathExpression
-     * @param inXMLString
+     * @param xPathExpression XPath for actual value
+     * @param inXMLString document to apply XPaths to
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
-    public static void assertXpathExists(String xPathExpression, 
+    public static void assertXpathExists(String xPathExpression,
                                          String inXMLString)
         throws IOException, SAXException, XpathException {
         Document inDocument = XMLUnit.buildControlDocument(inXMLString);
         assertXpathExists(xPathExpression, inDocument);
     }
-    
+
     /**
      * Assert that a specific XPath exists in some given XML
-     * @param xPathExpression
-     * @param inDocument
+     * @param xPathExpression XPath for actual value
+     * @param inDocument document to apply XPaths to
+     * @throws XpathException if XPath construction fails
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
-    public static void assertXpathExists(String xPathExpression, 
+    public static void assertXpathExists(String xPathExpression,
                                          Document inDocument)
         throws XpathException {
         XpathEngine simpleXpathEngine = XMLUnit.newXpathEngine();
         NodeList nodeList = simpleXpathEngine.getMatchingNodes(
                                                                xPathExpression, inDocument);
         int matches = nodeList.getLength();
-        assertTrue("Expecting to find matches for Xpath " + 
+        assertTrue("Expecting to find matches for Xpath " +
                    xPathExpression, matches > 0);
     }
 
     /**
      * Assert that a specific XPath does NOT exist in some given XML
-     * @param xPathExpression
-     * @param control
+     * @param xPathExpression XPath for actual value
+     * @param control document to apply XPaths to
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
-    public static void assertXpathNotExists(String xPathExpression, 
+    public static void assertXpathNotExists(String xPathExpression,
                                             InputSource control)
         throws IOException, SAXException, XpathException {
         Document inDocument = XMLUnit.buildControlDocument(control);
         assertXpathNotExists(xPathExpression, inDocument);
     }
-    
+
     /**
      * Assert that a specific XPath does NOT exist in some given XML
-     * @param xPathExpression
-     * @param inXMLString
+     * @param xPathExpression XPath for actual value
+     * @param inXMLString document to apply XPaths to
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
-    public static void assertXpathNotExists(String xPathExpression, 
+    public static void assertXpathNotExists(String xPathExpression,
                                             String inXMLString)
         throws IOException, SAXException, XpathException {
         Document inDocument = XMLUnit.buildControlDocument(inXMLString);
         assertXpathNotExists(xPathExpression, inDocument);
     }
-    
+
     /**
      * Assert that a specific XPath does NOT exist in some given XML
-     * @param xPathExpression
-     * @param inDocument
+     * @param xPathExpression XPath for actual value
+     * @param inDocument document to apply XPaths to
+     * @throws XpathException if XPath construction fails
      * @see XpathEngine which provides the underlying evaluation mechanism
      */
-    public static void assertXpathNotExists(String xPathExpression, 
+    public static void assertXpathNotExists(String xPathExpression,
                                             Document inDocument)
         throws XpathException {
         XpathEngine simpleXpathEngine = XMLUnit.newXpathEngine();
         NodeList nodeList = simpleXpathEngine.getMatchingNodes(
                                                                xPathExpression, inDocument);
         int matches = nodeList.getLength();
-        assertEquals("Should be zero matches for Xpath " + 
+        assertEquals("Should be zero matches for Xpath " +
                      xPathExpression, 0, matches);
     }
-    
+
     /**
      * Assert that an InputSource containing XML contains valid XML:
      * the document must contain a DOCTYPE declaration to be validated
-     * @param xml
-     * @throws SAXException
+     * @param xml the document to validate
+     * @throws SAXException if the parser says so
      * @throws ConfigurationException if validation could not be turned on
      * @see Validator
      */
@@ -1029,8 +1089,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Assert that a String containing XML contains valid XML: the String must
      * contain a DOCTYPE declaration to be validated
-     * @param xmlString
-     * @throws SAXException
+     * @param xmlString the document to validate
+     * @throws SAXException if the parser says so
      * @throws ConfigurationException if validation could not be turned on
      * @see Validator
      */
@@ -1043,9 +1103,9 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * Assert that an InputSource containing XML contains valid XML:
      * the document must contain a DOCTYPE to be validated, but the
      * validation will use the systemId to obtain the DTD
-     * @param xml
-     * @param systemId
-     * @throws SAXException
+     * @param xml the document to validate
+     * @param systemId used to obtain the DTD
+     * @throws SAXException if the parser says so
      * @throws ConfigurationException if validation could not be turned on
      * @see Validator
      */
@@ -1058,9 +1118,9 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * Assert that a String containing XML contains valid XML: the String must
      * contain a DOCTYPE to be validated, but the validation will use the
      * systemId to obtain the DTD
-     * @param xmlString
-     * @param systemId
-     * @throws SAXException
+     * @param xmlString the document to validate
+     * @param systemId used to obtain the DTD
+     * @throws SAXException if the parser says so
      * @throws ConfigurationException if validation could not be turned on
      * @see Validator
      */
@@ -1074,10 +1134,10 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * will be given a DOCTYPE to be validated with the name and
      * systemId specified regardless of whether it already contains a
      * doctype declaration.
-     * @param xml
-     * @param systemId
-     * @param doctype
-     * @throws SAXException
+     * @param xml the document to validate
+     * @param systemId used to obtain the DTD
+     * @param doctype DOCTYPE to use during validation
+     * @throws SAXException if the parser says so
      * @throws ConfigurationException if validation could not be turned on
      * @see Validator
      */
@@ -1091,10 +1151,10 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * Assert that a String containing XML contains valid XML: the String will
      * be given a DOCTYPE to be validated with the name and systemId specified
      * regardless of whether it already contains a doctype declaration.
-     * @param xmlString
-     * @param systemId
-     * @param doctype
-     * @throws SAXException
+     * @param xmlString the document to validate
+     * @param systemId used to obtain the DTD
+     * @param doctype DOCTYPE to use during validation
+     * @throws SAXException if the parser says so
      * @throws ConfigurationException if validation could not be turned on
      * @see Validator
      */
@@ -1105,7 +1165,7 @@ public class XMLAssert extends Assert implements XSLTConstants {
 
     /**
      * Assert that a Validator instance returns <code>isValid() == true</code>
-     * @param validator
+     * @param validator validator to check
      */
     public static void assertXMLValid(Validator validator) {
         assertEquals(validator.toString(), true, validator.isValid());
@@ -1114,12 +1174,12 @@ public class XMLAssert extends Assert implements XSLTConstants {
     /**
      * Execute a <code>NodeTest</code> for a single node type
      * and assert that it passes
-     * @param xml XML to be tested
+     * @param xml the document to validate
      * @param tester The test strategy
      * @param nodeType The node type to be tested: constants defined
      *  in {@link Node org.w3c.dom.Node} e.g. <code>Node.ELEMENT_NODE</code>
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      * @see AbstractNodeTester
      * @see CountingNodeTester
      */
@@ -1137,8 +1197,8 @@ public class XMLAssert extends Assert implements XSLTConstants {
      * @param tester The test strategy
      * @param nodeType The node type to be tested: constants defined
      *  in {@link Node org.w3c.dom.Node} e.g. <code>Node.ELEMENT_NODE</code>
-     * @throws SAXException
-     * @throws IOException
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
      * @see AbstractNodeTester
      * @see CountingNodeTester
      */

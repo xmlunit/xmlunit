@@ -37,6 +37,8 @@ public final class Nodes {
     /**
      * Extracts a Node's name, namespace URI (if any) and prefix as a
      * QName.
+     * @param n the node
+     * @return its QName
      */
     public static QName getQName(Node n) {
         String s = n.getLocalName();
@@ -51,6 +53,7 @@ public final class Nodes {
      * Tries to merge all direct Text and CDATA children of the given
      * Node and concatenates their value.
      *
+     * @param n the node
      * @return an empty string if the Node has no Text or CDATA
      * children.
      */
@@ -69,6 +72,8 @@ public final class Nodes {
 
     /**
      * Obtains an element's attributes as Map.
+     * @param n the node
+     * @return attributes
      */
     public static Map<QName, String> getAttributes(Node n) {
         Map<QName, String> map = new LinkedHashMap<QName, String>();
@@ -88,6 +93,8 @@ public final class Nodes {
      * is similar to the orginal but doesn't contain any empty text or
      * CDATA nodes and where all textual content including attribute
      * values or comments are trimmed.
+     * @param original the original node
+     * @return cloned node without empty text or cdata children
      */
     public static Node stripWhitespace(Node original) {
         Node cloned = original.cloneNode(true);
@@ -105,6 +112,9 @@ public final class Nodes {
      * <p>"normalized" in this context means all whitespace characters
      * are replaced by space characters and consecutive whitespace
      * characaters are collapsed.</p>
+     *
+     * @param original the original node
+     * @return cloned node without empty text or cdata children and where all attributes and texts are normalized
      */
     public static Node normalizeWhitespace(Node original) {
         Node cloned = original.cloneNode(true);
@@ -121,6 +131,8 @@ public final class Nodes {
      * <p>This doesn't have any effect if applied to a text or CDATA
      * node itself.</p>
      *
+     * @param original the original node
+     * @return cloned node without whitespace-only text or cdata children
      * @since XMLUnit 2.6.0
      */
     public static Node stripElementContentWhitespace(Node original) {
@@ -133,6 +145,7 @@ public final class Nodes {
     /**
      * Trims textual content of this node, removes empty text and
      * CDATA children, recurses into its child nodes.
+     * @param n the node
      * @param normalize whether to normalize whitespace as well
      */
     private static void handleWsRec(Node n, boolean normalize) {

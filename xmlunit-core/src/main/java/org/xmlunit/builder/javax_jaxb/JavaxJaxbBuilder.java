@@ -43,6 +43,7 @@ public class JavaxJaxbBuilder extends JaxbBuilder {
 
     /**
      * Creates a builder based on the given object.
+     * @param object the object to build a source of
      */
     protected JavaxJaxbBuilder(final Object object) {
         super(object);

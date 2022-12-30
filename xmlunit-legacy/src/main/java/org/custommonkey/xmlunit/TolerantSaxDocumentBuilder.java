@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015-2016 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015-2016,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,7 @@ public class TolerantSaxDocumentBuilder
      * Constructor for specific JAXP parser
      * @param documentBuilder the JAXP parser to use to construct an empty
      *  DOM document that will be built up with SAX calls
-     * @throws ParserConfigurationException
+     * @throws ParserConfigurationException if JAXP feels like it
      */
     public TolerantSaxDocumentBuilder(DocumentBuilder documentBuilder)
         throws ParserConfigurationException {
@@ -98,8 +98,8 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * ContentHandler method
-     * @throws SAXException
      */
+    @Override
     public void startDocument() throws SAXException {
         traceBuilder.delete(0, traceBuilder.length());
         trace("startDocument");
@@ -109,8 +109,8 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * ContentHandler method
-     * @throws SAXException
      */
+    @Override
     public void endDocument() throws SAXException {
         trace("endDocument");
     }
@@ -118,6 +118,7 @@ public class TolerantSaxDocumentBuilder
     /**
      * ContentHandler method.
      */
+    @Override
     public void characters(char[] data, int start, int length) {
         if (length >= 0)  {
             String characterData = new String(data, start, length);
@@ -135,8 +136,8 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * ContentHandler method
-     * @throws SAXException
      */
+    @Override
     public void startElement(String namespaceURI, String localName,
                              String qName, Attributes atts) throws SAXException {
         trace("startElement:" + localName + "~" + qName);
@@ -147,8 +148,8 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * ContentHandler method
-     * @throws SAXException
      */
+    @Override
     public void endElement(String namespaceURI, String localName,
                            String qName) throws SAXException {
         trace("endElement:" + localName + "~" + qName);
@@ -191,16 +192,16 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * Unhandled ContentHandler method
-     * @throws SAXException
      */
+    @Override
     public void endPrefixMapping(String prefix) throws SAXException {
         unhandled("endPrefixMapping");
     }
 
     /**
      * Unhandled ContentHandler method
-     * @throws SAXException
      */
+    @Override
     public void ignorableWhitespace (char[] ch, int start, int length)
         throws SAXException {
         unhandled("ignorableWhitespace");
@@ -208,8 +209,8 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * ContentHandler method
-     * @throws SAXException
      */
+    @Override
     public void processingInstruction(String target, String data)
         throws SAXException {
         trace("processingInstruction");
@@ -221,22 +222,23 @@ public class TolerantSaxDocumentBuilder
     /**
      * Unhandled ContentHandler method
      */
+    @Override
     public void setDocumentLocator (Locator locator) {
         unhandled("setDocumentLocator");
     }
 
     /**
      * Unhandled ContentHandler method
-     * @throws SAXException
      */
+    @Override
     public void skippedEntity (String name) throws SAXException {
         unhandled("skippedEntity");
     }
 
     /**
      * Unhandled ContentHandler method
-     * @throws SAXException
      */
+    @Override
     public void startPrefixMapping (String prefix, String uri)
         throws SAXException {
         unhandled("startPrefixMapping");
@@ -245,8 +247,8 @@ public class TolerantSaxDocumentBuilder
     /**
      * Unhandled LexicalHandler method.
      * DOM currently doesn't allow DTD to be retrofitted onto a Document.
-     * @throws SAXException
      */
+    @Override
     public void startDTD (String name, String publicId,
                           String systemId) throws SAXException {
         unhandled("startDTD");
@@ -254,8 +256,8 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * Unhandled LexicalHandler method
-     * @throws SAXException
      */
+    @Override
     public void endDTD ()
         throws SAXException {
         unhandled("endDTD");
@@ -263,8 +265,8 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * Unhandled LexicalHandler method
-     * @throws SAXException
      */
+    @Override
     public void startEntity (String name)
         throws SAXException {
         unhandled("startEntity");
@@ -272,8 +274,8 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * Unhandled LexicalHandler method
-     * @throws SAXException
      */
+    @Override
     public void endEntity (String name)
         throws SAXException {
         unhandled("endEntity");
@@ -281,8 +283,8 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * Unhandled LexicalHandler method
-     * @throws SAXException
      */
+    @Override
     public void startCDATA ()
         throws SAXException {
         unhandled("startCDATA");
@@ -290,8 +292,8 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * Unhandled LexicalHandler method
-     * @throws SAXException
      */
+    @Override
     public void endCDATA ()
         throws SAXException {
         unhandled("endCDATA");
@@ -299,8 +301,8 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * LexicalHandler method
-     * @throws SAXException
      */
+    @Override
     public void comment(char[] ch, int start, int length)
         throws SAXException     {
         String commentText = new String(ch, start, length);
@@ -311,7 +313,6 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * Log an unhandled ContentHandler or LexicalHandler method
-     * @param method
      */
     private void unhandled(String method) {
         trace("Unhandled callback: " + method);
@@ -319,7 +320,6 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * Log a warning about badly formed markup
-     * @param msg
      */
     private void warn(String msg) {
         trace("WARNING: " + msg);
@@ -328,7 +328,6 @@ public class TolerantSaxDocumentBuilder
     /**
      * Log a handled ContentHandler or LexicalHandler method
      * for tracing / debug purposes
-     * @param method
      */
     private void trace(String method) {
         traceBuilder.append(method).append('\n');
@@ -336,9 +335,6 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * Create a DOM Element for insertion into the current document
-     * @param namespaceURI
-     * @param qName
-     * @param attributes
      * @return the created Element
      */
     private Element createElement(String namespaceURI, String qName,
@@ -359,7 +355,6 @@ public class TolerantSaxDocumentBuilder
 
     /**
      * Append a node to the current document or the current element in the document
-     * @param appendNode
      */
     private void appendNode(Node appendNode) {
         if (currentElement==null) {
@@ -369,4 +364,3 @@ public class TolerantSaxDocumentBuilder
         }
     }
 }
-

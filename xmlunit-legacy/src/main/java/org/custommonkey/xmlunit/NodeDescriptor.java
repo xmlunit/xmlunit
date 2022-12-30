@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -45,20 +45,23 @@ import org.w3c.dom.ProcessingInstruction;
  * Class for describing Nodes
  */
 public class NodeDescriptor implements XMLConstants {
-    protected static final String DOCUMENT_NODE_DESCRIPTION = "Document Node ";
-        
     /**
-     * Convert a Node into a simple String representation 
+     * Description of the document node itself.
+     */
+    protected static final String DOCUMENT_NODE_DESCRIPTION = "Document Node ";
+
+    /**
+     * Convert a Node into a simple String representation
      * and append to StringBuffer
-     * @param buf
-     * @param nodeDetail
+     * @param buf buffer to append to
+     * @param nodeDetail node detail
      */
     public static void appendNodeDetail(StringBuffer buf, NodeDetail nodeDetail) {
         appendNodeDetail(buf, nodeDetail.getNode(), true);
         buf.append(" at ").append(nodeDetail.getXpathLocation());
     }
-    
-    private static void appendNodeDetail(StringBuffer buf, Node aNode,  
+
+    private static void appendNodeDetail(StringBuffer buf, Node aNode,
                                          boolean notRecursing) {
         if (aNode==null) {
             return;
@@ -103,6 +106,9 @@ public class NodeDescriptor implements XMLConstants {
         }
     }
 
+    /**
+     * @param buf buffer to append to
+     */
     protected static void appendDocumentDetail(StringBuffer buf) {
         buf.append(DOCUMENT_NODE_DESCRIPTION)
             .append(XMLConstants.OPEN_START_NODE)
@@ -110,6 +116,10 @@ public class NodeDescriptor implements XMLConstants {
             .append(XMLConstants.CLOSE_NODE);
     }
 
+    /**
+     * @param buf buffer to append to
+     * @param aNode node containing details
+     */
     protected static void appendDocumentTypeDetail(StringBuffer buf, Node aNode) {
         DocumentType type = (DocumentType) aNode;
         buf.append(XMLConstants.START_DOCTYPE).append(type.getName());
@@ -130,8 +140,11 @@ public class NodeDescriptor implements XMLConstants {
         }
     }
 
-    protected static void appendProcessingInstructionDetail(
-                                                            StringBuffer buf, Node aNode) {
+    /**
+     * @param buf buffer to append to
+     * @param aNode node containing details
+     */
+    protected static void appendProcessingInstructionDetail(StringBuffer buf, Node aNode) {
         ProcessingInstruction instr = (ProcessingInstruction) aNode;
         buf.append(XMLConstants.START_PROCESSING_INSTRUCTION)
             .append(instr.getTarget())
@@ -139,18 +152,30 @@ public class NodeDescriptor implements XMLConstants {
             .append(XMLConstants.END_PROCESSING_INSTRUCTION);
     }
 
+    /**
+     * @param buf buffer to append to
+     * @param aNode node containing details
+     */
     protected static void appendCommentDetail(StringBuffer buf, Node aNode) {
         buf.append(XMLConstants.START_COMMENT)
             .append(aNode.getNodeValue())
             .append(XMLConstants.END_COMMENT);
     }
 
+    /**
+     * @param buf buffer to append to
+     * @param aNode node containing details
+     */
     protected static void appendCdataSectionDetail(StringBuffer buf, Node aNode) {
         buf.append(XMLConstants.START_CDATA)
             .append(aNode.getNodeValue())
             .append(XMLConstants.END_CDATA);
     }
 
+    /**
+     * @param buf buffer to append to
+     * @param aNode node containing details
+     */
     protected static void appendTextDetail(StringBuffer buf, Node aNode) {
         appendNodeDetail(buf, aNode.getParentNode(), false);
         buf.append(" ...").append(XMLConstants.CLOSE_NODE)
@@ -159,6 +184,11 @@ public class NodeDescriptor implements XMLConstants {
         appendNodeDetail(buf, aNode.getParentNode(), false);
     }
 
+    /**
+     * @param buf buffer to append to
+     * @param aNode node containing details
+     * @param notRecursing whether the elements children will not be visited
+     */
     protected static void appendElementDetail(StringBuffer buf, Node aNode,
                                               boolean notRecursing) {
         buf.append(aNode.getNodeName());
@@ -167,7 +197,11 @@ public class NodeDescriptor implements XMLConstants {
         }
     }
 
-    protected static void appendAttributeDetail(StringBuffer buf, Node aNode) {         
+    /**
+     * @param buf buffer to append to
+     * @param aNode node containing details
+     */
+    protected static void appendAttributeDetail(StringBuffer buf, Node aNode) {
         appendNodeDetail(buf,
                          ((Attr)aNode).getOwnerElement(), false);
         buf.append(' ')

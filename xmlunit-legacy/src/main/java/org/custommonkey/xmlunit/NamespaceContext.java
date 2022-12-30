@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -52,12 +52,14 @@ public interface NamespaceContext {
      * doesn't have to implement any special handling for predefined
      * prefix values.</p>
      *
+     * @param prefix prefix to look up
      * @return null if the prefix is unknown.
      */
     String getNamespaceURI(String prefix);
 
     /**
      * Get all prefixes of this context.
+     * @return all prefixes of this context
      */
     Iterator getPrefixes();
 }

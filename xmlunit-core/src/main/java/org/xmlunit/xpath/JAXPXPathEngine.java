@@ -32,6 +32,10 @@ import org.w3c.dom.NodeList;
 public class JAXPXPathEngine implements XPathEngine {
     private final XPath xpath;
 
+    /**
+     * Create an XPathEngine that uses a custom XPathFactory.
+     * @param fac the factory to use
+     */
     public JAXPXPathEngine(XPathFactory fac) {
         try {
             xpath = fac.newXPath();
@@ -51,6 +55,7 @@ public class JAXPXPathEngine implements XPathEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Iterable<Node> selectNodes(String xPath, Source s) {
         try {
             return new IterableNodeList(
@@ -65,6 +70,7 @@ public class JAXPXPathEngine implements XPathEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String evaluate(String xPath, Source s) {
         try {
             return xpath.evaluate(xPath, Convert.toInputSource(s));
@@ -76,6 +82,7 @@ public class JAXPXPathEngine implements XPathEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Iterable<Node> selectNodes(String xPath, Node n) {
         try {
             return new IterableNodeList(
@@ -88,6 +95,7 @@ public class JAXPXPathEngine implements XPathEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String evaluate(String xPath, Node n) {
         try {
             return xpath.evaluate(xPath, n);
@@ -99,6 +107,7 @@ public class JAXPXPathEngine implements XPathEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setNamespaceContext(Map<String, String> prefix2Uri) {
         xpath.setNamespaceContext(Convert.toNamespaceContext(prefix2Uri));
     }

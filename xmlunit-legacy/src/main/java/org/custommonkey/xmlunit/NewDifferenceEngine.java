@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2010,2013,2015-2016,2018 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2010,2013,2015-2016,2018,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -131,6 +131,7 @@ public class NewDifferenceEngine
      * @param matchTracker the instance that is notified on each
      * successful match.  May be null.
      */
+    @Override
     public void setMatchTracker(MatchTracker matchTracker) {
         this.matchTracker = matchTracker;
     }
@@ -143,9 +144,10 @@ public class NewDifferenceEngine
      * during node comparison testing
      * @param elementQualifier Used to determine which elements qualify for
      * comparison e.g. when a node has repeated child elements that may occur
-     * in any sequence and that sequence is not considered important. 
+     * in any sequence and that sequence is not considered important.
      */
-    public void compare(Node control, Node test, DifferenceListener listener, 
+    @Override
+    public void compare(Node control, Node test, DifferenceListener listener,
                         ElementQualifier elementQualifier) {
         DOMDifferenceEngine engine = new DOMDifferenceEngine();
         engine.setNodeFilter(NodeFilters.AcceptAll);
@@ -210,6 +212,11 @@ public class NewDifferenceEngine
         return toDifference(d.getComparison());
     }
 
+    /**
+     * Maps a Comparison to Differences.
+     * @param comp comparison to map
+     * @return Differences
+     */
     public static Iterable<Difference> toDifference(Comparison comp) {
         List<Difference> diffs = new LinkedList<Difference>();
         Difference proto = null;
@@ -310,6 +317,11 @@ public class NewDifferenceEngine
         return diffs;
     }
 
+    /**
+     * Maps node details.
+     * @param detail XMLUnit 2.x detail
+     * @return XMLUnit 1.x detail
+     */
     public static NodeDetail toNodeDetail(Comparison.Detail detail) {
         String value = String.valueOf(detail.getValue());
         if (detail.getValue() instanceof Node) {
@@ -319,14 +331,21 @@ public class NewDifferenceEngine
                               detail.getXPath());
     }
 
+    /**
+     * Adapts XMLUnit 1.x MatchTracker to XMLUnit 2.x ComparisonListener.
+     */
     public static class MatchTracker2ComparisonListener
         implements ComparisonListener {
         private final MatchTracker mt;
 
+        /**
+         * @param m MatchTracker to adapt
+         */
         public MatchTracker2ComparisonListener(MatchTracker m) {
             mt = m;
         }
 
+        @Override
         public void comparisonPerformed(Comparison comparison,
                                         ComparisonResult outcome) {
             for (Difference diff : toDifference(comparison)) {
@@ -335,13 +354,20 @@ public class NewDifferenceEngine
         }
     }
 
+    /**
+     * Adapts XMLUnit 1.x ComparisonController to XMLUnit 2.x ComparisonController.
+     */
     public static class ComparisonController2ComparisonController
         implements org.xmlunit.diff.ComparisonController {
         private final ComparisonController cc;
+        /**
+         * @param c ComparisonController to adapt.
+         */
         public ComparisonController2ComparisonController(ComparisonController c) {
             cc = c;
         }
 
+        @Override
         public boolean stopDiffing(org.xmlunit.diff.Difference difference) {
             for (Difference diff : toDifference(difference)) {
                 if (cc.haltComparison(diff)) {
@@ -352,14 +378,21 @@ public class NewDifferenceEngine
         }
     }
 
+    /**
+     * Adapts XMLUnit 1.x ComparisonQualifider to XMLUnit 2.x ElementSelector.
+     */
     public static class ElementQualifier2ElementSelector
         implements ElementSelector {
         private final ElementQualifier eq;
 
+        /**
+         * @param eq ElementQualifier to adapt
+         */
         public ElementQualifier2ElementSelector(ElementQualifier eq) {
             this.eq = eq;
         }
 
+        @Override
         public boolean canBeCompared(Element controlElement,
                                      Element testElement) {
             return eq.qualifyForComparison(controlElement, testElement);
@@ -414,14 +447,21 @@ public class NewDifferenceEngine
         }
     }
 
+    /**
+     * Adapts XMLUnit 1.x DifferenceListener to XMLUnit 2.x DifferenceEvaluator.
+     */
     public static class DifferenceListener2DifferenceEvaluator
         implements DifferenceEvaluator {
         private final DifferenceListener dl;
 
+        /**
+         * @param dl DifferenceListener to adapt
+         */
         public DifferenceListener2DifferenceEvaluator(DifferenceListener dl) {
             this.dl = dl;
         }
 
+        @Override
         public ComparisonResult evaluate(Comparison comparison,
                                          ComparisonResult outcome) {
             if (outcome == ComparisonResult.EQUAL) {
@@ -511,7 +551,7 @@ public class NewDifferenceEngine
             match(Iterable<Node> controlNodes,
                   Iterable<Node> testNodes) {
             final Map<Node, Node> map = new HashMap<Node, Node>();
-            for (Map.Entry<Node, Node> e 
+            for (Map.Entry<Node, Node> e
                      : nestedMatcher.match(controlNodes, testNodes)) {
                 map.put(e.getKey(), e.getValue());
             }
