@@ -104,6 +104,9 @@ import org.xml.sax.SAXException;
  */
 public class XMLAssert extends Assert implements XSLTConstants {
 
+    /**
+     * Empty constructor.
+     */
     protected XMLAssert(){
         super();
     }

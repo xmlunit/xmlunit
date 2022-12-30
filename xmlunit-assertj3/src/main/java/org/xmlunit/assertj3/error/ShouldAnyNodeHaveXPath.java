@@ -21,6 +21,10 @@ import org.assertj.core.error.ErrorMessageFactory;
  */
 public class ShouldAnyNodeHaveXPath extends BasicErrorMessageFactory {
 
+    /**
+     * @param xPath XPath expression
+     * @return ErrorMessageFactory when no node has the given XPath
+     */
     public static ErrorMessageFactory shouldAnyNodeHaveXPath(String xPath) {
         return new ShouldAnyNodeHaveXPath(xPath);
     }

@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2001-2007,2015 Jeff Martin, Tim Bacon
+Copyright (c) 2001-2007,2015,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -72,8 +72,8 @@ public class Transform {
 
     /**
      * Create a transformation using String input XML and String stylesheet
-     * @param input
-     * @param stylesheet
+     * @param input document to transform
+     * @param stylesheet stylesheet to use for transformation
      */
     public Transform(String input, String stylesheet) {
         this(input == null ? null : Input.fromString(input),
@@ -82,8 +82,8 @@ public class Transform {
 
     /**
      * Create a transformation using String input XML and stylesheet in a File
-     * @param input
-     * @param stylesheet
+     * @param input document to transform
+     * @param stylesheet stylesheet to use for transformation
      */
     public Transform(String input, File stylesheet) {
         this(input == null ? null : Input.fromString(input),
@@ -93,8 +93,8 @@ public class Transform {
     /**
      * Create a transformation using InputSource input XML and
      * InputSource stylesheet
-     * @param input
-     * @param stylesheet
+     * @param input document to transform
+     * @param stylesheet stylesheet to use for transformation
      */
     public Transform(InputSource input, InputSource stylesheet) {
         this(new SAXSource(input), new SAXSource(stylesheet));
@@ -103,8 +103,8 @@ public class Transform {
     /**
      * Create a transformation using InputSource input XML and
      * stylesheet in a File
-     * @param input
-     * @param stylesheet
+     * @param input document to transform
+     * @param stylesheet stylesheet to use for transformation
      */
     public Transform(InputSource input, File stylesheet) {
         this(new SAXSource(input),
@@ -113,7 +113,7 @@ public class Transform {
 
     /**
      * Create a transformation that allows us to serialize a DOM Node
-     * @param sourceNode
+     * @param sourceNode document to transform
      */
     public Transform(Node sourceNode) {
         this(sourceNode, (String) null);
@@ -121,8 +121,8 @@ public class Transform {
 
     /**
      * Create a transformation from an input Node and stylesheet in a String
-     * @param sourceNode
-     * @param stylesheet
+     * @param sourceNode document to transform
+     * @param stylesheet stylesheet to use for transformation
      */
     public Transform(Node sourceNode, String stylesheet) {
         this(sourceNode == null ? null : Input.fromNode(sourceNode),
@@ -131,8 +131,8 @@ public class Transform {
 
     /**
      * Create a transformation from an input Node and stylesheet in a File
-     * @param sourceNode
-     * @param stylesheet
+     * @param sourceNode document to transform
+     * @param stylesheet stylesheet to use for transformation
      */
     public Transform(Node sourceNode, File stylesheet) {
         this(sourceNode == null ? null : Input.fromNode(sourceNode),
@@ -146,8 +146,8 @@ public class Transform {
 
     /**
      * Create a transformation using Source input XML and Source stylesheet
-     * @param inputSource
-     * @param stylesheetSource
+     * @param inputSource document to transform
+     * @param stylesheetSource stylesheet to use for transformation
      */
     public Transform(Source inputSource, Source stylesheetSource) {
         transformation = new Transformation(inputSource);
@@ -160,7 +160,6 @@ public class Transform {
 
     /**
      * Ensure that the source has a systemId
-     * @param source
      */
     private void provideSystemIdIfRequired(Source source) {
         if (source!=null && (source.getSystemId() == null
@@ -182,8 +181,8 @@ public class Transform {
     }
     /**
      * Perform the actual transformation
-     * @param result
-     * @throws TransformerException
+     * @param result result to output transformation result to
+     * @throws TransformerException if transformation fails
      */
     protected void transformTo(final Result result) throws TransformerException {
         withExceptionHandling(new Trans<Object>() {
@@ -197,7 +196,7 @@ public class Transform {
     /**
      * Perform the XSLT transformation specified in the constructor
      * @return the result as a String
-     * @throws TransformerException
+     * @throws TransformerException if transformation fails
      */
     public String getResultString() throws TransformerException {
         return withExceptionHandling(new Trans<String>() {
@@ -210,7 +209,7 @@ public class Transform {
     /**
      * Perform the XSLT transformation specified in the constructor
      * @return the result as a DOM Document
-     * @throws TransformerException
+     * @throws TransformerException if transformation fails
      */
     public Document getResultDocument() throws TransformerException {
         return withExceptionHandling(new Trans<Document>() {
@@ -222,8 +221,8 @@ public class Transform {
 
     /**
      * Override an output property specified in the transformation stylesheet
-     * @param name
-     * @param value
+     * @param name name of the property
+     * @param value value of the property
      */
     public void setOutputProperty(String name, String value) {
         transformation.addOutputProperty(name, value);
@@ -231,7 +230,7 @@ public class Transform {
 
     /**
      * Override output properties specified in the transformation stylesheet
-     * @param outputProperties
+     * @param outputProperties output properties
      * @see Transformer#setOutputProperties(java.util.Properties)
      */
     public void setOutputProperties(Properties outputProperties) {
@@ -250,8 +249,8 @@ public class Transform {
 
     /**
      * Add a parameter for the transformation
-     * @param name
-     * @param value
+     * @param name name of the parameter
+     * @param value value of the parameter
      * @see Transformer#setParameter(java.lang.String, java.lang.Object)
      */
     public void setParameter(String name, Object value) {
@@ -261,7 +260,7 @@ public class Transform {
 
     /**
      * See a parameter used for the transformation
-     * @param name
+     * @param name name of the parameter
      * @return the parameter value
      * @see Transformer#getParameter(java.lang.String)
      */
@@ -270,7 +269,7 @@ public class Transform {
     }
 
     /**
-     * Clear parameters used for the transformation 
+     * Clear parameters used for the transformation
      * @see Transformer#clearParameters()
      */
     public void clearParameters() {
@@ -280,6 +279,7 @@ public class Transform {
 
     /**
      * Set the URIResolver for the transformation
+     * @param uriResolver resolver to use
      * @see Transformer#setURIResolver(javax.xml.transform.URIResolver)
      */
     public void setURIResolver(URIResolver uriResolver) {
@@ -288,6 +288,7 @@ public class Transform {
 
     /**
      * Set the ErrorListener for the transformation
+     * @param errorListener error listener to use
      * @see Transformer#setErrorListener(javax.xml.transform.ErrorListener)
      */
     public void setErrorListener(ErrorListener errorListener) {

@@ -55,6 +55,7 @@ public class XPathContext implements Cloneable {
 
     /**
      * Starts with the context of a root node.
+     * @param root the root node
      */
     public XPathContext(Node root) {
         this(null, root);
@@ -89,6 +90,7 @@ public class XPathContext implements Cloneable {
 
     /**
      * Moves from the current node to the given child node.
+     * @param index index of child to navigate to
      */
     public void navigateToChild(int index) {
         path.addLast(path.getLast().children.get(index));
@@ -96,6 +98,7 @@ public class XPathContext implements Cloneable {
 
     /**
      * Moves from the current node to the given attribute.
+     * @param attribute name of attribute to navigate to
      */
     public void navigateToAttribute(QName attribute) {
         path.addLast(path.getLast().attributes.get(attribute));
@@ -110,6 +113,7 @@ public class XPathContext implements Cloneable {
 
     /**
      * Adds knowledge about the current node's attributes.
+     * @param attributes attributes to add
      */
     public void addAttributes(Iterable<? extends QName> attributes) {
         Level current = path.getLast();
@@ -121,6 +125,7 @@ public class XPathContext implements Cloneable {
 
     /**
      * Adds knowledge about a single attribute of the current node.
+     * @param attribute attribute to add
      */
     public void addAttribute(QName attribute) {
         Level current = path.getLast();
@@ -131,6 +136,7 @@ public class XPathContext implements Cloneable {
     /**
      * Adds knowledge about the current node's children replacing
      * existing knowledge.
+     * @param children children to add
      */
     public void setChildren(Iterable<? extends NodeInfo> children) {
         Level current = path.getLast();
@@ -141,6 +147,7 @@ public class XPathContext implements Cloneable {
     /**
      * Adds knowledge about the current node's children appending to
      * the knowledge already present.
+     * @param children children to add
      */
     public void appendChildren(Iterable<? extends NodeInfo> children) {
         Level current = path.getLast();
@@ -192,6 +199,7 @@ public class XPathContext implements Cloneable {
 
     /**
      * Stringifies the XPath of the current node.
+     * @return current XPath
      */
     public String getXPath() {
         return getXPath(path.descendingIterator());
@@ -199,6 +207,7 @@ public class XPathContext implements Cloneable {
 
     /**
      * Stringifies the XPath of the current node's parent.
+     * @return parent's XPath
      */
     public String getParentXPath() {
         Iterator<Level> levelIterator = path.descendingIterator();
@@ -296,7 +305,13 @@ public class XPathContext implements Cloneable {
      * Representation of a node used by {@link XPathContext}.
      */
     public interface NodeInfo {
+        /**
+         * @return QName of the node
+         */
         QName getName();
+        /**
+         * @return node type
+         */
         short getType();
     }
 
@@ -306,6 +321,9 @@ public class XPathContext implements Cloneable {
     public static final class DOMNodeInfo implements NodeInfo {
         private final QName name;
         private final short type;
+        /**
+         * @param n node to capture information of
+         */
         public DOMNodeInfo(Node n) {
             name = Nodes.getQName(n);
             type = n.getNodeType();

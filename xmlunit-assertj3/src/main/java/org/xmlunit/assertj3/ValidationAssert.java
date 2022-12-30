@@ -103,6 +103,7 @@ public class ValidationAssert extends AbstractAssert<ValidationAssert, Source> {
      * Verifies that actual value is valid against given schema
      *
      * @throws AssertionError if the actual value is not valid against schema
+     * @return this
      */
     public ValidationAssert isValid() {
         ValidationResult validationResult = validate();

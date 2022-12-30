@@ -116,6 +116,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      * Factory method for {@link XmlAssert}
      *
      * @param o object with type supported by {@link Input#from(Object)}
+     * @return a fresh XmlAssert instance
      */
     public static XmlAssert assertThat(Object o) {
         return new XmlAssert(o);
@@ -126,6 +127,8 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      * {@link org.w3c.dom.Document} from the XML input.
      *
      * @throws AssertionError if the actual value is {@code null}.
+     * @param dbf factory to use
+     * @return this
      */
     public XmlAssert withDocumentBuilderFactory(DocumentBuilderFactory dbf) {
         isNotNull();
@@ -137,6 +140,8 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      * Sets the {@link XPathFactory} to use for XPath related assertions.
      *
      * @throws AssertionError if the actual value is {@code null}.
+     * @param xpf factory to use
+     * @return this
      */
     public XmlAssert withXPathFactory(XPathFactory xpf) {
         isNotNull();
@@ -150,6 +155,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      * @param prefix2Uri prefix2Uri maps from prefix to namespace URI. It is used to resolve
      *                   XML namespace prefixes in the XPath expression
      * @throws AssertionError if the actual value is {@code null}.
+     * @return this
      */
     public XmlAssert withNamespaceContext(Map<String, String> prefix2Uri) {
         isNotNull();
@@ -163,6 +169,8 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      * @throws AssertionError if the xPath is blank.
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value provide invalid XML.
+     * @param xPath XPath expression
+     * @return assert capturing the selected nodes
      */
     public MultipleNodeAssert nodesByXPath(String xPath) {
         isNotNull();
@@ -176,6 +184,8 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
 
     /**
      * Equivalent for <pre>{@link #nodesByXPath(String) nodesByXPath(xPath)}.{@link MultipleNodeAssert#exist() exist()}</pre>
+     * @param xPath XPath expression
+     * @return assert capturing the selected nodes
      */
     public MultipleNodeAssert hasXPath(String xPath) {
         return nodesByXPath(xPath).exist();
@@ -183,6 +193,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
 
     /**
      * Equivalent for <pre>{@link #nodesByXPath(String) nodesByXPath(xPath)}.{@link MultipleNodeAssert#doNotExist() doNotExist()}</pre>
+     * @param xPath XPath expression
      */
     public void doesNotHaveXPath(String xPath) {
         nodesByXPath(xPath).doNotExist();
@@ -194,6 +205,8 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      * @throws AssertionError if the xPath is blank.
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value provide invalid XML.
+     * @param xPath XPath expression
+     * @return {@code Assert} for the node's value
      */
     public ValueAssert valueByXPath(String xPath) {
         isNotNull();
@@ -210,6 +223,8 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      *
      * @throws AssertionError if the actual value is {@code null}
      * @throws AssertionError if the control value is {@code null}
+     * @param control actual XML to compare object under test against
+     * @return assert for comparison
      */
     public CompareAssert and(Object control) {
         isNotNull();
@@ -226,6 +241,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      *
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value is invalid
+     * @return this
      */
     public XmlAssert isValid() {
         isNotNull();
@@ -238,6 +254,7 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      *
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value is valid
+     * @return this
      */
     public XmlAssert isInvalid() {
         isNotNull();
@@ -250,6 +267,8 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      *
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value is invalid
+     * @param schema schema to validate against
+     * @return this
      */
     public XmlAssert isValidAgainst(Schema schema) {
         isNotNull();
@@ -262,6 +281,8 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      *
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value is valid
+     * @param schema schema to validate against
+     * @return this
      */
     public XmlAssert isNotValidAgainst(Schema schema) {
         isNotNull();
@@ -274,6 +295,8 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      *
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value is invalid
+     * @param schemaSources schema documents to validate against
+     * @return this
      */
     public XmlAssert isValidAgainst(Object... schemaSources) {
         isNotNull();
@@ -286,6 +309,8 @@ public class XmlAssert extends AbstractAssert<XmlAssert, Object> {
      *
      * @throws AssertionError if the actual value is {@code null}.
      * @throws AssertionError if the actual value is valid
+     * @param schemaSources schema documents to validate against
+     * @return this
      */
     public XmlAssert isNotValidAgainst(Object... schemaSources) {
         isNotNull();

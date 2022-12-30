@@ -23,6 +23,10 @@ import static org.assertj.core.util.Throwables.getStackTrace;
  */
 public class ShouldNotHaveThrown extends BasicErrorMessageFactory {
 
+    /**
+     * @param throwable Throwable actually thrown
+     * @return ErrorMessageFactory for "should not have thrown"
+     */
     public static ErrorMessageFactory shouldNotHaveThrown(Throwable throwable) {
         return new ShouldNotHaveThrown(throwable);
     }

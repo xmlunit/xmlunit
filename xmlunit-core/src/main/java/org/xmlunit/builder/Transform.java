@@ -31,6 +31,7 @@ public final class Transform {
     public interface Builder extends TransformationBuilderBase<Builder> {
         /**
          * Create the result of the transformation.
+         * @return result of the transformation
          */
         TransformationResult build();
     }
@@ -41,14 +42,17 @@ public final class Transform {
     public interface TransformationResult {
         /**
          * Output the result to a TraX Result.
+         * @param r to send output to
          */
         void to(Result r);
         /**
          * Output the result to a String.
+         * @return transformation result as String
          */
         String toString();
         /**
          * Output the result to a DOM Document.
+         * @return transformation result as Document
          */
         Document toDocument();
     }
@@ -79,6 +83,8 @@ public final class Transform {
 
     /**
      * Build a transformation for a source document.
+     * @param s document to be transformed
+     * @return a fresh builder
      */
     public static Builder source(Source s) {
         return new TransformationBuilder(s);

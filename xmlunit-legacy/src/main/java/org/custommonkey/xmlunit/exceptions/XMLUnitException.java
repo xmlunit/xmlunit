@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2006-2007, Jeff Martin, Tim Bacon
+Copyright (c) 2006-2007,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -41,6 +41,7 @@ package org.custommonkey.xmlunit.exceptions;
  * XMLUnit.
  */
 public abstract class XMLUnitException extends Exception {
+    /** root cause, */
     private final Throwable cause;
 
     /**
@@ -56,6 +57,7 @@ public abstract class XMLUnitException extends Exception {
 
     /**
      * Root cause of the exception, if any.
+     * @return root cause of the exception
      */
     public Throwable getCause() {
         return cause;

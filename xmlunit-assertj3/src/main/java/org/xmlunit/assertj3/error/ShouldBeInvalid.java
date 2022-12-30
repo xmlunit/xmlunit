@@ -20,6 +20,10 @@ import org.assertj.core.error.BasicErrorMessageFactory;
  */
 public class ShouldBeInvalid extends BasicErrorMessageFactory {
 
+    /**
+     * @param systemId optional systemId
+     * @return ErrorMessageFactory when document is valid
+     */
     public static ShouldBeInvalid shouldBeInvalid(String systemId) {
 
         return new ShouldBeInvalid(systemId != null ? systemId : "instance");

@@ -21,10 +21,21 @@ import org.assertj.core.error.ErrorMessageFactory;
  */
 public class ShouldNotHaveAttribute extends BasicErrorMessageFactory {
 
+    /**
+     * @param nodeName name of element
+     * @param attributeName name of attribute
+     * @return ErrorMessageFactory when element has attribute
+     */
     public static ErrorMessageFactory shouldNotHaveAttribute(String nodeName, String attributeName) {
         return new ShouldNotHaveAttribute(nodeName, attributeName);
     }
 
+    /**
+     * @param nodeName name of element
+     * @param attributeName name of attribute
+     * @param attributeValue not-expected value of attribute
+     * @return ErrorMessageFactory when element has attribute with value
+     */
     public static ErrorMessageFactory shouldNotHaveAttributeWithValue(String nodeName, String attributeName, String attributeValue) {
         return new ShouldNotHaveAttribute(nodeName, attributeName, attributeValue);
     }

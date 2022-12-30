@@ -46,6 +46,14 @@ public class ShouldBeSimilar extends ComparisonFailureErrorFactory {
         return testString;
     }
 
+    /**
+     * @param controlSystemId optional systemId of control document
+     * @param testSystemId optional systemId of test document
+     * @param comparison the comparison that failed
+     * @param formatter formatter to use
+     * @param formatXml whether to format the difference as XML
+     * @return ErrorMessageFactory when documents are not identical
+     */
     public static ShouldBeSimilar shouldBeIdentical(String controlSystemId, String testSystemId, Comparison comparison, ComparisonFormatter formatter, boolean formatXml) {
 
         return new ShouldBeSimilar(createReasonPrefix(controlSystemId, testSystemId, "identical", comparison, formatter),
@@ -53,6 +61,14 @@ public class ShouldBeSimilar extends ComparisonFailureErrorFactory {
                 formatter.getDetails(comparison.getTestDetails(), comparison.getType(), formatXml));
     }
 
+    /**
+     * @param controlSystemId optional systemId of control document
+     * @param testSystemId optional systemId of test document
+     * @param comparison the comparison that failed
+     * @param formatter formatter to use
+     * @param formatXml whether to format the difference as XML
+     * @return ErrorMessageFactory when documents are not similar
+     */
     public static ShouldBeSimilar shouldBeSimilar(String controlSystemId, String testSystemId, Comparison comparison, ComparisonFormatter formatter, boolean formatXml) {
 
         return new ShouldBeSimilar(createReasonPrefix(controlSystemId, testSystemId, "similar", comparison, formatter),

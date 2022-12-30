@@ -66,6 +66,10 @@ public abstract class TypeMatcher<T> extends TypeSafeMatcher<String> {
     private final Class<T> clazz;
     private final Matcher<? extends T> valueMatcher;
 
+    /**
+     * @param clazz expected type to convert value to
+     * @param valueMatcher matcher to apply to converted value
+     */
     public TypeMatcher(Class<T> clazz, Matcher<? extends T> valueMatcher) {
         super(String.class);
         this.clazz = clazz;
@@ -113,6 +117,11 @@ public abstract class TypeMatcher<T> extends TypeSafeMatcher<String> {
         return convert(item);
     }
 
+    /**
+     * Converts the item.
+     * @param item value as String
+     * @return converted value
+     */
     protected abstract T convert(String item);
 
     /**

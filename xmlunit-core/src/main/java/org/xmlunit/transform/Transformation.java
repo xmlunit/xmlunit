@@ -49,14 +49,19 @@ public final class Transformation {
     private final Properties output = new Properties();
     private final Map<String, Object> params = new HashMap<String, Object>();
 
+    /**
+     * Creates an empty transformation.
+     */
     public Transformation() {
     }
+
     /**
      * @param s the source to transform - must not be null.
      */
     public Transformation(Source s) {
         setSource(s);
     }
+
     /**
      * Set the source document to transform.
      * @param s the source to transform - must not be null.
@@ -67,6 +72,7 @@ public final class Transformation {
         }
         source = s;
     }
+
     /**
      * Set the stylesheet to use.
      * @param s the stylesheet to use - may be null in which case an
@@ -75,6 +81,7 @@ public final class Transformation {
     public void setStylesheet(Source s) {
         styleSheet = s;
     }
+
     /**
      * Add a named output property.
      *
@@ -90,12 +97,14 @@ public final class Transformation {
         }
         output.setProperty(name, value);
     }
+
     /**
      * Clear all output properties.
      */
     public void clearOutputProperties() {
         output.clear();
     }
+
     /**
      * Add a named parameter.
      *
@@ -108,12 +117,14 @@ public final class Transformation {
         }
         params.put(name, value);
     }
+
     /**
      * Clear all output parameters.
      */
     public void clearParameters() {
         params.clear();
     }
+
     /**
      * Set the TraX factory to use.
      *
@@ -123,6 +134,7 @@ public final class Transformation {
     public void setFactory(TransformerFactory f) {
         factory = f;
     }
+
     /**
      * Set the resolver to use for document() and xsl:include/import
      *
@@ -134,6 +146,7 @@ public final class Transformation {
     public void setURIResolver(URIResolver r) {
         uriResolver = r;
     }
+
     /**
      * Set the error listener for the transformation.
      *
@@ -145,6 +158,7 @@ public final class Transformation {
     public void setErrorListener(ErrorListener l) {
         errorListener = l;
     }
+
     /**
      * Perform the transformation.
      *
@@ -191,6 +205,7 @@ public final class Transformation {
             throw new XMLUnitException(e);
         }
     }
+
     /**
      * Convenience method that returns the result of the
      * transformation as a String.
@@ -200,12 +215,14 @@ public final class Transformation {
      * configured properly
      * @exception XMLUnitException if the transformation throws an
      * exception
+     * @return transformed document as string
      */
     public String transformToString() {
         StringWriter sw = new StringWriter();
         transformTo(new StreamResult(sw));
         return sw.toString();
     }
+
     /**
      * Convenience method that returns the result of the
      * transformation as a Document.
@@ -215,6 +232,7 @@ public final class Transformation {
      * configured properly
      * @exception XMLUnitException if the transformation throws an
      * exception
+     * @return transformed document
      */
     public Document transformToDocument() {
         DOMResult r = new DOMResult();

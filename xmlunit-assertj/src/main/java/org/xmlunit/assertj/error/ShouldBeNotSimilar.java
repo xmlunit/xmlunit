@@ -20,11 +20,21 @@ import org.assertj.core.error.BasicErrorMessageFactory;
  */
 public class ShouldBeNotSimilar extends BasicErrorMessageFactory {
 
+    /**
+     * @param controlSystemId optional systemId of control document
+     * @param testSystemId optional systemId of test document
+     * @return ErrorMessageFactory when documents are identical
+     */
     public static ShouldBeNotSimilar shouldBeNotIdentical(String controlSystemId, String testSystemId) {
 
         return new ShouldBeNotSimilar(controlSystemId, testSystemId, "identical");
     }
 
+    /**
+     * @param controlSystemId optional systemId of control document
+     * @param testSystemId optional systemId of test document
+     * @return ErrorMessageFactory when documents are similar
+     */
     public static ShouldBeNotSimilar shouldBeNotSimilar(String controlSystemId, String testSystemId) {
 
         return new ShouldBeNotSimilar(controlSystemId, testSystemId, "similar");

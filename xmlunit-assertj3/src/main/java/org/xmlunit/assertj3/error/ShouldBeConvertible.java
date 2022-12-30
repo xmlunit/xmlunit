@@ -20,6 +20,11 @@ import org.assertj.core.error.BasicErrorMessageFactory;
  */
 public class ShouldBeConvertible extends BasicErrorMessageFactory {
 
+    /**
+     * @param value the actual value
+     * @param targetType the expected target type
+     * @return ErrorMessageFactory when value can not be converted to expected target
+     */
     public static ShouldBeConvertible shouldBeConvertible(String value, String targetType) {
 
         return new ShouldBeConvertible(value, targetType);

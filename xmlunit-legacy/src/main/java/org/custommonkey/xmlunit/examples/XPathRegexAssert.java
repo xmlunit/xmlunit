@@ -1,6 +1,6 @@
 /*
 ******************************************************************
-Copyright (c) 2006-2007,2015-2016 Jeff Martin, Tim Bacon
+Copyright (c) 2006-2007,2015-2016,2022 Jeff Martin, Tim Bacon
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -60,6 +60,14 @@ public class XPathRegexAssert {
     // no instances
     private XPathRegexAssert() {}
 
+    /**
+     * Asserts result of applying an XPath expression to a document matches a regular expression.
+     * @param message assertion message
+     * @param regex regular expression
+     * @param xpath XPath expression
+     * @param doc document to apply XPath expression to
+     * @throws XpathException if XPath construction fails
+     */
     public static void assertXPathMatches(String message, String regex,
                                           String xpath, Document doc)
         throws XpathException {
@@ -68,6 +76,16 @@ public class XPathRegexAssert {
         Assert.assertTrue(message, value.matches(regex));
     }
 
+    /**
+     * Asserts result of applying an XPath expression to a document matches a regular expression.
+     * @param message assertion message
+     * @param regex regular expression
+     * @param xpath XPath expression
+     * @param xml document to apply XPath expression to
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
+     */
     public static void assertXPathMatches(String message, String regex,
                                           String xpath, String xml)
         throws XpathException, SAXException, IOException {
@@ -75,6 +93,16 @@ public class XPathRegexAssert {
         assertXPathMatches(message, regex, xpath, doc);
     }
 
+    /**
+     * Asserts result of applying an XPath expression to a document matches a regular expression.
+     * @param message assertion message
+     * @param regex regular expression
+     * @param xpath XPath expression
+     * @param reader document to apply XPath expression to
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
+     */
     public static void assertXPathMatches(String message, String regex,
                                           String xpath, Reader reader)
         throws XpathException, SAXException, IOException {
@@ -82,6 +110,13 @@ public class XPathRegexAssert {
         assertXPathMatches(message, regex, xpath, doc);
     }
 
+    /**
+     * Asserts result of applying an XPath expression to a document matches a regular expression.
+     * @param regex regular expression
+     * @param xpath XPath expression
+     * @param doc document to apply XPath expression to
+     * @throws XpathException if XPath construction fails
+     */
     public static void assertXPathMatches(String regex,
                                           String xpath, Document doc)
         throws XpathException {
@@ -89,6 +124,15 @@ public class XPathRegexAssert {
                            xpath, doc);
     }
 
+    /**
+     * Asserts result of applying an XPath expression to a document matches a regular expression.
+     * @param regex regular expression
+     * @param xpath XPath expression
+     * @param xml document to apply XPath expression to
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
+     */
     public static void assertXPathMatches(String regex,
                                           String xpath, String xml)
         throws XpathException, SAXException, IOException {
@@ -96,6 +140,15 @@ public class XPathRegexAssert {
                            xpath, xml);
     }
 
+    /**
+     * Asserts result of applying an XPath expression to a document matches a regular expression.
+     * @param regex regular expression
+     * @param xpath XPath expression
+     * @param reader document to apply XPath expression to
+     * @throws XpathException if XPath construction fails
+     * @throws SAXException if the parser says so
+     * @throws IOException on I/O errors
+     */
     public static void assertXPathMatches(String regex,
                                           String xpath, Reader reader)
         throws XpathException, SAXException, IOException {

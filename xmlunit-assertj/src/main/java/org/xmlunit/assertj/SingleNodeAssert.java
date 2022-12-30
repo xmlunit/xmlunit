@@ -52,6 +52,8 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
      *
      * @throws AssertionError if the actual node is {@code null}.
      * @throws AssertionError if node has not attribute with given name.
+     * @param attributeName name of the expected attribute
+     * @return this
      */
     public SingleNodeAssert hasAttribute(String attributeName) {
         isNotNull();
@@ -68,6 +70,9 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
      *
      * @throws AssertionError if the actual node is {@code null}.
      * @throws AssertionError if node has not attribute with given name and value.
+     * @param attributeName name of the expected attribute
+     * @param attributeValue expected attribute value
+     * @return this
      */
     public SingleNodeAssert hasAttribute(String attributeName, String attributeValue) {
         isNotNull();
@@ -85,6 +90,8 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
      *
      * @throws AssertionError if the actual node is {@code null}.
      * @throws AssertionError if node has attribute with given name.
+     * @param attributeName name of the not-expected attribute
+     * @return this
      */
     public SingleNodeAssert doesNotHaveAttribute(String attributeName) {
         isNotNull();
@@ -101,6 +108,9 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
      *
      * @throws AssertionError if the actual node is {@code null}.
      * @throws AssertionError if node has attribute with given name and value.
+     * @param attributeName name of the expected attribute
+     * @param attributeValue not-expected attribute value
+     * @return this
      */
     public SingleNodeAssert doesNotHaveAttribute(String attributeName, String attributeValue) {
         isNotNull();
@@ -119,6 +129,8 @@ public class SingleNodeAssert extends AbstractAssert<SingleNodeAssert, Node> {
      *
      * @throws AssertionError if the actual node is {@code null}.
      * @throws AssertionError if node has attribute with given name and value.
+     * @param xPath XPath expression to check
+     * @return this
      * @since XMLUnit 2.6.4
      */
     public SingleNodeAssert hasXPath(String xPath) {

@@ -44,6 +44,9 @@ public class ValidationMatcher extends BaseMatcher {
     private Source instance;
     private ValidationResult result;
 
+    /**
+     * @param schemaSource schema source document(s)
+     */
     public ValidationMatcher(Object... schemaSource) {
         if (schemaSource == null) {
             throw new IllegalArgumentException("schemaSource must not be null");
@@ -64,6 +67,7 @@ public class ValidationMatcher extends BaseMatcher {
     }
 
     /**
+     * @param schema schema source document
      * @since XMLUnit 2.3.0
      */
     public ValidationMatcher(Schema schema) {
@@ -121,12 +125,20 @@ public class ValidationMatcher extends BaseMatcher {
         }
     }
 
+    /**
+     * Creates a matcher that validates the XML under test.
+     * @param schemaSource schema source document
+     * @return matcher
+     */
     @Factory
     public static ValidationMatcher valid(final Object schemaSource) {
         return new ValidationMatcher(schemaSource);
     }
 
     /**
+     * Creates a matcher that validates the XML under test.
+     * @param schema schema source document
+     * @return matcher
      * @since XMLUnit 2.3.0
      */
     @Factory

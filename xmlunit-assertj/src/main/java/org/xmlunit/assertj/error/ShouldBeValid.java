@@ -23,6 +23,11 @@ import static java.lang.String.format;
  */
 public class ShouldBeValid extends BasicErrorMessageFactory {
 
+    /**
+     * @param systemId optional systemId
+     * @param problems validation problems detected
+     * @return ErrorMessageFactory when document is not valid
+     */
     public static ShouldBeValid shouldBeValid(String systemId, Iterable<ValidationProblem> problems) {
         String systemId1 = systemId != null ? systemId : "instance";
 
