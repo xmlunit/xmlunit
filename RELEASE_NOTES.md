@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.9.1 - /not released, yet/
+## XMLUnit for Java 2.9.1 - /Released 2023-01-10/
 
 * fixed some AssertJ tests that didn't work on Windows.
   Issue [#252](https://github.com/xmlunit/xmlunit/issues/252) and PR
