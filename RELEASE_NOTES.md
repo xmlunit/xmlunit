@@ -2,6 +2,10 @@
 
 ## XMLUnit for Java 2.9.2 - /not released, yet/
 
+* add a new `ElementSelectors.byNameAndAllAttributes` variant that filters attributes before deciding whether elements can
+  be compared.
+  Inspired by Issue [#259](https://github.com/xmlunit/xmlunit/issues/259)
+
 ## XMLUnit for Java 2.9.1 - /Released 2023-01-10/
 
 * fixed some AssertJ tests that didn't work on Windows.
