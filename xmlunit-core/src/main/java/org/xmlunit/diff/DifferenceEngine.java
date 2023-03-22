@@ -62,6 +62,9 @@ public interface DifferenceEngine {
      * If you want to suppress comparison of them you'll need to
      * implement {@link DifferenceEvaluator}.</p>
      *
+     * <p>Note that {@link NodeMatcher} will not by aware of the configured attribute filter and if its decision is
+     * based on attributes it will in general also consider attributes the filter would suppress.</p>
+     *
      * @param attributeFilter the strategy to use
      */
     void setAttributeFilter(Predicate<Attr> attributeFilter);
