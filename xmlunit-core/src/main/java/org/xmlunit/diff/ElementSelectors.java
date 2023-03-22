@@ -29,6 +29,7 @@ import org.xmlunit.util.Nodes;
 import org.xmlunit.util.Predicate;
 import org.xmlunit.xpath.JAXPXPathEngine;
 import org.xmlunit.xpath.XPathEngine;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -84,23 +85,46 @@ public final class ElementSelectors {
     /**
      * Elements with the same local name (and namespace URI - if any)
      * and attribute values for all attributes can be compared.
+     *
+     * <p>This {@code ElementSelector} doesn't know anything about a potentially configured attribute filter so may also
+     * compare attributes that are excluded from comparison by the filter. Use {@link
+     * #byNameAndAllAttributes(Predicate)} passing in your attribute filter if this causes problems.</p>
      */
     public static final ElementSelector byNameAndAllAttributes =
-        new ElementSelector() {
+        byNameAndAllAttributes(new Predicate<Attr>() {
+            @Override
+            public boolean test(Attr a) {
+                return true;
+            }
+        });
+
+    /**
+     * Elements with the same local name (and namespace URI - if any)
+     * and attribute values for all attributes can be compared.
+     *
+     * @param attributeFilter filter to use when comparing attributes. Only attributes where the filter returns {@code
+     * true} are considered.
+     *
+     * @since XMLUnit 2.9.2
+     */
+    public static final ElementSelector byNameAndAllAttributes(final Predicate<Attr> attributeFilter) {
+        return new ElementSelector() {
             @Override
             public boolean canBeCompared(Element controlElement,
                                          Element testElement) {
                 if (!byName.canBeCompared(controlElement, testElement)) {
                     return false;
                 }
-                Map<QName, String> cAttrs = Nodes.getAttributes(controlElement);
-                Map<QName, String> tAttrs = Nodes.getAttributes(testElement);
+                Map<QName, String> cAttrs = Nodes.getAttributes(controlElement, attributeFilter);
+                Map<QName, String> tAttrs = Nodes.getAttributes(testElement, attributeFilter);
                 if (cAttrs.size() != tAttrs.size()) {
                     return false;
                 }
                 return mapsEqualForKeys(cAttrs, tAttrs, cAttrs.keySet());
             }
         };
+    }
+
     /**
      * String Constants.
      */

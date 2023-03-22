@@ -76,13 +76,32 @@ public final class Nodes {
      * @return attributes
      */
     public static Map<QName, String> getAttributes(Node n) {
+        return getAttributes(n, new Predicate<Attr>() {
+            @Override
+            public boolean test(Attr a) {
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Obtains an element's attributes as Map.
+     * @param n the node
+     * @param attributeFilter is used to suppress unwanted attributes. Only attributes where the filter's test returns
+     * {@code true} are returned
+     * @return attributes
+     * @since XMLUnit 2.9.2
+     */
+    public static Map<QName, String> getAttributes(Node n, Predicate<Attr> attributeFilter) {
         Map<QName, String> map = new LinkedHashMap<QName, String>();
         NamedNodeMap m = n.getAttributes();
         if (m != null) {
             final int len = m.getLength();
             for (int i = 0; i < len; i++) {
                 Attr a = (Attr) m.item(i);
-                map.put(getQName(a), a.getValue());
+                if (attributeFilter.test(a)) {
+                    map.put(getQName(a), a.getValue());
+                }
             }
         }
         return map;

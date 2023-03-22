@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -126,6 +127,35 @@ public class ElementSelectorsTest {
                    .canBeCompared(control, differentName));
         assertFalse(ElementSelectors.byNameAndAllAttributes
                    .canBeCompared(control, differentNS));
+    }
+
+    @Test public void byNameAndAllAttributesWithFilter() {
+        Element control = doc.createElement(FOO);
+        control.setAttribute(BAR, BAR);
+        Element equal = doc.createElement(FOO);
+        equal.setAttribute(BAR, BAR);
+        equal.setAttribute("x", "y");
+        Element noAttributes = doc.createElement(FOO);
+        Element differentValue = doc.createElement(FOO);
+        differentValue.setAttribute(BAR, FOO);
+        Element differentName = doc.createElement(FOO);
+        differentName.setAttribute(FOO, FOO);
+        Element differentNS = doc.createElement(FOO);
+        differentNS.setAttributeNS(SOME_URI, BAR, BAR);
+        Predicate<Attr> filter = new Predicate<Attr>() {
+            @Override
+            public boolean test(Attr a) {
+                return BAR.equals(a.getName());
+            }
+        };
+        ElementSelector es = ElementSelectors.byNameAndAllAttributes(filter);
+
+        assertTrue(es.canBeCompared(control, equal));
+        assertFalse(es.canBeCompared(control, noAttributes));
+        assertFalse(es.canBeCompared(noAttributes, control));
+        assertFalse(es.canBeCompared(control, differentValue));
+        assertFalse(es.canBeCompared(control, differentName));
+        assertFalse(es.canBeCompared(control, differentNS));
     }
 
     @Test public void byNameAndAttributes_NamePart() {

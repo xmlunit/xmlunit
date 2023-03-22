@@ -143,6 +143,20 @@ public class NodesTest {
         assertEquals(BAR, m.get(new QName(SOME_URI, FOO, BAR)));
     }
 
+    @Test public void attributeMapWithFilter() {
+        Element e = doc.createElement(FOO);
+        e.setAttribute(FOO, BAR);
+        e.setAttribute("x", "y");
+        Map<QName, String> m = Nodes.getAttributes(e, new Predicate<Attr>() {
+            @Override
+            public boolean test(Attr a) {
+                return FOO.equals(a.getName());
+            }
+        });
+        assertEquals(1, m.size());
+        assertEquals(BAR, m.get(new QName(FOO)));
+    }
+
     private Document handleWsSetup() {
         return Convert.toDocument(Input.fromString(
                 "<root>\n"
