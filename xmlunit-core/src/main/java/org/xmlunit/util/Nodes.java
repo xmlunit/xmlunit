@@ -90,7 +90,7 @@ public final class Nodes {
      * @param attributeFilter is used to suppress unwanted attributes. Only attributes where the filter's test returns
      * {@code true} are returned
      * @return attributes
-     * @since XMLUnit 2.9.2
+     * @since XMLUnit 2.10.0
      */
     public static Map<QName, String> getAttributes(Node n, Predicate<Attr> attributeFilter) {
         Map<QName, String> map = new LinkedHashMap<QName, String>();

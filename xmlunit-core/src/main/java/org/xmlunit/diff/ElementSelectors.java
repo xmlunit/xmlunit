@@ -105,7 +105,7 @@ public final class ElementSelectors {
      * @param attributeFilter filter to use when comparing attributes. Only attributes where the filter returns {@code
      * true} are considered.
      *
-     * @since XMLUnit 2.9.2
+     * @since XMLUnit 2.10.0
      */
     public static final ElementSelector byNameAndAllAttributes(final Predicate<Attr> attributeFilter) {
         return new ElementSelector() {
