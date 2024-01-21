@@ -21,9 +21,9 @@ Some goals for XMLUnit 2.x:
   - comparisons
 * be independent of any test framework
 
-Even though active development happens for XMLUnit 2.x, XMLUnit 1.x
-for Java is still supported and will stay at
-[sourceforge](https://sourceforge.net/projects/xmlunit/).
+XMLUnit 1.x is no longer maintained, you can still find the old forum over at
+[sourceforge](https://sourceforge.net/projects/xmlunit/) and we still use the
+sourceforge provided mailing list.
 
 ## Documentation
 
