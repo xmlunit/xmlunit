@@ -16,6 +16,7 @@ package org.xmlunit.util;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 
@@ -88,18 +89,51 @@ public class TransformerFactoryConfigurer {
     }
 
     /**
-     * The default instance which disables DTD loading but still
+     * The default instance which disables DTD loading and extension functions but still
      * allows loading of external stylesheets.
      */
     public static final TransformerFactoryConfigurer Default = builder()
+        .withDTDLoadingDisabled()
+        .withExtensionFunctionsDisabled()
+        .build();
+
+    /**
+     * The instance which enables secure processing thus disables all external access as well as execution of extension
+     * functions.
+     *
+     * @since XMLUnit 2.10.0
+     */
+    public static final TransformerFactoryConfigurer SecureProcessing = builder()
+        .withSecureProcessingEnabled()
+        .build();
+
+    /**
+     * The instance which disables DTD loading as well as loading of
+     * external stylesheets or extension functions.
+     */
+    public static final TransformerFactoryConfigurer NoExternalAccess = builder()
+        .withDTDLoadingDisabled()
+        .withExternalStylesheetLoadingDisabled()
+        .withExtensionFunctionsDisabled()
+        .build();
+
+    /**
+     * The instance which disables DTD loading but still
+     * allows loading of external stylesheets and extension functions.
+     *
+     * @since XMLUnit 2.10.0
+     */
+    public static final TransformerFactoryConfigurer NoDtdButExtensionFunctions = builder()
         .withDTDLoadingDisabled()
         .build();
 
     /**
      * The instance which disables DTD loading as well as loading of
-     * external stylesheets.
+     * external stylesheets but allows extension functions.
+     *
+     * @since XMLUnit 2.10.0
      */
-    public static final TransformerFactoryConfigurer NoExternalAccess = builder()
+    public static final TransformerFactoryConfigurer NoExternalAccessButExtensionFunctions = builder()
         .withDTDLoadingDisabled()
         .withExternalStylesheetLoadingDisabled()
         .build();
@@ -192,5 +226,27 @@ public class TransformerFactoryConfigurer {
             // XMLConstants.ACCESS_EXTERNAL_STYLESHEET is not available in Java 6
             return withSafeAttribute("http://javax.xml.XMLConstants/property/accessExternalStylesheet", "");
         }
+
+        /**
+         * Configures the factory to not enable extension functions.
+         * @return this
+         *
+         * @since XMLUnit 2.10.0
+         */
+        public Builder withExtensionFunctionsDisabled() {
+            return withSafeAttribute("jdk.xml.enableExtensionFunctions", "false");
+        }
+
+        /**
+         * Configures the factory to enable secure processing which disables all external access as well as execution of
+         * extension functions.
+         * @return this
+         *
+         * @since XMLUnit 2.10.0
+         */
+        public Builder withSecureProcessingEnabled() {
+            return withFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        }
+
     }
 }
