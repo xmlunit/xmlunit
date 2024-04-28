@@ -6,6 +6,15 @@
   be compared.
   Inspired by Issue [#259](https://github.com/xmlunit/xmlunit/issues/259)
 
+* By default the `TransformerFactory`s created will now try to disable extension functions. If you need extension
+  functions for your transformations you may want to pass in your own instance of `TransformerFactory` and
+  `TransformerFactoryConfigurer` may help with that.
+  Inspired by Issue [#264](https://github.com/xmlunit/xmlunit/issues/264)
+
+* `JAXPXPathEngine` will now try to disable the execution of extension functions by default but uses
+  `XPathFactory#setProperty` which is not available prior to Java 18. You may want to enable secure processing on an
+  `XPathFactory` instance you pass to `JAXPXPathEngine` instead - and `XPathFactoryConfigurer` may help with that.
+
 ## XMLUnit for Java 2.9.1 - /Released 2023-01-10/
 
 * fixed some AssertJ tests that didn't work on Windows.
