@@ -92,7 +92,7 @@ public class XPathFactoryConfigurer {
      * The default instance which disables extension functions.
      *
      * <p>In order to disable extension functions XPathFactory#setProperty needs to exists which requires Java18 or
-     * newer. {@link #SecureProcessing} should be available on any JDK.</p></p>
+     * newer. {@link #SecureProcessing} should be available on any JDK.</p>
      */
     public static final XPathFactoryConfigurer Default = builder()
         .withExtensionFunctionsDisabled()
@@ -186,10 +186,6 @@ public class XPathFactoryConfigurer {
 
         /**
          * Configures the factory to not enable extension functions.
-         *
-         * <p>This method will not do anything if {@link XPathFactory} doesn't support the setPropery method which has
-         * been added with Java 18.</p>
-         *
          * @return this
          */
         public Builder withExtensionFunctionsDisabled() {

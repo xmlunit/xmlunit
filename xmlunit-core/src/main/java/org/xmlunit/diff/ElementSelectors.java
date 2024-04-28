@@ -106,6 +106,7 @@ public final class ElementSelectors {
      * true} are considered.
      *
      * @since XMLUnit 2.10.0
+     * @return an ElementSelector
      */
     public static final ElementSelector byNameAndAllAttributes(final Predicate<Attr> attributeFilter) {
         return new ElementSelector() {
