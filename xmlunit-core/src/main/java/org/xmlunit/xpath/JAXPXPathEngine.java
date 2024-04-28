@@ -23,6 +23,7 @@ import org.xmlunit.ConfigurationException;
 import org.xmlunit.XMLUnitException;
 import org.xmlunit.util.Convert;
 import org.xmlunit.util.IterableNodeList;
+import org.xmlunit.util.XPathFactoryConfigurer;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -45,11 +46,11 @@ public class JAXPXPathEngine implements XPathEngine {
     }
 
     /**
-     * Create an XPathEngine that uses JAXP's default XPathFactory
+     * Create an XPathEngine that uses JAXP's default XPathFactory with {@link XPathFactoryConfigurer#Default} applied
      * under the covers.
      */
     public JAXPXPathEngine() {
-        this(XPathFactory.newInstance());
+        this(XPathFactoryConfigurer.Default.configure(XPathFactory.newInstance()));
     }
 
     /**
