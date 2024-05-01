@@ -12,6 +12,7 @@
   functions for your transformations you may want to pass in your own instance of `TransformerFactory` and
   `TransformerFactoryConfigurer` may help with that.
   Inspired by Issue [#264](https://github.com/xmlunit/xmlunit/issues/264)
+  This is tracked as [CVE-2024-31573](https://github.com/xmlunit/xmlunit/security/advisories/GHSA-chfm-68vv-pvw5).
 
 * `JAXPXPathEngine` will now try to disable the execution of extension functions by default but uses
   `XPathFactory#setProperty` which is not available prior to Java 18. You may want to enable secure processing on an
