@@ -40,10 +40,34 @@
          accepted -->
     <maven.javadoc.source>8</maven.javadoc.source>
 
+    <!-- Dependencies: Maven plugin   -->
+    <maven.assembly.plugin.version>3.0.0</maven.assembly.plugin.version>
+    <maven.buildernumber.plugin.version>1.4</maven.buildernumber.plugin.version>
+    <maven.bundle.plugin.version>3.2.0</maven.bundle.plugin.version>
+    <maven.compiler.plugin.version>3.6.0</maven.compiler.plugin.version>
+    <maven.coveralls.plugin.version>3.2.1</maven.coveralls.plugin.version>
+    <maven.cyclonedx.plugin.version>2.7.3</maven.cyclonedx.plugin.version>
+    <maven.enforcer.plugin.version>1.4.1</maven.enforcer.plugin.version>
+    <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
+    <maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
+    <maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
+    <maven.javadoc.plugin.version>3.4.1</maven.javadoc.plugin.version>
+    <maven.shade.plugin.version>2.4.3</maven.shade.plugin.version>
+    <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
     <maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
+
+    <!-- Dependencies: Test -->
+    <hamcrest.version>1.3</hamcrest.version>
+    <junit.version>4.13.1</junit.version>
+    <mockito.version>2.1.0</mockito.version>
+    <assertj.version>2.9.0</assertj.version>
+    <byte-buddy.version>1.10.10</byte-buddy.version>
 
     <!-- Jakarta XML Binding version -->
     <jakarta.xml.bind.version>2.3.3</jakarta.xml.bind.version>
+
+    <!-- Dependencies: Profile specific   -->
+    <jdk14Plus.mockito.version>3.3.3</jdk14Plus.mockito.version>
   </properties>
 
   <inceptionYear>2001</inceptionYear>
@@ -114,17 +138,17 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.13.1</version>
+        <version>${junit.version}</version>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-library</artifactId>
-        <version>1.3</version>
+        <version>${hamcrest.version}</version>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-core</artifactId>
-        <version>1.3</version>
+        <version>${hamcrest.version}</version>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
@@ -160,19 +184,19 @@
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>2.1.0</version>
+        <version>${mockito.version}</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>2.9.0</version>
+        <version>${assertj.version}</version>
       </dependency>
       <dependency>
         <groupId>net.bytebuddy</groupId>
         <artifactId>byte-buddy</artifactId>
-        <version>1.10.10</version>
+        <version>${byte-buddy.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -183,7 +207,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.6.0</version>
+          <version>${maven.compiler.plugin.version}</version>
           <configuration>
             <source>${maven.compile.source}</source>
             <target>${maven.compile.target}</target>
@@ -197,7 +221,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>buildnumber-maven-plugin</artifactId>
-          <version>1.4</version>
+          <version>${maven.buildernumber.plugin.version}</version>
           <configuration>
             <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
             <timestampFormat>{0,date,yyyy-MM-dd HH:mm:ssa}</timestampFormat>
@@ -214,7 +238,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
+          <version>${maven.jar.plugin.version}</version>
           <configuration>
             <archive>
               <manifestFile>${manifestfile}</manifestFile>
@@ -247,18 +271,18 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
-          <version>2.4.3</version>
+          <version>${maven.shade.plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>${maven.bundle.plugin.version}</version>
           <inherited>true</inherited>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.4.1</version>
+          <version>${maven.javadoc.plugin.version}</version>
           <configuration>
             <windowtitle>XMLUnit for Java ${project.version} API</windowtitle>
             <doctitle>XMLUnit for Java ${project.version} API</doctitle>
@@ -306,17 +330,17 @@
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.1</version>
+          <version>${maven.jacoco.plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>1.4.1</version>
+          <version>${maven.enforcer.plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.cyclonedx</groupId>
           <artifactId>cyclonedx-maven-plugin</artifactId>
-          <version>2.7.3</version>
+          <version>${maven.cyclonedx.plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -365,7 +389,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>${maven.assembly.plugin.version}</version>
         <inherited>false</inherited>
         <configuration>
           <descriptorRefs>
@@ -408,7 +432,7 @@
           <plugin>
             <groupId>org.eluder.coveralls</groupId>
             <artifactId>coveralls-maven-plugin</artifactId>
-            <version>3.2.1</version>
+            <version>${maven.coveralls.plugin.version}</version>
           </plugin>
         </plugins>
       </build>
@@ -430,7 +454,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>3.0.1</version>
+            <version>${maven.source.plugin.version}</version>
             <executions>
               <execution>
                 <id>attach-sources</id>
@@ -466,7 +490,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
+            <version>${maven.gpg.plugin.version}</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -577,7 +601,7 @@
           <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.3.3</version>
+            <version>${jdk14Plus.mockito.version}</version>
             <scope>test</scope>
           </dependency>
         </dependencies>
