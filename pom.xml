@@ -51,7 +51,7 @@
     <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
     <maven.jacoco.plugin.version>0.8.11</maven.jacoco.plugin.version>
     <maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
-    <maven.javadoc.plugin.version>3.4.1</maven.javadoc.plugin.version>
+    <maven.javadoc.plugin.version>3.5.0</maven.javadoc.plugin.version>
     <maven.shade.plugin.version>2.4.3</maven.shade.plugin.version>
     <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
     <maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
