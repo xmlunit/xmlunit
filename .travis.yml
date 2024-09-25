@@ -2,21 +2,21 @@ language: java
 env: VERSION=2.10.1-SNAPSHOT
 matrix:
   include:
-    - dist: focal
+    - dist: trusty
       jdk: openjdk7
     - dist: focal
       jdk: openjdk8
     - dist: focal
       jdk: openjdk10
-    - dist: xenial
+    - dist: focal
       jdk: openjdk11
     - dist: focal
       jdk: openjdk14
     - dist: focal
       jdk: openjdk17
-    - dist: focal
+    - dist: trusty
       jdk: oraclejdk8
-    - dist: focal
+    - dist: trusty
       jdk: oraclejdk9
     - dist: focal
       jdk: oraclejdk11
