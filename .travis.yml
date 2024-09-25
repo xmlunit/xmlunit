@@ -4,22 +4,22 @@ matrix:
   include:
     - dist: trusty
       jdk: openjdk7
-    - dist: trusty
+    - dist: focal
       jdk: openjdk8
-    - dist: xenial
+    - dist: focal
       jdk: openjdk10
-    - dist: xenial
+    - dist: focal
       jdk: openjdk11
+    - dist: focal
+      jdk: openjdk14
+    - dist: focal
+      jdk: openjdk17
     - dist: trusty
       jdk: oraclejdk8
     - dist: trusty
       jdk: oraclejdk9
-    - dist: trusty
+    - dist: focal
       jdk: oraclejdk11
-    - dist: bionic
-      jdk: openjdk14
-    - dist: bionic
-      jdk: openjdk17
 addons:
   apt:
     update: true
