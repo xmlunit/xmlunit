@@ -472,4 +472,50 @@ public class PlaceholderDifferenceEvaluatorTest {
         assertFalse(diff.hasDifferences());
     }
 
+    @Test
+    public void ignoreSingleElement() throws Exception {
+
+        String control = "<device>\n" +
+            "<deviceType>Mobile</deviceType>\n" +
+            "<IMEI>${xmlunit.ignore}</IMEI>\n" +
+            "<deviceName>${xmlunit.ignore}</deviceName>\n" +
+            "</device>\n";
+        String test = "<device>\n" +
+            "<deviceType>Mobile</deviceType>\n" +
+            "<IMEI>12345678912345</IMEI>\n" +
+            "<deviceName>My Samsung</deviceName>\n" +
+            "</device>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+            .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertFalse(diff.hasDifferences());
+    }
+
+    @Test
+    public void ignoreWholeElementRegardlessContent() throws Exception {
+
+        String control = "<device>" +
+            "<deviceType>Mobile</deviceType>" +
+            "<deviceDetails xmlns:placeholders=\"https://www.xmlunit.org/placeholders\" placeholders:ignore=\"recursive\"></deviceDetails>" +
+            "</device>";
+        String test = "<device>" +
+            "<deviceType>Mobile</deviceType>" +
+            "<deviceDetails>" +
+            "     <IMEI>12345678912345</IMEI>" +
+            "     <deviceName>My Samsung</deviceName>" +
+            "     <deviceSerialNumber>XYZ-123</deviceSerialNumber>" +
+            "</deviceDetails>" +
+            "</device>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+            .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        for (Difference item : diff.getDifferences()) {
+            System.out.println(item);
+        }
+
+        assertFalse(diff.hasDifferences());
+    }
+
+
+
 }

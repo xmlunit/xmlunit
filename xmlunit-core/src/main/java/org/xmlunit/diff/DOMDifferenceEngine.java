@@ -178,7 +178,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                     }
                 })
             // and finally recurse into children
-            .andIfTrueThen(control.getNodeType() != Node.ATTRIBUTE_NODE,
+            .andIfTrueThen((control.getNodeType() != Node.ATTRIBUTE_NODE &&
+                    !shouldIgnoreChild(control)),
                            compareChildren(controlContext,
                                            allControlChildren,
                                            controlChildren,
@@ -895,5 +896,23 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             indices.put(n, idx++);
         }
         return Collections.unmodifiableMap(indices);
+    }
+
+
+    /**
+     * To first parse the attributeMap and check whether ignore option exist.
+     * @return a boolean to indicate whether should the caller proceed to check the child element.
+     */
+    private boolean shouldIgnoreChild (Node node) {
+        final String IGNORE_OPTION_CONSTANT = "placeholders:ignore";
+        final String OPTION_RECURSIVE = "recursive";
+        // Nested null check should be improved when migrating to Java 8+.
+        if (node.getAttributes() != null &&
+            node.getAttributes().getNamedItem(IGNORE_OPTION_CONSTANT) != null &&
+            node.getAttributes().getNamedItem(IGNORE_OPTION_CONSTANT).getNodeValue() != null
+         ) {
+            return OPTION_RECURSIVE.equals(node.getAttributes().getNamedItem(IGNORE_OPTION_CONSTANT).getNodeValue());
+        }
+       return false;
     }
 }
