@@ -140,6 +140,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
      */
     ComparisonState compareNodes(final Node control, final XPathContext controlContext,
                                  final Node test, final XPathContext testContext) {
+        System.out.println("Checking: " + test.toString());
         final Iterable<Node> allControlChildren =
             new IterableNodeList(control.getChildNodes());
         final Iterable<Node> controlChildren =
@@ -148,6 +149,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             new IterableNodeList(test.getChildNodes());
         final Iterable<Node> testChildren =
             Linqy.filter(allTestChildren, getNodeFilter());
+
+        final boolean shouldIgnoreChild = shouldIgnoreChild(control);
 
         return compare(new Comparison(ComparisonType.NODE_TYPE,
                                       control, getXPath(controlContext),
@@ -164,7 +167,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                     control.getPrefix(), getParentXPath(controlContext),
                                     test, getXPath(testContext),
                                     test.getPrefix(), getParentXPath(testContext)))
-            .andIfTrueThen(control.getNodeType() != Node.ATTRIBUTE_NODE,
+            .andIfTrueThen(control.getNodeType() != Node.ATTRIBUTE_NODE &&
+                                    !shouldIgnoreChild,
                            new Comparison(ComparisonType.CHILD_NODELIST_LENGTH,
                                           control, getXPath(controlContext),
                                           Linqy.count(controlChildren), getParentXPath(controlContext),
@@ -179,7 +183,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                 })
             // and finally recurse into children
             .andIfTrueThen((control.getNodeType() != Node.ATTRIBUTE_NODE &&
-                    !shouldIgnoreChild(control)),
+                    !shouldIgnoreChild),
                            compareChildren(controlContext,
                                            allControlChildren,
                                            controlChildren,
@@ -403,7 +407,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
 
         return compare(new Comparison(ComparisonType.ELEMENT_NUM_ATTRIBUTES,
                                       control, getXPath(controlContext),
-                                      controlAttributes.remainingAttributes.size(), getParentXPath(controlContext),
+                                      controlAttributes.getDataAttributeSizes(), getParentXPath(controlContext),
                                       test, getXPath(testContext),
                                       testAttributes.remainingAttributes.size(), getParentXPath(testContext)))
             .andThen(new DeferredComparison() {
@@ -458,39 +462,41 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         public ComparisonState apply() {
             ComparisonState chain = new OngoingComparisonState();
             for (final Attr controlAttr : controlAttributes.remainingAttributes) {
-                final QName controlAttrName = Nodes.getQName(controlAttr);
-                final Attr testAttr =
-                    findMatchingAttr(testAttributes.remainingAttributes,
-                                     controlAttr);
-                final QName testAttrName = testAttr != null
-                    ? Nodes.getQName(testAttr) : null;
+                if (!controlAttr.getName().equals("placeholders:ignore")) {
+                    final QName controlAttrName = Nodes.getQName(controlAttr);
+                    final Attr testAttr =
+                        findMatchingAttr(testAttributes.remainingAttributes,
+                            controlAttr);
+                    final QName testAttrName = testAttr != null
+                        ? Nodes.getQName(testAttr) : null;
 
-                controlContext.navigateToAttribute(controlAttrName);
-                try {
-                    chain = chain.andThen(
-                        new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
-                                                control, getXPath(controlContext),
-                                                controlAttrName, getParentXPath(controlContext),
-                                                test, getXPath(testContext),
-                                                testAttrName, getParentXPath(testContext)));
+                    controlContext.navigateToAttribute(controlAttrName);
+                    try {
+                        chain = chain.andThen(
+                            new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
+                                control, getXPath(controlContext),
+                                controlAttrName, getParentXPath(controlContext),
+                                test, getXPath(testContext),
+                                testAttrName, getParentXPath(testContext)));
 
-                    if (testAttr != null) {
-                        testContext.navigateToAttribute(testAttrName);
-                        try {
-                            chain = chain.andThen(new DeferredComparison() {
+                        if (testAttr != null) {
+                            testContext.navigateToAttribute(testAttrName);
+                            try {
+                                chain = chain.andThen(new DeferredComparison() {
                                     @Override
                                     public ComparisonState apply() {
                                         return compareNodes(controlAttr, controlContext,
-                                                            testAttr, testContext);
+                                            testAttr, testContext);
                                     }
                                 });
-                            foundTestAttributes.add(testAttr);
-                        } finally {
-                            testContext.navigateToParent();
+                                foundTestAttributes.add(testAttr);
+                            } finally {
+                                testContext.navigateToParent();
+                            }
                         }
+                    } finally {
+                        controlContext.navigateToParent();
                     }
-                } finally {
-                    controlContext.navigateToParent();
                 }
             }
             return chain.andThen(new ControlAttributePresentComparer(control,
@@ -862,6 +868,20 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             this.type = type;
             this.remainingAttributes = remainingAttributes;
         }
+
+        /**
+         * Return the number of attribute by minus the internal tag.
+         * @return int of Attr without the internal one.
+         */
+        public int getDataAttributeSizes() {
+            int count = 0;
+            for (Attr attr : remainingAttributes) {
+                if (!attr.getName().startsWith("placeholders:ignore")) {
+                    count++;
+                }
+            }
+            return count;
+        }
     }
 
     /**
@@ -911,6 +931,7 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             node.getAttributes().getNamedItem(IGNORE_OPTION_CONSTANT) != null &&
             node.getAttributes().getNamedItem(IGNORE_OPTION_CONSTANT).getNodeValue() != null
          ) {
+            System.out.println("Ingnoring entries!");
             return OPTION_RECURSIVE.equals(node.getAttributes().getNamedItem(IGNORE_OPTION_CONSTANT).getNodeValue());
         }
        return false;
