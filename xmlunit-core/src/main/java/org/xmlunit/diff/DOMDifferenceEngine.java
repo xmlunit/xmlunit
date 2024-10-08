@@ -148,28 +148,19 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             new IterableNodeList(test.getChildNodes());
         final Iterable<Node> testChildren =
             Linqy.filter(allTestChildren, getNodeFilter());
-
         return compare(new Comparison(ComparisonType.NODE_TYPE,
-                                      control, getXPath(controlContext),
-                                      control.getNodeType(), getParentXPath(controlContext),
-                                      test, getXPath(testContext),
-                                      test.getNodeType(), getParentXPath(testContext)))
+                                      controlContext, control, control.getNodeType(),
+                                      testContext, test, test.getNodeType()))
             .andThen(new Comparison(ComparisonType.NAMESPACE_URI,
-                                    control, getXPath(controlContext),
-                                    control.getNamespaceURI(), getParentXPath(controlContext),
-                                    test, getXPath(testContext),
-                                    test.getNamespaceURI(), getParentXPath(testContext)))
+                                    controlContext, control, control.getNamespaceURI(),
+                                    testContext, test, test.getNamespaceURI()))
             .andThen(new Comparison(ComparisonType.NAMESPACE_PREFIX,
-                                    control, getXPath(controlContext),
-                                    control.getPrefix(), getParentXPath(controlContext),
-                                    test, getXPath(testContext),
-                                    test.getPrefix(), getParentXPath(testContext)))
+                                    controlContext, control, control.getPrefix(),
+                                    testContext, test, test.getPrefix()))
             .andIfTrueThen(control.getNodeType() != Node.ATTRIBUTE_NODE,
-                           new Comparison(ComparisonType.CHILD_NODELIST_LENGTH,
-                                          control, getXPath(controlContext),
-                                          Linqy.count(controlChildren), getParentXPath(controlContext),
-                                          test, getXPath(testContext),
-                                          Linqy.count(testChildren), getParentXPath(testContext)))
+                            new Comparison(ComparisonType.CHILD_NODELIST_LENGTH,
+                                    controlContext, control, Linqy.count(controlChildren),
+                                    testContext, test, Linqy.count(testChildren)))
             .andThen(new DeferredComparison() {
                     @Override
                     public ComparisonState apply() {
@@ -270,11 +261,9 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                  XPathContext controlContext,
                                                  CharacterData test,
                                                  XPathContext testContext) {
-        return compare(new Comparison(ComparisonType.TEXT_VALUE, control,
-                                      getXPath(controlContext),
-                                      control.getData(), getParentXPath(controlContext),
-                                      test, getXPath(testContext),
-                                      test.getData(), getParentXPath(testContext)));
+        return compare(new Comparison(ComparisonType.TEXT_VALUE,
+                                    controlContext, control, control.getData(),
+                                    testContext, test, test.getData()));
     }
 
     /**
@@ -288,10 +277,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         final DocumentType testDt = filterNode(test.getDoctype());
 
         return compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                      control, getXPath(controlContext),
-                                      Boolean.valueOf(controlDt != null), getParentXPath(controlContext),
-                                      test, getXPath(testContext),
-                                      Boolean.valueOf(testDt != null), getParentXPath(testContext)))
+                                        controlContext, control, Boolean.valueOf(controlDt != null),
+                                      testContext, test, Boolean.valueOf(testDt != null)))
             .andIfTrueThen(controlDt != null && testDt != null,
                            new DeferredComparison() {
                                @Override
@@ -317,15 +304,11 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                         DocumentType test,
                         XPathContext testContext) {
         return compare(new Comparison(ComparisonType.DOCTYPE_NAME,
-                                      control, getXPath(controlContext),
-                                      control.getName(), getParentXPath(controlContext),
-                                      test, getXPath(testContext),
-                                      test.getName(), getParentXPath(testContext)))
+                                    controlContext, control, control.getName(),
+                                    testContext, test, test.getName()))
             .andThen(new Comparison(ComparisonType.DOCTYPE_PUBLIC_ID,
-                                    control, getXPath(controlContext),
-                                    control.getPublicId(), getParentXPath(controlContext),
-                                    test, getXPath(testContext),
-                                    test.getPublicId(), getParentXPath(testContext)))
+                                    controlContext, control, control.getPublicId(),
+                                    testContext, test, test.getPublicId()))
             .andThen(new Comparison(ComparisonType.DOCTYPE_SYSTEM_ID,
                                     control, null, control.getSystemId(), null,
                                     test, null, test.getSystemId(), null));
@@ -343,20 +326,14 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             public ComparisonState apply() {
                 return
                     compare(new Comparison(ComparisonType.XML_VERSION,
-                                           control, getXPath(controlContext),
-                                           control.getXmlVersion(), getParentXPath(controlContext),
-                                           test, getXPath(testContext),
-                                           test.getXmlVersion(), getParentXPath(testContext)))
+                                        controlContext, control, control.getXmlVersion(),
+                                        testContext, test, test.getXmlVersion()))
                     .andThen(new Comparison(ComparisonType.XML_STANDALONE,
-                                            control, getXPath(controlContext),
-                                            control.getXmlStandalone(), getParentXPath(controlContext),
-                                            test, getXPath(testContext),
-                                            test.getXmlStandalone(), getParentXPath(testContext)))
+                                            controlContext, control, control.getXmlStandalone(),
+                                            testContext, test, test.getXmlStandalone()))
                     .andThen(new Comparison(ComparisonType.XML_ENCODING,
-                                            control, getXPath(controlContext),
-                                            control.getXmlEncoding(), getParentXPath(controlContext),
-                                            test, getXPath(testContext),
-                                            test.getXmlEncoding(), getParentXPath(testContext)));
+                                            controlContext, control, control.getXmlEncoding(),
+                                            testContext, test, test.getXmlEncoding()));
             }
         };
     }
@@ -371,10 +348,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                             final XPathContext testContext) {
         return
             compare(new Comparison(ComparisonType.ELEMENT_TAG_NAME,
-                                   control, getXPath(controlContext),
-                                   Nodes.getQName(control).getLocalPart(), getParentXPath(controlContext),
-                                   test, getXPath(testContext),
-                                   Nodes.getQName(test).getLocalPart(), getParentXPath(testContext)))
+                                    controlContext, control, Nodes.getQName(control).getLocalPart(),
+                                    testContext, test, Nodes.getQName(test).getLocalPart()))
             .andThen(new DeferredComparison() {
                     @Override
                     public ComparisonState apply() {
@@ -401,10 +376,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                      QNAME_MAPPER));
 
         return compare(new Comparison(ComparisonType.ELEMENT_NUM_ATTRIBUTES,
-                                      control, getXPath(controlContext),
-                                      controlAttributes.remainingAttributes.size(), getParentXPath(controlContext),
-                                      test, getXPath(testContext),
-                                      testAttributes.remainingAttributes.size(), getParentXPath(testContext)))
+                                        controlContext, control, controlAttributes.remainingAttributes.size(),
+                                        testContext, test, testAttributes.remainingAttributes.size()))
             .andThen(new DeferredComparison() {
                     @Override
                     public ComparisonState apply() {
@@ -413,21 +386,22 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                     }
                 })
             .andThen(new Comparison(ComparisonType.SCHEMA_LOCATION,
-                                    control, getXPath(controlContext),
+                                    controlContext, control,
                                     controlAttributes.schemaLocation != null
-                                    ? controlAttributes.schemaLocation.getValue() : null, getParentXPath(controlContext),
-                                    test, getXPath(testContext),
+                                    ? controlAttributes.schemaLocation.getValue() : null,
+                                    testContext, test,
                                     testAttributes.schemaLocation != null
-                                    ? testAttributes.schemaLocation.getValue() : null, getParentXPath(testContext)))
+                                    ? testAttributes.schemaLocation.getValue() : null))
+//
             .andThen(new Comparison(ComparisonType.NO_NAMESPACE_SCHEMA_LOCATION,
-                                    control, getXPath(controlContext),
+                                    controlContext, control,
                                     controlAttributes.noNamespaceSchemaLocation != null ?
                                     controlAttributes.noNamespaceSchemaLocation.getValue()
-                                    : null, getParentXPath(controlContext),
-                                    test, getXPath(testContext),
+                                    : null,
+                                    testContext, test,
                                     testAttributes.noNamespaceSchemaLocation != null
                                     ? testAttributes.noNamespaceSchemaLocation.getValue()
-                                    : null, getParentXPath(testContext)))
+                                    : null))
             .andThen(new NormalAttributeComparer(control, controlContext,
                                                  controlAttributes, test,
                                                  testContext, testAttributes));
@@ -468,10 +442,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                 try {
                     chain = chain.andThen(
                         new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
-                                                control, getXPath(controlContext),
-                                                controlAttrName, getParentXPath(controlContext),
-                                                test, getXPath(testContext),
-                                                testAttrName, getParentXPath(testContext)));
+                                                controlContext, control, controlAttrName,
+                                                testContext, test, testAttrName));
 
                     if (testAttr != null) {
                         testContext.navigateToAttribute(testAttrName);
@@ -531,11 +503,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                     try {
                         chain =
                             chain.andThen(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
-                                                         control,
-                                                         getXPath(controlContext),
-                                                         null, getParentXPath(controlContext),
-                                                         test, getXPath(testContext),
-                                                         testAttrName, getParentXPath(testContext)));
+                                                         controlContext, control, null,
+                                                         testContext, test, testAttrName));
                     } finally {
                         testContext.navigateToParent();
                     }
@@ -554,15 +523,11 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                           ProcessingInstruction test,
                                                           XPathContext testContext) {
         return compare(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_TARGET,
-                                      control, getXPath(controlContext),
-                                      control.getTarget(), getParentXPath(controlContext),
-                                      test, getXPath(testContext),
-                                      test.getTarget(), getParentXPath(testContext)))
+                                      controlContext, control, control.getTarget(),
+                                      testContext, test, test.getTarget()))
             .andThen(new Comparison(ComparisonType.PROCESSING_INSTRUCTION_DATA,
-                                    control, getXPath(controlContext),
-                                    control.getData(), getParentXPath(controlContext),
-                                    test, getXPath(testContext),
-                                    test.getData(), getParentXPath(testContext)));
+                                    controlContext, control, control.getData(),
+                                    testContext, test, test.getData()));
     }
 
     /**
@@ -609,10 +574,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             try {
                 chain =
                     chain.andThen(new Comparison(ComparisonType.CHILD_NODELIST_SEQUENCE,
-                                                 control, getXPath(controlContext),
-                                                 Integer.valueOf(controlIndex), getParentXPath(controlContext),
-                                                 test, getXPath(testContext),
-                                                 Integer.valueOf(testIndex), getParentXPath(testContext)))
+                                                 controlContext, control, Integer.valueOf(controlIndex),
+                                                 testContext, test, Integer.valueOf(testIndex)))
                     .andThen(new DeferredComparison() {
                             @Override
                             public ComparisonState apply() {
@@ -743,19 +706,15 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             }
             return
                 compare(new Comparison(ComparisonType.ATTR_NAME_LOOKUP,
-                                       controlAttr, getXPath(controlContext),
-                                       controlAttrName, getParentXPath(controlContext),
-                                       testAttr, getXPath(testContext),
-                                       testAttrName, getParentXPath(testContext)))
+                                       controlContext, controlAttr, controlAttrName,
+                                       testContext, testAttr, testAttrName))
                 .andIfTrueThen(attributePresentOnBothSides,
                                compareAttributeExplicitness(controlAttr, controlContext,
                                                             testAttr, testContext))
                 .andIfTrueThen(attributePresentOnBothSides,
                                new Comparison(ComparisonType.ATTR_VALUE,
-                                              controlAttr, getXPath(controlContext),
-                                              valueAsQName(controlAttr), getParentXPath(controlContext),
-                                              testAttr, getXPath(testContext),
-                                              valueAsQName(testAttr), getParentXPath(testContext)));
+                                              controlContext, controlAttr, valueAsQName(controlAttr),
+                                              testContext, testAttr, valueAsQName(testAttr)));
         } finally {
             if (mustChangeControlContext) {
                 controlContext.navigateToParent();
@@ -776,10 +735,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         return compareAttributeExplicitness(control, controlContext, test,
                                             testContext).apply()
             .andThen(new Comparison(ComparisonType.ATTR_VALUE,
-                                    control, getXPath(controlContext),
-                                    control.getValue(), getParentXPath(controlContext),
-                                    test, getXPath(testContext),
-                                    test.getValue(), getParentXPath(testContext)));
+                                    controlContext, control, control.getValue(),
+                                    testContext, test, test.getValue()));
     }
 
     /**
@@ -793,10 +750,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             @Override
             public ComparisonState apply() {
                 return compare(new Comparison(ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED,
-                                              control, getXPath(controlContext),
-                                              control.getSpecified(), getParentXPath(controlContext),
-                                              test, getXPath(testContext),
-                                              test.getSpecified(), getParentXPath(testContext)));
+                                              controlContext, control, control.getSpecified(),
+                                              testContext, test, test.getSpecified()));
             }
         };
     }
