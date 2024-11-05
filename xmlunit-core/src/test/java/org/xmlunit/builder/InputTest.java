@@ -164,6 +164,10 @@ public class InputTest {
              FileChannel fc = is.getChannel()) {
             allIsWellFor(Input.from(fc).build());
         }
+        //from Reader
+        try (FileReader r = new FileReader(TestResources.ANIMAL_FILE)) {
+            allIsWellFor(Input.from(r).build());
+        }
         // from Path
         allIsWellFor(Input.from(new File(TestResources.ANIMAL_FILE).toPath()).build());
     }
