@@ -2,6 +2,10 @@
 
 ## XMLUnit for Java 2.10.1 - /not released, yet/
 
+* `Input.from` now detects `Reader` arguments and uses `fromReader`.
+  PR [#281](https://github.com/xmlunit/xmlunit/pull/281) by
+  [@SThomasP](https://github.com/SThomasP)
+
 ## XMLUnit for Java 2.10.0 - /Released 2024-04-28/
 
 * add a new `ElementSelectors.byNameAndAllAttributes` variant that filters attributes before deciding whether elements can
