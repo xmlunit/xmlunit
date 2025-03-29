@@ -158,9 +158,10 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                     controlContext, control, control.getPrefix(),
                                     testContext, test, test.getPrefix()))
             .andIfTrueThen(control.getNodeType() != Node.ATTRIBUTE_NODE,
-                            new Comparison(ComparisonType.CHILD_NODELIST_LENGTH,
-                                    controlContext, control, Linqy.count(controlChildren),
-                                    testContext, test, Linqy.count(testChildren)))
+                           new Comparison(ComparisonType.CHILD_NODELIST_LENGTH,
+                                          controlContext, control,
+                                          Linqy.count(controlChildren),
+                                          testContext, test, Linqy.count(testChildren)))
             .andThen(new DeferredComparison() {
                     @Override
                     public ComparisonState apply() {
@@ -262,8 +263,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                                  CharacterData test,
                                                  XPathContext testContext) {
         return compare(new Comparison(ComparisonType.TEXT_VALUE,
-                                    controlContext, control, control.getData(),
-                                    testContext, test, test.getData()));
+                                      controlContext, control, control.getData(),
+                                      testContext, test, test.getData()));
     }
 
     /**
@@ -277,7 +278,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
         final DocumentType testDt = filterNode(test.getDoctype());
 
         return compare(new Comparison(ComparisonType.HAS_DOCTYPE_DECLARATION,
-                                        controlContext, control, Boolean.valueOf(controlDt != null),
+                                      controlContext, control,
+                                      Boolean.valueOf(controlDt != null),
                                       testContext, test, Boolean.valueOf(testDt != null)))
             .andIfTrueThen(controlDt != null && testDt != null,
                            new DeferredComparison() {
@@ -304,8 +306,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                         DocumentType test,
                         XPathContext testContext) {
         return compare(new Comparison(ComparisonType.DOCTYPE_NAME,
-                                    controlContext, control, control.getName(),
-                                    testContext, test, test.getName()))
+                                      controlContext, control, control.getName(),
+                                      testContext, test, test.getName()))
             .andThen(new Comparison(ComparisonType.DOCTYPE_PUBLIC_ID,
                                     controlContext, control, control.getPublicId(),
                                     testContext, test, test.getPublicId()))
@@ -326,8 +328,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
             public ComparisonState apply() {
                 return
                     compare(new Comparison(ComparisonType.XML_VERSION,
-                                        controlContext, control, control.getXmlVersion(),
-                                        testContext, test, test.getXmlVersion()))
+                                           controlContext, control, control.getXmlVersion(),
+                                           testContext, test, test.getXmlVersion()))
                     .andThen(new Comparison(ComparisonType.XML_STANDALONE,
                                             controlContext, control, control.getXmlStandalone(),
                                             testContext, test, test.getXmlStandalone()))
@@ -348,8 +350,8 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                             final XPathContext testContext) {
         return
             compare(new Comparison(ComparisonType.ELEMENT_TAG_NAME,
-                                    controlContext, control, Nodes.getQName(control).getLocalPart(),
-                                    testContext, test, Nodes.getQName(test).getLocalPart()))
+                                   controlContext, control, Nodes.getQName(control).getLocalPart(),
+                                   testContext, test, Nodes.getQName(test).getLocalPart()))
             .andThen(new DeferredComparison() {
                     @Override
                     public ComparisonState apply() {
@@ -376,8 +378,10 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
                                      QNAME_MAPPER));
 
         return compare(new Comparison(ComparisonType.ELEMENT_NUM_ATTRIBUTES,
-                                        controlContext, control, controlAttributes.remainingAttributes.size(),
-                                        testContext, test, testAttributes.remainingAttributes.size()))
+                                      controlContext, control,
+                                      controlAttributes.remainingAttributes.size(),
+                                      testContext, test,
+                                      testAttributes.remainingAttributes.size()))
             .andThen(new DeferredComparison() {
                     @Override
                     public ComparisonState apply() {
