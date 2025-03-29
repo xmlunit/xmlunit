@@ -2,6 +2,10 @@
 
 ## XMLUnit for Java 2.10.1 - /not released, yet/
 
+* `Comparison` has earned a new convenience constructor.
+  PR [#280](https://github.com/xmlunit/xmlunit/pull/280) by
+  [@hiufung-kwok](https://github.com/hiufung-kwok)
+
 * `Input.from` now detects `Reader` arguments and uses `fromReader`.
   PR [#281](https://github.com/xmlunit/xmlunit/pull/281) by
   [@SThomasP](https://github.com/SThomasP)

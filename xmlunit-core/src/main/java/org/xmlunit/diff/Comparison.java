@@ -99,13 +99,14 @@ public class Comparison {
      * @param testContext xpathContext object contains the current and parent XPath
      * @param testTarget the test node the comparison applies to
      * @param testValue value from the test node used during comparison
+     * @since XMLUnit 2.10.1
      */
     public Comparison(ComparisonType t,
                       XPathContext controlContext, Node controlTarget, Object controlValue,
                       XPathContext testContext, Node testTarget,Object testValue) {
         this (t,
-            controlTarget, getXPath(controlContext), controlValue, getParentXPath(controlContext),
-            testTarget, getXPath(testContext), testValue, getParentXPath(testContext));
+              controlTarget, getXPath(controlContext), controlValue, getParentXPath(controlContext),
+              testTarget, getXPath(testContext), testValue, getParentXPath(testContext));
     }
 
     /**
