@@ -150,6 +150,8 @@ public class Input {
             xml = Input.fromChannel((ReadableByteChannel) object);
         } else if (object instanceof Path) {
             xml = Input.fromPath((Path) object);
+        } else if (object instanceof Reader) {
+            xml = Input.fromReader((Reader) object);
         } else {
             // assume it is a JaxB-Object.
             xml = Input.fromJaxb(object);
