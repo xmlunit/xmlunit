@@ -19,7 +19,11 @@ import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.*;
 
 import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -471,5 +475,93 @@ public class PlaceholderDifferenceEvaluatorTest {
 
         assertFalse(diff.hasDifferences());
     }
+
+    @Test
+    public void ignoreSingleElement() throws Exception {
+
+        String control = "<device>\n" +
+            "<deviceType>Mobile</deviceType>\n" +
+            "<IMEI>${xmlunit.ignore}</IMEI>\n" +
+            "<deviceName>${xmlunit.ignore}</deviceName>\n" +
+            "</device>\n";
+        String test = "<device>\n" +
+            "<deviceType>Mobile</deviceType>\n" +
+            "<IMEI>12345678912345</IMEI>\n" +
+            "<deviceName>My Samsung</deviceName>\n" +
+            "</device>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+            .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertFalse(diff.hasDifferences());
+    }
+
+    @Test
+    public void ignoreWholeElementRegardlessContent() throws Exception {
+
+        String control = "<device>" +
+            "<deviceType>Mobile</deviceType>" +
+            "<deviceDetails xmlns:placeholders=\"https://www.xmlunit.org/placeholders\" placeholders:ignore=\"recursive\"></deviceDetails>" +
+            "</device>";
+        String test = "<device>" +
+            "<deviceType>Mobile</deviceType>" +
+            "<deviceDetails>" +
+            "     <IMEI>12345678912345</IMEI>" +
+            "     <deviceName>My Samsung</deviceName>" +
+            "     <deviceSerialNumber>XYZ-123</deviceSerialNumber>" +
+            "</deviceDetails>" +
+            "</device>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+            .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        for (Difference item : diff.getDifferences()) {
+            System.out.println(item);
+        }
+
+        assertFalse(diff.hasDifferences());
+    }
+//
+//    @Test
+//    public void test() throws Exception {
+//
+//        String control = "<MetaData xmlns=\"urn:wco:datamodel:WCO:DocumentMetaData-DMS:2\">\n" +
+//            "  <Declaration xmlns=\"urn:wco:datamodel:WCO:DEC-DMS:2\">\n" +
+//            "    <FunctionCode>9</FunctionCode>\n" +
+//            "    <deviceDetails xmlns:placeholders=\"https://www.xmlunit.org/placeholders\" placeholders:ignore=\"recursive\"/>\n" +
+//            "    <FunctionalReferenceID>432189615698-46239</FunctionalReferenceID>\n" +
+////            "    <TypeCode>EXD</TypeCode>\n" +
+//            "    <GoodsItemQuantity>11</GoodsItemQuantity>\n" +
+//            "    <InvoiceAmount currencyID=\"GBP\">7001.00</InvoiceAmount>\n" +
+//            "  </Declaration>\n" +
+//            "</MetaData>";
+//        String test = "<MetaData xmlns=\"urn:wco:datamodel:WCO:DocumentMetaData-DMS:2\">\n" +
+//            "  <Declaration xmlns=\"urn:wco:datamodel:WCO:DEC-DMS:2\">\n" +
+//            "  <FunctionCode>9</FunctionCode>\n" +
+//            "  <AdditionalInformation>\n" +
+//            "        <StatementCode>AG001</StatementCode>\n" +
+//            "        <StatementDescription>AG001</StatementDescription>\n" +
+//            "        <Pointer>\n" +
+//            "            <SequenceNumeric>1</SequenceNumeric>\n" +
+//            "            <DocumentSectionCode>42A</DocumentSectionCode>\n" +
+//            "        </Pointer>\n" +
+//            "  </AdditionalInformation>\n" +
+//            "  <FunctionalReferenceID>432189615698-46239</FunctionalReferenceID>\n" +
+//            "  <GoodsItemQuantity>11</GoodsItemQuantity>\n" +
+//            "  <InvoiceAmount currencyID=\"GBP\">7001.00</InvoiceAmount>\n" +
+//            "  </Declaration>\n" +
+//            "</MetaData>";
+//        Diff diff = DiffBuilder.compare(control).withTest(test)
+//            .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator())
+////            .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
+//            .ignoreWhitespace()
+//            .build();
+//
+//        for (Difference item : diff.getDifferences()) {
+//            System.out.println(item);
+//        }
+//
+//        assertFalse(diff.hasDifferences());
+//    }
+
+
 
 }
