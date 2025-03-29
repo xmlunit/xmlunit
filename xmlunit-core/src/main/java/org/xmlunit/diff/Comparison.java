@@ -15,6 +15,9 @@ package org.xmlunit.diff;
 
 import org.w3c.dom.Node;
 
+import static org.xmlunit.diff.AbstractDifferenceEngine.getParentXPath;
+import static org.xmlunit.diff.AbstractDifferenceEngine.getXPath;
+
 /**
  * Details of a single comparison XMLUnit has performed.
  */
@@ -84,6 +87,25 @@ public class Comparison {
         type = t;
         control = new Detail(controlTarget, controlXPath, controlValue, controlParentXPath);
         test = new Detail(testTarget, testXPath, testValue, testParentXPath);
+    }
+
+    /**
+     * Creates a new comparison.
+     *
+     * @param t the type of comparison
+     * @param controlContext xpathContext object contains the current and parent XPath
+     * @param controlTarget the control node the comparison applies to
+     * @param controlValue value from the control node used during comparison
+     * @param testContext xpathContext object contains the current and parent XPath
+     * @param testTarget the test node the comparison applies to
+     * @param testValue value from the test node used during comparison
+     */
+    public Comparison(ComparisonType t,
+                      XPathContext controlContext, Node controlTarget, Object controlValue,
+                      XPathContext testContext, Node testTarget,Object testValue) {
+        this (t,
+            controlTarget, getXPath(controlContext), controlValue, getParentXPath(controlContext),
+            testTarget, getXPath(testContext), testValue, getParentXPath(testContext));
     }
 
     /**
