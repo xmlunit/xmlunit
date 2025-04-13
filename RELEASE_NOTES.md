@@ -2,6 +2,9 @@
 
 ## XMLUnit for Java 2.10.1 - /not released, yet/
 
+* added a new BOM artifact xmlunit-bom
+  Issue [#269](https://github.com/xmlunit/xmlunit/issues/268)
+
 * `Comparison` has earned a new convenience constructor.
   PR [#280](https://github.com/xmlunit/xmlunit/pull/280) by
   [@hiufung-kwok](https://github.com/hiufung-kwok)

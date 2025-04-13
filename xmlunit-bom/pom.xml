@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<!--
+  This file is licensed to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.xmlunit</groupId>
+  <artifactId>xmlunit-bom</artifactId>
+  <packaging>pom</packaging>
+  <version>2.10.1-SNAPSHOT</version>
+  <name>org.xmlunit:xmlunit-bom</name>
+  <description>Bill of Materials (BOM) for XMLUnit</description>
+  <url>https://www.xmlunit.org/</url>
+
+  <inceptionYear>2001</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>XMLUnit</name>
+    <url>https://www.xmlunit.org/</url>
+  </organization>
+
+  <scm>
+    <connection>scm:git:git@github.com:xmlunit/xmlunit.git</connection>
+    <developerConnection>scm:git:git@github.com:xmlunit/xmlunit.git</developerConnection>
+    <url>git@github.com:xmlunit/xmlunit.git</url>
+  </scm>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/xmlunit/xmlunit/issues</url>
+  </issueManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>XMLUnit General Mailing list</name>
+      <subscribe>https://lists.sourceforge.net/lists/listinfo/xmlunit-general</subscribe>
+      <unsubscribe>https://lists.sourceforge.net/lists/listinfo/xmlunit-general</unsubscribe>
+      <archive>https://sourceforge.net/p/xmlunit/mailman/xmlunit-general/</archive>
+    </mailingList>
+  </mailingLists>
+
+  <developers>
+    <developer>
+      <id>XMLUnit</id>
+      <name>XMLUnit Contributors</name>
+      <email>xmlunit-general@lists.sourceforge.net</email>
+      <organization>XMLUnit</organization>
+      <organizationUrl>https://www.xmlunit.org/</organizationUrl>
+    </developer>
+  </developers>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-assertj</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-assertj3</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-jakarta-jaxb-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-legacy</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-matchers</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-placeholders</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <profiles>
+    <profile>
+      <id>sonatype-oss-release</id>
+      <distributionManagement>
+        <snapshotRepository>
+          <id>ossrh</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+          <id>ossrh</id>
+          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+      </distributionManagement>
+    </profile>
+  </profiles>
+
+</project>
