@@ -57,13 +57,14 @@ The core library is
 ## SNAPSHOT builds
 
 We are providing SNAPSHOT builds from
-[Sonatypes OSS Nexus Repository](https://oss.sonatype.org/content/repositories/snapshots/org/xmlunit/),
+[Sonatype's Central Portal Snapshots](https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/org/xmlunit/),
 you need to add
 
 ```xml
 <repository>
-  <id>snapshots-repo</id>
-  <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  <name>Central Portal Snapshots</name>
+  <id>central-portal-snapshots</id>
+  <url>https://central.sonatype.com/repository/maven-snapshots/</url>
   <releases><enabled>false</enabled></releases>
   <snapshots><enabled>true</enabled></snapshots>
 </repository>
