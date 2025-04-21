@@ -436,6 +436,7 @@
             <version>${maven.coveralls.plugin.version}</version>
             <configuration>
               <dryRun>true</dryRun>
+              <timestampFormat>yyyy-MM-dd HH:mm:ssa</timestampFormat>
             </configuration>
           </plugin>
         </plugins>

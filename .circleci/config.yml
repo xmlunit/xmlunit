@@ -17,7 +17,7 @@ jobs:
       - restore_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
       - run:
-          command: mvn verify jacoco:report coveralls:report -Pjacoco
+          command: mvn verify -Pjacoco org.jacoco:jacoco-maven-plugin:report com.github.hazendaz.maven:coveralls-maven-plugin:report
       - store_test_results:
           path: target/surefire-reports
       - save_cache:
