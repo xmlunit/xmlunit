@@ -8,7 +8,7 @@ commands:
       - checkout
       - run: git submodule sync
       - run: git submodule update --init
-  intitialize-cache:
+  initialize-cache:
     steps:
       - run:
           name: Calculate cache key
