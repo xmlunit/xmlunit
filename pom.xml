@@ -45,7 +45,7 @@
     <maven.buildernumber.plugin.version>1.4</maven.buildernumber.plugin.version>
     <maven.bundle.plugin.version>3.2.0</maven.bundle.plugin.version>
     <maven.compiler.plugin.version>3.6.0</maven.compiler.plugin.version>
-    <maven.coveralls.plugin.version>4.3.0</maven.coveralls.plugin.version>
+    <maven.coveralls.plugin.version>4.7.0</maven.coveralls.plugin.version>
     <maven.cyclonedx.plugin.version>2.7.3</maven.cyclonedx.plugin.version>
     <maven.enforcer.plugin.version>1.4.1</maven.enforcer.plugin.version>
     <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
@@ -431,9 +431,12 @@
             </executions>
           </plugin>
           <plugin>
-            <groupId>org.eluder.coveralls</groupId>
+            <groupId>com.github.hazendaz.maven</groupId>
             <artifactId>coveralls-maven-plugin</artifactId>
             <version>${maven.coveralls.plugin.version}</version>
+            <configuration>
+              <dryRun>true</dryRun>
+            </configuration>
           </plugin>
         </plugins>
       </build>
