@@ -1,6 +1,8 @@
 # This config was automatically generated from your source code
 # Stacks detected: deps:java:.
 version: 2.1
+orbs:
+  coveralls: coveralls/coveralls@2.2.5
 jobs:
   test-java:
     docker:
@@ -24,6 +26,7 @@ jobs:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:
             - ~/.m2/repository
+      - coveralls/upload
 workflows:
   build-and-test:
     jobs:
