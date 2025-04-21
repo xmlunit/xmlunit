@@ -3,8 +3,7 @@ XMLUnit for Java 2.x
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.xmlunit/xmlunit-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.xmlunit/xmlunit-core)
 
-[![CircleCI Build Status XMLUnit 2.x for Java](https://dl.circleci.com/status-badge/img/circleci/V6g9K7YQzERoCkGuNKbmF2/NCancriyEKnFRq6b7UPeyc/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/V6g9K7YQzERoCkGuNKbmF2/NCancriyEKnFRq6b7UPeyc/tree/main)
-[![Coverage Status](https://coveralls.io/repos/xmlunit/xmlunit/badge.svg)](https://coveralls.io/r/xmlunit/xmlunit)
+[![CircleCI Build Status XMLUnit 2.x for Java](https://dl.circleci.com/status-badge/img/circleci/V6g9K7YQzERoCkGuNKbmF2/NCancriyEKnFRq6b7UPeyc/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/V6g9K7YQzERoCkGuNKbmF2/NCancriyEKnFRq6b7UPeyc/tree/main) [![Coverage Status](https://coveralls.io/repos/github/xmlunit/xmlunit/badge.svg)](https://coveralls.io/github/xmlunit/xmlunit)
 
 XMLUnit is a library that supports testing XML output in several ways.
 
