@@ -7,6 +7,8 @@ jobs:
       - image: cimg/openjdk:17.0
     steps:
       - checkout
+      - run: git submodule sync
+      - run: git submodule update --init
       - run:
           name: Calculate cache key
           command: |-
