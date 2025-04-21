@@ -17,7 +17,7 @@ jobs:
       - restore_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
       - run:
-          command: mvn verify
+          command: mvn verify -Pjacoco
       - store_test_results:
           path: target/surefire-reports
       - save_cache:
