@@ -2,6 +2,9 @@
 
 ## XMLUnit for Java 2.10.1 - /not released, yet/
 
+* Migrated form TraciCI to CircleCI
+  Issue [#289](https://github.com/xmlunit/xmlunit/pull/289)
+
 * Migrated to Sonatype's Central Portal
   Issue [#287](https://github.com/xmlunit/xmlunit/issues/287)
 
