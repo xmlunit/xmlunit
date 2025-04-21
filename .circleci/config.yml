@@ -84,14 +84,38 @@ jobs:
       - run:
           working_directory: compat-tests
           command: ./assertj-test.sh ${VERSION} 3.9.1 only-assertj
+      - run:
+          working_directory: compat-tests
+          command: ./assertj-test.sh ${VERSION} 3.13.2 only-assertj
+      - run:
+          working_directory: compat-tests
+          command: ./assertj-test.sh ${VERSION} 3.15.0 only-assertj
+      - run:
+          working_directory: compat-tests
+          command: ./assertj-test.sh ${VERSION} 3.19.0 both
+      - run:
+          working_directory: compat-tests
+          command: ./assertj-test.sh ${VERSION} 3.20.2 both
+      - run:
+          working_directory: compat-tests
+          command: ./jaxb-test.sh ${VERSION} javax
+      - run:
+          working_directory: compat-tests
+          command: ./jaxb-test.sh ${VERSION} jakarta
+      - run:
+          working_directory: compat-tests
+          command: ./hamcrest-test.sh ${VERSION} 2.2
 
 workflows:
   build-and-test:
     jobs:
       - test-with-coverage
-      - test-only:
+      - compat-tests:
           requires:
             - test-with-coverage
+      - test-only:
+          requires:
+            - compat-tests
           matrix:
             parameters:
               version:
@@ -100,6 +124,3 @@ workflows:
                 - "14.0"
                 - "17.0"
                 - "21.0"
-      - compat-tests:
-          requires:
-            - test-with-coverage
