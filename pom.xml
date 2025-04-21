@@ -611,5 +611,16 @@
         </dependencies>
       </dependencyManagement>
     </profile>
+    <profile>
+      <id>java21+</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <jdk>[21,)</jdk>
+      </activation>
+      <properties>
+        <maven.compile.source>8</maven.compile.source>
+        <maven.compile.target>8</maven.compile.target>
+      </properties>
+    </profile>
   </profiles>
 </project>

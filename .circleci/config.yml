@@ -71,6 +71,8 @@ workflows:
     jobs:
       - test-with-coverage
       - test-only:
+          requires:
+            - test-with-coverage
           matrix:
             parameters:
               version:
