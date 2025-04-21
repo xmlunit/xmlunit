@@ -1,14 +1,15 @@
 version: 2.1
 orbs:
   coveralls: coveralls/coveralls@2.2.5
-jobs:
-  test-java:
-    docker:
-      - image: cimg/openjdk:17.0
+
+commands:
+  full-checkout:
     steps:
       - checkout
       - run: git submodule sync
       - run: git submodule update --init
+  intitialize-cache:
+    steps:
       - run:
           name: Calculate cache key
           command: |-
@@ -16,16 +17,65 @@ jobs:
                     sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
       - restore_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
-      - run:
-          command: mvn verify -Pjacoco org.jacoco:jacoco-maven-plugin:report com.github.hazendaz.maven:coveralls-maven-plugin:report
-      - store_test_results:
-          path: target/surefire-reports
+  persist-cache:
+    steps:
       - save_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:
             - ~/.m2/repository
+
+exceutors:
+  openjdk:
+    parameters:
+      version:
+        description: "version tag"
+        default: "17.0"
+        type: string
+    docker:
+      - image: cimg/openjdk:<<parameters.version>>
+
+jobs:
+  test-with-coverage:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - full-checkout
+      - initialize-cache
+      - run:
+          command: mvn verify -Pjacoco org.jacoco:jacoco-maven-plugin:report com.github.hazendaz.maven:coveralls-maven-plugin:report
+      - store_test_results:
+          path: target/surefire-reports
+      - persist-cache
       - coveralls/upload
+
+  test-only:
+    parameters:
+      version:
+        description: "version tag"
+        default: "17.0"
+        type: string
+    executor:
+      name: openjdk
+      version: <<parameters.version>>
+    steps:
+      - full-checkout
+      - initialize-cache
+      - run:
+          command: mvn test
+      - store_test_results:
+          path: target/surefire-reports
+      - persist-cache
+
 workflows:
   build-and-test:
     jobs:
-      - test-java
+      - test-with-coverage
+      - test-only
+        matrix:
+          parameters:
+            version:
+              - 8.0
+              - 11.0
+              - 14.0
+              - 17.0
+              - 21.0
