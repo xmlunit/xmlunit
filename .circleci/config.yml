@@ -80,7 +80,7 @@ jobs:
       - full-checkout
       - initialize-cache
       - run:
-          command: mvn install -Dmaven.test.skip=true
+          command: mvn install -DskipTests=true
       - run:
           working_directory: compat-tests
           command: ./assertj-test.sh ${VERSION} 3.9.1 only-assertj
