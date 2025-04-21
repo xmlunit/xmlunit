@@ -2,6 +2,11 @@ version: 2.1
 orbs:
   coveralls: coveralls/coveralls@2.2.5
 
+parameters:
+  xmlunit-version:
+    type: string
+    default: "2.10.1-SNAPSHOT"
+
 commands:
   full-checkout:
     steps:
@@ -66,6 +71,20 @@ jobs:
           path: target/surefire-reports
       - persist-cache
 
+  compat-tests:
+    docker:
+      - image: cimg/openjdk:17.0
+    environment:
+      VERSION: << pipeline.parameters.xmlunit-version >>
+    steps:
+      - full-checkout
+      - initialize-cache
+      - run:
+          command: mvn install -Dmaven.test.skip=true
+      - run:
+          working_directory: compat-tests
+          command: ./assertj-test.sh ${VERSION} 3.9.1 only-assertj
+
 workflows:
   build-and-test:
     jobs:
@@ -81,3 +100,6 @@ workflows:
                 - "14.0"
                 - "17.0"
                 - "21.0"
+      - compat-tests:
+          requires:
+            - test-with-coverage
