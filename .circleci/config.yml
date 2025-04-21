@@ -24,7 +24,7 @@ commands:
           paths:
             - ~/.m2/repository
 
-exceutors:
+executors:
   openjdk:
     parameters:
       version:
