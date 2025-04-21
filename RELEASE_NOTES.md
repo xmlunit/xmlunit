@@ -2,6 +2,9 @@
 
 ## XMLUnit for Java 2.10.1 - /not released, yet/
 
+* updated bytebuddy dependency of xmlunit-assertj to 2.12.23 in order
+  to support Java 17 properly
+
 * Migrated form TraciCI to CircleCI
   Issue [#289](https://github.com/xmlunit/xmlunit/pull/289)
 

@@ -1,14 +1,20 @@
 version: 2.1
 orbs:
   coveralls: coveralls/coveralls@2.2.5
-jobs:
-  test-java:
-    docker:
-      - image: cimg/openjdk:17.0
+
+parameters:
+  xmlunit-version:
+    type: string
+    default: "2.10.1-SNAPSHOT"
+
+commands:
+  full-checkout:
     steps:
       - checkout
       - run: git submodule sync
       - run: git submodule update --init
+  initialize-cache:
+    steps:
       - run:
           name: Calculate cache key
           command: |-
@@ -16,16 +22,105 @@ jobs:
                     sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
       - restore_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
-      - run:
-          command: mvn verify -Pjacoco org.jacoco:jacoco-maven-plugin:report com.github.hazendaz.maven:coveralls-maven-plugin:report
-      - store_test_results:
-          path: target/surefire-reports
+  persist-cache:
+    steps:
       - save_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:
             - ~/.m2/repository
+
+executors:
+  openjdk:
+    parameters:
+      version:
+        description: "version tag"
+        default: "17.0"
+        type: string
+    docker:
+      - image: cimg/openjdk:<<parameters.version>>
+
+jobs:
+  test-with-coverage:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - full-checkout
+      - initialize-cache
+      - run:
+          command: mvn verify -Pjacoco org.jacoco:jacoco-maven-plugin:report com.github.hazendaz.maven:coveralls-maven-plugin:report
+      - store_test_results:
+          path: target/surefire-reports
+      - persist-cache
       - coveralls/upload
+
+  test-only:
+    parameters:
+      version:
+        description: "version tag"
+        default: "17.0"
+        type: string
+    executor:
+      name: openjdk
+      version: <<parameters.version>>
+    steps:
+      - full-checkout
+      - initialize-cache
+      - run:
+          command: mvn test
+      - store_test_results:
+          path: target/surefire-reports
+      - persist-cache
+
+  compat-tests:
+    docker:
+      - image: cimg/openjdk:17.0
+    environment:
+      VERSION: << pipeline.parameters.xmlunit-version >>
+    steps:
+      - full-checkout
+      - initialize-cache
+      - run:
+          command: mvn install -DskipTests=true
+      - run:
+          working_directory: compat-tests
+          command: ./assertj-test.sh ${VERSION} 3.9.1 only-assertj
+      - run:
+          working_directory: compat-tests
+          command: ./assertj-test.sh ${VERSION} 3.13.2 only-assertj
+      - run:
+          working_directory: compat-tests
+          command: ./assertj-test.sh ${VERSION} 3.15.0 only-assertj
+      - run:
+          working_directory: compat-tests
+          command: ./assertj-test.sh ${VERSION} 3.19.0 both
+      - run:
+          working_directory: compat-tests
+          command: ./assertj-test.sh ${VERSION} 3.20.2 both
+      - run:
+          working_directory: compat-tests
+          command: ./jaxb-test.sh ${VERSION} javax
+      - run:
+          working_directory: compat-tests
+          command: ./jaxb-test.sh ${VERSION} jakarta
+      - run:
+          working_directory: compat-tests
+          command: ./hamcrest-test.sh ${VERSION} 2.2
+
 workflows:
   build-and-test:
     jobs:
-      - test-java
+      - test-with-coverage
+      - compat-tests:
+          requires:
+            - test-with-coverage
+      - test-only:
+          requires:
+            - compat-tests
+          matrix:
+            parameters:
+              version:
+                - "8.0"
+                - "11.0"
+                - "14.0"
+                - "17.0"
+                - "21.0"
