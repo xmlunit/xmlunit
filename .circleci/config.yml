@@ -1,0 +1,31 @@
+version: 2.1
+orbs:
+  coveralls: coveralls/coveralls@2.2.5
+jobs:
+  test-java:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+      - run:
+          name: Calculate cache key
+          command: |-
+            find . -name 'pom.xml' -o -name 'gradlew*' -o -name '*.gradle*' | \
+                    sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
+      - restore_cache:
+          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+      - run:
+          command: mvn verify -Pjacoco org.jacoco:jacoco-maven-plugin:report com.github.hazendaz.maven:coveralls-maven-plugin:report
+      - store_test_results:
+          path: target/surefire-reports
+      - save_cache:
+          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+          paths:
+            - ~/.m2/repository
+      - coveralls/upload
+workflows:
+  build-and-test:
+    jobs:
+      - test-java
