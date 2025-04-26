@@ -41,20 +41,20 @@
     <maven.javadoc.source>8</maven.javadoc.source>
 
     <!-- Dependencies: Maven plugin   -->
-    <maven.assembly.plugin.version>3.0.0</maven.assembly.plugin.version>
-    <maven.buildernumber.plugin.version>1.4</maven.buildernumber.plugin.version>
+    <maven.assembly.plugin.version>3.7.1</maven.assembly.plugin.version>
+    <maven.buildernumber.plugin.version>3.2.1</maven.buildernumber.plugin.version>
     <maven.bundle.plugin.version>3.2.0</maven.bundle.plugin.version>
-    <maven.compiler.plugin.version>3.6.0</maven.compiler.plugin.version>
+    <maven.compiler.plugin.version>3.14.0</maven.compiler.plugin.version>
     <maven.coveralls.plugin.version>4.7.0</maven.coveralls.plugin.version>
-    <maven.cyclonedx.plugin.version>2.7.3</maven.cyclonedx.plugin.version>
-    <maven.enforcer.plugin.version>1.4.1</maven.enforcer.plugin.version>
-    <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
+    <maven.cyclonedx.plugin.version>2.9.1</maven.cyclonedx.plugin.version>
+    <maven.enforcer.plugin.version>3.5.0</maven.enforcer.plugin.version>
+    <maven.gpg.plugin.version>3.2.7</maven.gpg.plugin.version>
     <maven.jacoco.plugin.version>0.8.13</maven.jacoco.plugin.version>
-    <maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
-    <maven.javadoc.plugin.version>3.4.1</maven.javadoc.plugin.version>
-    <maven.shade.plugin.version>2.4.3</maven.shade.plugin.version>
-    <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
-    <maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
+    <maven.jar.plugin.version>3.4.1</maven.jar.plugin.version>
+    <maven.javadoc.plugin.version>3.11.2</maven.javadoc.plugin.version>
+    <maven.shade.plugin.version>3.6.0</maven.shade.plugin.version>
+    <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
+    <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
 
     <!-- Dependencies: Test -->
     <hamcrest.version>1.3</hamcrest.version>

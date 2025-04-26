@@ -2,6 +2,10 @@
 
 ## XMLUnit for Java 2.10.1 - /not released, yet/
 
+* updated a bunch of Maven plugins, in particular we now create CylcloneDX files using
+  version 1.6 of the schema.
+  PR [#292](https://github.com/xmlunit/xmlunit/pull/292)
+
 * updated bytebuddy dependency of xmlunit-assertj to 2.12.23 in order
   to support Java 17 properly
 
