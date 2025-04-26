@@ -23,6 +23,11 @@
   <description>Bill of Materials (BOM) for XMLUnit</description>
   <url>https://www.xmlunit.org/</url>
 
+  <properties>
+    <maven.gpg.plugin.version>3.2.7</maven.gpg.plugin.version>
+    <maven.central.publishing.plugin>0.7.0</maven.central.publishing.plugin>
+  </properties>
+
   <inceptionYear>2001</inceptionYear>
 
   <licenses>
@@ -116,11 +121,25 @@
           <plugin>
             <groupId>org.sonatype.central</groupId>
             <artifactId>central-publishing-maven-plugin</artifactId>
-            <version>0.7.0</version>
+            <version>${maven.central.publishing.plugin}</version>
             <extensions>true</extensions>
             <configuration>
               <publishingServerId>sonatype-central</publishingServerId>
             </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven.gpg.plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
