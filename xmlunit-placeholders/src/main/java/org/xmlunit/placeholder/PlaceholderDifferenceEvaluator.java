@@ -206,7 +206,9 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
             return evaluateConsideringPlaceholders(controlTarget.getNodeValue(), testTarget.getNodeValue(), outcome);
 
         // comparing textual content of attributes
-        } else if (comparison.getType() == ComparisonType.ATTR_VALUE) {
+        } else if (comparison.getType() == ComparisonType.ATTR_VALUE
+                   && controlDetails.getValue() instanceof String
+                   && testDetails.getValue() instanceof String) {
             return evaluateConsideringPlaceholders((String) controlDetails.getValue(),
                 (String) testDetails.getValue(), outcome);
 

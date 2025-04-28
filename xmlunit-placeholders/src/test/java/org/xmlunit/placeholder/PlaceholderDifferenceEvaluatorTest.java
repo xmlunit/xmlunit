@@ -472,4 +472,30 @@ public class PlaceholderDifferenceEvaluatorTest {
         assertFalse(diff.hasDifferences());
     }
 
+    @Test
+    public void canCompareDocmentsWithXsiTypes() {
+        String control = "<element"
+            + " xmlns:myns=\"https://example.org/some-ns\""
+            + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + " xsi:type=\"myns:some-type\" />";
+        String test = "<element"
+            + " xmlns:myns=\"https://example.org/some-ns\""
+            + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + " xsi:type=\"myns:some-other-type\" />";
+
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+            .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertTrue(diff.hasDifferences());
+        int count = 0;
+        Iterator it = diff.getDifferences().iterator();
+        while (it.hasNext()) {
+            count++;
+            Difference difference = (Difference) it.next();
+            assertEquals(ComparisonResult.DIFFERENT, difference.getResult());
+            assertEquals(ComparisonType.ATTR_VALUE,
+                         difference.getComparison().getType());
+        }
+        assertEquals(1, count);
+    }
 }
