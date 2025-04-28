@@ -78,6 +78,11 @@
  * org.xmlunit.diff.DifferenceEvaluator} and add it to the builder
  * yourself.</p>
  *
+ * <p>Placeholder sequences must appear as values inside of attribute values or nested textual content of elements -
+ * inside the control document. As a special case they may also appear as local part of a tye name of xsi:type
+ * attributes of control documents - i.e. <code>xsi:type="prefix:${xmlunit:ignore}"</code>. The namepace URIs of the
+ * compared types must match with the test document. Support for xsi:types has been added with XMLUnit 2.10.1.</p>
+ *
  * @since 2.6.0
  */
 package org.xmlunit.placeholder;

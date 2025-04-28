@@ -498,4 +498,38 @@ public class PlaceholderDifferenceEvaluatorTest {
         }
         assertEquals(1, count);
     }
+
+    @Test
+    public void canIgnoreXsiTypeDifference() {
+        String control = "<element"
+            + " xmlns:myns=\"https://example.org/some-ns\""
+            + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + " xsi:type=\"myns:${xmlunit.ignore}\" />";
+        String test = "<element"
+            + " xmlns:myns=\"https://example.org/some-ns\""
+            + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + " xsi:type=\"myns:some-other-type\" />";
+
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+            .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertFalse(diff.hasDifferences());
+    }
+
+    @Test
+    public void canCompareXsiTypeWithhRegex() {
+        String control = "<element"
+            + " xmlns:myns=\"https://example.org/some-ns\""
+            + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + " xsi:type=\"myns:${xmlunit.matchesRegex(.*-type)}\" />";
+        String test = "<element"
+            + " xmlns:myns=\"https://example.org/some-ns\""
+            + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + " xsi:type=\"myns:some-other-type\" />";
+
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+            .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator()).build();
+
+        assertFalse(diff.hasDifferences());
+    }
 }

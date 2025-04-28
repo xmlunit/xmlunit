@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Node;
 import org.xmlunit.diff.Comparison;
@@ -212,6 +213,13 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
             return evaluateConsideringPlaceholders((String) controlDetails.getValue(),
                 (String) testDetails.getValue(), outcome);
 
+        // comparing QName content of xsi:type attributes
+        } else if (comparison.getType() == ComparisonType.ATTR_VALUE
+                   && controlDetails.getValue() instanceof QName
+                   && testDetails.getValue() instanceof QName) {
+            return evaluateConsideringPlaceholders((QName) controlDetails.getValue(),
+                (QName) testDetails.getValue(), outcome);
+
         // "test document has no attribute but control document has"
         } else if (isMissingAttributeDifference(comparison)) {
             return evaluateMissingAttributeConsideringPlaceholders(comparison, outcome);
@@ -303,6 +311,16 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
             return outcome;
         }
         return ComparisonResult.EQUAL;
+    }
+
+    private ComparisonResult evaluateConsideringPlaceholders(QName controlQName, QName testQName,
+        ComparisonResult outcome) {
+        if (controlQName.getNamespaceURI().equals(testQName.getNamespaceURI())) {
+            return evaluateConsideringPlaceholders(controlQName.getLocalPart(), testQName.getLocalPart(),
+                                                   outcome);
+        }
+
+        return outcome;
     }
 
     private ComparisonResult evaluateConsideringPlaceholders(String controlText, String testText,

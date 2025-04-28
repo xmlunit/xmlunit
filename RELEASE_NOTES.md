@@ -2,6 +2,13 @@
 
 ## XMLUnit for Java 2.10.1 - /not released, yet/
 
+* placeholders can now also be used inside of the local part of `xsi:type` attributes.
+  PR [#293](https://github.com/xmlunit/xmlunit/pull/293)
+
+* PlaceholderDifferenceEvaluator would cause ClassCastException for documents with
+  differences in `xsi:type` attributes.
+  Issue [#276](https://github.com/xmlunit/xmlunit/issues/276)
+
 * updated a bunch of Maven plugins, in particular we now create CylcloneDX files using
   version 1.6 of the schema.
   PR [#292](https://github.com/xmlunit/xmlunit/pull/292)
