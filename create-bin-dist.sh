@@ -24,7 +24,7 @@ fi
 mkdir -p target/bindist-tmp/xmlunit-$1
 cp README.md LICENSE RELEASE_NOTES.md target/bindist-tmp/xmlunit-$1
 cp */target/*.jar target/bindist-tmp/xmlunit-$1
-cp -r target/site/apidocs target/bindist-tmp/xmlunit-$1
+cp -r target/reports/apidocs target/bindist-tmp/xmlunit-$1
 cp xmlunit-*/target/*-cyclonedx.json target/bindist-tmp/xmlunit-$1
 cp xmlunit-*/target/*-cyclonedx.* target
 cd target/bindist-tmp
