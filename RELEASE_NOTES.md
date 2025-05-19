@@ -1,5 +1,7 @@
 # Release Notes
 
+## XMLUnit for Java 2.10.2 - /not released, yet/
+
 ## XMLUnit for Java 2.10.1 - /Released 2025-05-19/
 
 * placeholders can now also be used inside of the local part of `xsi:type` attributes.

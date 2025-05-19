@@ -18,7 +18,7 @@
   <groupId>org.xmlunit</groupId>
   <artifactId>xmlunit-bom</artifactId>
   <packaging>pom</packaging>
-  <version>2.10.1</version>
+  <version>2.10.2-SNAPSHOT</version>
   <name>org.xmlunit:xmlunit-bom</name>
   <description>Bill of Materials (BOM) for XMLUnit</description>
   <url>https://www.xmlunit.org/</url>
