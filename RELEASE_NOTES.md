@@ -18,7 +18,7 @@
 * updated bytebuddy dependency of xmlunit-assertj to 2.12.23 in order
   to support Java 17 properly
 
-* Migrated form TraciCI to CircleCI
+* Migrated form TravisCI to CircleCI
   Issue [#289](https://github.com/xmlunit/xmlunit/pull/289)
 
 * Migrated to Sonatype's Central Portal
