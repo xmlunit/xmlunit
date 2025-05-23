@@ -83,6 +83,9 @@
           </artifactSet>
           <shadedArtifactAttached>true</shadedArtifactAttached>
           <shadedClassifierName>sumo</shadedClassifierName>
+          <createDependencyReducedPom>false</createDependencyReducedPom>
+          <createSourcesJar>false</createSourcesJar>
+          <createTestSourcesJar>false</createTestSourcesJar>
         </configuration>
         <executions>
           <execution>
