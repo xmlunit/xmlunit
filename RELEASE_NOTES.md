@@ -1,6 +1,8 @@
 # Release Notes
 
-## XMLUnit for Java 2.10.2 - /not released, yet/
+## XMLUnit for Java 2.10.3 - /not released, yet/
+
+## XMLUnit for Java 2.10.2 - /Released 2025-05-23/
 
 * the published POM of xmlunit-legacy lacked the dependency on xmlunit-core.
   Issue [#296](https://github.com/xmlunit/xmlunit/issues/296)
