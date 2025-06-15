@@ -374,7 +374,7 @@
             <Bundle-Description>${project.description}</Bundle-Description>
             <Export-Package>org.xmlunit.*;version=${project.version};-noimport:=true</Export-Package>
             <Private-Package></Private-Package>
-            <Import-Package>*</Import-Package>
+            <Import-Package>javax.xml.bind.*;resolution=optional,*</Import-Package>
             <DynamicImport-Package></DynamicImport-Package>
             <Bundle-DocURL>${project.url}</Bundle-DocURL>
           </instructions>
