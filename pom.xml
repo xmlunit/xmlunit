@@ -42,7 +42,7 @@
 
     <!-- Dependencies: Maven plugin   -->
     <maven.assembly.plugin.version>3.7.1</maven.assembly.plugin.version>
-    <maven.buildernumber.plugin.version>3.2.1</maven.buildernumber.plugin.version>
+    <maven.buildnumber.plugin.version>3.2.1</maven.buildnumber.plugin.version>
     <maven.bundle.plugin.version>3.2.0</maven.bundle.plugin.version>
     <maven.compiler.plugin.version>3.14.0</maven.compiler.plugin.version>
     <maven.coveralls.plugin.version>4.7.0</maven.coveralls.plugin.version>
@@ -223,10 +223,10 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>buildnumber-maven-plugin</artifactId>
-          <version>${maven.buildernumber.plugin.version}</version>
+          <version>${maven.buildnumber.plugin.version}</version>
           <configuration>
             <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
-            <timestampFormat>{0,date,yyyy-MM-dd HH:mm:ssa}</timestampFormat>
+            <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</timestampFormat>
           </configuration>
           <executions>
             <execution>
@@ -437,7 +437,7 @@
             <version>${maven.coveralls.plugin.version}</version>
             <configuration>
               <dryRun>true</dryRun>
-              <timestampFormat>yyyy-MM-dd HH:mm:ssa</timestampFormat>
+              <timestamp>${maven.build.timestamp}</timestamp>
             </configuration>
           </plugin>
         </plugins>
