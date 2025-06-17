@@ -5,6 +5,7 @@
 * marked OSGi `Import-Package` optional for javax.xml.bind packages in xmlunit-core.
   Also fixed the `Export-Package` header of the legacy module.
   Issue [#300](https://github.com/xmlunit/xmlunit/issues/300)
+  PR [#301](https://github.com/xmlunit/xmlunit/pull/301)
 
 ## XMLUnit for Java 2.10.2 - /Released 2025-05-23/
 
