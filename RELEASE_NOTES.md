@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.10.3 - /not released, yet/
+## XMLUnit for Java 2.10.3 - /Released 2025-06-19/
 
 * marked OSGi `Import-Package` optional for javax.xml.bind packages in xmlunit-core.
   Also fixed the `Export-Package` header of the legacy module.
