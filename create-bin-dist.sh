@@ -26,7 +26,9 @@ cp README.md LICENSE RELEASE_NOTES.md target/bindist-tmp/xmlunit-$1
 cp */target/*.jar target/bindist-tmp/xmlunit-$1
 cp -r target/reports/apidocs target/bindist-tmp/xmlunit-$1
 cp xmlunit-*/target/*-cyclonedx.json target/bindist-tmp/xmlunit-$1
-cp xmlunit-*/target/*-cyclonedx.* target
+cp xmlunit-*/target/*-cyclonedx.xml target/bindist-tmp/xmlunit-$1
+cp xmlunit-*/target/*-cyclonedx.json target
+cp xmlunit-*/target/*-cyclonedx.xml target
 cd target/bindist-tmp
 zip -r xmlunit-$1-bin.zip xmlunit-$1
 tar cf xmlunit-$1-bin.tar xmlunit-$1
