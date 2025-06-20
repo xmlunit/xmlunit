@@ -1,7 +1,7 @@
 XMLUnit for Java 2.x
 ====================
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.xmlunit/xmlunit-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.xmlunit/xmlunit-core)
+[![Maven Central](https://maven-badges.sml.io/sonatype-central/org.xmlunit/xmlunit-core/badge.svg)](https://maven-badges.sml.io/sonatype-central/org.xmlunit/xmlunit-core/badge.svg)
 
 [![CircleCI Build Status XMLUnit 2.x for Java](https://dl.circleci.com/status-badge/img/circleci/V6g9K7YQzERoCkGuNKbmF2/NCancriyEKnFRq6b7UPeyc/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/V6g9K7YQzERoCkGuNKbmF2/NCancriyEKnFRq6b7UPeyc/tree/main) [![Coverage Status](https://coveralls.io/repos/github/xmlunit/xmlunit/badge.svg)](https://coveralls.io/github/xmlunit/xmlunit)
 
@@ -42,7 +42,7 @@ how to contribute.
 
 The latest releases are available as
 [GitHub releases](https://github.com/xmlunit/xmlunit/releases) or via
-[Maven Central](http://search.maven.org/#search|ga|1|org.xmlunit).
+[Maven Central](https://central.sonatype.com/search?q=org.xmlunit).
 
 The core library is
 
