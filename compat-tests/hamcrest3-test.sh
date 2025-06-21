@@ -2,7 +2,7 @@
 set -e
 
 if [ "$#" -ne 2 ]; then
-    echo "Usage: hamcrest-test.sh XMLUNIT_VERSION HAMCREST_VERSION"
+    echo "Usage: hamcrest3-test.sh XMLUNIT_VERSION HAMCREST_VERSION"
     exit 1
 fi
 
@@ -50,13 +50,7 @@ cat > ${SCRATCH_DIR}/pom.xml <<EOF
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
-      <version>\${hamcrest.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-library</artifactId>
+      <artifactId>hamcrest</artifactId>
       <version>\${hamcrest.version}</version>
       <scope>test</scope>
     </dependency>

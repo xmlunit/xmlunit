@@ -98,6 +98,9 @@ jobs:
           command: ./assertj-test.sh ${VERSION} 3.20.2 both
       - run:
           working_directory: compat-tests
+          command: ./assertj-test.sh ${VERSION} 3.27.3 both
+      - run:
+          working_directory: compat-tests
           command: ./jaxb-test.sh ${VERSION} javax
       - run:
           working_directory: compat-tests
@@ -105,6 +108,9 @@ jobs:
       - run:
           working_directory: compat-tests
           command: ./hamcrest-test.sh ${VERSION} 2.2
+      - run:
+          working_directory: compat-tests
+          command: ./hamcrest3-test.sh ${VERSION} 3.0
 
 workflows:
   build-and-test:
