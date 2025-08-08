@@ -30,7 +30,8 @@ public final class NodeFilters {
     public static final Predicate<Node> Default = new Predicate<Node>() {
             @Override
             public boolean test(Node n) {
-                return n.getNodeType() != Node.DOCUMENT_TYPE_NODE;
+                return n != null
+                    && n.getNodeType() != Node.DOCUMENT_TYPE_NODE;
             }
         };
 

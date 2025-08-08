@@ -675,6 +675,27 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
         assertEquals(1, ex.invoked);
     }
 
+    @Test public void compareAttributesWithNullValues() {
+        DOMDifferenceEngine d = new DOMDifferenceEngine();
+        DiffExpecter ex = new DiffExpecter(ComparisonType.ATTR_VALUE);
+        d.addDifferenceListener(ex);
+        d.setComparisonController(ComparisonControllers.StopWhenDifferent);
+
+        Element e1 = doc.createElement("foo");
+        e1.setAttribute("x", null);
+        Element e2 = doc.createElement("foo");
+        e2.setAttribute("x", null);
+        Element e3 = doc.createElement("foo");
+        e3.setAttribute("x", "2137");
+
+        assertEquals(wrap(ComparisonResult.EQUAL),
+                     d.compareNodes(e1, new XPathContext(),
+                                    e2, new XPathContext()));
+        assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),
+                     d.compareNodes(e1, new XPathContext(),
+                                    e3, new XPathContext()));
+    }
+
     @Test public void compareNodesWithNodeFilter() {
         DOMDifferenceEngine d = new DOMDifferenceEngine();
         d.setNodeFilter(new Predicate<Node>() {
