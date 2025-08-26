@@ -352,4 +352,40 @@ public class NodesTest {
         Attr a2 = (Attr) attrs.getNamedItem("attr2");
         assertEquals("not me", a2.getValue());
     }
+
+    @Test
+    public void getNodeListReturnsOriginalListForElements() {
+        Element e = doc.createElement(FOO);
+        NodeList directChildren = e.getChildNodes();
+        NodeList mappedChildren = Nodes.getChildNodes(e);
+        assertSame(directChildren, mappedChildren);
+    }
+
+    @Test
+    public void getNodeListReturnsOriginalListForAttributesWithValues() {
+        Element e = doc.createElement(FOO);
+        e.setAttribute("a", "b");
+        Node a = e.getAttributes().item(0);
+        NodeList directChildren = a.getChildNodes();
+        NodeList mappedChildren = Nodes.getChildNodes(a);
+        assertSame(directChildren, mappedChildren);
+    }
+
+    @Test
+    public void getNodeListReturnsNullSafeListForAttributesWithoutValues() {
+        Element e = doc.createElement(FOO);
+        e.setAttribute("a", null);
+        Node a = e.getAttributes().item(0);
+        NodeList directChildren = a.getChildNodes();
+        NodeList mappedChildren = Nodes.getChildNodes(a);
+        assertNotSame(directChildren, mappedChildren);
+
+        assertEquals(1, directChildren.getLength());
+        assertNull(directChildren.item(0));
+
+        assertEquals(1, mappedChildren.getLength());
+        assertNotNull(mappedChildren.item(0));
+        assertTrue(mappedChildren.item(0) instanceof Text);
+        assertEquals("", ((Text) mappedChildren.item(0)).getWholeText());
+    }
 }
