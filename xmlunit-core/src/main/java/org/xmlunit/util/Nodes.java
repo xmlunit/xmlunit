@@ -61,7 +61,7 @@ public final class Nodes {
      */
     public static String getMergedNestedText(Node n) {
         StringBuilder sb = new StringBuilder();
-        for (Node child : new IterableNodeList(n.getChildNodes())) {
+        for (Node child : new IterableNodeList(getChildNodes(n))) {
             if (child instanceof Text) {
                 String s = child.getNodeValue();
                 if (s != null) {
@@ -201,7 +201,7 @@ public final class Nodes {
             n.setNodeValue(s);
         }
         List<Node> toRemove = new LinkedList<Node>();
-        for (Node child : new IterableNodeList(n.getChildNodes())) {
+        for (Node child : new IterableNodeList(getChildNodes(n))) {
             handleWsRec(child, normalize);
             if (!(n instanceof Attr)
                 && (child instanceof Text)
@@ -253,7 +253,7 @@ public final class Nodes {
 
     private static void stripECW(Node n) {
         List<Node> toRemove = new LinkedList<Node>();
-        for (Node child : new IterableNodeList(n.getChildNodes())) {
+        for (Node child : new IterableNodeList(getChildNodes(n))) {
             stripECW(child);
             if (!(n instanceof Attr)
                 && (child instanceof Text)
