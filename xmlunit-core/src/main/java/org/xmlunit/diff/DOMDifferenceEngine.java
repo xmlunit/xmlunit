@@ -141,11 +141,11 @@ public final class DOMDifferenceEngine extends AbstractDifferenceEngine {
     ComparisonState compareNodes(final Node control, final XPathContext controlContext,
                                  final Node test, final XPathContext testContext) {
         final Iterable<Node> allControlChildren =
-            new IterableNodeList(control.getChildNodes());
+            new IterableNodeList(Nodes.getChildNodes(control));
         final Iterable<Node> controlChildren =
             Linqy.filter(allControlChildren, getNodeFilter());
         final Iterable<Node> allTestChildren =
-            new IterableNodeList(test.getChildNodes());
+            new IterableNodeList(Nodes.getChildNodes(test));
         final Iterable<Node> testChildren =
             Linqy.filter(allTestChildren, getNodeFilter());
         return compare(new Comparison(ComparisonType.NODE_TYPE,

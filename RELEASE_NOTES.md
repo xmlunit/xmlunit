@@ -2,6 +2,10 @@
 
 ## XMLUnit for Java 2.10.4 - /not released, yet/
 
+* attributes with `null` values could cause a `NullPointerException`.
+  Issue [#307](https://github.com/xmlunit/xmlunit/issues/307)
+  PR [#309](https://github.com/xmlunit/xmlunit/pull/309)
+
 ## XMLUnit for Java 2.10.3 - /Released 2025-06-19/
 
 * marked OSGi `Import-Package` optional for javax.xml.bind packages in xmlunit-core.

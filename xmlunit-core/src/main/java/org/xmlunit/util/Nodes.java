@@ -21,8 +21,10 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Attr;
 import org.w3c.dom.CharacterData;
+import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 
@@ -59,7 +61,7 @@ public final class Nodes {
      */
     public static String getMergedNestedText(Node n) {
         StringBuilder sb = new StringBuilder();
-        for (Node child : new IterableNodeList(n.getChildNodes())) {
+        for (Node child : new IterableNodeList(getChildNodes(n))) {
             if (child instanceof Text) {
                 String s = child.getNodeValue();
                 if (s != null) {
@@ -162,6 +164,29 @@ public final class Nodes {
     }
 
     /**
+     * Helper deals with the {@code getChildNodes} implementation of {@code Attr}.
+     *
+     * <p>For non-{@code Attr} nodes this method simply returns {@code n.getChildNodes}. For the special case of an
+     * {@code Attr} with a {@code null} value this returns a {@code NodeList} with an empty {@code Text} element
+     * containing a empty string rather than a {@code NodeList} containing a single {@code null} {@code Node}.
+     *
+     * @param n the node to obtain the children of
+     * @return children of the node
+     * @since XMLUnit 2.10.4
+     */
+    public static NodeList getChildNodes(Node n) {
+        NodeList nl = n.getChildNodes();
+        if (!(n instanceof Attr) || nl.getLength() != 1 || nl.item(0) != null) {
+            return nl;
+        }
+
+        // attr with a single child with value null
+        // i.e. ownertElement.setAttribute(name, null) has been called.
+        // in this case ownerElement.getAttribute() return "", make NodeList consistent with this.
+        return new EmptyTextNodeNodeList(n.getOwnerDocument());
+    }
+
+    /**
      * Trims textual content of this node, removes empty text and
      * CDATA children, recurses into its child nodes.
      * @param n the node
@@ -176,7 +201,7 @@ public final class Nodes {
             n.setNodeValue(s);
         }
         List<Node> toRemove = new LinkedList<Node>();
-        for (Node child : new IterableNodeList(n.getChildNodes())) {
+        for (Node child : new IterableNodeList(getChildNodes(n))) {
             handleWsRec(child, normalize);
             if (!(n instanceof Attr)
                 && (child instanceof Text)
@@ -228,7 +253,7 @@ public final class Nodes {
 
     private static void stripECW(Node n) {
         List<Node> toRemove = new LinkedList<Node>();
-        for (Node child : new IterableNodeList(n.getChildNodes())) {
+        for (Node child : new IterableNodeList(getChildNodes(n))) {
             stripECW(child);
             if (!(n instanceof Attr)
                 && (child instanceof Text)
@@ -241,4 +266,19 @@ public final class Nodes {
         }
     }
 
+    private static class EmptyTextNodeNodeList implements NodeList {
+        private final Text emptyStringNode;
+
+        private EmptyTextNodeNodeList(Document d) {
+            emptyStringNode = d.createTextNode("");
+        }
+
+        public int getLength() {
+            return 1;
+        }
+
+        public Node item(int index) {
+            return index == 0 ? emptyStringNode : null;
+        }
+    }
 }
