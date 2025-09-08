@@ -181,8 +181,8 @@ public final class Nodes {
         }
 
         // attr with a single child with value null
-        // i.e. ownertElement.setAttribute(name, null) has been called.
-        // in this case ownerElement.getAttribute() return "", make NodeList consistent with this.
+        // i.e. ownerElement.setAttribute(name, null) has been called.
+        // in this case ownerElement.getAttribute(name) return "", make NodeList consistent with this.
         return new EmptyTextNodeNodeList(n.getOwnerDocument());
     }
 
