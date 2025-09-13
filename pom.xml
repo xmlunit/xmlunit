@@ -18,7 +18,7 @@
   <groupId>org.xmlunit</groupId>
   <artifactId>xmlunit-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.10.4-SNAPSHOT</version>
+  <version>2.10.5-SNAPSHOT</version>
   <name>org.xmlunit:xmlunit-parent</name>
   <description>Parent POM for all artifacts of XMLUnit</description>
   <url>https://www.xmlunit.org/</url>
