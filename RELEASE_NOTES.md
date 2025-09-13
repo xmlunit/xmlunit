@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.10.4 - /not released, yet/
+## XMLUnit for Java 2.10.4 - /Released 2025-09-13/
 
 * attributes with `null` values could cause a `NullPointerException`.
   Issue [#307](https://github.com/xmlunit/xmlunit/issues/307)
