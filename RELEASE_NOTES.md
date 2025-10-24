@@ -1,5 +1,7 @@
 # Release Notes
 
+## XMLUnit for Java 2.11.1 - /not released, yet/
+
 ## XMLUnit for Java 2.11.0 - /Released 2025-10-24/
 
 * the `xmlunit-jakarta-jaxb-impl` no longer depends on `org.glassfish.jaxb:jaxb-runtime` directly.
