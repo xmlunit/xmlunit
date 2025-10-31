@@ -10,7 +10,8 @@ parameters:
 commands:
   full-checkout:
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - run: git submodule sync
       - run: git submodule update --init
   initialize-cache:
