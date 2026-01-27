@@ -24,7 +24,7 @@
 
   <properties>
     <automatic.module.name>${project.groupId}.assertj</automatic.module.name>
-    <assertj2.version>2.9.0</assertj2.version>
+    <assertj2.version>3.27.7</assertj2.version>
   </properties>
 
   <artifactId>xmlunit-assertj</artifactId>
