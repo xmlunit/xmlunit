@@ -26,7 +26,7 @@
     <automatic.module.name>${project.groupId}.assertj3</automatic.module.name>
     <maven.compile.source>8</maven.compile.source>
     <maven.compile.target>8</maven.compile.target>
-    <assertj3.version>3.27.6</assertj3.version>
+    <assertj3.version>3.27.7</assertj3.version>
   </properties>
 
   <artifactId>xmlunit-assertj3</artifactId>
