@@ -29,7 +29,6 @@ import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelector;
 import org.xmlunit.diff.NodeMatcher;
-import org.xmlunit.util.Predicate;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -38,6 +37,7 @@ import org.hamcrest.Matcher;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Attr;

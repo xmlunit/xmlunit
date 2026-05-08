@@ -15,9 +15,9 @@ package org.xmlunit.diff;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
-import org.xmlunit.util.Predicate;
 
 /**
  * Useful base-implementation of some parts of the DifferenceEngine
@@ -32,12 +32,7 @@ public abstract class AbstractDifferenceEngine implements DifferenceEngine {
     private DifferenceEvaluator diffEvaluator = DifferenceEvaluators.Default;
     private ComparisonController comparisonController = ComparisonControllers.Default;
     private Map<String, String> prefix2uri = Collections.emptyMap();
-    private Predicate<Attr> attributeFilter = new Predicate<Attr>() {
-            @Override
-            public boolean test(Attr a) {
-                return true;
-            }
-        };
+    private Predicate<Attr> attributeFilter = a -> true;
     private Predicate<Node> nodeFilter = NodeFilters.Default;
 
     /**

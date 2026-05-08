@@ -36,7 +36,6 @@ import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.diff.ElementSelectors;
-import org.xmlunit.util.Predicate;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -65,6 +64,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.function.Predicate;
 
 public class CompareMatcherTest {
 
@@ -248,7 +248,7 @@ public class CompareMatcherTest {
         } catch (AssertionError e) {
             assertThat(e.getMessage(), containsString("Expected text value 'ABC' but was 'XYZ'"));
         }
-        
+
         // validate result
         assertThat(comparisonListener.differents, is(1));
         assertThat(comparisonListener.similars, is(1));
@@ -268,7 +268,7 @@ public class CompareMatcherTest {
         } catch (AssertionError e) {
             assertThat(e.getMessage(), containsString("Expected text value 'ABC' but was 'XYZ'"));
         }
-        
+
         // validate result
         assertThat(comparisonListener.differents, is(1));
         assertThat(comparisonListener.similars, is(1));
@@ -277,7 +277,7 @@ public class CompareMatcherTest {
 
     @Test
     public void testCompareMatcherWrapper_shouldWriteFailedTestInput() {
-        
+
         final String control = "<a><b attr=\"abc\"></b></a>";
         final String test = "<a><b attr=\"xyz\"></b></a>";
 
@@ -289,7 +289,7 @@ public class CompareMatcherTest {
         } catch (AssertionError e) {
             assertThat(e.getMessage(), containsString("Expected attribute value 'abc' but was 'xyz'"));
         }
-        
+
         // validate that the written File contains the right data:
         assertThat(new File(getTestResultFolder(), fileName), isSimilarTo(test));
     }
@@ -476,7 +476,7 @@ public class CompareMatcherTest {
      * <p>
      * This example will write the Test-Input into the Files System.<br>
      * This could be useful for manual reviews or as template for a control-File.
-     * 
+     *
      */
     private static class TestCompareMatcherWrapper extends BaseMatcher<Object> {
         private final CompareMatcher compareMatcher;
@@ -540,7 +540,7 @@ public class CompareMatcherTest {
         public void describeMismatch(Object item, Description description) {
             compareMatcher.describeMismatch(item, description);
         }
-        
+
     }
 
     private static File getTestResultFolder() {

@@ -32,7 +32,6 @@ import org.xmlunit.input.CommentLessSource;
 import org.xmlunit.input.ElementContentWhitespaceStrippedSource;
 import org.xmlunit.input.WhitespaceNormalizedSource;
 import org.xmlunit.input.WhitespaceStrippedSource;
-import org.xmlunit.util.Predicate;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
@@ -43,6 +42,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * DiffBuilder to create a {@link Diff} instance.

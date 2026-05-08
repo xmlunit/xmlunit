@@ -14,7 +14,7 @@
 package org.xmlunit.diff;
 
 import org.w3c.dom.Node;
-import org.xmlunit.util.Predicate;
+import java.util.function.Predicate;
 
 /**
  * Common NodeFilter implementations.
@@ -27,24 +27,15 @@ public final class NodeFilters {
      * <p>This is the default used by {@link AbstractDifferenceEngine}
      * and thus {@link DOMDifferenceEngine}.</p>
      */
-    public static final Predicate<Node> Default = new Predicate<Node>() {
-            @Override
-            public boolean test(Node n) {
-                return n.getNodeType() != Node.DOCUMENT_TYPE_NODE;
-            }
-        };
+    public static final Predicate<Node> Default =
+        n -> n.getNodeType() != Node.DOCUMENT_TYPE_NODE;
 
     /**
      * Accepts all nodes.
      *
      * @since XMLUnit 2.6.0
      */
-    public static final Predicate<Node> AcceptAll = new Predicate<Node>() {
-            @Override
-            public boolean test(Node n) {
-                return true;
-            }
-        };
+    public static final Predicate<Node> AcceptAll = n -> true;
 
     /**
      * Accepts nodes that are accepted by all given filters.

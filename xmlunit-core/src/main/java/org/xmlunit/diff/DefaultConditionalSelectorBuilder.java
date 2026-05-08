@@ -16,7 +16,7 @@ package org.xmlunit.diff;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import javax.xml.namespace.QName;
-import org.xmlunit.util.Predicate;
+import java.util.function.Predicate;
 import org.w3c.dom.Element;
 
 class DefaultConditionalSelectorBuilder
@@ -94,4 +94,3 @@ class DefaultConditionalSelectorBuilder
         }
     }
 }
-

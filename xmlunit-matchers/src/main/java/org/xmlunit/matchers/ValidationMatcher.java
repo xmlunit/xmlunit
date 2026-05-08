@@ -18,9 +18,7 @@ import static org.xmlunit.util.Linqy.asList;
 import static org.xmlunit.util.Linqy.map;
 
 import org.xmlunit.builder.Input;
-import org.xmlunit.util.IsNullPredicate;
 import org.xmlunit.util.Mapper;
-import org.xmlunit.util.Predicate;
 import org.xmlunit.validation.JAXPValidator;
 import org.xmlunit.validation.Languages;
 import org.xmlunit.validation.ValidationProblem;
@@ -32,6 +30,8 @@ import org.hamcrest.Factory;
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * Hamcrest Matcher for XML Validation against W3C XML Schema using
@@ -52,7 +52,7 @@ public class ValidationMatcher extends BaseMatcher {
             throw new IllegalArgumentException("schemaSource must not be null");
         }
         Iterable<Object> schemaSourceList = Arrays.asList(schemaSource);
-        if (any(schemaSourceList, new IsNullPredicate())) {
+        if (any(schemaSourceList, Objects::isNull)) {
             throw new IllegalArgumentException("schemaSource must not contain null values");
         }
         this.schemaSource = asList(map(schemaSourceList,

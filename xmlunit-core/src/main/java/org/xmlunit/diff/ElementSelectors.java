@@ -20,13 +20,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Map;
+import java.util.function.Predicate;
 import javax.xml.namespace.QName;
-import org.xmlunit.util.IsNullPredicate;
 import org.xmlunit.util.Linqy;
 import org.xmlunit.util.Mapper;
 import org.xmlunit.util.Nodes;
-import org.xmlunit.util.Predicate;
 import org.xmlunit.xpath.JAXPXPathEngine;
 import org.xmlunit.xpath.XPathEngine;
 import org.w3c.dom.Attr;
@@ -91,12 +91,7 @@ public final class ElementSelectors {
      * #byNameAndAllAttributes(Predicate)} passing in your attribute filter if this causes problems.</p>
      */
     public static final ElementSelector byNameAndAllAttributes =
-        byNameAndAllAttributes(new Predicate<Attr>() {
-            @Override
-            public boolean test(Attr a) {
-                return true;
-            }
-        });
+        byNameAndAllAttributes(a -> true);
 
     /**
      * Elements with the same local name (and namespace URI - if any)
@@ -161,7 +156,7 @@ public final class ElementSelectors {
         if (attribs == null) {
             throw new IllegalArgumentException(ATTRIBUTES_MUST_NOT_BE_NULL);
         }
-        if (any(Arrays.asList(attribs), new IsNullPredicate())) {
+        if (any(Arrays.asList(attribs), Objects::isNull)) {
             throw new IllegalArgumentException(ATTRIBUTES_MUST_NOT_CONTAIN_NULL_VALUES);
         }
         QName[] qs = new QName[attribs.length];
@@ -190,7 +185,7 @@ public final class ElementSelectors {
             throw new IllegalArgumentException(ATTRIBUTES_MUST_NOT_BE_NULL);
         }
         final Collection<String> qs = Arrays.asList(attribs);
-        if (any(qs, new IsNullPredicate())) {
+        if (any(qs, Objects::isNull)) {
             throw new IllegalArgumentException(ATTRIBUTES_MUST_NOT_CONTAIN_NULL_VALUES);
         }
         final HashSet<String> as = new HashSet<String>(qs);
@@ -236,7 +231,7 @@ public final class ElementSelectors {
             throw new IllegalArgumentException(ATTRIBUTES_MUST_NOT_BE_NULL);
         }
         final Collection<QName> qs = Arrays.asList(attribs);
-        if (any(qs, new IsNullPredicate())) {
+        if (any(qs, Objects::isNull)) {
             throw new IllegalArgumentException(ATTRIBUTES_MUST_NOT_CONTAIN_NULL_VALUES);
         }
         return new ElementSelector() {
@@ -306,7 +301,7 @@ public final class ElementSelectors {
             throw new IllegalArgumentException(SELECTORS_MUST_NOT_BE_NULL);
         }
         final Collection<ElementSelector> s = Arrays.asList(selectors);
-        if (any(s, new IsNullPredicate())) {
+        if (any(s, Objects::isNull)) {
             throw new IllegalArgumentException("selectors must not contain null values");
         }
         return new ElementSelector() {
@@ -329,7 +324,7 @@ public final class ElementSelectors {
             throw new IllegalArgumentException(SELECTORS_MUST_NOT_BE_NULL);
         }
         final Collection<ElementSelector> s = Arrays.asList(selectors);
-        if (any(s, new IsNullPredicate())) {
+        if (any(s, Objects::isNull)) {
             throw new IllegalArgumentException("selectors must not contain null values");
         }
         return new ElementSelector() {

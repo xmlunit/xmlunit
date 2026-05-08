@@ -14,10 +14,10 @@
 package org.xmlunit.diff;
 
 import java.util.Map;
+import java.util.function.Predicate;
 import javax.xml.transform.Source;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
-import org.xmlunit.util.Predicate;
 
 /**
  * XMLUnit's difference engine.

@@ -14,6 +14,7 @@
 package org.xmlunit.builder;
 
 import java.util.Map;
+import java.util.function.Predicate;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
@@ -26,7 +27,6 @@ import org.xmlunit.diff.DifferenceEngine;
 import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.NodeMatcher;
-import org.xmlunit.util.Predicate;
 
 /**
  * Subset of the configuration options available for a {@link DifferenceEngine}.

@@ -13,11 +13,13 @@
 */
 package org.xmlunit.util;
 
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.function.Predicate;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -98,7 +100,7 @@ public class LinqyTest {
 
     @Test(expected=NoSuchElementException.class)
     public void cantReadPastLastFilterElement() {
-        Iterator<String> i = Linqy.filter(Arrays.asList("foo"), new IsNullPredicate())
+        Iterator<String> i = Linqy.filter(Arrays.asList("foo"), Objects::isNull)
             .iterator();
         i.next();
     }
