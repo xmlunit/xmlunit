@@ -14,6 +14,7 @@
 package org.xmlunit.util;
 
 import java.util.Map;
+import java.util.function.Predicate;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;

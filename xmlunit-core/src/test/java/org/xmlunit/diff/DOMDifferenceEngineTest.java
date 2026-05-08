@@ -15,6 +15,7 @@ package org.xmlunit.diff;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.dom.DOMSource;
 import org.xmlunit.NullNode;
@@ -23,7 +24,6 @@ import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
 import org.xmlunit.util.Linqy;
-import org.xmlunit.util.Predicate;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Attr;

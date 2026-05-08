@@ -30,9 +30,9 @@ import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelectors;
 import org.xmlunit.diff.NodeMatcher;
-import org.xmlunit.util.Predicate;
 
 import java.util.Map;
+import java.util.function.Predicate;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;

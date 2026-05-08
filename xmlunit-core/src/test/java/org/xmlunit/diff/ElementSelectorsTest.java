@@ -16,6 +16,8 @@ package org.xmlunit.diff;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Objects;
+import java.util.function.Predicate;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,8 +31,6 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xmlunit.util.IsNullPredicate;
-import org.xmlunit.util.Predicate;
 import org.xmlunit.xpath.JAXPXPathEngine;
 import org.xmlunit.xpath.XPathEngine;
 
@@ -545,7 +545,7 @@ public class ElementSelectorsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void conditionalSelectorDoesntLikeNullElementSelector() {
-        ElementSelectors.conditionalSelector(new IsNullPredicate(), null);
+        ElementSelectors.conditionalSelector(Objects::isNull, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -584,7 +584,7 @@ public class ElementSelectorsTest {
     public void conditionalSelectorBuilderWontAllowWhensWithoutThens() {
         ElementSelectors.ConditionalSelectorBuilder b =
             ElementSelectors.conditionalBuilder();
-        b.when(new IsNullPredicate());
+        b.when(Objects::isNull);
         b.build();
     }
 
@@ -592,7 +592,7 @@ public class ElementSelectorsTest {
     public void conditionalSelectorBuilderWontAllowMultipleWhensWithoutInterleavingThens() {
         ElementSelectors.ConditionalSelectorBuilder b =
             ElementSelectors.conditionalBuilder();
-        b.when(new IsNullPredicate());
+        b.when(Objects::isNull);
         b.whenElementIsNamed(new QName("foo"));
     }
 

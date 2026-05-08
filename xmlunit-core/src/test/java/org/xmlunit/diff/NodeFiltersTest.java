@@ -13,9 +13,9 @@
 */
 package org.xmlunit.diff;
 
+import java.util.function.Predicate;
 import org.junit.Test;
 import org.w3c.dom.Node;
-import org.xmlunit.util.Predicate;
 
 import static org.junit.Assert.*;
 

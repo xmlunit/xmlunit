@@ -24,8 +24,8 @@
   <url>https://www.xmlunit.org/</url>
 
   <properties>
-    <maven.compile.source>1.7</maven.compile.source>
-    <maven.compile.target>1.7</maven.compile.target>
+    <maven.compile.source>8</maven.compile.source>
+    <maven.compile.target>8</maven.compile.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

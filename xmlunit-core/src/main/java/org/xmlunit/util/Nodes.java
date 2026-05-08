@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Attr;
@@ -78,12 +79,7 @@ public final class Nodes {
      * @return attributes
      */
     public static Map<QName, String> getAttributes(Node n) {
-        return getAttributes(n, new Predicate<Attr>() {
-            @Override
-            public boolean test(Attr a) {
-                return true;
-            }
-        });
+        return getAttributes(n, ignored -> true);
     }
 
     /**

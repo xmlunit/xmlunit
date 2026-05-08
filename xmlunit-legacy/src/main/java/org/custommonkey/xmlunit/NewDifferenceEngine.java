@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import javax.xml.transform.Source;
 
 import org.xmlunit.builder.Input;
@@ -63,7 +64,6 @@ import org.xmlunit.input.WhitespaceNormalizedSource;
 import org.xmlunit.input.WhitespaceStrippedSource;
 import org.xmlunit.util.IterableNodeList;
 import org.xmlunit.util.Linqy;
-import org.xmlunit.util.Predicate;
 import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
 
 import org.w3c.dom.CDATASection;
