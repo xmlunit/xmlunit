@@ -1,6 +1,6 @@
 # Release Notes
 
-## XMLUnit for Java 2.11.1 - /not released, yet/
+## XMLUnit for Java 2.12.0 - /not released, yet/
 
 * bumped xmlunit-assertj3's dependency on assert to 3.27.7.
 
@@ -9,10 +9,17 @@
 
   XMLUnit itself does not use the affected code in AssertJ so the upgrade is not strictly necessary - and this is why
   the xmlunit-assertj module is not updated. In fact the assertions provided by xmlunit-assertj3 are the recommended
-  upgrade path for users of AssertJ 4.x.
+  upgrade path for users of AssertJ 3.x+.
 
   PRs [#320](https://github.com/xmlunit/xmlunit/pull/320) and
   [#321](https://github.com/xmlunit/xmlunit/pull/321)
+
+* actually made `withDTDParsingDisabled` do what it says.
+
+  This is a bugfix and in a way it is backwards incompatible as it changes default behavior in a way that I intended to
+  do with XMLUnit 2.6.0 eight years ago.
+
+  PRs [#326](https://github.com/xmlunit/xmlunit/pull/326) by [@jmestwa-coder](https://github.com/jmestwa-coder)
 
 ## XMLUnit for Java 2.11.0 - /Released 2025-10-24/
 
