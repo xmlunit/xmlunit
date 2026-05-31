@@ -211,7 +211,7 @@ public class DocumentBuilderFactoryConfigurer {
          */
         public Builder withDTDParsingDisabled() {
             for (String feature : DTD_PARSE_DISABLERS) {
-                withSafeFeature(feature, false);
+                withSafeFeature(feature, true);
             }
             return this;
         }
