@@ -28,6 +28,7 @@ import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelectors;
+import org.xmlunit.util.DocumentBuilderFactoryConfigurer;
 import org.xmlunit.util.Predicate;
 
 import java.io.IOException;
@@ -86,7 +87,10 @@ public class CompareAssertAreIdenticalTest {
                 "   </c>" +
                 "</a>";
 
-        assertThat(testXml).and(controlXml).areIdentical();
+        assertThat(testXml).and(controlXml)
+            .withDocumentBuilderFactory(DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing
+                .configure(DocumentBuilderFactory.newInstance()))
+            .areIdentical();
     }
 
     @Test
@@ -114,7 +118,10 @@ public class CompareAssertAreIdenticalTest {
 
         assertThat(testXml)
             .withFailMessage("Alarm alarm!")
-            .and(controlXml).areIdentical();
+            .and(controlXml)
+            .withDocumentBuilderFactory(DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing
+                .configure(DocumentBuilderFactory.newInstance()))
+            .areIdentical();
     }
 
     @Test

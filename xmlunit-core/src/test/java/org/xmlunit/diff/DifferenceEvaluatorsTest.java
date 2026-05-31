@@ -16,9 +16,11 @@ package org.xmlunit.diff;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.transform.Source;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.Test;
 import org.xmlunit.builder.Input;
+import org.xmlunit.util.DocumentBuilderFactoryConfigurer;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.CoreMatchers.is;
@@ -487,7 +489,8 @@ public class DifferenceEvaluatorsTest {
                                      boolean ignoreDoctypeDeclarationAsWell) {
         Source control = Input.from(controlXml) .build();
         Source test = Input.from(testXml) .build();
-        DOMDifferenceEngine e = new DOMDifferenceEngine();
+        DOMDifferenceEngine e = new DOMDifferenceEngine(DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing
+           .configure(DocumentBuilderFactory.newInstance()));
         if (ignoreDoctypeDeclarationAsWell) {
             e.setDifferenceEvaluator(DifferenceEvaluators.ignorePrologDifferences());
         } else {

@@ -17,9 +17,11 @@
 * actually made `withDTDParsingDisabled` do what it says.
 
   This is a bugfix and in a way it is backwards incompatible as it changes default behavior in a way that I intended to
-  do with XMLUnit 2.6.0 eight years ago.
+  do with XMLUnit 2.6.0 eight years ago. `DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing` provides the
+  behavior of XMLUnit 2.6.0 to 2.11.0.
 
   PRs [#326](https://github.com/xmlunit/xmlunit/pull/326) by [@jmestwa-coder](https://github.com/jmestwa-coder)
+  and [#328](https://github.com/xmlunit/xmlunit/pull/328)
 
 ## XMLUnit for Java 2.11.0 - /Released 2025-10-24/
 

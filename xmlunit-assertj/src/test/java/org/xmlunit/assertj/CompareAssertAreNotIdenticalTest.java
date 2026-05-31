@@ -20,6 +20,9 @@ import org.xmlunit.diff.ComparisonListener;
 import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.ElementSelectors;
+import org.xmlunit.util.DocumentBuilderFactoryConfigurer;
+
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
@@ -72,7 +75,10 @@ public class CompareAssertAreNotIdenticalTest {
                 "   </c>" +
                 "</a>";
 
-        assertThat(testXml).and(controlXml).areNotIdentical();
+        assertThat(testXml).and(controlXml)
+            .withDocumentBuilderFactory(DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing
+                .configure(DocumentBuilderFactory.newInstance()))
+            .areNotIdentical();
     }
 
     @Test

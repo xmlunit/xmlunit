@@ -27,8 +27,10 @@ import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.Difference;
 import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.diff.DifferenceEvaluators;
+import org.xmlunit.util.DocumentBuilderFactoryConfigurer;
 
 import java.io.File;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import static org.xmlunit.assertj.ExpectedException.none;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
@@ -62,7 +64,10 @@ public class CompareAssertAreSimilarTest {
                 "   </c>" +
                 "</a>";
 
-        assertThat(testXml).and(controlXml).areSimilar();
+        assertThat(testXml).and(controlXml)
+            .withDocumentBuilderFactory(DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing
+                .configure(DocumentBuilderFactory.newInstance()))
+            .areSimilar();
     }
 
     @Test
@@ -81,8 +86,10 @@ public class CompareAssertAreSimilarTest {
                 "</a>";
 
         assertThat(testXml).and(controlXml)
-                .ignoreChildNodesOrder()
-                .areSimilar();
+            .ignoreChildNodesOrder()
+            .withDocumentBuilderFactory(DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing
+                .configure(DocumentBuilderFactory.newInstance()))
+            .areSimilar();
     }
 
     @Test

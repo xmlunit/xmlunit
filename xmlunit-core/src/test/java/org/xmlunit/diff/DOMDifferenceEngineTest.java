@@ -22,6 +22,7 @@ import org.xmlunit.TestResources;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
+import org.xmlunit.util.DocumentBuilderFactoryConfigurer;
 import org.xmlunit.util.Linqy;
 import org.xmlunit.util.Predicate;
 import org.junit.Before;
@@ -125,7 +126,9 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
     private Document doc;
 
     @Before public void createDoc() throws Exception {
-        doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        DocumentBuilderFactory factory = DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing
+            .configure(DocumentBuilderFactory.newInstance());
+        doc = factory.newDocumentBuilder()
             .newDocument();
     }
 
@@ -391,7 +394,9 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                     + "\"" + TestResources.BOOK_DTD
                     + "\">"
                     + "<Book/>")
-                               .build());
+                               .build(),
+                DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing
+                    .configure(DocumentBuilderFactory.newInstance()));
         assertEquals(wrapAndStop(ComparisonResult.DIFFERENT),
                      d.compareNodes(d1, new XPathContext(),
                                     d2, new XPathContext()));
@@ -471,7 +476,9 @@ public class DOMDifferenceEngineTest extends AbstractDifferenceEngineTest {
                     + "\"" + TestResources.BOOK_DTD
                     + "\">"
                     + "<Book/>")
-                               .build());
+                               .build(),
+                DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing
+                    .configure(DocumentBuilderFactory.newInstance()));
         assertEquals(wrap(ComparisonResult.EQUAL),
                      d.compareNodes(d1, new XPathContext(),
                                     d2, new XPathContext()));
