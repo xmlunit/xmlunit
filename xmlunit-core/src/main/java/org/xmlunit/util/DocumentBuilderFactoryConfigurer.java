@@ -106,6 +106,17 @@ public class DocumentBuilderFactoryConfigurer {
         .build();
 
     /**
+     * A relaxed instance that allows DTD parsing but prohibits loading of external entities.
+     *
+     * @since XMLUnit 2.12.0
+     */
+    public static final DocumentBuilderFactoryConfigurer DefaultWithDTDParsing = builder()
+        .withDTDLoadingDisabled()
+        .withXIncludeAware(false)
+        .withExpandEntityReferences(false)
+        .build();
+
+    /**
      * Builder for a DocumentBuilderFactoryConfigurer.
      *
      * @since XMLUnit 2.6.0
