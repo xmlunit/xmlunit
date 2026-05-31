@@ -20,7 +20,7 @@ import javax.xml.transform.URIResolver;
 /**
  * Holds the common builder methods for XSLT related builders.
  *
- * <p><code>B</code> is the derived builder interface.</p>
+ * @param <B> is the derived builder interface
  */
 public interface
     TransformationBuilderBase<B extends TransformationBuilderBase<B>> {
