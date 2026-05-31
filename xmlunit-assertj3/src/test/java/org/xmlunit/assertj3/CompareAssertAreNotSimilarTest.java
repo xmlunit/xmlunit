@@ -16,8 +16,10 @@ package org.xmlunit.assertj3;
 import org.junit.Rule;
 import org.junit.Test;
 import org.xmlunit.TestResources;
+import org.xmlunit.util.DocumentBuilderFactoryConfigurer;
 
 import java.io.File;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import static org.xmlunit.assertj3.ExpectedException.none;
 import static org.xmlunit.assertj3.XmlAssert.assertThat;
@@ -79,7 +81,10 @@ public class CompareAssertAreNotSimilarTest {
                 "   </c>" +
                 "</a>";
 
-        assertThat(testXml).and(controlXml).areNotSimilar();
+        assertThat(testXml).and(controlXml)
+            .withDocumentBuilderFactory(DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing
+                .configure(DocumentBuilderFactory.newInstance()))
+            .areNotSimilar();
     }
 
     @Test
@@ -100,8 +105,10 @@ public class CompareAssertAreNotSimilarTest {
                 "</a>";
 
         assertThat(testXml).and(controlXml)
-                .ignoreChildNodesOrder()
-                .areNotSimilar();
+            .ignoreChildNodesOrder()
+            .withDocumentBuilderFactory(DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing
+                .configure(DocumentBuilderFactory.newInstance()))
+            .areNotSimilar();
     }
 
     @Test

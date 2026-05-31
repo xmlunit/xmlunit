@@ -55,4 +55,13 @@ public class DocumentBuilderFactoryConfigurerTest {
             fail("expected DOCTYPE declaration to be rejected by Default");
         }
     }
+
+    @Test
+    public void defaultWithDtdParsingAcceptsDoctype() throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing
+            .configure(DocumentBuilderFactory.newInstance());
+        if (!parses(factory)) {
+            fail("expected DOCTYPE declaration to be accepted by DefaultWithDTDParsing");
+        }
+    }
 }

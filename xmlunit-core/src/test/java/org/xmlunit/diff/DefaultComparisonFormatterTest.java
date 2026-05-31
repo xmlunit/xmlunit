@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.Input;
 import org.xmlunit.util.Convert;
+import org.xmlunit.util.DocumentBuilderFactoryConfigurer;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -446,13 +447,17 @@ public class DefaultComparisonFormatterTest {
     @Test
     public void testComparisonType_ATTR_VALUE_EXPLICITLY_SPECIFIED() {
         // prepare data
-        Diff diff = DiffBuilder.compare(
+        Diff diff = DiffBuilder
+            .compare(
                 "<?xml version=\"1.0\" ?>" +
                 "<!DOCTYPE root [<!ELEMENT root ANY><!ATTLIST root c CDATA #FIXED \"xxx\">]>" +
                 "<root/>")
                 .withTest("<?xml version=\"1.0\" ?>" +
                 "<!DOCTYPE root [<!ELEMENT root ANY><!ATTLIST root c CDATA #FIXED \"xxx\">]>" +
-                "<root c=\"xxx\"/>").build();
+                "<root c=\"xxx\"/>")
+            .withDocumentBuilderFactory(DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing
+                .configure(DocumentBuilderFactory.newInstance()))
+            .build();
         assertPreRequirements(diff, ComparisonType.ATTR_VALUE_EXPLICITLY_SPECIFIED);
         Comparison firstDiff = diff.getDifferences().iterator().next().getComparison();
 
