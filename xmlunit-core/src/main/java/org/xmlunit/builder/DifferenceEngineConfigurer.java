@@ -31,6 +31,7 @@ import org.xmlunit.util.Predicate;
 /**
  * Subset of the configuration options available for a {@link DifferenceEngine}.
  * @since 2.6.0
+ * @param <D> the concrete DifferenceEngineConfigurer implementation
  */
 public interface DifferenceEngineConfigurer<D extends DifferenceEngineConfigurer<D>> {
 

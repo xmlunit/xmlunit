@@ -15,6 +15,8 @@ package org.xmlunit.util;
 
 /**
  * A function mapping from one type to another.
+ * @param <F> type from which to map
+ * @param <T> type to which to map
  */
 public interface Mapper<F, T> {
     /**

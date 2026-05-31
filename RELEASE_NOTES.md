@@ -1,6 +1,8 @@
 # Release Notes
 
-## XMLUnit for Java 2.12.0 - /not released, yet/
+## XMLUnit for Java 2.12.1 - /not released, yet/
+
+## XMLUnit for Java 2.12.0 - /Released 2026-05-31/
 
 * bumped xmlunit-assertj3's dependency on assert to 3.27.7.
 
