@@ -565,6 +565,32 @@
               <outputFormat>all</outputFormat>
               <outputName>${project.artifactId}-${project.version}-cyclonedx</outputName>
               <skipNotDeployed>false</skipNotDeployed>
+              <externalReferences>
+                <externalReference>
+                  <type>vcs</type>
+                  <url>https://github.com/xmlunit/xmlunit</url>
+                </externalReference>
+                <externalReference>
+                  <type>advisories</type>
+                  <url>https://github.com/xmlunit/xmlunit/security/advisories</url>
+                </externalReference>
+                <externalReference>
+                  <type>documentation</type>
+                  <url>https://github.com/xmlunit/user-guide/wiki</url>
+                </externalReference>
+                <externalReference>
+                  <type>license</type>
+                  <url>https://github.com/xmlunit/xmlunit/blob/main/LICENSE</url>
+                </externalReference>
+                <externalReference>
+                  <type>release-notes</type>
+                  <url>https://github.com/xmlunit/xmlunit/blob/main/RELEASE_NOTES.md</url>
+                </externalReference>
+                <externalReference>
+                  <type>security-contact</type>
+                  <url>https://github.com/xmlunit/xmlunit/security</url>
+                </externalReference>
+              </externalReferences>
             </configuration>
           </plugin>
         </plugins>
