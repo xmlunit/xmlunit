@@ -13,11 +13,14 @@
 */
 package org.xmlunit.validation;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import org.xmlunit.XMLUnitException;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -64,7 +67,32 @@ public class JAXPValidator extends Validator {
     }
 
     private SchemaFactory getFactory() {
-        return factory == null ? SchemaFactory.newInstance(language) : factory;
+        if (factory != null) {
+            return factory;
+        }
+        SchemaFactory f = SchemaFactory.newInstance(language);
+        disableExternalDtdAccess(f);
+        return f;
+    }
+
+    private static void disableExternalDtdAccess(SchemaFactory f) {
+        try {
+            f.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        } catch (SAXNotRecognizedException ex) {
+            // property not supported, nothing we can do
+        } catch (SAXNotSupportedException ex) {
+            // property not supported, nothing we can do
+        }
+    }
+
+    private static void disableExternalDtdAccess(javax.xml.validation.Validator v) {
+        try {
+            v.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        } catch (SAXNotRecognizedException ex) {
+            // property not supported, nothing we can do
+        } catch (SAXNotSupportedException ex) {
+            // property not supported, nothing we can do
+        }
     }
 
     @Override public ValidationResult validateSchema() {
@@ -92,6 +120,7 @@ public class JAXPValidator extends Validator {
         }
         ValidationHandler v = new ValidationHandler();
         javax.xml.validation.Validator val = schema.newValidator();
+        disableExternalDtdAccess(val);
         val.setErrorHandler(v);
         try {
             val.validate(s);
