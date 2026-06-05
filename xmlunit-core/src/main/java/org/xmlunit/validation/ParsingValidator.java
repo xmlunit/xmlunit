@@ -104,6 +104,7 @@ public class ParsingValidator extends Validator {
         try {
             factory.setNamespaceAware(true);
             factory.setValidating(true);
+            disableExternalEntities(factory);
             SAXParser parser = factory.newSAXParser();
             if (Languages.W3C_XML_SCHEMA_NS_URI.equals(language)) {
                 parser.setProperty(Properties.SCHEMA_LANGUAGE,
@@ -142,6 +143,34 @@ public class ParsingValidator extends Validator {
             throw new XMLUnitException(ex);
         } catch (java.io.IOException ex) {
             throw new XMLUnitException(ex);
+        }
+    }
+
+    private static final String EXTERNAL_GENERAL_ENTITIES =
+        "http://xml.org/sax/features/external-general-entities";
+    private static final String EXTERNAL_PARAMETER_ENTITIES =
+        "http://xml.org/sax/features/external-parameter-entities";
+
+    /**
+     * Stops the instance document from pulling in external general or
+     * parameter entities while it is parsed for validation.
+     *
+     * <p>The DTD or schema to validate against is still resolved
+     * through the {@link Handler}, only entities declared inside the
+     * instance are affected.</p>
+     */
+    private static void disableExternalEntities(SAXParserFactory factory) {
+        setSafeFeature(factory, EXTERNAL_GENERAL_ENTITIES, false);
+        setSafeFeature(factory, EXTERNAL_PARAMETER_ENTITIES, false);
+    }
+
+    private static void setSafeFeature(SAXParserFactory factory, String feature, boolean value) {
+        try {
+            factory.setFeature(feature, value);
+        } catch (ParserConfigurationException ex) {
+            // feature not supported by this parser, ignore
+        } catch (SAXException ex) {
+            // feature not supported by this parser, ignore
         }
     }
 
