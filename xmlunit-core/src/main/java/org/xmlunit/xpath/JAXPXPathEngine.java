@@ -58,14 +58,7 @@ public class JAXPXPathEngine implements XPathEngine {
      */
     @Override
     public Iterable<Node> selectNodes(String xPath, Source s) {
-        try {
-            return new IterableNodeList(
-                (NodeList) xpath.evaluate(xPath, Convert.toInputSource(s),
-                                          XPathConstants.NODESET)
-                                        );
-        } catch (XPathExpressionException ex) {
-            throw new XMLUnitException(ex);
-        }
+        return selectNodes(xPath, Convert.toNode(s));
     }
 
     /**
@@ -73,11 +66,7 @@ public class JAXPXPathEngine implements XPathEngine {
      */
     @Override
     public String evaluate(String xPath, Source s) {
-        try {
-            return xpath.evaluate(xPath, Convert.toInputSource(s));
-        } catch (XPathExpressionException ex) {
-            throw new XMLUnitException(ex);
-        }
+        return evaluate(xPath, Convert.toNode(s));
     }
 
     /**
