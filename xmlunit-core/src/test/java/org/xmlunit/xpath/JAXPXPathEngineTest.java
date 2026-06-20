@@ -13,8 +13,16 @@
 */
 package org.xmlunit.xpath;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Source;
 import javax.xml.xpath.XPathFactory;
 
 import org.junit.Before;
@@ -22,6 +30,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.xmlunit.ConfigurationException;
+import org.xmlunit.XMLUnitException;
+import org.xmlunit.builder.Input;
 
 public class JAXPXPathEngineTest extends AbstractXPathEngineTest {
     @Mock
@@ -40,5 +50,40 @@ public class JAXPXPathEngineTest extends AbstractXPathEngineTest {
     public void shouldTranslateExceptionInConstructor() throws Exception {
         when(fac.newXPath()).thenThrow(new NullPointerException());
         new JAXPXPathEngine(fac);
+    }
+
+    @Test(expected=XMLUnitException.class)
+    public void evaluateDoesNotResolveExternalEntities() throws Exception {
+        getEngine().evaluate("/foo", sourceWithExternalEntity());
+    }
+
+    @Test(expected=XMLUnitException.class)
+    public void selectNodesDoesNotResolveExternalEntities() throws Exception {
+        getEngine().selectNodes("/foo", sourceWithExternalEntity());
+    }
+
+    @Test
+    public void usesProvidedDocumentBuilderFactory() throws Exception {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        JAXPXPathEngine engine = new JAXPXPathEngine(dbf);
+        assertThat(engine.evaluate("/foo", sourceWithExternalEntity()), containsString(SECRET));
+    }
+
+    private static final String SECRET = "TOP-SECRET-XXE-MARKER";
+
+    private static Source sourceWithExternalEntity() throws Exception {
+        File secret = File.createTempFile("xmlunit-xxe", ".txt");
+        secret.deleteOnExit();
+        Writer w = new FileWriter(secret);
+        try {
+            w.write(SECRET);
+        } finally {
+            w.close();
+        }
+        String xml = "<?xml version=\"1.0\"?>\n"
+            + "<!DOCTYPE foo [ <!ENTITY xxe SYSTEM \""
+            + secret.toURI().toASCIIString() + "\"> ]>\n"
+            + "<foo>&xxe;</foo>";
+        return Input.fromString(xml).build();
     }
 }
