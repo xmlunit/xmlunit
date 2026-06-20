@@ -24,6 +24,7 @@ import static org.xmlunit.TestResources.TEST_RESOURCE_DIR;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -95,6 +96,29 @@ public class ParsingValidatorTest {
                                                                           + "invalidBookWithDoctype.xml")));
         assertFalse(r.isValid());
         assertTrue(r.getProblems().iterator().hasNext());
+    }
+
+    private static final String XXE_SCHEMA =
+        "<xsd:schema xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
+        + "<xsd:element name=\"root\" type=\"xsd:string\"/></xsd:schema>";
+
+    // the external entity points at a path that does not exist, so if
+    // it gets resolved the parser fails while trying to read it
+    private static final String XXE_INSTANCE =
+        "<?xml version=\"1.0\"?>"
+        + "<!DOCTYPE root [<!ENTITY xxe SYSTEM \"file:/no/such/xmlunit-xxe-probe\">]>"
+        + "<root>&xxe;</root>";
+
+    @Test public void doesNotResolveExternalEntitiesInInstanceWhenDisabled() {
+        ParsingValidator v =
+            new ParsingValidator(Languages.W3C_XML_SCHEMA_NS_URI);
+        v.setDisableExternalEntities(true);
+        v.setSchemaSource(new StreamSource(new StringReader(XXE_SCHEMA)));
+        ValidationResult r =
+            v.validateInstance(new StreamSource(new StringReader(XXE_INSTANCE)));
+        // with the external entity left unresolved the empty element
+        // content still validates against the xsd:string element
+        assertTrue(r.isValid());
     }
 
     @Test(expected = IllegalArgumentException.class)
