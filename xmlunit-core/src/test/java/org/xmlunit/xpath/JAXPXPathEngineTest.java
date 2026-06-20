@@ -13,8 +13,8 @@
 */
 package org.xmlunit.xpath;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -52,33 +52,21 @@ public class JAXPXPathEngineTest extends AbstractXPathEngineTest {
         new JAXPXPathEngine(fac);
     }
 
-    @Test
+    @Test(expected=XMLUnitException.class)
     public void evaluateDoesNotResolveExternalEntities() throws Exception {
-        Source s = sourceWithExternalEntity();
-        try {
-            assertFalse(getEngine().evaluate("/foo", s).contains(SECRET));
-        } catch (XMLUnitException expected) {
-            // DOCTYPE rejected by the hardened parser
-        }
+        getEngine().evaluate("/foo", sourceWithExternalEntity());
     }
 
-    @Test
+    @Test(expected=XMLUnitException.class)
     public void selectNodesDoesNotResolveExternalEntities() throws Exception {
-        Source s = sourceWithExternalEntity();
-        try {
-            for (org.w3c.dom.Node n : getEngine().selectNodes("/foo", s)) {
-                assertFalse(n.getTextContent().contains(SECRET));
-            }
-        } catch (XMLUnitException expected) {
-            // DOCTYPE rejected by the hardened parser
-        }
+        getEngine().selectNodes("/foo", sourceWithExternalEntity());
     }
 
     @Test
     public void usesProvidedDocumentBuilderFactory() throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         JAXPXPathEngine engine = new JAXPXPathEngine(dbf);
-        assertTrue(engine.evaluate("/foo", sourceWithExternalEntity()).contains(SECRET));
+        assertThat(engine.evaluate("/foo", sourceWithExternalEntity()), containsString(SECRET));
     }
 
     private static final String SECRET = "TOP-SECRET-XXE-MARKER";
