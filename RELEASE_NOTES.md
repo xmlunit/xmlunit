@@ -2,6 +2,17 @@
 
 ## XMLUnit for Java 2.12.1 - /not released, yet/
 
+* added explicit settings to the `Validator` classes that disable (external) DTD loading during validation. The default
+  remains to allow loading of external content as this is often a requirement during validation.
+
+  PRs [#331](https://github.com/xmlunit/xmlunit/pull/331) and [#332](https://github.com/xmlunit/xmlunit/pull/332) by
+  [@jmestwa-coder](https://github.com/jmestwa-coder)
+
+* added constructor overloads to `JAXPXPathEngine` to allow specifying the `DocumentBuilderFactory` used for the
+  `Source` overloads of the `selectNodes` and `evaluate` methods.
+
+  PRs [#333](https://github.com/xmlunit/xmlunit/pull/333)by [@jmestwa-coder](https://github.com/jmestwa-coder)
+
 ## XMLUnit for Java 2.12.0 - /Released 2026-05-31/
 
 * bumped xmlunit-assertj3's dependency on assert to 3.27.7.
