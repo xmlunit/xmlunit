@@ -14,6 +14,7 @@
 package org.xmlunit.xpath;
 
 import java.util.Map;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -22,6 +23,7 @@ import javax.xml.xpath.XPathFactory;
 import org.xmlunit.ConfigurationException;
 import org.xmlunit.XMLUnitException;
 import org.xmlunit.util.Convert;
+import org.xmlunit.util.DocumentBuilderFactoryConfigurer;
 import org.xmlunit.util.IterableNodeList;
 import org.xmlunit.util.XPathFactoryConfigurer;
 import org.w3c.dom.Node;
@@ -32,22 +34,46 @@ import org.w3c.dom.NodeList;
  */
 public class JAXPXPathEngine implements XPathEngine {
     private final XPath xpath;
+    private final DocumentBuilderFactory dbf;
 
     /**
-     * Create an XPathEngine that uses a custom XPathFactory.
-     * @param fac the factory to use
+     * Create an XPathEngine that uses a custom XPathFactory and a custom
+     * DocumentBuilderFactory for parsing {@link Source}s that are not already DOM nodes.
+     * @param fac the XPathFactory to use
+     * @param dbf the DocumentBuilderFactory to use
+     * @since XMLUnit 2.12.1
      */
-    public JAXPXPathEngine(XPathFactory fac) {
+    public JAXPXPathEngine(XPathFactory fac, DocumentBuilderFactory dbf) {
         try {
             xpath = fac.newXPath();
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
+        this.dbf = dbf;
+    }
+
+    /**
+     * Create an XPathEngine that uses a custom XPathFactory and a DocumentBuilderFactory hardened with
+     * {@link DocumentBuilderFactoryConfigurer#Default}.
+     * @param fac the factory to use
+     */
+    public JAXPXPathEngine(XPathFactory fac) {
+        this(fac, DocumentBuilderFactoryConfigurer.Default.configure(DocumentBuilderFactory.newInstance()));
     }
 
     /**
      * Create an XPathEngine that uses JAXP's default XPathFactory with {@link XPathFactoryConfigurer#Default} applied
-     * under the covers.
+     * under the covers and a custom DocumentBuilderFactory for parsing {@link Source}s that are not already DOM nodes.
+     * @param dbf the DocumentBuilderFactory to use
+     * @since XMLUnit 2.12.1
+     */
+    public JAXPXPathEngine(DocumentBuilderFactory dbf) {
+        this(XPathFactoryConfigurer.Default.configure(XPathFactory.newInstance()), dbf);
+    }
+
+    /**
+     * Create an XPathEngine that uses JAXP's default XPathFactory with {@link XPathFactoryConfigurer#Default} applied
+     * under the covers and a DocumentBuilderFactory hardened with {@link DocumentBuilderFactoryConfigurer#Default}.
      */
     public JAXPXPathEngine() {
         this(XPathFactoryConfigurer.Default.configure(XPathFactory.newInstance()));
@@ -58,7 +84,7 @@ public class JAXPXPathEngine implements XPathEngine {
      */
     @Override
     public Iterable<Node> selectNodes(String xPath, Source s) {
-        return selectNodes(xPath, Convert.toNode(s));
+        return selectNodes(xPath, Convert.toNode(s, dbf));
     }
 
     /**
@@ -66,7 +92,7 @@ public class JAXPXPathEngine implements XPathEngine {
      */
     @Override
     public String evaluate(String xPath, Source s) {
-        return evaluate(xPath, Convert.toNode(s));
+        return evaluate(xPath, Convert.toNode(s, dbf));
     }
 
     /**

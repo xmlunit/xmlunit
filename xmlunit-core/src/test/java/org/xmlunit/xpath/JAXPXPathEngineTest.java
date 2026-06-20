@@ -14,12 +14,14 @@
 package org.xmlunit.xpath;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.xpath.XPathFactory;
 
@@ -70,6 +72,13 @@ public class JAXPXPathEngineTest extends AbstractXPathEngineTest {
         } catch (XMLUnitException expected) {
             // DOCTYPE rejected by the hardened parser
         }
+    }
+
+    @Test
+    public void usesProvidedDocumentBuilderFactory() throws Exception {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        JAXPXPathEngine engine = new JAXPXPathEngine(dbf);
+        assertTrue(engine.evaluate("/foo", sourceWithExternalEntity()).contains(SECRET));
     }
 
     private static final String SECRET = "TOP-SECRET-XXE-MARKER";
