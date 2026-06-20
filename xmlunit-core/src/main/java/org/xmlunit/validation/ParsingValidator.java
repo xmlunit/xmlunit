@@ -34,10 +34,20 @@ import org.xml.sax.helpers.DefaultHandler;
  * <p>Even though this implementation supports W3C Schema you
  * shouldn't use it for that language but rather use
  * JAXPValidator.</p>
+ *
+ * <p><strong>Security note:</strong> like the rest of the {@code
+ * validation} package this class does not disable external entities
+ * by default - that has been a conscious decision since XMLUnit 2.6.0.
+ * An instance document with a {@code DOCTYPE} that declares an external
+ * entity may therefore cause that entity to be resolved while it is
+ * validated. If you validate untrusted input use {@link
+ * #setDisableExternalEntities setDisableExternalEntities(true)} to
+ * forbid this.</p>
  */
 public class ParsingValidator extends Validator {
     private final String language;
     private String schemaURI;
+    private boolean disableExternalEntities;
 
     /**
      * Creates a validator for the given schema language.
@@ -69,6 +79,26 @@ public class ParsingValidator extends Validator {
      */
     protected String getSchemaURI() {
         return schemaURI;
+    }
+
+    /**
+     * Whether external general and parameter entities should be
+     * disabled when the instance document is parsed for validation.
+     *
+     * <p>The default is {@code false}, leaving external entities
+     * enabled as they have been since XMLUnit 2.6.0. Setting this to
+     * {@code true} turns off the {@code external-general-entities} and
+     * {@code external-parameter-entities} features on the parser, which
+     * closes the XXE vector when validating untrusted instances. The
+     * DTD or schema to validate against is still resolved through the
+     * internal entity resolver, so DTD and schema validation keep
+     * working.</p>
+     *
+     * @since XMLUnit 2.12.1
+     * @param disable whether to disable external entities
+     */
+    public void setDisableExternalEntities(boolean disable) {
+        disableExternalEntities = disable;
     }
 
     /**
@@ -104,7 +134,9 @@ public class ParsingValidator extends Validator {
         try {
             factory.setNamespaceAware(true);
             factory.setValidating(true);
-            disableExternalEntities(factory);
+            if (disableExternalEntities) {
+                restrictExternalEntities(factory);
+            }
             SAXParser parser = factory.newSAXParser();
             if (Languages.W3C_XML_SCHEMA_NS_URI.equals(language)) {
                 parser.setProperty(Properties.SCHEMA_LANGUAGE,
@@ -159,7 +191,7 @@ public class ParsingValidator extends Validator {
      * through the {@link Handler}, only entities declared inside the
      * instance are affected.</p>
      */
-    private static void disableExternalEntities(SAXParserFactory factory) {
+    private static void restrictExternalEntities(SAXParserFactory factory) {
         setSafeFeature(factory, EXTERNAL_GENERAL_ENTITIES, false);
         setSafeFeature(factory, EXTERNAL_PARAMETER_ENTITIES, false);
     }

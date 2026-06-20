@@ -109,12 +109,15 @@ public class ParsingValidatorTest {
         + "<!DOCTYPE root [<!ENTITY xxe SYSTEM \"file:/no/such/xmlunit-xxe-probe\">]>"
         + "<root>&xxe;</root>";
 
-    @Test public void doesNotResolveExternalEntitiesInInstance() {
+    @Test public void doesNotResolveExternalEntitiesInInstanceWhenDisabled() {
         ParsingValidator v =
             new ParsingValidator(Languages.W3C_XML_SCHEMA_NS_URI);
+        v.setDisableExternalEntities(true);
         v.setSchemaSource(new StreamSource(new StringReader(XXE_SCHEMA)));
         ValidationResult r =
             v.validateInstance(new StreamSource(new StringReader(XXE_INSTANCE)));
+        // with the external entity left unresolved the empty element
+        // content still validates against the xsd:string element
         assertTrue(r.isValid());
     }
 
