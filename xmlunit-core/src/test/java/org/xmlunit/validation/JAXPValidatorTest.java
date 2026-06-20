@@ -21,6 +21,9 @@ import static org.mockito.Mockito.when;
 import static org.xmlunit.TestResources.TEST_RESOURCE_DIR;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.StringReader;
+import java.io.Writer;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -173,6 +176,40 @@ public class JAXPValidatorTest {
                                                                           + "BookXsdGenerated.xml")));
         assertFalse(r.isValid());
         assertTrue(r.getProblems().iterator().hasNext());
+    }
+
+    @Test public void validateInstanceDoesNotResolveExternalEntitiesWhenDisabled() throws Exception {
+        File secret = File.createTempFile("xmlunit-xxe", ".txt");
+        secret.deleteOnExit();
+        Writer w = new FileWriter(secret);
+        try {
+            w.write("INJECTED");
+        } finally {
+            w.close();
+        }
+        File xsd = File.createTempFile("xmlunit-xxe", ".xsd");
+        xsd.deleteOnExit();
+        w = new FileWriter(xsd);
+        try {
+            w.write("<?xml version='1.0'?>"
+                    + "<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>"
+                    + "<xs:element name='root'><xs:simpleType>"
+                    + "<xs:restriction base='xs:string'>"
+                    + "<xs:enumeration value='INJECTED'/>"
+                    + "</xs:restriction></xs:simpleType></xs:element></xs:schema>");
+        } finally {
+            w.close();
+        }
+        String instance = "<?xml version='1.0'?>"
+            + "<!DOCTYPE root [ <!ENTITY xxe SYSTEM '" + secret.toURI() + "'> ]>"
+            + "<root>&xxe;</root>";
+        JAXPValidator v = new JAXPValidator(Languages.W3C_XML_SCHEMA_NS_URI);
+        v.setDisableExternalDtdAccess(true);
+        v.setSchemaSource(new StreamSource(xsd));
+        ValidationResult r = v.validateInstance(new StreamSource(new StringReader(instance)));
+        // had the external entity been resolved the instance would have matched
+        // the schema's enumeration and validation would have succeeded
+        assertFalse(r.isValid());
     }
 
     @Test(expected=XMLUnitException.class)

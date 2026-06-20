@@ -13,11 +13,14 @@
 */
 package org.xmlunit.validation;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import org.xmlunit.XMLUnitException;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -29,11 +32,22 @@ import org.xml.sax.SAXParseException;
  * the instance document will be ignored if any schema source has been
  * set.  This means you must either specify all sources or none of
  * them to successfully validate instances.</p>
+ *
+ * <p><strong>Security note:</strong> like the rest of the {@code
+ * validation} package this class does not restrict external DTD access
+ * by default - that has been a conscious decision since XMLUnit 2.6.0
+ * because schema validation often needs to load external resources. An
+ * instance document with a {@code DOCTYPE} that declares an external
+ * entity may therefore cause that entity to be resolved while it is
+ * validated. If you validate untrusted input use {@link
+ * #setDisableExternalDtdAccess setDisableExternalDtdAccess(true)} to
+ * forbid this.</p>
  */
 public class JAXPValidator extends Validator {
     private final String language;
     private final SchemaFactory factory;
     private Schema schema;
+    private boolean disableExternalDtdAccess;
 
     /**
      * Creates a validator for the given schema language using the default SchemaFactory.
@@ -63,8 +77,52 @@ public class JAXPValidator extends Validator {
         schema = s;
     }
 
+    /**
+     * Whether external DTD access should be forbidden when parsing the
+     * schema and validating instances.
+     *
+     * <p>The default is {@code false}, leaving external DTD access
+     * enabled as it has been since XMLUnit 2.6.0. Setting this to
+     * {@code true} sets the {@code accessExternalDTD} property to the
+     * empty string on the {@code SchemaFactory} and {@code Validator}
+     * used, which closes the XXE vector when validating untrusted
+     * instances. The {@code accessExternalSchema} property is left
+     * untouched so {@code xs:import} and {@code xsi:schemaLocation}
+     * keep working.</p>
+     *
+     * @since XMLUnit 2.12.1
+     * @param disable whether to forbid external DTD access
+     */
+    public void setDisableExternalDtdAccess(boolean disable) {
+        disableExternalDtdAccess = disable;
+    }
+
     private SchemaFactory getFactory() {
-        return factory == null ? SchemaFactory.newInstance(language) : factory;
+        SchemaFactory f = factory == null ? SchemaFactory.newInstance(language) : factory;
+        if (disableExternalDtdAccess) {
+            restrictExternalDtdAccess(f);
+        }
+        return f;
+    }
+
+    private static void restrictExternalDtdAccess(SchemaFactory f) {
+        try {
+            f.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        } catch (SAXNotRecognizedException ex) {
+            // property not supported, nothing we can do
+        } catch (SAXNotSupportedException ex) {
+            // property not supported, nothing we can do
+        }
+    }
+
+    private static void restrictExternalDtdAccess(javax.xml.validation.Validator v) {
+        try {
+            v.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        } catch (SAXNotRecognizedException ex) {
+            // property not supported, nothing we can do
+        } catch (SAXNotSupportedException ex) {
+            // property not supported, nothing we can do
+        }
     }
 
     @Override public ValidationResult validateSchema() {
@@ -92,6 +150,9 @@ public class JAXPValidator extends Validator {
         }
         ValidationHandler v = new ValidationHandler();
         javax.xml.validation.Validator val = schema.newValidator();
+        if (disableExternalDtdAccess) {
+            restrictExternalDtdAccess(val);
+        }
         val.setErrorHandler(v);
         try {
             val.validate(s);
