@@ -73,4 +73,16 @@ public class IsDateTimePlaceholderHandlerTest {
         assertThat(placeholderHandler.evaluate("abc", "dd MM yyyy HH:mm"),
                    equalTo(ComparisonResult.DIFFERENT));
     }
+
+    @Test
+    public void shouldParsePatternIndependentOfDefaultLocale() {
+        final Locale l = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.GERMANY);
+            assertThat(placeholderHandler.evaluate("24 June 2023", "dd MMMM yyyy"),
+                       equalTo(ComparisonResult.EQUAL));
+        } finally {
+            Locale.setDefault(l);
+        }
+    }
 }

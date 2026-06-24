@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.xmlunit.diff.ComparisonResult;
 
@@ -53,7 +54,7 @@ public class IsDateTimePlaceholderHandler implements PlaceholderHandler {
     @Override
     public ComparisonResult evaluate(final String testText, final String... args) {
         if (args != null && args.length == 1) {
-            return canParse(new SimpleDateFormat(args[0]), testText)
+            return canParse(new SimpleDateFormat(args[0], Locale.US), testText)
                 ? ComparisonResult.EQUAL
                 : ComparisonResult.DIFFERENT;
         }
@@ -71,7 +72,7 @@ public class IsDateTimePlaceholderHandler implements PlaceholderHandler {
             return true;
         }
         for (final String pattern : ISO_PATTERNS) {
-            if (canParse(new SimpleDateFormat(pattern), testText)) {
+            if (canParse(new SimpleDateFormat(pattern, Locale.US), testText)) {
                 return true;
             }
         }
