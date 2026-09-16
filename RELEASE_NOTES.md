@@ -2,6 +2,9 @@
 
 ## XMLUnit for Java 2.13.1 - /not released, yet/
 
+* marked jakarta.xml.bind-api as optional in xmlunit-core.
+  PR [#340](https://github.com/xmlunit/xmlunit/pull/340) by [@arimu1](https://github.com/arimu1)
+
 ## XMLUnit for Java 2.13.0 - /Released 2026-07-31/
 
 * added explicit settings to the `Validator` classes that disable (external) DTD loading during validation. The default
