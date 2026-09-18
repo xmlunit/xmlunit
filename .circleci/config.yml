@@ -5,7 +5,7 @@ orbs:
 parameters:
   xmlunit-version:
     type: string
-    default: "2.13.1-SNAPSHOT"
+    default: "2.14.0"
 
 commands:
   full-checkout:
