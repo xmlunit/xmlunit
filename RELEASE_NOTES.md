@@ -2,6 +2,8 @@
 
 ## XMLUnit for Java 2.14.1 - /not released, yet/
 
+* builds are reproducible now
+
 ## XMLUnit for Java 2.14.0 - /Released 2026-09-18/
 
 * marked jakarta.xml.bind-api as optional in xmlunit-core.

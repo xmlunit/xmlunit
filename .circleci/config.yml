@@ -72,6 +72,24 @@ jobs:
           path: target/surefire-reports
       - persist-cache
 
+  reproducible-check:
+    parameters:
+      version:
+        description: "version tag"
+        default: "17.0"
+        type: string
+    executor:
+      name: openjdk
+      version: <<parameters.version>>
+    steps:
+      - full-checkout
+      - initialize-cache
+      - run:
+          command: mvn install -DskipTests=true
+      - run:
+          command: mvn clean verify artifact:compare
+      - persist-cache
+
   compat-tests:
     docker:
       - image: cimg/openjdk:17.0
@@ -108,6 +126,9 @@ workflows:
   build-and-test:
     jobs:
       - test-with-coverage
+      - reproducible-check:
+          requires:
+            - test-with-coverage
       - compat-tests:
           requires:
             - test-with-coverage

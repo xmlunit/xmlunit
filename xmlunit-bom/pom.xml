@@ -26,6 +26,7 @@
   <properties>
     <maven.gpg.plugin.version>3.2.7</maven.gpg.plugin.version>
     <maven.central.publishing.plugin>0.7.0</maven.central.publishing.plugin>
+    <project.build.outputTimestamp>2026-09-19T16:44:00Z</project.build.outputTimestamp>
   </properties>
 
   <inceptionYear>2001</inceptionYear>
