@@ -30,6 +30,9 @@
     <project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+    <!-- enable reproducible builds -->
+    <project.build.outputTimestamp>2026-09-19T16:44:00Z</project.build.outputTimestamp>
+
     <!-- location of any manifest file used by maven-jar-plugin -->
     <manifestfile>${project.build.directory}/osgi/MANIFEST.MF</manifestfile>
 
@@ -43,7 +46,7 @@
     <!-- Dependencies: Maven plugin   -->
     <maven.assembly.plugin.version>3.7.1</maven.assembly.plugin.version>
     <maven.buildnumber.plugin.version>3.2.1</maven.buildnumber.plugin.version>
-    <maven.bundle.plugin.version>3.2.0</maven.bundle.plugin.version>
+    <maven.bundle.plugin.version>5.1.9</maven.bundle.plugin.version>
     <maven.compiler.plugin.version>3.14.0</maven.compiler.plugin.version>
     <maven.coveralls.plugin.version>4.7.0</maven.coveralls.plugin.version>
     <maven.cyclonedx.plugin.version>2.9.3</maven.cyclonedx.plugin.version>
@@ -251,7 +254,7 @@
               <manifestEntries>
                 <X-Compile-Source-JDK>${maven.compile.source}</X-Compile-Source-JDK>
                 <X-Compile-Target-JDK>${maven.compile.target}</X-Compile-Target-JDK>
-                <build-time>${maven.build.timestamp}</build-time>
+                <build-time>${project.build.outputTimestamp}</build-time>
                 <X-Git-Hash>${buildNumber} (Branch ${scmBranch})</X-Git-Hash>
                 <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
               </manifestEntries>
@@ -366,10 +369,6 @@
           <excludeDependencies>true</excludeDependencies>
           <manifestLocation>${project.build.directory}/osgi</manifestLocation>
           <instructions>
-            <!-- stops the "uses" clauses being added to "Export-Package" manifest entry -->
-            <_nouses>true</_nouses>
-            <!-- Stop the JAVA_1_n_HOME variables from being treated as headers by Bnd -->
-            <_removeheaders>JAVA_1_3_HOME,JAVA_1_4_HOME,JAVA_1_5_HOME,JAVA_1_6_HOME,JAVA_1_7_HOME,JAVA_1_8_HOME</_removeheaders>
             <Bundle-SymbolicName>org.xmlunit.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Description>${project.description}</Bundle-Description>
             <Export-Package>org.xmlunit.*;version=${project.version};-noimport:=true</Export-Package>
