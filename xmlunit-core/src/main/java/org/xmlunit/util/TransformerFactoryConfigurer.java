@@ -95,6 +95,10 @@ public class TransformerFactoryConfigurer {
     public static final TransformerFactoryConfigurer Default = builder()
         .withDTDLoadingDisabled()
         .withExtensionFunctionsDisabled()
+        // withExtensionFunctionsDisabled turns on secure processing, which also
+        // cuts off external stylesheet loading - re-allow it to keep this
+        // instance's documented behavior.
+        .withSafeAttribute("http://javax.xml.XMLConstants/property/accessExternalStylesheet", "all")
         .build();
 
     /**
@@ -229,11 +233,19 @@ public class TransformerFactoryConfigurer {
 
         /**
          * Configures the factory to not enable extension functions.
+         *
+         * <p>The {@code jdk.xml.enableExtensionFunctions} attribute is only honored by some
+         * TransformerFactory implementations; the stock JDK XSLTC factory returned by {@link
+         * TransformerFactory#newInstance} silently ignores it and only stops extension functions
+         * when the secure processing feature is on. Both are set so the setting is effective on
+         * the default factory as well.</p>
+         *
          * @return this
          *
          * @since XMLUnit 2.10.0
          */
         public Builder withExtensionFunctionsDisabled() {
+            withSafeFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             return withSafeAttribute("jdk.xml.enableExtensionFunctions", "false");
         }
 
