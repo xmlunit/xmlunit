@@ -78,6 +78,12 @@ import javax.xml.transform.stream.StreamSource;
  *   to validate some XML against a completely different DTD
  * </li>
  * </ul>
+ *
+ * <p><strong>Security note:</strong> by default external entities
+ * declared by the document are resolved while it is validated. Use
+ * {@link XMLUnit#setEnableXXEProtection
+ * XMLUnit.setEnableXXEProtection(true)} to forbid this when
+ * validating untrusted input.</p>
  */
 public class Validator extends DefaultHandler {
     private final InputSource validationInputSource;
@@ -316,6 +322,9 @@ public class Validator extends DefaultHandler {
         ParsingValidator v =
             new ParsingValidator(useSchema ? Languages.W3C_XML_SCHEMA_NS_URI
                                  : Languages.XML_DTD_NS_URI);
+        if (XMLUnit.getEnableXXEProtection()) {
+            v.setDisableExternalEntities(true);
+        }
         List<Source> schemaSourceList = new ArrayList<Source>();
         if (systemId != null) {
             schemaSourceList.add(new StreamSource(systemId));

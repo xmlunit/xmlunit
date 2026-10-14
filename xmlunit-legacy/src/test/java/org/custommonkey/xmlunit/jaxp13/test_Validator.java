@@ -37,13 +37,16 @@ POSSIBILITY OF SUCH DAMAGE.
 package org.custommonkey.xmlunit.jaxp13;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
+import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.test_Constants;
 import org.custommonkey.xmlunit.exceptions.XMLUnitRuntimeException;
 import org.xml.sax.SAXException;
@@ -239,6 +242,44 @@ public class test_Validator extends TestCase {
             new StreamSource(new File(test_Constants.TEST_RESOURCE_DIR
                                       + "BookXsdGeneratedNoSchema.xml"));
         assertTrue(v.isInstanceValid(s));
+    }
+
+    public void testXXEProtectionAppliesToInstanceValidation() throws Exception {
+        File secret = File.createTempFile("xmlunit-xxe-secret", ".txt");
+        secret.deleteOnExit();
+        FileWriter w = new FileWriter(secret);
+        try {
+            w.write("INJECTED");
+        } finally {
+            w.close();
+        }
+        File xsd = File.createTempFile("xmlunit-xxe", ".xsd");
+        xsd.deleteOnExit();
+        w = new FileWriter(xsd);
+        try {
+            w.write("<?xml version='1.0'?>"
+                    + "<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>"
+                    + "<xs:element name='root'><xs:simpleType>"
+                    + "<xs:restriction base='xs:string'>"
+                    + "<xs:enumeration value='INJECTED'/>"
+                    + "</xs:restriction></xs:simpleType></xs:element></xs:schema>");
+        } finally {
+            w.close();
+        }
+        String instance = "<?xml version='1.0'?>"
+            + "<!DOCTYPE root [ <!ENTITY xxe SYSTEM '" + secret.toURI() + "'> ]>"
+            + "<root>&xxe;</root>";
+        XMLUnit.setEnableXXEProtection(true);
+        try {
+            Validator v = new Validator();
+            v.addSchemaSource(new StreamSource(xsd));
+            // had the external entity been resolved the instance would
+            // have matched the schema's enumeration and validation would
+            // have succeeded
+            assertFalse(v.isInstanceValid(new StreamSource(new StringReader(instance))));
+        } finally {
+            XMLUnit.setEnableXXEProtection(false);
+        }
     }
 
 }

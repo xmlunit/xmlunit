@@ -44,6 +44,7 @@ import org.xmlunit.XMLUnitException;
 import org.xmlunit.validation.JAXPValidator;
 import org.xmlunit.validation.Languages;
 import org.xmlunit.validation.ValidationProblem;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XMLUnitRuntimeException;
 import org.xml.sax.SAXParseException;
 
@@ -61,6 +62,12 @@ import org.xml.sax.SAXParseException;
  * the instance document will be ignored if any schema source has been
  * set.  This means you must either specify all sources or none of
  * them to successfully validate instances.</p>
+ *
+ * <p><strong>Security note:</strong> by default external DTDs
+ * referenced by the instance document are accessed while it is
+ * validated. Use {@link XMLUnit#setEnableXXEProtection
+ * XMLUnit.setEnableXXEProtection(true)} to forbid this when
+ * validating untrusted input.</p>
  */
 public class Validator {
     private final ArrayList<Source> sources = new ArrayList<Source>();
@@ -118,7 +125,7 @@ public class Validator {
      * @return whether the given schema definition is valid
      */
     public boolean isSchemaValid() {
-        return validator.validateSchema().isValid();
+        return getValidator().validateSchema().isValid();
     }
 
     /**
@@ -129,7 +136,7 @@ public class Validator {
      * @return a list of all errors in the schema definition
      */
     public List<SAXParseException> getSchemaErrors() {
-        return problemToExceptionList(validator.validateSchema().getProblems());
+        return problemToExceptionList(getValidator().validateSchema().getProblems());
     }
 
     /**
@@ -146,7 +153,7 @@ public class Validator {
      */
     public boolean isInstanceValid(Source instance) {
         try {
-            return validator.validateInstance(instance).isValid();
+            return getValidator().validateInstance(instance).isValid();
         } catch (XMLUnitException e) {
             throw new XMLUnitRuntimeException(e.getMessage(), e.getCause());
         }
@@ -168,11 +175,16 @@ public class Validator {
      */
     public List<SAXParseException> getInstanceErrors(Source instance) {
         try {
-            return problemToExceptionList(validator.validateInstance(instance).
+            return problemToExceptionList(getValidator().validateInstance(instance).
                                           getProblems());
         } catch (XMLUnitException e) {
             throw new XMLUnitRuntimeException(e.getMessage(), e.getCause());
         }
+    }
+
+    private JAXPValidator getValidator() {
+        validator.setDisableExternalDtdAccess(XMLUnit.getEnableXXEProtection());
+        return validator;
     }
 
     private static List<SAXParseException>

@@ -4,6 +4,11 @@
 
 * builds are reproducible now
 
+* `XMLUnit.setEnableXXEProtection(true)` now also applies to the legacy `Validator` classes: it disables resolution of
+  external entities in `org.custommonkey.xmlunit.Validator` and external DTD access in
+  `org.custommonkey.xmlunit.jaxp13.Validator`. Previously the flag only covered the document builder and transformer
+  factories, so documents parsed during validation could still resolve external entities.
+
 ## XMLUnit for Java 2.14.0 - /Released 2026-09-18/
 
 * marked jakarta.xml.bind-api as optional in xmlunit-core.

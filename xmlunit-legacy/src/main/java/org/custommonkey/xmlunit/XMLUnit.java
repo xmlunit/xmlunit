@@ -920,6 +920,10 @@ public final class XMLUnit {
     /**
      * Whether to enable XXE protection on the factories used by this class.
      *
+     * <p>Since XMLUnit 2.14.1 this also disables resolution of
+     * external entities in {@link Validator} and external DTD access
+     * in {@link org.custommonkey.xmlunit.jaxp13.Validator}.</p>
+     *
      * @since XMLUnit 2.6.0
      * @see "https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet"
      * @param b whether to enable XXE protection on the factories used by this class

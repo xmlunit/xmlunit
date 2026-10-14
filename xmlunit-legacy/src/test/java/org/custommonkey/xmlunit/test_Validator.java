@@ -71,6 +71,32 @@ public class test_Validator extends XMLTestCase {
         }
     }
 
+    public void testXXEProtectionAppliesToValidation() throws Exception {
+        File xsdFile = File.createTempFile("xmlunit-xxe", ".xsd");
+        xsdFile.deleteOnExit();
+        FileWriter writer = new FileWriter(xsdFile);
+        writer.write("<xsd:schema xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
+                     + "<xsd:element name=\"root\" type=\"xsd:string\"/>"
+                     + "</xsd:schema>");
+        writer.close();
+        // the external entity points at a path that does not exist, so
+        // if it gets resolved the parser fails while trying to read it
+        String instance = test_Constants.XML_DECLARATION
+            + "<!DOCTYPE root [<!ENTITY xxe SYSTEM \"file:/no/such/xmlunit-xxe-probe\">]>"
+            + "<root>&xxe;</root>";
+        XMLUnit.setEnableXXEProtection(true);
+        try {
+            validator = new Validator(new StringReader(instance));
+            validator.useXMLSchema(true);
+            validator.setJAXP12SchemaSource(xsdFile);
+            // with the external entity left unresolved the empty element
+            // content still validates against the xsd:string element
+            assertTrue(validator.toString(), validator.isValid());
+        } finally {
+            XMLUnit.setEnableXXEProtection(false);
+        }
+    }
+
     public void testIsValidGood() throws Exception {
         String toonXML = test_Constants.XML_DECLARATION
             + test_Constants.CHUCK_JONES_RIP_DTD_DECL
