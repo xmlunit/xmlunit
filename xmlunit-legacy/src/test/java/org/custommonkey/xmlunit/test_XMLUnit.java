@@ -36,11 +36,14 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.custommonkey.xmlunit;
 
+import java.io.File;
+import java.io.FileWriter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import junit.framework.TestCase;
@@ -234,6 +237,43 @@ public class test_XMLUnit extends TestCase{
             XMLUnit.setTestDocumentBuilderFactory(orig);
         }
         verify(builder).setEntityResolver(eResolver);
+    }
+
+    public void testXXEProtectionAppliesToAlreadyCreatedFactories() throws Exception {
+        File secret = File.createTempFile("xmlunit-xxe", ".txt");
+        FileWriter w = new FileWriter(secret);
+        try {
+            w.write("secret");
+        } finally {
+            w.close();
+        }
+        String xml = "<!DOCTYPE a [<!ENTITY e SYSTEM \"" + secret.toURI() + "\">]><a>&e;</a>";
+        // creates and caches both factories
+        XMLUnit.setIgnoreWhitespace(false);
+        try {
+            XMLUnit.setEnableXXEProtection(true);
+            try {
+                Document d = XMLUnit.buildControlDocument(xml);
+                fail("control parser resolved external entity: "
+                     + d.getDocumentElement().getTextContent());
+            } catch (SAXException expected) {
+            }
+            try {
+                Document d = XMLUnit.buildTestDocument(xml);
+                fail("test parser resolved external entity: "
+                     + d.getDocumentElement().getTextContent());
+            } catch (SAXException expected) {
+            }
+        } finally {
+            XMLUnit.setEnableXXEProtection(false);
+            DocumentBuilderFactory control = DocumentBuilderFactory.newInstance();
+            control.setNamespaceAware(true);
+            XMLUnit.setControlDocumentBuilderFactory(control);
+            DocumentBuilderFactory test = DocumentBuilderFactory.newInstance();
+            test.setNamespaceAware(true);
+            XMLUnit.setTestDocumentBuilderFactory(test);
+            secret.delete();
+        }
     }
 
 }

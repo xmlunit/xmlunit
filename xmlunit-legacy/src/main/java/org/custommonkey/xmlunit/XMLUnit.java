@@ -926,6 +926,19 @@ public final class XMLUnit {
      */
     public static void setEnableXXEProtection(boolean b) {
         enableXXEProtection = b;
+        if (b) {
+            // factories may already have been created (and cached)
+            // before protection got enabled
+            if (controlBuilderFactory != null) {
+                DocumentBuilderFactoryConfigurer.Default.configure(controlBuilderFactory);
+            }
+            if (testBuilderFactory != null) {
+                DocumentBuilderFactoryConfigurer.Default.configure(testBuilderFactory);
+            }
+            if (transformerFactory != null) {
+                transformerFactory = TransformerFactoryConfigurer.Default.configure(transformerFactory);
+            }
+        }
     }
 
     /**
