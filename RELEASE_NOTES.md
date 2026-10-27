@@ -4,6 +4,10 @@
 
 * builds are reproducible now
 
+* `${xmlunit.isDateTime}` now requires the whole text to be a date or date time and rejects values that are out of
+  range for their field. Text following a date (`2020-01-01 not a date`) was silently ignored and out of range values
+  (`2020-02-30`) rolled over into the next field before, so both passed the comparison.
+
 ## XMLUnit for Java 2.14.0 - /Released 2026-09-18/
 
 * marked jakarta.xml.bind-api as optional in xmlunit-core.

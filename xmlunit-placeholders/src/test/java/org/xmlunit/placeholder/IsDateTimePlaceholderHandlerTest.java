@@ -67,10 +67,58 @@ public class IsDateTimePlaceholderHandlerTest {
     }
 
     @Test
+    public void shouldRejectTrailingContent() {
+        for (final String s : new String[] {
+                "2020-01-01 not a date",
+                "2020-01-01garbage",
+                "2020-01-01T15:00:00Z and more",
+                "01/01/2020 15:00 not a date",
+            }) {
+            assertThat(s, placeholderHandler.evaluate(s), equalTo(ComparisonResult.DIFFERENT));
+        }
+    }
+
+    @Test
+    public void shouldRejectOutOfRangeValues() {
+        for (final String s : new String[] {
+                "2020-02-30",
+                "2020-13-01",
+                "2020-01-01T25:00:00",
+                "2020-01-01 15:61:00Z",
+            }) {
+            assertThat(s, placeholderHandler.evaluate(s), equalTo(ComparisonResult.DIFFERENT));
+        }
+    }
+
+    @Test
+    public void shouldAcceptSurroundingWhitespace() {
+        assertThat(placeholderHandler.evaluate("  2020-01-01T15:00:00Z\n"),
+                   equalTo(ComparisonResult.EQUAL));
+    }
+
+    @Test
+    public void shouldAcceptFractionalSecondsBeyondMilliseconds() {
+        assertThat(placeholderHandler.evaluate("2020-01-01T15:00:00.123456789Z"),
+                   equalTo(ComparisonResult.EQUAL));
+        assertThat(placeholderHandler.evaluate("2020-01-01T15:00:00.123456"),
+                   equalTo(ComparisonResult.EQUAL));
+    }
+
+    @Test
     public void shouldParseExplicitPattern() {
         assertThat(placeholderHandler.evaluate("31 01 2020 12:34", "dd MM yyyy HH:mm"),
                    equalTo(ComparisonResult.EQUAL));
         assertThat(placeholderHandler.evaluate("abc", "dd MM yyyy HH:mm"),
+                   equalTo(ComparisonResult.DIFFERENT));
+    }
+
+    @Test
+    public void shouldRejectTrailingContentAndOutOfRangeValuesWithExplicitPattern() {
+        assertThat(placeholderHandler.evaluate("31 01 2020 12:34 extra", "dd MM yyyy HH:mm"),
+                   equalTo(ComparisonResult.DIFFERENT));
+        assertThat(placeholderHandler.evaluate("32 01 2020 12:34", "dd MM yyyy HH:mm"),
+                   equalTo(ComparisonResult.DIFFERENT));
+        assertThat(placeholderHandler.evaluate(null, "dd MM yyyy HH:mm"),
                    equalTo(ComparisonResult.DIFFERENT));
     }
 
