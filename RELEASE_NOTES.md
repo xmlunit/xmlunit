@@ -4,6 +4,11 @@
 
 * builds are reproducible now
 
+* `Convert.toDocument` temporarily switched a `DocumentBuilderFactory` that is not namespace aware to namespace aware
+  without any synchronization. When the same factory was shared by concurrently running comparisons or XPath
+  evaluations, some documents were parsed without namespace support, which made namespace-equivalent documents appear
+  different.
+
 ## XMLUnit for Java 2.14.0 - /Released 2026-09-18/
 
 * marked jakarta.xml.bind-api as optional in xmlunit-core.

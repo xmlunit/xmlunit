@@ -16,11 +16,18 @@ package org.xmlunit.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
@@ -310,6 +317,46 @@ public class ConvertTest {
         NamespaceContext ctx = Convert.toNamespaceContext(m);
         assertArrayEquals(new String[] { "foo", "baz" },
                           toArray(ctx.getPrefixes("bar")));
+    }
+
+    @Test
+    public void toDocumentIsNamespaceAwareWhenFactoryIsShared() throws Exception {
+        final DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
+        final int threads = 4;
+        final int iterations = 500;
+        final AtomicInteger documentsWithoutNamespace = new AtomicInteger();
+        final CountDownLatch start = new CountDownLatch(1);
+        ExecutorService executor = Executors.newFixedThreadPool(threads);
+        try {
+            List<Future<?>> futures = new ArrayList<Future<?>>();
+            for (int t = 0; t < threads; t++) {
+                futures.add(executor.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            start.await();
+                        } catch (InterruptedException ex) {
+                            throw new IllegalStateException(ex);
+                        }
+                        for (int i = 0; i < iterations; i++) {
+                            Source s = new StreamSource(new StringReader("<a xmlns='urn:x'/>"));
+                            Document d = Convert.toDocument(s, fac);
+                            if (d.getDocumentElement().getNamespaceURI() == null) {
+                                documentsWithoutNamespace.incrementAndGet();
+                            }
+                        }
+                    }
+                }));
+            }
+            start.countDown();
+            for (Future<?> f : futures) {
+                f.get();
+            }
+        } finally {
+            executor.shutdownNow();
+        }
+        assertThat(documentsWithoutNamespace.get(), is(0));
+        assertThat(fac.isNamespaceAware(), is(false));
     }
 
     private static Document animalDocument() throws Exception {

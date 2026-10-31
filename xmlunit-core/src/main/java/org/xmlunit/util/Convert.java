@@ -130,19 +130,22 @@ public final class Convert {
             InputSource is = toInputSource(s);
             DocumentBuilder b = null;
 
-            // yes, there is a race condition but it is so unlikely to
-            // happen that I currently don't care enough
-            boolean oldNsAware = factory.isNamespaceAware();
-            try {
-                if (!oldNsAware) {
-                    factory.setNamespaceAware(true);
-                }
-                b = factory.newDocumentBuilder();
-            } catch (javax.xml.parsers.ParserConfigurationException e) {
-                throw new ConfigurationException(e);
-            } finally {
-                if (!oldNsAware) {
-                    factory.setNamespaceAware(false);
+            // the factory may be shared between threads, don't let
+            // another thread see it while namespace awareness is
+            // switched on temporarily
+            synchronized (factory) {
+                boolean oldNsAware = factory.isNamespaceAware();
+                try {
+                    if (!oldNsAware) {
+                        factory.setNamespaceAware(true);
+                    }
+                    b = factory.newDocumentBuilder();
+                } catch (javax.xml.parsers.ParserConfigurationException e) {
+                    throw new ConfigurationException(e);
+                } finally {
+                    if (!oldNsAware) {
+                        factory.setNamespaceAware(false);
+                    }
                 }
             }
 
