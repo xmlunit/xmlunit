@@ -175,10 +175,10 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
         }
 
         placeholderRegex = Pattern.compile("(\\s*" + placeholderOpeningDelimiterRegex
-            + "\\s*" + PLACEHOLDER_PREFIX_REGEX + "(.+)" + "\\s*"
+            + "\\s*" + PLACEHOLDER_PREFIX_REGEX + "(?<placeholderContent>.+)" + "\\s*"
             + placeholderClosingDelimiterRegex + "\\s*)");
-        argsRegex = Pattern.compile("((.*)\\s*" + placeholderArgsOpeningDelimiterRegex
-            + "(.+)"
+        argsRegex = Pattern.compile("((?<placeholderKeyword>.*)\\s*" + placeholderArgsOpeningDelimiterRegex
+            + "(?<placeholderArgs>.+)"
             + "\\s*" + placeholderArgsClosingDelimiterRegex + "\\s*)");
         argsSplitter = placeholderArgsSeparatorRegex;
     }
@@ -327,13 +327,13 @@ public class PlaceholderDifferenceEvaluator implements DifferenceEvaluator {
         ComparisonResult outcome) {
         final Matcher placeholderMatcher = placeholderRegex.matcher(controlText);
         if (placeholderMatcher.find()) {
-            final String content = placeholderMatcher.group(2).trim();
+            final String content = placeholderMatcher.group("placeholderContent").trim();
             final Matcher argsMatcher = argsRegex.matcher(content);
             final String keyword;
             final String[] args;
             if (argsMatcher.find()) {
-                keyword = argsMatcher.group(2).trim();
-                args = argsMatcher.group(3).split(argsSplitter);
+                keyword = argsMatcher.group("placeholderKeyword").trim();
+                args = argsMatcher.group("placeholderArgs").split(argsSplitter);
             } else {
                 keyword = content;
                 args = NO_ARGS;
