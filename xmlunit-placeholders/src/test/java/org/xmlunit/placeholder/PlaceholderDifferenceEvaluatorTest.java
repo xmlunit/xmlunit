@@ -549,4 +549,24 @@ public class PlaceholderDifferenceEvaluatorTest {
 
         assertFalse(diff.hasDifferences());
     }
+
+    @Test
+    public void hasIgnorePlaceholder_CustomDelimitersWithCaptureGroup_Equal() throws Exception {
+        String control = "<elem1><elem11>${xmlunit.ignore}</elem11></elem1>";
+        String test = "<elem1><elem11>abc</elem11></elem1>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator("(\\$\\{)", null)).build();
+
+        assertFalse(diff.toString(), diff.hasDifferences());
+    }
+
+    @Test
+    public void matchesRegexPlaceholder_CustomArgsDelimitersWithCaptureGroup_Equal() throws Exception {
+        String control = "<elem1><elem11>${xmlunit.matchesRegex([a-z]+)}</elem11></elem1>";
+        String test = "<elem1><elem11>abc</elem11></elem1>";
+        Diff diff = DiffBuilder.compare(control).withTest(test)
+                .withDifferenceEvaluator(new PlaceholderDifferenceEvaluator(null, null, "(\\()", "(\\))", null)).build();
+
+        assertFalse(diff.toString(), diff.hasDifferences());
+    }
 }
