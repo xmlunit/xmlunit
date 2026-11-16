@@ -121,6 +121,25 @@ public class ParsingValidatorTest {
         assertTrue(r.isValid());
     }
 
+    // the external DTD subset points at a path that does not exist, so
+    // if it gets loaded the parser fails while trying to read it
+    private static final String EXTERNAL_DTD_INSTANCE =
+        "<?xml version=\"1.0\"?>"
+        + "<!DOCTYPE root SYSTEM \"file:/no/such/xmlunit-xxe-probe.dtd\">"
+        + "<root>x</root>";
+
+    @Test public void doesNotLoadExternalDtdOfSchemaInstanceWhenDisabled() {
+        ParsingValidator v =
+            new ParsingValidator(Languages.W3C_XML_SCHEMA_NS_URI);
+        v.setDisableExternalEntities(true);
+        v.setSchemaSource(new StreamSource(new StringReader(XXE_SCHEMA)));
+        ValidationResult r =
+            v.validateInstance(new StreamSource(new StringReader(EXTERNAL_DTD_INSTANCE)));
+        // access to the external DTD is refused, which is reported as a
+        // validation problem rather than an attempt to read the file
+        assertFalse(r.isValid());
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void shouldRejectRelaxNG() {
         new ParsingValidator(Languages.RELAXNG_NS_URI);

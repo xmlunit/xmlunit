@@ -13,6 +13,7 @@
 */
 package org.xmlunit.validation;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -89,10 +90,13 @@ public class ParsingValidator extends Validator {
      * enabled as they have been since XMLUnit 2.6.0. Setting this to
      * {@code true} turns off the {@code external-general-entities} and
      * {@code external-parameter-entities} features on the parser, which
-     * closes the XXE vector when validating untrusted instances. The
-     * DTD or schema to validate against is still resolved through the
-     * internal entity resolver, so DTD and schema validation keep
-     * working.</p>
+     * closes the XXE vector when validating untrusted instances. When
+     * validating against W3C XML Schema the {@code accessExternalDTD}
+     * property is set to the empty string on the parser as well, so an
+     * external DTD subset referenced by the instance's {@code DOCTYPE}
+     * is not loaded either. The DTD or schema to validate against is
+     * still resolved through the internal entity resolver, so DTD and
+     * schema validation keep working.</p>
      *
      * @since XMLUnit 2.12.1
      * @param disable whether to disable external entities
@@ -141,6 +145,9 @@ public class ParsingValidator extends Validator {
             if (Languages.W3C_XML_SCHEMA_NS_URI.equals(language)) {
                 parser.setProperty(Properties.SCHEMA_LANGUAGE,
                                    Languages.W3C_XML_SCHEMA_NS_URI);
+                if (disableExternalEntities) {
+                    restrictExternalDtdAccess(parser);
+                }
             }
             final Source[] source = getSchemaSources();
             Handler handler = new Handler();
@@ -194,6 +201,23 @@ public class ParsingValidator extends Validator {
     private static void restrictExternalEntities(SAXParserFactory factory) {
         setSafeFeature(factory, EXTERNAL_GENERAL_ENTITIES, false);
         setSafeFeature(factory, EXTERNAL_PARAMETER_ENTITIES, false);
+    }
+
+    /**
+     * Stops the instance document from pulling in an external DTD
+     * subset while it is parsed for W3C XML Schema validation.
+     *
+     * <p>A validating parser loads the external subset regardless of
+     * the entity features, it isn't needed for schema validation.</p>
+     */
+    private static void restrictExternalDtdAccess(SAXParser parser) {
+        try {
+            parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        } catch (SAXNotRecognizedException ex) {
+            // property not supported, nothing we can do
+        } catch (SAXNotSupportedException ex) {
+            // property not supported, nothing we can do
+        }
     }
 
     private static void setSafeFeature(SAXParserFactory factory, String feature, boolean value) {
